@@ -1,0 +1,21 @@
+{
+  "name": "neTpyceB/TMCms-core",
+  "type": "library",
+  "description": "Core for TMCms",
+  "keywords": ["cms"],
+  "homepage": "http://petrik.lv/",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Vadims Petrusevs",
+      "email": "info@petrik.lv",
+      "homepage": "http://petrik.lv/",
+      "role": "Developer"
+    }
+  ],
+  "autoload": {
+    "psr-0": {
+      "neTpyceB\\TMCms": "src"
+    }
+  }
+}
