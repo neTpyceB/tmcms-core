@@ -7,6 +7,7 @@ use neTpyceB\TMCms\Traits\singletonInstanceTrait;
 
 /**
  * Class MemcachedCache
+ * @package neTpyceB\TMCms\Cache
  */
 class MemcachedCache implements ICache
 {

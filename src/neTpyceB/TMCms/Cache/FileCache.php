@@ -9,6 +9,7 @@ defined('INC') or exit;
 
 /**
  * Class FileCache
+ * @package neTpyceB\TMCms\Cache
  */
 class FileCache implements ICache
 {

@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+
+	<title>Interface neTpyceB\TMCms\Cache\ICache</title>
+
+	<link rel="stylesheet" href="resources/style.css?e99947befd7bf673c6b43ff75e9e0f170c88a60e">
+
+</head>
+
+<body>
+<div id="left">
+	<div id="menu">
+		<a href="index.html" title="Overview"><span>Overview</span></a>
+
+
+		<div id="groups">
+				<h3>Namespaces</h3>
+			<ul>
+				<li class="active">
+					<a href="namespace-neTpyceB.html">
+						neTpyceB<span></span>
+					</a>
+
+						<ul>
+				<li class="active">
+					<a href="namespace-neTpyceB.TMCms.html">
+						TMCms<span></span>
+					</a>
+
+						<ul>
+				<li class="active">
+					<a href="namespace-neTpyceB.TMCms.Cache.html">
+						Cache					</a>
+
+						</li>
+				<li>
+					<a href="namespace-neTpyceB.TMCms.Log.html">
+						Log					</a>
+
+						</li>
+				<li>
+					<a href="namespace-neTpyceB.TMCms.Templates.html">
+						Templates					</a>
+
+						</li>
+				<li>
+					<a href="namespace-neTpyceB.TMCms.Traits.html">
+						Traits					</a>
+
+						</li>
+							</ul></li></ul></li>
+			</ul>
+		</div>
+
+		<hr>
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li><a href="class-neTpyceB.TMCms.Cache.APCCache.html">APCCache</a></li>
+				<li><a href="class-neTpyceB.TMCms.Cache.Cacher.html">Cacher</a></li>
+				<li><a href="class-neTpyceB.TMCms.Cache.FakeCache.html">FakeCache</a></li>
+				<li><a href="class-neTpyceB.TMCms.Cache.FileCache.html">FileCache</a></li>
+				<li><a href="class-neTpyceB.TMCms.Cache.MemcachedCache.html">MemcachedCache</a></li>
+			</ul>
+
+			<h3>Interfaces</h3>
+			<ul>
+				<li class="active"><a href="class-neTpyceB.TMCms.Cache.ICache.html">ICache</a></li>
+			</ul>
+
+
+
+
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+<div id="rightInner">
+	<form id="search">
+		<input type="hidden" name="cx" value="">
+		<input type="hidden" name="ie" value="UTF-8">
+		<input type="text" name="q" class="text" placeholder="Search">
+	</form>
+
+	<div id="navigation">
+		<ul>
+			<li>
+				<a href="index.html" title="Overview"><span>Overview</span></a>
+			</li>
+			<li>
+				<a href="namespace-neTpyceB.TMCms.Cache.html" title="Summary of neTpyceB\TMCms\Cache"><span>Namespace</span></a>
+			</li>
+			<li class="active">
+<span>Class</span>			</li>
+		</ul>
+		<ul>
+		</ul>
+		<ul>
+		</ul>
+	</div>
+
+<div id="content" class="class">
+	<h1>Interface ICache</h1>
+
+
+	<div class="description">
+	<p>Interface ICache</p>
+	</div>
+
+
+
+
+
+	<div>
+		<h4>Direct known implementers</h4>
+			<a href="class-neTpyceB.TMCms.Cache.APCCache.html">neTpyceB\TMCms\Cache\APCCache</a>, 
+			<a href="class-neTpyceB.TMCms.Cache.FakeCache.html">neTpyceB\TMCms\Cache\FakeCache</a>, 
+			<a href="class-neTpyceB.TMCms.Cache.FileCache.html">neTpyceB\TMCms\Cache\FileCache</a>, 
+			<a href="class-neTpyceB.TMCms.Cache.MemcachedCache.html">neTpyceB\TMCms\Cache\MemcachedCache</a>
+	</div>
+
+
+
+
+	<div class="info">
+		
+		
+		<b>Namespace:</b> <a href="namespace-neTpyceB.html">neTpyceB</a>\<a href="namespace-neTpyceB.TMCms.html">TMCms</a>\<a href="namespace-neTpyceB.TMCms.Cache.html">Cache</a><br>
+		<b>Package:</b> neTpyceB\TMCms\Cache<br>
+
+			<b>Located at</b> neTpyceB/TMCms/Cache/ICache.php		<br>
+	</div>
+
+
+
+	<table class="summary methods" id="methods">
+	<caption>Methods summary</caption>
+	<tr data-order="itWorks" id="_itWorks">
+
+		<td class="attributes"><code>
+			 public static
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_itWorks">#</a>
+		<code>itWorks( )</code>
+
+		<div class="description short">
+			<p>Return is this cache works in system</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Return is this cache works in system</p>
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="set" id="_set">
+
+		<td class="attributes"><code>
+			 public 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_set">#</a>
+		<code>set( <span>string <var>$key</var></span>, <span>mixed <var>$value</var></span>, <span>integer <var>$ttl</var> = <span class="php-num">2592000</span></span> )</code>
+
+		<div class="description short">
+			<p>Insert or update value by key</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Insert or update value by key</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$key</var></dt>
+					<dd></dd>
+					<dt><var>$value</var></dt>
+					<dd></dd>
+					<dt><var>$ttl</var></dt>
+					<dd></dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="get" id="_get">
+
+		<td class="attributes"><code>
+			 public 
+
+			mixed
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_get">#</a>
+		<code>get( <span>string <var>$key</var></span> )</code>
+
+		<div class="description short">
+			<p>Get value by key</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Get value by key</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$key</var></dt>
+					<dd></dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					mixed
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="exists" id="_exists">
+
+		<td class="attributes"><code>
+			 public 
+
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_exists">#</a>
+		<code>exists( <span>string <var>$key</var></span> )</code>
+
+		<div class="description short">
+			<p>Check if key is in cache without getting it's value</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Check if key is in cache without getting it's value</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$key</var></dt>
+					<dd></dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					boolean
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="delete" id="_delete">
+
+		<td class="attributes"><code>
+			 public 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_delete">#</a>
+		<code>delete( <span>string <var>$key</var></span> )</code>
+
+		<div class="description short">
+			<p>Remove value from cache by key</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Remove value from cache by key</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$key</var></dt>
+					<dd></dd>
+				</dl></div>
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="deleteAll" id="_deleteAll">
+
+		<td class="attributes"><code>
+			 public 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_deleteAll">#</a>
+		<code>deleteAll( )</code>
+
+		<div class="description short">
+			<p>Clear entire cache</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Clear entire cache</p>
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+
+	<div id="footer">
+		 API documentation generated by <a href="http://apigen.org">ApiGen</a>
+	</div>
+</div>
+</div>
+<script src="resources/combined.js"></script>
+<script src="elementlist.js"></script>
+</body>
+</html>

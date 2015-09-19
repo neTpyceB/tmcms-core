@@ -7,6 +7,7 @@ use neTpyceB\TMCms\Traits\singletonInstanceTrait;
 
 /**
  * Class Cacher
+ * @package neTpyceB\TMCms\Cache
  */
 class Cacher
 {

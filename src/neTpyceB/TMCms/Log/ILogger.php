@@ -4,6 +4,7 @@ namespace neTpyceB\TMCms\Log;
 
 /**
  * Interface ILogger
+ * @package neTpyceB\TMCms\Log
  */
 interface ILogger {
 
