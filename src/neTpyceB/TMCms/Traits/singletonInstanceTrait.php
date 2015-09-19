@@ -1,14 +1,16 @@
 <?php
+
 namespace neTpyceB\TMCms\Traits;
 
-defined ('INC') or exit;
+defined('INC') or exit;
 
 /**
  * Trait singletonInstanceTrait means that class MAY be used as singleton to get created instance.
  * May be used in any required class
  * @package neTpyceB\TMCms\Traits
  */
-trait singletonInstanceTrait {
+trait singletonInstanceTrait
+{
     /**
      * @var $this
      */
@@ -17,7 +19,11 @@ trait singletonInstanceTrait {
     /**
      * @return $this
      */
-    public static function getInstance() {
-        return self::$instance ? self::$instance : (self::$instance = new self);
+    public static function getInstance()
+    {
+        if (!self::$instance) {
+            self::$instance = new self;
+        }
+        return self::$instance;
     }
 }
