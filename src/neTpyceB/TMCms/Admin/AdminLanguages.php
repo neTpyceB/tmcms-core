@@ -2,7 +2,7 @@
 
 namespace neTpyceB\TMCms\Admin;
 
-use neTpyceB\TMCms\Admin\Structure\Object\LanguageCollection;
+use neTpyceB\TMCms\Admin\Entity\LanguageEntityRepository;
 
 defined('INC') or exit;
 
@@ -24,7 +24,7 @@ class AdminLanguages
             'en' => 'English'
         ];
 
-        $languages_from_site = new LanguageCollection();
+        $languages_from_site = new LanguageEntityRepository();
         $default_languages = array_merge($default_languages, $languages_from_site->getPairs('full', 'short'));
 
         return $default_languages;
