@@ -13,4 +13,34 @@ class SearchEnginesTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals('whaka whaka', $res);
     }
+
+    public function testEmptyUrl() {
+        $res = SearchEngines::getSearchWord('bla');
+
+        $this->assertFalse($res);
+    }
+
+    public function testUnknownSearchEngine() {
+        $res = SearchEngines::getSearchWord('http://unknown_se.com/search?q=whaka+whaka');
+
+        $this->assertFalse($res);
+    }
+
+    public function testNoQuery() {
+        $res = SearchEngines::getSearchWord('http://baidu.com/');
+
+        $this->assertFalse($res);
+    }
+
+    public function testUnknownQueryKey() {
+        $res = SearchEngines::getSearchWord('http://baidu.com/search?unknown_key=whaka+whaka');
+
+        $this->assertFalse($res);
+    }
+
+    public function testWithMultiplePossibleKeys() {
+        $res = SearchEngines::getSearchWord('http://szukaj.com/search?qt=whaka+whaka');
+
+        $this->assertEquals('whaka whaka', $res);
+    }
 }
