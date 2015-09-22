@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 
-	<title>Class neTpyceB\TMCms\Admin\FrontPanel</title>
+	<title>Class neTpyceB\TMCms\Admin\Messages</title>
 
 	<link rel="stylesheet" href="resources/style.css?e99947befd7bf673c6b43ff75e9e0f170c88a60e">
 
@@ -78,8 +78,8 @@
 			<h3>Classes</h3>
 			<ul>
 				<li><a href="class-neTpyceB.TMCms.Admin.AdminLanguages.html">AdminLanguages</a></li>
-				<li class="active"><a href="class-neTpyceB.TMCms.Admin.FrontPanel.html">FrontPanel</a></li>
-				<li><a href="class-neTpyceB.TMCms.Admin.Messages.html">Messages</a></li>
+				<li><a href="class-neTpyceB.TMCms.Admin.FrontPanel.html">FrontPanel</a></li>
+				<li class="active"><a href="class-neTpyceB.TMCms.Admin.Messages.html">Messages</a></li>
 			</ul>
 
 
@@ -118,13 +118,25 @@
 	</div>
 
 <div id="content" class="class">
-	<h1>Class FrontPanel</h1>
+	<h1>Class Messages</h1>
 
 
 	<div class="description">
-	<p>Class FrontPanel</p>
+	<p>Used to show user flash notifications
+May be used to make user messaging one to another</p>
+
+<p>Class Messages</p>
 	</div>
 
+	<dl class="tree">
+		<dd style="padding-left:0px">
+<b><span>neTpyceB\TMCms\Admin\Messages</span></b>			
+			
+			 uses 
+					<a href="class-neTpyceB.TMCms.Traits.singletonOnlyInstanceTrait.html"><span>neTpyceB\TMCms\Traits\singletonOnlyInstanceTrait</span></a>
+			
+		</dd>
+	</dl>
 
 
 
@@ -139,26 +151,26 @@
 		<b>Namespace:</b> <a href="namespace-neTpyceB.html">neTpyceB</a>\<a href="namespace-neTpyceB.TMCms.html">TMCms</a>\<a href="namespace-neTpyceB.TMCms.Admin.html">Admin</a><br>
 		<b>Package:</b> neTpyceB\TMCms\Admin<br>
 
-			<b>Located at</b> neTpyceB/TMCms/Admin/FrontPanel.php		<br>
+			<b>Located at</b> neTpyceB/TMCms/Admin/Messages.php		<br>
 	</div>
 
 
 
 	<table class="summary methods" id="methods">
 	<caption>Methods summary</caption>
-	<tr data-order="getView" id="_getView">
+	<tr data-order="sendMessage" id="_sendMessage">
 
 		<td class="attributes"><code>
 			 public static
 
-			string
+			neTpyceB\TMCms\Admin\Users\Object\UserMessage
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#_getView">#</a>
-		<code>getView( )</code>
+		<a class="anchor" href="#_sendMessage">#</a>
+		<code>sendMessage( <span>string <var>$text</var></span>, <span>integer <var>$to_user_id</var> = USER_ID</span>, <span>integer <var>$from_user_id</var> = <span class="php-num">0</span></span> )</code>
 
 		<div class="description short">
 			
@@ -168,10 +180,60 @@
 			
 
 
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$text</var></dt>
+					<dd>Text to be sent</dd>
+					<dt><var>$to_user_id</var></dt>
+					<dd>recipient user id</dd>
+					<dt><var>$from_user_id</var></dt>
+					<dd>sender user id</dd>
+				</dl></div>
 
 				<h4>Returns</h4>
 				<div class="list">
-					string
+					neTpyceB\TMCms\Admin\Users\Object\UserMessage<br>that was sent
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="receiveMessages" id="_receiveMessages">
+
+		<td class="attributes"><code>
+			 public static
+
+			array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_receiveMessages">#</a>
+		<code>receiveMessages( <span>integer <var>$from_user_id</var></span>, <span>integer <var>$to_user_id</var> = USER_ID</span> )</code>
+
+		<div class="description short">
+			<p>Get array of UserMessage</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Get array of UserMessage</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$from_user_id</var></dt>
+					<dd>sender user id</dd>
+					<dt><var>$to_user_id</var></dt>
+					<dd>recipient user id</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					array
 				</div>
 
 
@@ -183,6 +245,14 @@
 	</table>
 
 
+	<table class="summary used">
+	<caption>Methods used from <a href="class-neTpyceB.TMCms.Traits.singletonInstanceTrait.html#methods">neTpyceB\TMCms\Traits\singletonInstanceTrait</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-neTpyceB.TMCms.Traits.singletonInstanceTrait.html#_getInstance">getInstance()</a>
+		</code></td>
+	</tr>
+	</table>
 
 
 
