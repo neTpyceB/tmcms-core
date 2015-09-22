@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 
-	<title>Class neTpyceB\TMCms\Templates\PageBody</title>
+	<title>Class neTpyceB\TMCms\Admin\Entity\LanguageEntity</title>
 
 	<link rel="stylesheet" href="resources/style.css?e99947befd7bf673c6b43ff75e9e0f170c88a60e">
 
@@ -30,13 +30,13 @@
 					</a>
 
 						<ul>
-				<li>
+				<li class="active">
 					<a href="namespace-neTpyceB.TMCms.Admin.html">
 						Admin<span></span>
 					</a>
 
 						<ul>
-				<li>
+				<li class="active">
 					<a href="namespace-neTpyceB.TMCms.Admin.Entity.html">
 						Entity					</a>
 
@@ -57,7 +57,7 @@
 						Log					</a>
 
 						</li>
-				<li class="active">
+				<li>
 					<a href="namespace-neTpyceB.TMCms.Templates.html">
 						Templates					</a>
 
@@ -77,7 +77,8 @@
 		<div id="elements">
 			<h3>Classes</h3>
 			<ul>
-				<li class="active"><a href="class-neTpyceB.TMCms.Templates.PageBody.html">PageBody</a></li>
+				<li class="active"><a href="class-neTpyceB.TMCms.Admin.Entity.LanguageEntity.html">LanguageEntity</a></li>
+				<li><a href="class-neTpyceB.TMCms.Admin.Entity.LanguageEntityRepository.html">LanguageEntityRepository</a></li>
 			</ul>
 
 
@@ -104,7 +105,7 @@
 				<a href="index.html" title="Overview"><span>Overview</span></a>
 			</li>
 			<li>
-				<a href="namespace-neTpyceB.TMCms.Templates.html" title="Summary of neTpyceB\TMCms\Templates"><span>Namespace</span></a>
+				<a href="namespace-neTpyceB.TMCms.Admin.Entity.html" title="Summary of neTpyceB\TMCms\Admin\Entity"><span>Namespace</span></a>
 			</li>
 			<li class="active">
 <span>Class</span>			</li>
@@ -116,13 +117,26 @@
 	</div>
 
 <div id="content" class="class">
-	<h1>Class PageBody</h1>
+	<h1>Class LanguageEntity</h1>
 
 
 	<div class="description">
-	<p>Class PageBody</p>
+	<p>Class LanguageEntity</p>
 	</div>
 
+	<dl class="tree">
+		<dd style="padding-left:0px">
+neTpyceB\TMCms\Modules\Entity
+			
+			
+		</dd>
+		<dd style="padding-left:30px">
+			<img src="resources/inherit.png" alt="Extended by">
+<b><span>neTpyceB\TMCms\Admin\Entity\LanguageEntity</span></b>			
+			
+			
+		</dd>
+	</dl>
 
 
 
@@ -134,17 +148,20 @@
 	<div class="info">
 		
 		
-		<b>Namespace:</b> <a href="namespace-neTpyceB.html">neTpyceB</a>\<a href="namespace-neTpyceB.TMCms.html">TMCms</a>\<a href="namespace-neTpyceB.TMCms.Templates.html">Templates</a><br>
-		<b>Package:</b> neTpyceB\TMCms\Templates<br>
+		<b>Namespace:</b> <a href="namespace-neTpyceB.html">neTpyceB</a>\<a href="namespace-neTpyceB.TMCms.html">TMCms</a>\<a href="namespace-neTpyceB.TMCms.Admin.html">Admin</a>\<a href="namespace-neTpyceB.TMCms.Admin.Entity.html">Entity</a><br>
+		<b>Package:</b> neTpyceB\TMCms\Admin\Entity<br>
 
-			<b>Located at</b> neTpyceB/TMCms/Templates/PageBody.php		<br>
+			<b>Located at</b> neTpyceB/TMCms/Admin/Entity/LanguageEntity.php		<br>
 	</div>
 
 
 
-	<table class="summary methods" id="methods">
-	<caption>Methods summary</caption>
-	<tr data-order="__construct" id="___construct">
+
+
+
+	<table class="summary methods" id="magicMethods">
+	<caption>Magic methods summary</caption>
+	<tr data-order="setShort" id="m_setShort">
 
 		<td class="attributes"><code>
 			 public 
@@ -155,23 +172,22 @@
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#___construct">#</a>
-		<code>__construct( <span>string <var>$content</var> = <span class="php-quote">''</span></span> )</code>
+		<a class="anchor" href="#m_setShort">#</a>
+		<code>setShort( )</code>
 
 		<div class="description short">
-			
+			<p>;</p>
 		</div>
 
 		<div class="description detailed hidden">
-			
+			<p>;</p>
 
 
-				<h4>Parameters</h4>
-				<div class="list"><dl>
-					<dt><var>$content</var></dt>
-					<dd></dd>
-				</dl></div>
 
+				<h4>Returns</h4>
+				<div class="list">
+					
+				</div>
 
 
 
@@ -179,7 +195,7 @@
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="__toString" id="___toString">
+	<tr data-order="getShort" id="m_getShort">
 
 		<td class="attributes"><code>
 			 public 
@@ -190,15 +206,15 @@
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#___toString">#</a>
-		<code>__toString( )</code>
+		<a class="anchor" href="#m_getShort">#</a>
+		<code>getShort( )</code>
 
 		<div class="description short">
-			
+			<p>;</p>
 		</div>
 
 		<div class="description detailed hidden">
-			
+			<p>;</p>
 
 
 
@@ -213,7 +229,41 @@
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="getContent" id="_getContent">
+	<tr data-order="setFull" id="m_setFull">
+
+		<td class="attributes"><code>
+			 public 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#m_setFull">#</a>
+		<code>setFull( )</code>
+
+		<div class="description short">
+			<p>;</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>;</p>
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getFull" id="m_getFull">
 
 		<td class="attributes"><code>
 			 public 
@@ -224,60 +274,21 @@
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#_getContent">#</a>
-		<code>getContent( )</code>
+		<a class="anchor" href="#m_getFull">#</a>
+		<code>getFull( )</code>
 
 		<div class="description short">
-			
+			<p>;</p>
 		</div>
 
 		<div class="description detailed hidden">
-			
+			<p>;</p>
 
 
 
 				<h4>Returns</h4>
 				<div class="list">
 					string
-				</div>
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="setContent" id="_setContent">
-
-		<td class="attributes"><code>
-			 public 
-
-			
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_setContent">#</a>
-		<code>setContent( <span> <var>$content</var></span> )</code>
-
-		<div class="description short">
-			
-		</div>
-
-		<div class="description detailed hidden">
-			
-
-
-				<h4>Parameters</h4>
-				<div class="list"><dl>
-					<dt><var>$content</var></dt>
-					<dd></dd>
-				</dl></div>
-
-				<h4>Returns</h4>
-				<div class="list">
-					<br>$this
 				</div>
 
 
@@ -296,9 +307,33 @@
 
 
 
+	<table class="summary properties" id="properties">
+	<caption>Properties summary</caption>
+	<tr data-order="db_table" id="$db_table">
+		<td class="attributes"><code>
+			protected  
+			string
+		</code></td>
 
+		<td class="name">
+<var>$db_table</var>
+			<div class="description short">
+				
+			</div>
 
+			<div class="description detailed hidden">
+				
 
+			</div>
+		</td>
+		<td class="value">
+			<div>
+				<a href="#$db_table" class="anchor">#</a>
+				<code><span class="php-quote">'cms_languages'</span></code>
+			</div>
+		</td>
+	</tr>
+	</table>
 
 
 

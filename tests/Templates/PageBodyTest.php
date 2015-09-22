@@ -24,4 +24,14 @@ class PageBodyTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(PAGEBODY_TEST_VALUE, $res);
         $this->assertInstanceOf('neTpyceB\TMCms\Templates\PageBody', $obj);
     }
+
+    public function testToString() {
+        $body = new PageBody(PAGEBODY_TEST_VALUE);
+
+        ob_start();
+        echo $body;
+        $html = ob_get_clean();
+
+        $this->assertEquals(PAGEBODY_TEST_VALUE, $html);
+    }
 }

@@ -22,17 +22,20 @@ class Configuration
     public static $current_env = 'prod';
 
     /**
-     * @param string $env
+     * @param string $env with filename from /configs/ folder
+     * @param array $params - can supply with params, will not read file with $env
      * @return $this
      */
-    public function addConfigurationEnv($env = 'prod')
+    public function addConfigurationEnv($env = 'prod', array $params = [])
     {
         if (!isset(static::$params[$env])) {
             static::$params[$env] = [];
         }
 
-        $params = include(DIR_CONFIGS . $env . '.php');
+        $params = $params ? $params : include(DIR_CONFIGS . $env . '.php');
         self::$params[$env] = array_merge(static::$params[$env], $params);
+
+        $this->setCurrentEnv($env);
 
         return $this;
     }
@@ -46,6 +49,14 @@ class Configuration
         self::$current_env = $env;
 
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCurrentEnv()
+    {
+        return self::$current_env;
     }
 
     /**
