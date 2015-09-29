@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 
-	<title>Class neTpyceB\TMCms\Cache\APCCache</title>
+	<title>Class neTpyceB\TMCms\Cache\MemcacheCache</title>
 
 	<link rel="stylesheet" href="resources/style.css?e99947befd7bf673c6b43ff75e9e0f170c88a60e">
 
@@ -82,11 +82,11 @@
 		<div id="elements">
 			<h3>Classes</h3>
 			<ul>
-				<li class="active"><a href="class-neTpyceB.TMCms.Cache.APCCache.html">APCCache</a></li>
+				<li><a href="class-neTpyceB.TMCms.Cache.APCCache.html">APCCache</a></li>
 				<li><a href="class-neTpyceB.TMCms.Cache.Cacher.html">Cacher</a></li>
 				<li><a href="class-neTpyceB.TMCms.Cache.FakeCache.html">FakeCache</a></li>
 				<li><a href="class-neTpyceB.TMCms.Cache.FileCache.html">FileCache</a></li>
-				<li><a href="class-neTpyceB.TMCms.Cache.MemcacheCache.html">MemcacheCache</a></li>
+				<li class="active"><a href="class-neTpyceB.TMCms.Cache.MemcacheCache.html">MemcacheCache</a></li>
 				<li><a href="class-neTpyceB.TMCms.Cache.MemcachedCache.html">MemcachedCache</a></li>
 			</ul>
 
@@ -130,16 +130,16 @@
 	</div>
 
 <div id="content" class="class">
-	<h1>Class APCCache</h1>
+	<h1>Class MemcacheCache</h1>
 
 
 	<div class="description">
-	<p>Class APCCache</p>
+	<p>Class MemcacheCache</p>
 	</div>
 
 	<dl class="tree">
 		<dd style="padding-left:0px">
-<b><span>neTpyceB\TMCms\Cache\APCCache</span></b>			
+<b><span>neTpyceB\TMCms\Cache\MemcacheCache</span></b>			
 			 implements 
 				<a href="class-neTpyceB.TMCms.Cache.ICache.html"><span>neTpyceB\TMCms\Cache\ICache</span></a>
 			
@@ -162,13 +162,47 @@
 		<b>Namespace:</b> <a href="namespace-neTpyceB.html">neTpyceB</a>\<a href="namespace-neTpyceB.TMCms.html">TMCms</a>\<a href="namespace-neTpyceB.TMCms.Cache.html">Cache</a><br>
 		<b>Package:</b> neTpyceB\TMCms\Cache<br>
 
-			<b>Located at</b> neTpyceB/TMCms/Cache/APCCache.php		<br>
+			<b>Located at</b> neTpyceB/TMCms/Cache/MemcacheCache.php		<br>
 	</div>
 
 
 
 	<table class="summary methods" id="methods">
 	<caption>Methods summary</caption>
+	<tr data-order="getInstance" id="_getInstance">
+
+		<td class="attributes"><code>
+			 public static
+
+			<code><a href="class-neTpyceB.TMCms.Cache.MemcacheCache.html">neTpyceB\TMCms\Cache\MemcacheCache</a></code>
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getInstance">#</a>
+		<code>getInstance( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code><a href="class-neTpyceB.TMCms.Cache.MemcacheCache.html">neTpyceB\TMCms\Cache\MemcacheCache</a></code>
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
 	<tr data-order="itWorks" id="_itWorks">
 
 		<td class="attributes"><code>
@@ -202,88 +236,6 @@
 
 				<h4>Implementation of</h4>
 				<div class="list"><code><a href="class-neTpyceB.TMCms.Cache.ICache.html#_itWorks">neTpyceB\TMCms\Cache\ICache::itWorks()</a></code></div>
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="get" id="_get">
-
-		<td class="attributes"><code>
-			 public 
-
-			mixed|null
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_get">#</a>
-		<code>get( <span>string <var>$key</var></span> )</code>
-
-		<div class="description short">
-			
-		</div>
-
-		<div class="description detailed hidden">
-			
-
-
-				<h4>Parameters</h4>
-				<div class="list"><dl>
-					<dt><var>$key</var></dt>
-					<dd></dd>
-				</dl></div>
-
-				<h4>Returns</h4>
-				<div class="list">
-					mixed|null
-				</div>
-
-
-
-
-				<h4>Implementation of</h4>
-				<div class="list"><code><a href="class-neTpyceB.TMCms.Cache.ICache.html#_get">neTpyceB\TMCms\Cache\ICache::get()</a></code></div>
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="exists" id="_exists">
-
-		<td class="attributes"><code>
-			 public 
-
-			boolean|string[]
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_exists">#</a>
-		<code>exists( <span>string <var>$key</var></span> )</code>
-
-		<div class="description short">
-			
-		</div>
-
-		<div class="description detailed hidden">
-			
-
-
-				<h4>Parameters</h4>
-				<div class="list"><dl>
-					<dt><var>$key</var></dt>
-					<dd></dd>
-				</dl></div>
-
-				<h4>Returns</h4>
-				<div class="list">
-					boolean|string[]
-				</div>
-
-
-
-
-				<h4>Implementation of</h4>
-				<div class="list"><code><a href="class-neTpyceB.TMCms.Cache.ICache.html#_exists">neTpyceB\TMCms\Cache\ICache::exists()</a></code></div>
 		</div>
 		</div></td>
 	</tr>
@@ -343,11 +295,11 @@
 		<code>set( <span>string <var>$key</var></span>, <span>mixed <var>$value</var></span>, <span>integer <var>$ttl</var> = <span class="php-num">2592000</span></span> )</code>
 
 		<div class="description short">
-			
+			<p>Updates existing value or creates new by key</p>
 		</div>
 
 		<div class="description detailed hidden">
-			
+			<p>Updates existing value or creates new by key</p>
 
 
 				<h4>Parameters</h4>
@@ -370,6 +322,88 @@
 
 				<h4>Implementation of</h4>
 				<div class="list"><code><a href="class-neTpyceB.TMCms.Cache.ICache.html#_set">neTpyceB\TMCms\Cache\ICache::set()</a></code></div>
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="exists" id="_exists">
+
+		<td class="attributes"><code>
+			 public 
+
+			boolean|string[]
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_exists">#</a>
+		<code>exists( <span>string <var>$key</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$key</var></dt>
+					<dd></dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					boolean|string[]
+				</div>
+
+
+
+
+				<h4>Implementation of</h4>
+				<div class="list"><code><a href="class-neTpyceB.TMCms.Cache.ICache.html#_exists">neTpyceB\TMCms\Cache\ICache::exists()</a></code></div>
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="get" id="_get">
+
+		<td class="attributes"><code>
+			 public 
+
+			mixed|null
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_get">#</a>
+		<code>get( <span>string <var>$key</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$key</var></dt>
+					<dd></dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					mixed|null
+				</div>
+
+
+
+
+				<h4>Implementation of</h4>
+				<div class="list"><code><a href="class-neTpyceB.TMCms.Cache.ICache.html#_get">neTpyceB\TMCms\Cache\ICache::get()</a></code></div>
 		</div>
 		</div></td>
 	</tr>
@@ -412,20 +446,61 @@
 	</table>
 
 
-	<table class="summary used">
-	<caption>Methods used from <a href="class-neTpyceB.TMCms.Traits.singletonInstanceTrait.html#methods">neTpyceB\TMCms\Traits\singletonInstanceTrait</a></caption>
-	<tr>
-		<td><code>
-			<a href="class-neTpyceB.TMCms.Traits.singletonInstanceTrait.html#_getInstance">getInstance()</a>
-		</code></td>
+
+
+
+
+
+
+	<table class="summary constants" id="constants">
+	<caption>Constants summary</caption>
+	<tr data-order="HOST" id="HOST">
+
+		<td class="attributes"><code>string</code></td>
+		<td class="name">
+			<code>
+<b>HOST</b>			</code>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</td>
+		<td class="value">
+			<div>
+				<a href="#HOST" class="anchor">#</a>
+				<code><span class="php-quote">'localhost'</span></code>
+			</div>
+		</td>
+	</tr>
+	<tr data-order="PORT" id="PORT">
+
+		<td class="attributes"><code>integer</code></td>
+		<td class="name">
+			<code>
+<b>PORT</b>			</code>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</td>
+		<td class="value">
+			<div>
+				<a href="#PORT" class="anchor">#</a>
+				<code><span class="php-num">11211</span></code>
+			</div>
+		</td>
 	</tr>
 	</table>
-
-
-
-
-
-
 
 
 
