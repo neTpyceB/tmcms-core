@@ -93,11 +93,4 @@ class MemcacheCacheTest extends \PHPUnit_Framework_TestCase {
     {
         $this->assertTrue(MemcacheCache::itWorks());
     }
-
-    public function testGetResultCode()
-    {
-        $cacher = Cacher::getInstance()->getMemcacheCacher();
-
-        $this->assertNotNull($cacher->getResultCode());
-    }
 }

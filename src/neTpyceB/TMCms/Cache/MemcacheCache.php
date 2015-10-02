@@ -60,14 +60,8 @@ class MemcacheCache implements ICache
      */
     public function set($key, $value, $ttl = 2592000)
     {
-        $res = NULL;
-        // Try to update existing
-        if ($this->exists($key)) {
-            $res = self::$Memcache->set(CFG_DOMAIN . $key, $value, $ttl);
-        } else {
-            // Set new
-            $res = $this->add($key, $value, $ttl);
-        }
+        $res = self::$Memcache->set(CFG_DOMAIN . $key, $value, MEMCACHE_COMPRESSED, $ttl);
+
         return $res;
     }
 
@@ -91,19 +85,6 @@ class MemcacheCache implements ICache
             $res = NULL; // Return NULL if not found
         }
 
-        return $res;
-    }
-
-    /**
-     * Add new value
-     * @param string $key
-     * @param $value
-     * @param int $ttl
-     * @return bool
-     */
-    private function add($key, $value, $ttl = 2592000)
-    {
-        $res = self::$Memcache->add(CFG_DOMAIN . $key, $value, $ttl);
         return $res;
     }
 

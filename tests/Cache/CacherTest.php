@@ -19,12 +19,12 @@ class CacherTest extends \PHPUnit_Framework_TestCase
     {
         $cacher = Cacher::getInstance()->getDefaultCacher();
         $class_name = get_class($cacher);
-        $this->assertTrue($class_name == 'neTpyceB\TMCms\Cache\FileCache' || $class_name == 'neTpyceB\TMCms\Cache\APCCache' || $class_name == 'neTpyceB\TMCms\Cache\MemcachedCache');
+        $this->assertTrue($class_name == 'neTpyceB\TMCms\Cache\FileCache' || $class_name == 'neTpyceB\TMCms\Cache\MemcacheCache' || $class_name == 'neTpyceB\TMCms\Cache\MemcachedCache');
     }
 
     public function testSetDefaultCacher()
     {
-        $res = Cacher::getInstance()->setDefaultCacher('neTpyceB\TMCms\Cache\APCCache');
+        $res = Cacher::getInstance()->setDefaultCacher('MemcacheCache');
         $this->assertTrue($res);
     }
 
@@ -34,10 +34,10 @@ class CacherTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('neTpyceB\TMCms\Cache\FileCache', $cacher);
     }
 
-    public function testGetApcCacher()
+    public function testGetMemcacheCacher()
     {
-        $cacher = Cacher::getInstance()->getApcCacher();
-        $this->assertInstanceOf('neTpyceB\TMCms\Cache\APCCache', $cacher);
+        $cacher = Cacher::getInstance()->getMemcacheCacher();
+        $this->assertInstanceOf('neTpyceB\TMCms\Cache\MemcacheCache', $cacher);
     }
 
     public function testGetMemcachedCacher()
@@ -56,16 +56,13 @@ class CacherTest extends \PHPUnit_Framework_TestCase
     {
         $fileCacher = Cacher::getInstance()->getFileCacher();
         $memcachedCacher = Cacher::getInstance()->getMemcachedCacher();
-        $apcCacher = Cacher::getInstance()->getApcCacher();
 
         $fileCacher->set(CACHER_TEST_KEY, CACHER_TEST_VALUE);
         $memcachedCacher->set(CACHER_TEST_KEY, CACHER_TEST_VALUE);
-        $apcCacher->set(CACHER_TEST_KEY, CACHER_TEST_VALUE);
 
         Cacher::getInstance()->clearAllCaches();
 
         $this->assertNull($fileCacher->get(CACHER_TEST_KEY));
         $this->assertNull($memcachedCacher->get(CACHER_TEST_KEY));
-        $this->assertNull($apcCacher->get(CACHER_TEST_KEY));
     }
 }

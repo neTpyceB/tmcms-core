@@ -57,10 +57,6 @@ class Cacher
             $this->getMemcacheCacher()->deleteAll();
         }
 
-        if (APCCache::itWorks()) {
-            $this->getApcCacher()->deleteAll();
-        }
-
         if (FakeCache::itWorks()) {
             $this->getFakeCacher()->deleteAll();
         }
@@ -88,14 +84,6 @@ class Cacher
     public function getMemcacheCacher()
     {
         return call_user_func([__NAMESPACE__ . '\MemcacheCache', 'getInstance']);
-    }
-
-    /**
-     * @return APCCache
-     */
-    public function getApcCacher()
-    {
-        return call_user_func([__NAMESPACE__ . '\APCCache', 'getInstance']);
     }
 
     /**
