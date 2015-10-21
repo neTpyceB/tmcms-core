@@ -17,7 +17,7 @@ class AdminTranslations {
 			$this->init_data();
 		}
 
-		return isset(self::$init_data[$key]) ? self::$init_data[$key] : $key;
+		return is_string($key) && isset(self::$init_data[$key]) ? self::$init_data[$key] : $key;
 	}
 
 	private function init_data()
