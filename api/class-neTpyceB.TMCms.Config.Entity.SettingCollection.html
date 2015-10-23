@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 
-	<title>Class neTpyceB\TMCms\Templates\PageBody</title>
+	<title>Class neTpyceB\TMCms\Config\Entity\SettingCollection</title>
 
 	<link rel="stylesheet" href="resources/style.css?e99947befd7bf673c6b43ff75e9e0f170c88a60e">
 
@@ -47,13 +47,13 @@
 						Cache					</a>
 
 						</li>
-				<li>
+				<li class="active">
 					<a href="namespace-neTpyceB.TMCms.Config.html">
 						Config<span></span>
 					</a>
 
 						<ul>
-				<li>
+				<li class="active">
 					<a href="namespace-neTpyceB.TMCms.Config.Entity.html">
 						Entity					</a>
 
@@ -74,7 +74,7 @@
 						Orm					</a>
 
 						</li>
-				<li class="active">
+				<li>
 					<a href="namespace-neTpyceB.TMCms.Templates.html">
 						Templates					</a>
 
@@ -94,7 +94,8 @@
 		<div id="elements">
 			<h3>Classes</h3>
 			<ul>
-				<li class="active"><a href="class-neTpyceB.TMCms.Templates.PageBody.html">PageBody</a></li>
+				<li><a href="class-neTpyceB.TMCms.Config.Entity.Setting.html">Setting</a></li>
+				<li class="active"><a href="class-neTpyceB.TMCms.Config.Entity.SettingCollection.html">SettingCollection</a></li>
 			</ul>
 
 
@@ -121,7 +122,7 @@
 				<a href="index.html" title="Overview"><span>Overview</span></a>
 			</li>
 			<li>
-				<a href="namespace-neTpyceB.TMCms.Templates.html" title="Summary of neTpyceB\TMCms\Templates"><span>Namespace</span></a>
+				<a href="namespace-neTpyceB.TMCms.Config.Entity.html" title="Summary of neTpyceB\TMCms\Config\Entity"><span>Namespace</span></a>
 			</li>
 			<li class="active">
 <span>Class</span>			</li>
@@ -133,13 +134,26 @@
 	</div>
 
 <div id="content" class="class">
-	<h1>Class PageBody</h1>
+	<h1>Class SettingCollection</h1>
 
 
 	<div class="description">
-	<p>Class PageBody</p>
+	<p>Class SettingCollection</p>
 	</div>
 
+	<dl class="tree">
+		<dd style="padding-left:0px">
+neTpyceB\TMCms\Modules\EntityRepository
+			
+			
+		</dd>
+		<dd style="padding-left:30px">
+			<img src="resources/inherit.png" alt="Extended by">
+<b><span>neTpyceB\TMCms\Config\Entity\SettingCollection</span></b>			
+			
+			
+		</dd>
+	</dl>
 
 
 
@@ -151,17 +165,17 @@
 	<div class="info">
 		
 		
-		<b>Namespace:</b> <a href="namespace-neTpyceB.html">neTpyceB</a>\<a href="namespace-neTpyceB.TMCms.html">TMCms</a>\<a href="namespace-neTpyceB.TMCms.Templates.html">Templates</a><br>
-		<b>Package:</b> neTpyceB\TMCms\Templates<br>
+		<b>Namespace:</b> <a href="namespace-neTpyceB.html">neTpyceB</a>\<a href="namespace-neTpyceB.TMCms.html">TMCms</a>\<a href="namespace-neTpyceB.TMCms.Config.html">Config</a>\<a href="namespace-neTpyceB.TMCms.Config.Entity.html">Entity</a><br>
+		<b>Package:</b> neTpyceB\TMCms\Config\Object<br>
 
-			<b>Located at</b> neTpyceB/TMCms/Templates/PageBody.php		<br>
+			<b>Located at</b> neTpyceB/TMCms/Config/Entity/SettingCollection.php		<br>
 	</div>
 
 
 
 	<table class="summary methods" id="methods">
 	<caption>Methods summary</caption>
-	<tr data-order="__construct" id="___construct">
+	<tr data-order="setWherePrefix" id="_setWherePrefix">
 
 		<td class="attributes"><code>
 			 public 
@@ -172,8 +186,74 @@
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#___construct">#</a>
-		<code>__construct( <span>string <var>$content</var> = <span class="php-quote">''</span></span> )</code>
+		<a class="anchor" href="#_setWherePrefix">#</a>
+		<code>setWherePrefix( <span> <var>$prefix</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="setSkipModules" id="_setSkipModules">
+
+		<td class="attributes"><code>
+			 public 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_setSkipModules">#</a>
+		<code>setSkipModules( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	</table>
+
+
+
+	<table class="summary methods" id="magicMethods">
+	<caption>Magic methods summary</caption>
+	<tr data-order="setWhereName" id="m_setWhereName">
+
+		<td class="attributes"><code>
+			 public 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#m_setWhereName">#</a>
+		<code>setWhereName( <span>string <var>$name</var></span> )</code>
 
 		<div class="description short">
 			
@@ -185,43 +265,13 @@
 
 				<h4>Parameters</h4>
 				<div class="list"><dl>
-					<dt><var>$content</var></dt>
+					<dt><var>$name</var></dt>
 					<dd></dd>
 				</dl></div>
 
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="__toString" id="___toString">
-
-		<td class="attributes"><code>
-			 public 
-
-			string
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#___toString">#</a>
-		<code>__toString( )</code>
-
-		<div class="description short">
-			
-		</div>
-
-		<div class="description detailed hidden">
-			
-
-
-
 				<h4>Returns</h4>
 				<div class="list">
-					string
+					
 				</div>
 
 
@@ -230,41 +280,7 @@
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="getContent" id="_getContent">
-
-		<td class="attributes"><code>
-			 public 
-
-			string
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_getContent">#</a>
-		<code>getContent( )</code>
-
-		<div class="description short">
-			
-		</div>
-
-		<div class="description detailed hidden">
-			
-
-
-
-				<h4>Returns</h4>
-				<div class="list">
-					string
-				</div>
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="setContent" id="_setContent">
+	<tr data-order="setWhereValue" id="m_setWhereValue">
 
 		<td class="attributes"><code>
 			 public 
@@ -275,8 +291,8 @@
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#_setContent">#</a>
-		<code>setContent( <span> <var>$content</var></span> )</code>
+		<a class="anchor" href="#m_setWhereValue">#</a>
+		<code>setWhereValue( <span>string <var>$value</var></span> )</code>
 
 		<div class="description short">
 			
@@ -288,13 +304,13 @@
 
 				<h4>Parameters</h4>
 				<div class="list"><dl>
-					<dt><var>$content</var></dt>
+					<dt><var>$value</var></dt>
 					<dd></dd>
 				</dl></div>
 
 				<h4>Returns</h4>
 				<div class="list">
-					<br>$this
+					
 				</div>
 
 
@@ -313,9 +329,33 @@
 
 
 
+	<table class="summary properties" id="properties">
+	<caption>Properties summary</caption>
+	<tr data-order="db_table" id="$db_table">
+		<td class="attributes"><code>
+			protected  
+			string
+		</code></td>
 
+		<td class="name">
+<var>$db_table</var>
+			<div class="description short">
+				
+			</div>
 
+			<div class="description detailed hidden">
+				
 
+			</div>
+		</td>
+		<td class="value">
+			<div>
+				<a href="#$db_table" class="anchor">#</a>
+				<code><span class="php-quote">'cms_settings'</span></code>
+			</div>
+		</td>
+	</tr>
+	</table>
 
 
 
