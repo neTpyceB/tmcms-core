@@ -21,16 +21,20 @@ class QueryAnalyzer
      * Saved on run-time
      */
     private $_runtime_queries = [];
+    private $already_saved = false;
 
     /**
      * Save all queries to DB
      */
     public function store()
     {
-        if (!$this->_runtime_queries) {
-            // No queries to save
+        if (!$this->_runtime_queries || $this->already_saved) {
+            // No queries to save or already saved
             return;
         }
+
+        // Prevent recursive saves
+        $this->already_saved = true;
 
         $path = defined('PATH') ? PATH : (defined('PATH_INTERNAL') ? PATH_INTERNAL : '');
 
