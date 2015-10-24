@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 
-	<title>Trait neTpyceB\TMCms\Traits\singletonOnlyInstanceTrait</title>
+	<title>Class neTpyceB\TMCms\DB\QueryAnalyzer</title>
 
 	<link rel="stylesheet" href="resources/style.css?e99947befd7bf673c6b43ff75e9e0f170c88a60e">
 
@@ -59,7 +59,7 @@
 
 						</li>
 							</ul></li>
-				<li>
+				<li class="active">
 					<a href="namespace-neTpyceB.TMCms.DB.html">
 						DB<span></span>
 					</a>
@@ -91,7 +91,7 @@
 						Templates					</a>
 
 						</li>
-				<li class="active">
+				<li>
 					<a href="namespace-neTpyceB.TMCms.Traits.html">
 						Traits					</a>
 
@@ -104,13 +104,12 @@
 
 
 		<div id="elements">
-
-
-			<h3>Traits</h3>
+			<h3>Classes</h3>
 			<ul>
-				<li><a href="class-neTpyceB.TMCms.Traits.singletonInstanceTrait.html">singletonInstanceTrait</a></li>
-				<li class="active"><a href="class-neTpyceB.TMCms.Traits.singletonOnlyInstanceTrait.html">singletonOnlyInstanceTrait</a></li>
+				<li class="active"><a href="class-neTpyceB.TMCms.DB.QueryAnalyzer.html">QueryAnalyzer</a></li>
 			</ul>
+
+
 
 
 
@@ -134,7 +133,7 @@
 				<a href="index.html" title="Overview"><span>Overview</span></a>
 			</li>
 			<li>
-				<a href="namespace-neTpyceB.TMCms.Traits.html" title="Summary of neTpyceB\TMCms\Traits"><span>Namespace</span></a>
+				<a href="namespace-neTpyceB.TMCms.DB.html" title="Summary of neTpyceB\TMCms\DB"><span>Namespace</span></a>
 			</li>
 			<li class="active">
 <span>Class</span>			</li>
@@ -146,20 +145,20 @@
 	</div>
 
 <div id="content" class="class">
-	<h1>Trait singletonOnlyInstanceTrait</h1>
+	<h1>Class QueryAnalyzer</h1>
 
 
 	<div class="description">
-	<p>Trait singletonInstanceTrait means that class CAN ONLY be used as singleton to get created instance.
-Should be used in one-per-run classes</p>
+	<p>Class QueryAnalyzer
+Used to show query log and give some tips on speed and indexes</p>
 	</div>
 
 	<dl class="tree">
 		<dd style="padding-left:0px">
-<b><span>neTpyceB\TMCms\Traits\singletonOnlyInstanceTrait</span></b>			
+<b><span>neTpyceB\TMCms\DB\QueryAnalyzer</span></b>			
 			
 			 uses 
-					<a href="class-neTpyceB.TMCms.Traits.singletonInstanceTrait.html"><span>neTpyceB\TMCms\Traits\singletonInstanceTrait</span></a>
+					<a href="class-neTpyceB.TMCms.Traits.singletonOnlyInstanceTrait.html"><span>neTpyceB\TMCms\Traits\singletonOnlyInstanceTrait</span></a>
 			
 		</dd>
 	</dl>
@@ -169,25 +168,89 @@ Should be used in one-per-run classes</p>
 
 
 
-	<div>
-		<h4>Direct Known Users</h4>
-			<a href="class-neTpyceB.TMCms.Admin.AdminTranslations.html">neTpyceB\TMCms\Admin\AdminTranslations</a>, 
-			<a href="class-neTpyceB.TMCms.Admin.Messages.html">neTpyceB\TMCms\Admin\Messages</a>, 
-			<a href="class-neTpyceB.TMCms.DB.QueryAnalyzer.html">neTpyceB\TMCms\DB\QueryAnalyzer</a>
-	</div>
 
 
 	<div class="info">
 		
 		
-		<b>Namespace:</b> <a href="namespace-neTpyceB.html">neTpyceB</a>\<a href="namespace-neTpyceB.TMCms.html">TMCms</a>\<a href="namespace-neTpyceB.TMCms.Traits.html">Traits</a><br>
-		<b>Package:</b> neTpyceB\TMCms\Traits<br>
+		<b>Namespace:</b> <a href="namespace-neTpyceB.html">neTpyceB</a>\<a href="namespace-neTpyceB.TMCms.html">TMCms</a>\<a href="namespace-neTpyceB.TMCms.DB.html">DB</a><br>
+		
 
-			<b>Located at</b> neTpyceB/TMCms/Traits/singletonOnlyInstanceTrait.php		<br>
+			<b>Located at</b> neTpyceB/TMCms/DB/QueryAnalyzer.php		<br>
 	</div>
 
 
 
+	<table class="summary methods" id="methods">
+	<caption>Methods summary</caption>
+	<tr data-order="store" id="_store">
+
+		<td class="attributes"><code>
+			 public 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_store">#</a>
+		<code>store( )</code>
+
+		<div class="description short">
+			<p>Save all queries to DB</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Save all queries to DB</p>
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="addQuery" id="_addQuery">
+
+		<td class="attributes"><code>
+			 public 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_addQuery">#</a>
+		<code>addQuery( <span>string <var>$q</var></span>, <span>integer <var>$time_taken</var></span> )</code>
+
+		<div class="description short">
+			<p>Add run-time query for latest save to DB</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Add run-time query for latest save to DB</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$q</var></dt>
+					<dd></dd>
+					<dt><var>$time_taken</var></dt>
+					<dd></dd>
+				</dl></div>
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	</table>
 
 
 	<table class="summary used">
