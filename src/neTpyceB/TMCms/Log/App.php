@@ -2,7 +2,7 @@
 
 namespace neTpyceB\TMCms\Log;
 
-use neTpyceB\TMCms\Admin\Users\Object\UserCollection;
+use neTpyceB\TMCms\Admin\Users\Object\AdminUserCollection;
 use neTpyceB\TMCms\Config\Configuration;
 use neTpyceB\TMCms\Config\Settings;
 use neTpyceB\TMCms\Files\FileSystem;
@@ -65,7 +65,7 @@ class App
         $app_log->setOrderDirectionDesc();
         $app_log->setGenerateOutputWithIterator(false);
 
-        $users = new UserCollection();
+        $users = new AdminUserCollection();
         $users->setGenerateOutputWithIterator(false);
         $users->addSelectFieldAsString('CONCAT(`' . $users->getDbTableName() . '`.`name`, " ", `' . $users->getDbTableName() . '`.`surname`) AS `user`');
 
