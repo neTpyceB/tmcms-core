@@ -19,8 +19,8 @@ class EntityRepository {
     private $sql_limit = 0;
     private $order_fields = [];
     private $order_random = false;
-    private $sql_group_by = [];
-    private $sql_having = [];
+    private $group_by_fields = [];
+    private $having_fields = [];
     private $translation_joins = [];
 
     private $use_iterator = true;
@@ -203,7 +203,7 @@ class EntityRepository {
             $table = $this->getDbTableName();
         }
 
-        $this->sql_group_by[] = [
+        $this->group_by_fields[] = [
             'table' => $table,
             'field' => $field
         ];
@@ -212,7 +212,7 @@ class EntityRepository {
     }
 
     public function addHaving($field, $value) {
-        $this->sql_having[] = [
+        $this->having_fields[] = [
             'field' => $field,
             'value' => $value
         ];
@@ -403,12 +403,25 @@ class EntityRepository {
             $table = $this->getDbTableName();
         }
 
-        $this->order_fields[] = [
-            'table' => $table,
-            'field' => $field,
-            'direction' => $direction,
-            'do_not_use_table_in_sql' => $do_not_use_table_in_sql
-        ];
+        if (in_array($field, $this->translation_fields)) {
+            $k = count($this->translation_joins);
+            $this->translation_fields[] = 'LEFT JOIN `cms_translations` AS `d' . $k . '` ON (`d' . $k . '`.`id` = '. $table .'.`' . $field . '`)';
+            $this->order_fields[] = [
+                'table' => false,
+                'field' => '`d' . $k . '`.`' . LNG . '`',
+                'direction' => $direction,
+                'do_not_use_table_in_sql' => true,
+                'type' => 'string'
+            ];
+        } else {
+            $this->order_fields[] = [
+                'table' => $table,
+                'field' => $field,
+                'direction' => $direction,
+                'do_not_use_table_in_sql' => $do_not_use_table_in_sql,
+                'type' => 'simple'
+            ];
+        }
 
         return $this;
     }
@@ -513,7 +526,7 @@ class EntityRepository {
         $limit_sql = $this->sql_limit ? 'LIMIT ' . $this->sql_offset . ', ' . $this->sql_limit : '';
 
         // Group by
-        $group_sql = ($this->sql_group_by ? 'GROUP BY `'. implode('``, `', $this->sql_group_by) . '`' : '');
+        $group_sql = $this->getGroupBySql();
 
         // Joins
         $join_sql = $this->getJoinTablesSql();
@@ -614,10 +627,28 @@ FROM `'. $this->getDbTableName() .'`
         return $this;
     }
 
-    public function mergeCollectionSqlSelectWithAnotherCollection(EntityRepository $collection) {
-        dump('TODO all fields');
+    private function mergeCollectionSqlSelectWithAnotherCollection(EntityRepository $collection) {
+        $where_fields = $collection->getWhereFields();
+        foreach ($where_fields as $where_field) {
+            $this->sql_where_fields[] = $where_field;
+        }
 
-        return $collection;
+        $group_fields = $collection->getGroupByField();
+        foreach ($group_fields as $group_field) {
+            $this->group_by_fields[] = $group_field;
+        }
+
+        $having_fields = $collection->getHavingFields();
+        foreach ($having_fields as $having_field) {
+            $this->having_fields[] = $having_field;
+        }
+
+        $order_fields = $collection->getOrderFields();
+        foreach ($order_fields as $order_field) {
+            $this->order_fields[] = $order_field;
+        }
+
+        return $this;
     }
 
     public function addJoinTable($table, $on_left, $on_right, $type = '') {
@@ -638,10 +669,14 @@ FROM `'. $this->getDbTableName() .'`
     public function getJoinTablesSql() {
         $sql = [];
         foreach ($this->join_tables as $table) {
-            $sql[] = $table['type'] .' JOIN `'. $table['table'] .'` ON (`'. $table['table'] .'`.`'. $table['left'] .'` = '. $this->getDbTableName() .'.`' . $table['right'] . '`)';
+            $sql[] = $table['type'] .' JOIN `'. $table['table'] .'` ON (`'. $table['table'] .'`.`'. $table['left'] .'` = `'. $this->getDbTableName() .'`.`' . $table['right'] . '`)';
         }
 
         return implode(' ', $sql);
+    }
+
+    public function getJoins() {
+        return $this->join_tables;
     }
 
     /**
@@ -809,17 +844,20 @@ FROM `'. $this->getDbTableName() .'`
      * @param string $join_on_key in current collection to join another collection on ID
      * @param string $join_index - main index foreign key
      * @param string $join_type INNER|LEFT
+     * @return $this
      */
     public function mergeWithCollection(EntityRepository $collection, $join_on_key, $join_index = 'id', $join_type = 'INNER')
     {
         $this->mergeCollectionSqlSelectWithAnotherCollection($collection);
         $this->addJoinTable($collection->getDbTableName(), $join_index, $join_on_key, $join_type);
+
+        return $this;
     }
 
     private function getHavingSql()
     {
         $res = [];
-        foreach ($this->sql_having as $having) {
+        foreach ($this->having_fields as $having) {
             $res[] = '`' . $having['field'] . '` ' . $having['value'];
         }
         return implode(' AND ', $res);
@@ -827,7 +865,7 @@ FROM `'. $this->getDbTableName() .'`
 
     private function getHavingFields()
     {
-        return $this->sql_having;
+        return $this->having_fields;
     }
 
     /**
@@ -885,5 +923,23 @@ FROM `'. $this->getDbTableName() .'`
         ];
 
         return $this;
+    }
+
+    protected function getGroupBySql()
+    {
+        $res = [];
+        foreach ($this->group_by_fields as $group) {
+            $res[] = '`' . $group['table'] . '`.`' . $group['field'] .'`';
+        }
+        if ($res) {
+            return ' GROUP BY ' . implode(', ', $res);
+        }
+
+        return '';
+    }
+
+    protected function getGroupByField()
+    {
+        return $this->group_by_fields;
     }
 }
