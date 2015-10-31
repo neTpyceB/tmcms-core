@@ -392,16 +392,18 @@ class EntityRepository {
 
     /**
      * @param string $field
-     * @param string $direction
+     * @param bool $direction_desc
      * @param string $table
      * @param bool $do_not_use_table_in_sql required in some conditions with temp fields
      * @return $this
      */
-    public function addOrderByField($field, $direction = 'ASC', $table = '', $do_not_use_table_in_sql = false) {
+    public function addOrderByField($field, $direction_desc = false, $table = '', $do_not_use_table_in_sql = false) {
         // No table provided
         if (!$table) {
             $table = $this->getDbTableName();
         }
+
+        $direction = $direction_desc ? 'DESC' : ' ASC';
 
         if (in_array($field, $this->translation_fields)) {
             $k = count($this->translation_joins);
@@ -504,7 +506,11 @@ class EntityRepository {
         if ($this->sql_select_fields) {
             $select_sql = [];
             foreach ($this->sql_select_fields as $field_data) {
-                $select_sql[] = '`' . $field_data['table'] . '`.`' . $field_data['field'] . '`';
+                if ($field_data['type'] == 'simple') {
+                    $select_sql[] = '`' . $field_data['table'] . '`.`' . $field_data['field'] . '`';
+                } elseif ($field_data['type'] == 'string') {
+                    $select_sql[] = $field_data['field'];
+                }
             }
             $select_sql = implode(', ', $select_sql);
         } else {
@@ -628,6 +634,11 @@ FROM `'. $this->getDbTableName() .'`
     }
 
     private function mergeCollectionSqlSelectWithAnotherCollection(EntityRepository $collection) {
+        $select_fields = $collection->getSelectFields();
+        foreach ($select_fields as $select_field) {
+            $this->sql_select_fields[] = $select_field;
+        }
+
         $where_fields = $collection->getWhereFields();
         foreach ($where_fields as $where_field) {
             $this->sql_where_fields[] = $where_field;
@@ -652,10 +663,6 @@ FROM `'. $this->getDbTableName() .'`
     }
 
     public function addJoinTable($table, $on_left, $on_right, $type = '') {
-        if (!is_string($table)) {
-            /** @var EntityRepository $table */
-            $table = $table->getDbTableName();
-        }
         $this->join_tables[] = [
             'table' => $table,
             'left' => $on_left,
@@ -673,10 +680,6 @@ FROM `'. $this->getDbTableName() .'`
         }
 
         return implode(' ', $sql);
-    }
-
-    public function getJoins() {
-        return $this->join_tables;
     }
 
     /**
@@ -788,7 +791,7 @@ FROM `'. $this->getDbTableName() .'`
             if ($field_data['type'] == 'simple') {
                 $res[] = '`'. $field_data['table'] .'`.`'. $field_data['field'] .'` = "'. SQL::sql_prepare($field_data['value']) .'"';
             } elseif ($field_data['type'] == 'string') {
-                $res[] = $field_data['field'];
+                $res[] = $field_data['value'];
             }
         }
 
