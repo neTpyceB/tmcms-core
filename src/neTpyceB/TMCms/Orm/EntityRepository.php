@@ -489,7 +489,11 @@ class EntityRepository {
     {
         // Select
         if ($this->sql_select_fields) {
-            $select_sql = dump($this->sql_select_fields);
+            $select_sql = [];
+            foreach ($this->sql_select_fields as $field_data) {
+                $select_sql[] = '`' . $field_data['table'] . '`.`' . $field_data['field'] . '`';
+            }
+            $select_sql = implode(', ', $select_sql);
         } else {
             $select_sql = '`'. $this->getDbTableName() .'`.*';
         }
@@ -529,7 +533,7 @@ class EntityRepository {
 
         $sql_calc_found_rows = $this->require_to_count_total_rows ? ' SQL_CALC_FOUND_ROWS ' : '';
 
-        return '
+        $sql = '
 SELECT '. $sql_calc_found_rows . $select_sql .'
 FROM `'. $this->getDbTableName() .'`
 '. $translation_sql .'
@@ -540,6 +544,8 @@ FROM `'. $this->getDbTableName() .'`
 '. $order_by_sql .'
 '. $limit_sql .'
     ';
+
+        return $sql;
     }
 
     /**
@@ -596,11 +602,16 @@ FROM `'. $this->getDbTableName() .'`
      * @return string
      */
     public function __call($name, $args) {
-        $param = substr($name, 8);  // Cut "setWhere"
-        $param = Converter::from_camel_case($param);
+        // setWhere...
+        if (substr($name, 0, 8) == 'setWhere') {
+            $param = substr($name, 8);  // Cut "setWhere"
+            $param = Converter::from_camel_case($param);
 
-        // Emulate setWhereSmth($k, $v);
-        return $this->setFilterValue($param, $args[0]);
+            // Emulate setWhereSmth($k, $v);
+            $this->addSimpleWhereField($param, $args[0]);
+        }
+
+        return $this;
     }
 
     public function mergeCollectionSqlSelectWithAnotherCollection(EntityRepository $collection) {
@@ -739,8 +750,14 @@ FROM `'. $this->getDbTableName() .'`
     {
         $res = [];
         foreach ($this->getWhereFields() as $field_data) {
-            $res[] = '`'. $field_data['table'] .'`.`'. $field_data['field'] .'`';
+            if ($field_data['type'] == 'simple') {
+                $res[] = '`'. $field_data['table'] .'`.`'. $field_data['field'] .'` = "'. SQL::sql_prepare($field_data['value']) .'"';
+            } elseif ($field_data['type'] == 'string') {
+                $res[] = $field_data['field'];
+            }
         }
+
+        return implode(' AND ', $res);
     }
 
     /**
@@ -811,19 +828,6 @@ FROM `'. $this->getDbTableName() .'`
     private function getHavingFields()
     {
         return $this->sql_having;
-    }
-
-    /**
-     * Filter collection by value inclusive
-     * @param $field
-     * @param $value
-     * @return $this
-     */
-    public function setFilterValue($field, $value)
-    {
-        $this->addSimpleWhereField($field, SQL::sql_prepare($value));
-
-        return $this;
     }
 
     /**
