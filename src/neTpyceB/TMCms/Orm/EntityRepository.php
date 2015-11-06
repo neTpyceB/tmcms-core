@@ -114,7 +114,7 @@ class EntityRepository {
                 $obj = new $class();
 
                 if (!isset($v['id'])) {
-                    SQL::addPrimaryAutoIncrementIdFieldToTable($this->getDbTableName());
+                    SQL::getInstance()->addPrimaryAutoIncrementIdFieldToTable($this->getDbTableName());
                     dump('No ID field found for ' . get_class($this) . '. Field "id" with auto-increment was created in table "'. $this->getDbTableName() .'". Please reload page.');
                 }
 
