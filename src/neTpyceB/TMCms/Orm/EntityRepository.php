@@ -114,7 +114,8 @@ class EntityRepository {
                 $obj = new $class();
 
                 if (!isset($v['id'])) {
-                    dump('No ID field found for ' . get_class($this) . '. Please create field "id" with auto-increment in table "'. $this->getDbTableName() .'".');
+                    SQL::addPrimaryAutoIncrementIdFieldToTable($this->getDbTableName());
+                    dump('No ID field found for ' . get_class($this) . '. Field "id" with auto-increment was created in table "'. $this->getDbTableName() .'". Please reload page.');
                 }
 
                 // Prevent auto-query db, skip tables with no id field
