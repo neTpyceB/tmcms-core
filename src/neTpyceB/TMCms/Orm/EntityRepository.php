@@ -83,7 +83,7 @@ class EntityRepository {
         if ($this->use_cache) {
             //Check cached values, set local properties
             $data = Cacher::getInstance()->getDefaultCacher()->get($this->getCacheKey($sql));
-            if ($data && is_array($data) && isset($data['collection_arrays'], $data['collection_objects'])) {
+            if ($data && is_array($data) && isset($data['collected_objects_data'], $data['collected_objects'])) {
                 // Set local data
                 $this->collected_objects_data = $data['collected_objects_data'];
                 $this->collected_objects = $data['collected_objects'];
@@ -518,8 +518,9 @@ class EntityRepository {
         if ($this->sql_select_fields) {
             $select_sql = [];
             foreach ($this->sql_select_fields as $field_data) {
+                // Simple select
                 if ($field_data['type'] == 'simple') {
-                    $select_sql[] = '`' . $field_data['table'] . '`.`' . $field_data['field'] . '`';
+                    $select_sql[] = '`' . $field_data['table'] . '`.`' . $field_data['field'] . '`' . ($field_data['as'] ? ' AS `'. $field_data['as'] .'`' : '');
                 } elseif ($field_data['type'] == 'string') {
                     $select_sql[] = $field_data['field'];
                 }
