@@ -489,6 +489,17 @@ class EntityRepository {
         return $this;
     }
 
+    public function addSelectCountFromPairedObject(EntityRepository $repository, $field_name, $count_by_field) {
+        $this->sql_select_fields[] = [
+            'table' => false,
+            'field' => '(SELECT COUNT(*) FROM `'. $repository->getDbTableName() .'` WHERE `'. $repository->getDbTableName() .'`.`'. $count_by_field .'` = `'. $this->getDbTableName() .'`.`id`) AS `'. $field_name .'`',
+            'as' => false,
+            'type' => 'string'
+        ];
+
+        return $this;
+    }
+
     public function getSelectFields() {
         return $this->sql_select_fields;
     }
