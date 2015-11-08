@@ -33,6 +33,10 @@ class MemcachedCache implements ICache
         return self::$instance;
     }
 
+    public function disconnect() {
+        self::$memcached = NULL;
+    }
+
     /**
      * @return bool
      */
