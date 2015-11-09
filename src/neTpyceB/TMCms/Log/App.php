@@ -8,7 +8,7 @@ use neTpyceB\TMCms\Config\Settings;
 use neTpyceB\TMCms\Files\FileSystem;
 use neTpyceB\TMCms\Log\Entity\AppLogEntity;
 use neTpyceB\TMCms\Log\Entity\AppLogEntityRepository;
-use neTpyceB\TMCms\Log\Entity\UsageEntityRepository;
+use neTpyceB\TMCms\Log\Entity\AdminUsageEntityRepository;
 use neTpyceB\TMCms\Network\Mailer;
 
 defined('INC') or exit;
@@ -75,7 +75,7 @@ class App
 
         $data_log = $app_log->getAsArrayOfObjectData();
 
-        $usage = new UsageEntityRepository();
+        $usage = new AdminUsageEntityRepository();
 
         $data_usage = $usage->getAsArrayOfObjectData(true);
 
