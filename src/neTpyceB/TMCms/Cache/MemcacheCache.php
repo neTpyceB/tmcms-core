@@ -64,6 +64,9 @@ class MemcacheCache implements ICache
      */
     public function set($key, $value, $ttl = 2592000)
     {
+        if (!self::$Memcache) {
+            self::getInstance();
+        }
         $res = self::$Memcache->set(CFG_DOMAIN . $key, $value, MEMCACHE_COMPRESSED, $ttl);
 
         return $res;

@@ -64,6 +64,10 @@ class MemcachedCache implements ICache
      */
     public function set($key, $value, $ttl = 2592000)
     {
+        if (!self::$memcached) {
+            self::getInstance();
+        }
+
         $res = NULL;
         // Try to update existing
         if ($this->exists($key)) {
