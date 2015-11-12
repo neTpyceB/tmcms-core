@@ -46,4 +46,6 @@ interface ICache
      * Clear entire cache
      */
     public function deleteAll();
+
+    public function disconnect();
 }

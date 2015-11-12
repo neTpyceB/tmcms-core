@@ -181,6 +181,14 @@ class FileCache implements ICache
      */
     public function deleteAll()
     {
-        return FileSystem::remdir(DIR_CACHE, true);
+        return FileSystem::remdir(DIR_CACHE);
+    }
+
+    /**
+     * @return bool
+     */
+    public function disconnect()
+    {
+        return true;
     }
 }

@@ -93,4 +93,8 @@ class Cacher
     {
         return call_user_func([__NAMESPACE__ . '\FakeCache', 'getInstance']);
     }
+
+    public function disconnect() {
+
+    }
 }
