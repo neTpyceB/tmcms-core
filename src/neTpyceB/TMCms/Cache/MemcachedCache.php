@@ -35,6 +35,7 @@ class MemcachedCache implements ICache
 
     public function disconnect() {
         self::$memcached = NULL;
+        self::$instance = NULL;
     }
 
     /**
@@ -64,7 +65,7 @@ class MemcachedCache implements ICache
      */
     public function set($key, $value, $ttl = 2592000)
     {
-        if (!self::$memcached) {
+        if (!self::$instance) {
             self::getInstance();
         }
 
@@ -94,6 +95,10 @@ class MemcachedCache implements ICache
      */
     public function get($key)
     {
+        if (!self::$instance) {
+            self::getInstance();
+        }
+
         $res = self::$memcached->get(CFG_DOMAIN . $key);
         if ($res === false) {
             $res = NULL; // Return NULL if not found
