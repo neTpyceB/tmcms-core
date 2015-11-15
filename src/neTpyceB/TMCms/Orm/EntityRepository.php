@@ -634,13 +634,28 @@ FROM `'. $this->getDbTableName() .'`
      * @return string
      */
     public function __call($name, $args) {
-        // setWhere...
-        if (substr($name, 0, 8) == 'setWhere') {
+        // Check which method was called
+        if (substr($name, 0, 8) == 'setWhere') { // setWhere... for filtering
+
             $param = substr($name, 8);  // Cut "setWhere"
             $param = Converter::from_camel_case($param);
 
-            // Emulate setWhereSmth($k, $v);
-            $this->addSimpleWhereField($param, $args[0]);
+            // Emulate setWhereSomething($k, $v);
+            $this->addSimpleWhereField($param, ...$args);
+
+        } elseif (substr($name, 0, 3) == 'set') { // set{Field} for every object in repository
+
+            // Collect objects
+            if (!$this->getCollectedObjects()) {
+                $this->collectObjects(false, true);
+            }
+
+            // Set field in every inner object
+            foreach ($this->getCollectedObjects() as $object) {
+                /** @var Entity $object */
+                $object->{$name}(...$args);
+            }
+
         }
 
         return $this;
