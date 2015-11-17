@@ -69,7 +69,7 @@ class FakeCache implements ICache
     /**
      * @return bool
      */
-    public static function disconnect()
+    public function disconnect()
     {
         return true;
     }
