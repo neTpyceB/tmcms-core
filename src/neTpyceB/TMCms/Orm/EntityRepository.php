@@ -173,7 +173,7 @@ class EntityRepository {
      */
     public function setIds(array $ids)
     {
-        $this->setFilterValueWhereIn('id', $ids);
+        $this->addWhereFieldIn('id', $ids);
 
         return $this;
     }
@@ -938,7 +938,7 @@ FROM `'. $this->getDbTableName() .'`
      * @param string $table
      * @return $this
      */
-    public function setFilterValueWhereIn($field, array $values, $table = '')
+    public function addWhereFieldIn($field, array $values, $table = '')
     {
         if (!$table) {
             $table = $this->getDbTableName();
@@ -963,7 +963,7 @@ FROM `'. $this->getDbTableName() .'`
      * @param string $table
      * @return $this
      */
-    public function setFilterValueWhereNotIn($field, array $values, $table = '')
+    public function addWhereFieldNotIn($field, array $values, $table = '')
     {
         if (!$table) {
             $table = $this->getDbTableName();
