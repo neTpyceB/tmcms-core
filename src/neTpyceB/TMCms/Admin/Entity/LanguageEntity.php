@@ -1,7 +1,7 @@
 <?php
 namespace neTpyceB\TMCms\Admin\Entity;
 
-use neTpyceB\TMCms\Modules\Entity;
+use neTpyceB\TMCms\Orm\Entity;
 
 /**
  * Class LanguageEntity

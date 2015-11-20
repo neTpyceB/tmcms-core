@@ -1,7 +1,7 @@
 <?php
 namespace neTpyceB\TMCms\Admin\Entity;
 
-use neTpyceB\TMCms\Modules\EntityRepository;
+use neTpyceB\TMCms\Orm\EntityRepository;
 
 /**
  * Class LanguageEntityRepository

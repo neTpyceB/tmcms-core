@@ -178,6 +178,17 @@ class EntityRepository {
         return $this;
     }
 
+    /**
+     * @param int $id
+     * @return $this
+     */
+    public function setWhereId($id)
+    {
+        $this->setIds([$id]);
+
+        return $this;
+    }
+
     public function getIds() {
         $ids = [];
 
