@@ -945,6 +945,31 @@ FROM `'. $this->getDbTableName() .'`
         return $this;
     }
 
+    /**
+     * Filter collection by value exclusive
+     * @param $field
+     * @param array $values
+     * @param string $table
+     * @return $this
+     */
+    public function setFilterValueWhereNotIn($field, array $values, $table = '')
+    {
+        if (!$table) {
+            $table = $this->getDbTableName();
+        }
+
+        if (!$values) {
+            $values = [NULL];
+        }
+        foreach ($values as $k => & $v) {
+            $v = sql_prepare($v);
+        }
+
+        $this->addWhereFieldAsString('`'. $table .'`.`'. $field .'` NOT IN ("'. implode('", "', $values) .'")');
+
+        return $this;
+    }
+
     public function addWhereFieldAsString($sql) {
         $this->sql_where_fields[] = [
             'table' => false,
