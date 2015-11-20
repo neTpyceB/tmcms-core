@@ -2,7 +2,7 @@
 
 namespace neTpyceB\TMCms\Config\Entity;
 
-use neTpyceB\TMCms\Modules\EntityRepository;
+use neTpyceB\TMCms\Orm\EntityRepository;
 
 /**
  * Class SettingCollection
@@ -17,11 +17,11 @@ class SettingCollection extends EntityRepository
 
     public function setWherePrefix($prefix)
     {
-        $this->setFilterWhereLike('name', $prefix, true, false);
+        $this->addWhereFieldIsLike('name', $prefix, true, false);
     }
 
     public function setSkipModules()
     {
-        $this->setFilterWhereNotLike('name', 'm_', false);
+        $this->addWhereFieldIsNotLike('name', 'm_', false);
     }
 }

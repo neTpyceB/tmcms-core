@@ -970,6 +970,46 @@ FROM `'. $this->getDbTableName() .'`
         return $this;
     }
 
+    /**
+     * Filter collection by value exclusive
+     * @param $field
+     * @param string $like_value
+     * @param bool $left_any
+     * @param bool $right_any
+     * @param string $table
+     * @return $this
+     */
+    public function addWhereFieldIsLike($field, $like_value, $left_any = true, $right_any = true, $table = '')
+    {
+        if (!$table) {
+            $table = $this->getDbTableName();
+        }
+
+        $this->addWhereFieldAsString('`'. $table .'`.`'. $field .'` LIKE "'. ($left_any ? '%' : '') . sql_prepare($like_value, true) . ($right_any ? '%' : '') .'"');
+
+        return $this;
+    }
+
+    /**
+     * Filter collection by value exclusive
+     * @param $field
+     * @param string $like_value
+     * @param bool $left_any
+     * @param bool $right_any
+     * @param string $table
+     * @return $this
+     */
+    public function addWhereFieldIsNotLike($field, $like_value, $left_any = true, $right_any = true, $table = '')
+    {
+        if (!$table) {
+            $table = $this->getDbTableName();
+        }
+
+        $this->addWhereFieldAsString('`'. $table .'`.`'. $field .'` NOT LIKE "'. ($left_any ? '%' : '') . sql_prepare($like_value, true) . ($right_any ? '%' : '') .'"');
+
+        return $this;
+    }
+
     public function addWhereFieldAsString($sql) {
         $this->sql_where_fields[] = [
             'table' => false,

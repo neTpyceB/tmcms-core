@@ -2,7 +2,7 @@
 
 namespace neTpyceB\TMCms\DB\Entity;
 
-use neTpyceB\TMCms\Modules\Entity;
+use neTpyceB\TMCms\Orm\Entity;
 
 class DbQueryAnalyzerEntity extends Entity
 {

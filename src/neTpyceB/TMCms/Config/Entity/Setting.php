@@ -2,7 +2,7 @@
 
 namespace neTpyceB\TMCms\Config\Entity;
 
-use neTpyceB\TMCms\Modules\Entity;
+use neTpyceB\TMCms\Orm\Entity;
 
 /**
  * Class Setting
