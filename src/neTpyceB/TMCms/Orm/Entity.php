@@ -122,6 +122,8 @@ class Entity {
 
         $this->deleteObjectDataFromCache();
 
+        $this->afterDelete();
+
         return $this;
     }
 
@@ -193,6 +195,8 @@ class Entity {
 
         // Close all update queries
         SQL::confirmTransaction();
+
+        $this->afterUpdate();
 
         return $this;
     }
@@ -336,6 +340,8 @@ class Entity {
         // Create entry in database
         $this->data['id'] = SQL::add($this->getDbTableName(), $data, true, $this->update_on_duplicate, $this->insert_low_priority, $this->insert_delayed);
 
+        $this->afterCreate();
+
         return $this;
     }
 
@@ -415,12 +421,22 @@ class Entity {
 
 
     /**
-     * Auto-call before object is Deletet
+     * Auto-call before object is Deleted
      */
     protected function beforeDelete()
     {
 
     }
+
+
+    /**
+     * Auto-call after object is Deleted
+     */
+    protected function afterDelete()
+    {
+
+    }
+
 
     /**
      * Auto-call before any Create or Update
@@ -439,9 +455,25 @@ class Entity {
 
 
     /**
+     * Auto-call after any Update
+     */
+    protected function afterUpdate() {
+
+    }
+
+
+    /**
      * Auto-call before any Create
      */
     protected function beforeCreate() {
+
+    }
+
+
+    /**
+     * Auto-call after any Create
+     */
+    protected function afterCreate() {
 
     }
 
