@@ -984,6 +984,26 @@ FROM `'. $this->getDbTableName() .'`
     /**
      * Filter collection by value exclusive
      * @param $field
+     * @param array $values
+     * @param string $table
+     * @return $this
+     */
+    public function addWhereFieldIsLower($field, $value, $table = '')
+    {
+        if (!$table) {
+            $table = $this->getDbTableName();
+        }
+
+        $value = sql_prepare($value);
+
+        $this->addWhereFieldAsString('`'. $table .'`.`'. $field .'` < "'. $value .'"');
+
+        return $this;
+    }
+
+    /**
+     * Filter collection by value exclusive
+     * @param $field
      * @param string $like_value
      * @param bool $left_any
      * @param bool $right_any

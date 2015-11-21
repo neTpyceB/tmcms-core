@@ -59,12 +59,11 @@ class App
 
         // Now prepare file with aggregated data
         $app_log = new AppLogEntityRepository();
-        $app_log->addSelectField(['id', 'ts', 'user_id', 'url', 'msg', 'p', 'do']);
+        $app_log->addSimpleSelectFields(['id', 'ts', 'user_id', 'url', 'msg', 'p', 'do']);
         if ($last_flush_time) {
             $app_log->setWhereOld($last_flush_time);
         }
-        $app_log->setOrderByField('ts');
-        $app_log->setOrderDirectionDesc();
+        $app_log->addOrderByField('ts', true);
         $app_log->setGenerateOutputWithIterator(false);
 
         $users = new AdminUserCollection();
