@@ -68,7 +68,7 @@ class App
 
         $users = new AdminUserCollection();
         $users->setGenerateOutputWithIterator(false);
-        $users->addSelectFieldAsString('CONCAT(`' . $users->getDbTableName() . '`.`name`, " ", `' . $users->getDbTableName() . '`.`surname`) AS `user`');
+        $users->addSimpleSelectFieldsAsString('CONCAT(`' . $users->getDbTableName() . '`.`name`, " ", `' . $users->getDbTableName() . '`.`surname`) AS `user`');
 
         $app_log->mergeWithCollection($users, 'user_id');
 

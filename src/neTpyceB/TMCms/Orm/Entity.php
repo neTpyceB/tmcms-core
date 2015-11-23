@@ -353,13 +353,17 @@ class Entity {
      */
     public function __call($name, $args) {
         $prefix = substr($name, 0, 3);
-        $method_to_call = $prefix . 'Field';
 
-        $param = substr($name, 3); // Cut "set" or "get"
-        $param = Converter::from_camel_case($param);
-        $param = strtolower($param);
+        if ($prefix == 'get' || $prefix == 'set') {
+            $method_to_call = $prefix . 'Field';
+            $param = substr($name, 3); // Cut "set" or "get"
+            $param = Converter::from_camel_case($param);
+            $param = strtolower($param);
 
-        return $this->{$method_to_call}(strtolower($param), ($args ? $args[0] : ''));
+            return $this->{$method_to_call}(strtolower($param), ($args ? $args[0] : ''));
+        } else {
+            dump('Method "'. $name .'" unknown');
+        }
     }
 
     public function enableUpdateOnDuplicate() {

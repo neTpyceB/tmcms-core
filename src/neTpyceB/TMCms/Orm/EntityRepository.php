@@ -474,7 +474,7 @@ class EntityRepository {
         return $this;
     }
 
-    public function addSelectFieldAsAlias($field, $alias, $table = false) {
+    public function addSimpleSelectFieldsAsAlias($field, $alias, $table = false) {
         if (!$table) {
             $table = $this->getDbTableName();
         }
@@ -489,7 +489,7 @@ class EntityRepository {
         return $this;
     }
 
-    public function addSelectFieldAsString($sql) {
+    public function addSimpleSelectFieldsAsString($sql) {
         $this->sql_select_fields[] = [
             'table' => false,
             'field' => $sql,
@@ -667,6 +667,8 @@ FROM `'. $this->getDbTableName() .'`
                 $object->{$name}(...$args);
             }
 
+        } else {
+            dump('Method "'. $name .'" unknown');
         }
 
         return $this;
