@@ -959,6 +959,24 @@ FROM `'. $this->getDbTableName() .'`
     }
 
     /**
+     * Filter collection by skipping value
+     * @param $field
+     * @param string $value
+     * @param string $table
+     * @return $this
+     */
+    public function addWhereFieldIsNot($field, $value, $table = '')
+    {
+        if (!$table) {
+            $table = $this->getDbTableName();
+        }
+
+        $this->addWhereFieldAsString('`'. $table .'`.`'. $field .'` NOT "' . sql_prepare($value)  .'"');
+
+        return $this;
+    }
+
+    /**
      * Filter collection by value exclusive
      * @param $field
      * @param array $values
@@ -984,9 +1002,8 @@ FROM `'. $this->getDbTableName() .'`
     }
 
     /**
-     * Filter collection by value exclusive
      * @param $field
-     * @param array $values
+     * @param string $value
      * @param string $table
      * @return $this
      */
@@ -999,6 +1016,25 @@ FROM `'. $this->getDbTableName() .'`
         $value = sql_prepare($value);
 
         $this->addWhereFieldAsString('`'. $table .'`.`'. $field .'` < "'. $value .'"');
+
+        return $this;
+    }
+
+    /**
+     * @param $field
+     * @param string $value
+     * @param string $table
+     * @return $this
+     */
+    public function addWhereFieldIsHigher($field, $value, $table = '')
+    {
+        if (!$table) {
+            $table = $this->getDbTableName();
+        }
+
+        $value = sql_prepare($value);
+
+        $this->addWhereFieldAsString('`'. $table .'`.`'. $field .'` > "'. $value .'"');
 
         return $this;
     }
