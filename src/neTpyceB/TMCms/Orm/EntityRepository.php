@@ -734,9 +734,9 @@ FROM `'. $this->getDbTableName() .'`
         }
 
         // Check tables in DB
-        $this->db_table = 'cms_' . mb_strtolower(str_replace(['Entity', 'Repository'], '', Converter::classWithNamespaceToUnqualifiedShort($this))) . 's';
+        $this->db_table = 'cms_' . mb_strtolower(str_replace(['Entity', 'Repository', 'Collection'], '', Converter::classWithNamespaceToUnqualifiedShort($this))) . 's';
         if (!SQL::tableExists($this->db_table)) {
-            $this->db_table = 'm_' . mb_strtolower(str_replace(['Entity', 'Repository'], '', Converter::classWithNamespaceToUnqualifiedShort($this))) . 's';
+            $this->db_table = 'm_' . mb_strtolower(str_replace(['Entity', 'Repository', 'Collection'], '', Converter::classWithNamespaceToUnqualifiedShort($this))) . 's';
         }
 
         return $this->db_table;
