@@ -281,7 +281,7 @@ class EntityRepository {
     }
 
     /**
-     * @return bool
+     * @return int
      */
     public function getCountOfObjectsInCollection()
     {
@@ -409,7 +409,7 @@ class EntityRepository {
      * @param bool $do_not_use_table_in_sql required in some conditions with temp fields
      * @return $this
      */
-    public function addOrderByField($field, $direction_desc = false, $table = '', $do_not_use_table_in_sql = false) {
+    public function addOrderByField($field = 'order', $direction_desc = false, $table = '', $do_not_use_table_in_sql = false) {
         // No table provided
         if (!$table) {
             $table = $this->getDbTableName();
