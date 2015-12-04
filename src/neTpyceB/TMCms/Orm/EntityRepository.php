@@ -785,35 +785,6 @@ FROM `'. $this->getDbTableName() .'`
         return $this;
     }
 
-
-    /* STATIC ALIASES */
-
-    /**
-     * Return one Entity by array of criteria
-     * @param array $criteria
-     * @return Entity
-     */
-    public static function findOneEntityByCriteria(array $criteria) {
-        $class = static::class;
-
-        /** @var EntityRepository $obj_collection */
-        $obj_collection = new $class();
-        foreach ($criteria as $k => $v) {
-            $method = 'setWhere' . Converter::to_camel_case($k);
-            $obj_collection->{$method}($v);
-        }
-        return $obj_collection->getFirstObjectFromCollection();
-    }
-
-    /**
-     * Create one Entity by id
-     * @param int $id
-     * @return Entity
-     */
-    public static function findOneEntityById($id) {
-        return self::findOneEntityByCriteria(['id' => $id]);
-    }
-
     /**
      * @return array
      */
@@ -1106,5 +1077,52 @@ FROM `'. $this->getDbTableName() .'`
     protected function getGroupByField()
     {
         return $this->group_by_fields;
+    }
+
+
+
+    /* STATIC ALIASES */
+
+    /**
+     * Return one Entity by array of criteria
+     * @param array $criteria
+     * @return Entity
+     */
+    public static function findOneEntityByCriteria(array $criteria) {
+        $class = static::class;
+
+        /** @var EntityRepository $obj_collection */
+        $obj_collection = new $class();
+        foreach ($criteria as $k => $v) {
+            $method = 'setWhere' . Converter::to_camel_case($k);
+            $obj_collection->{$method}($v);
+        }
+        return $obj_collection->getFirstObjectFromCollection();
+    }
+
+    /**
+     * Return array of Entity by array of criteria
+     * @param array $criteria
+     * @return array
+     */
+    public static function findAllEntitiesByCriteria(array $criteria) {
+        $class = static::class;
+
+        /** @var EntityRepository $obj_collection */
+        $obj_collection = new $class();
+        foreach ($criteria as $k => $v) {
+            $method = 'setWhere' . Converter::to_camel_case($k);
+            $obj_collection->{$method}($v);
+        }
+        return $obj_collection->getAsArrayOfObjects();
+    }
+
+    /**
+     * Create one Entity by id
+     * @param int $id
+     * @return Entity
+     */
+    public static function findOneEntityById($id) {
+        return self::findOneEntityByCriteria(['id' => $id]);
     }
 }
