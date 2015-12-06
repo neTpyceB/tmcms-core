@@ -417,9 +417,11 @@ class EntityRepository {
 
         $direction = $direction_desc ? 'DESC' : ' ASC';
 
+
         if (in_array($field, $this->translation_fields)) {
             $k = count($this->translation_joins);
-            $this->translation_fields[] = 'LEFT JOIN `cms_translations` AS `d' . $k . '` ON (`d' . $k . '`.`id` = '. $table .'.`' . $field . '`)';
+            $this->translation_joins[] = 'LEFT JOIN `cms_translations` AS `d' . $k . '` ON (`d' . $k . '`.`id` = `'. $table .'`.`' . $field . '`)';
+
             $this->order_fields[] = [
                 'table' => false,
                 'field' => '`d' . $k . '`.`' . LNG . '`',
@@ -601,10 +603,10 @@ FROM `'. $this->getDbTableName() .'`
 
         $order_by = [];
         foreach ($this->getOrderFields() as $field_data) {
-            if (!$field_data['do_not_use_table_in_sql']) {
-                $order_by[] = '`'. $field_data['table'] .'`.`'. $field_data['field'] .'` '. $field_data['direction'];
-            } else {
-                $order_by[] = '`'. $field_data['field'] .'` '. $field_data['direction'];
+            if ($field_data['type'] == 'simple') {
+                $order_by[] = ($field_data['do_not_use_table_in_sql'] ? '' : '`'. $field_data['table'] .'`.') . '`'. $field_data['field'] .'` '. $field_data['direction'];
+            } elseif ($field_data['type'] == 'string') {
+                $order_by[] = $field_data['field'];
             }
         }
 
@@ -630,6 +632,8 @@ FROM `'. $this->getDbTableName() .'`
     public function enableDebug()
     {
         $this->debug = true;
+
+        return $this;
     }
 
     private function getObjectClass() {
