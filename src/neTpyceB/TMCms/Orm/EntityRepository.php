@@ -651,6 +651,11 @@ FROM `'. $this->getDbTableName() .'`
             $param = substr($name, 8);  // Cut "setWhere"
             $param = Converter::from_camel_case($param);
 
+            // Check maybe arg supplied is Entity - than we have to call EntityId
+            if (isset($args[0]) && $args[0] instanceof Entity) {
+                $param .= $param . '_id';
+            }
+
             // Emulate setWhereSomething($k, $v);
             $this->addSimpleWhereField($param, ...$args);
 

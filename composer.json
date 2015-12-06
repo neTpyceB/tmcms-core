@@ -17,5 +17,14 @@
     "psr-0": {
       "neTpyceB\\TMCms": "src"
     }
+  },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "git@bitbucket.org:neTpyceB/tmcms.git"
+    }
+  ],
+  "require": {
+    "neTpyceB/TMCms": "dev-master"
   }
 }
