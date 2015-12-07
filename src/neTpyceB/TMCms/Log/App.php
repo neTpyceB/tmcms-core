@@ -52,8 +52,6 @@ class App
             return; // We do not need stats too often, wait 7 days
         }
 
-        return; // TODO rewrite objects below
-
         // Send data to original developer site of the existing domain
         self::sendInformation();
 
