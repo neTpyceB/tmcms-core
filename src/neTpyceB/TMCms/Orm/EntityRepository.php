@@ -73,7 +73,7 @@ class EntityRepository {
     protected function collectObjects($skip_objects_creation = false, $skip_changed_fields = false)
     {
         $sql = $this->getSelectSql();
-        if ($sql === $this->last_used_sql) {
+        if ($this->last_used_sql && $sql === $this->last_used_sql) {
             // Skip queries - nothing changed
             return $this;
         }
@@ -454,7 +454,6 @@ class EntityRepository {
 
     public function clearCollectionCache() {
         $this->last_used_sql = '';
-        $this->collectObjects();
 
         return $this;
     }
