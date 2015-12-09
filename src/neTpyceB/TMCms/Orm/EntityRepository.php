@@ -708,6 +708,11 @@ FROM `'. $this->getDbTableName() .'`
             $this->order_fields[] = $order_field;
         }
 
+        $join_tables = $collection->getJoinTables();
+        foreach ($join_tables as $join_table) {
+            $this->addJoinTable($join_table['table'], $join_table['left'], $join_table['right'], $join_table['type']);
+        }
+
         return $this;
     }
 
@@ -824,6 +829,22 @@ FROM `'. $this->getDbTableName() .'`
     private function getOrderFields()
     {
         return $this->order_fields;
+    }
+
+    /**
+     * @return array
+     */
+    private function getJoinTables()
+    {
+        return $this->join_tables;
+    }
+
+    /**
+     * @return array
+     */
+    private function getTranslationJoinTables()
+    {
+        return $this->translation_joins;
     }
 
     /**
