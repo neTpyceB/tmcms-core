@@ -23,7 +23,7 @@ class AdminTranslations {
 	private function init_data()
 	{
 		$data = [];
-		foreach (Finder::getPathFolders(Finder::TYPE_TRANSLATIONS) as $file) {
+		foreach (Finder::getInstance()->getPathFolders(Finder::TYPE_TRANSLATIONS) as $file) {
 			$file_path = $file . Users::getInstance()->getUserLng() . '.php';
 			if (stripos($file_path, DIR_BASE) === false) {
 				$file_path = DIR_BASE . $file_path;
