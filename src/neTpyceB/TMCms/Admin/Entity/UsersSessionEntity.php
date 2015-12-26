@@ -9,7 +9,7 @@ use neTpyceB\TMCms\Orm\Entity;
  * @method $this setUserId(int $user_id)
  * @method $this setTs(int $ts)
  */
-class UserSession extends Entity {
+class UsersSessionEntity extends Entity {
     protected function beforeCreate() {
         $this->setTs(NOW);
     }

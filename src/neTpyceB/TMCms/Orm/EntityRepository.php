@@ -746,10 +746,13 @@ FROM `'. $this->getDbTableName() .'`
             return $this->db_table;
         }
 
-        // Check tables in DB
-        $this->db_table = 'cms_' . mb_strtolower(str_replace(['Entity', 'Repository', 'Collection'], '', Converter::classWithNamespaceToUnqualifiedShort($this))) . 's';
+        $db_table_from_class = mb_strtolower(Converter::from_camel_case(str_replace(['Entity', 'Repository'], '', Converter::classWithNamespaceToUnqualifiedShort($this)))) . 's';
+
+        // Check DB in system tables
+        $this->db_table = 'cms_' . $db_table_from_class;
         if (!SQL::tableExists($this->db_table)) {
-            $this->db_table = 'm_' . mb_strtolower(str_replace(['Entity', 'Repository', 'Collection'], '', Converter::classWithNamespaceToUnqualifiedShort($this))) . 's';
+            // Or in module tables
+            $this->db_table = 'm_' . $db_table_from_class;
         }
 
         return $this->db_table;

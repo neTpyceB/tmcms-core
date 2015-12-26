@@ -11,7 +11,7 @@ use neTpyceB\TMCms\Orm\Entity;
  * @method setFilename(string $filename)
  * @method setTs(int $ts)
  */
-class Migration extends Entity
+class MigrationEntity extends Entity
 {
     protected function beforeCreate()
     {

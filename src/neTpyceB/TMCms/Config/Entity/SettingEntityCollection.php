@@ -11,7 +11,7 @@ use neTpyceB\TMCms\Orm\EntityRepository;
  * @method setWhereName(string $name)
  * @method setWhereValue(string $value)
  */
-class SettingCollection extends EntityRepository
+class SettingEntityCollection extends EntityRepository
 {
     public function setWherePrefix($prefix)
     {

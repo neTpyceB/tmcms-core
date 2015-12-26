@@ -4,7 +4,7 @@ namespace neTpyceB\Tests\TMCms\Admin;
 
 use neTpyceB\TMCms\Admin\Messages;
 use neTpyceB\TMCms\Admin\Users;
-use neTpyceB\TMCms\Admin\Users\Object\UserMessage;
+use neTpyceB\TMCms\Admin\Users\Object\UsersMessage;
 
 class MessagesTest extends \PHPUnit_Framework_TestCase {
     public function testSendMessage() {
@@ -35,7 +35,7 @@ class MessagesTest extends \PHPUnit_Framework_TestCase {
         // Check text was in received messages
         $texts = [];
         foreach ($messages as $message) {
-            /** @var UserMessage $message */
+            /** @var UsersMessage $message */
             $texts[] = $message->getMessage();
         }
 

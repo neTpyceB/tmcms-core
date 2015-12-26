@@ -14,7 +14,7 @@ use neTpyceB\TMCms\Orm\Entity;
  * @method setName(string $name)
  * @method setValue(string $value)
  */
-class Setting extends Entity
+class SettingEntity extends Entity
 {
 
 }
