@@ -13,8 +13,6 @@ use neTpyceB\TMCms\Orm\EntityRepository;
  */
 class SettingCollection extends EntityRepository
 {
-    protected $db_table = 'cms_settings';
-
     public function setWherePrefix($prefix)
     {
         $this->addWhereFieldIsLike('name', $prefix, true, false);

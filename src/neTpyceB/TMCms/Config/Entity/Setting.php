@@ -16,5 +16,5 @@ use neTpyceB\TMCms\Orm\Entity;
  */
 class Setting extends Entity
 {
-    protected $db_table = 'cms_settings';
+
 }
