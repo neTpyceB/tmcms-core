@@ -10,6 +10,7 @@ use neTpyceB\TMCms\Strings\Converter;
 class EntityRepository {
     protected $db_table = ''; // Should be overwritten in extended class
     protected $translation_fields = []; // Should be overwritten in extended class
+    protected $table_structure = []; // Should be overwitten in extended class
 
     private static $_cache_key_prefix = 'orm_entity_repository_';
 
@@ -563,7 +564,7 @@ class EntityRepository {
         $join_sql = $this->getJoinTablesSql();
 
         // Translations
-        $translation_sql = implode(', ', $this->translation_joins);
+        $translation_sql = implode(', ', $this->getTranslationJoinTables());
 
         // Counting total
         if ($for_max_object_count) {
@@ -1109,6 +1110,17 @@ FROM `'. $this->getDbTableName() .'`
     protected function getGroupByField()
     {
         return $this->group_by_fields;
+    }
+
+    public function createDbTableIfNotExists() {
+        $schema = new TableStructure();
+        $schema->setTableName($this->getDbTableName());
+        $schema->setTableStructure($this->getTableStructure());
+        $schema->createTableIfNotExists();
+    }
+
+    protected function getTableStructure() {
+        return $this->table_structure;
     }
 
 
