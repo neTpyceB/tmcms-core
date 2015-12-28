@@ -89,7 +89,6 @@ class Updater
 
         // Check we have migration table in DB
         $migrations = new MigrationEntityRepository();
-        $migrations->createDbTableIfNotExists();
 
         // Check we have DB structure and any migration applied
         $migrated_files = [];

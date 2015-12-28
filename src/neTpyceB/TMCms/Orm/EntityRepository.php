@@ -80,6 +80,8 @@ class EntityRepository {
         }
         $this->last_used_sql = $sql;
 
+        $this->ensureDbTableExists();
+
         // Check cache for this exact collection
         if ($this->use_cache) {
             //Check cached values, set local properties
@@ -1112,11 +1114,20 @@ FROM `'. $this->getDbTableName() .'`
         return $this->group_by_fields;
     }
 
-    public function createDbTableIfNotExists() {
+    /**
+     * @return bool table exists
+     */
+    private function ensureDbTableExists() {
+        if (SQL::tableExists($this->getDbTableName())) {
+            return true;
+        }
+
         $schema = new TableStructure();
         $schema->setTableName($this->getDbTableName());
         $schema->setTableStructure($this->getTableStructure());
         $schema->createTableIfNotExists();
+
+        return true;
     }
 
     protected function getTableStructure() {
