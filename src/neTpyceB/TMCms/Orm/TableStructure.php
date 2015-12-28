@@ -104,7 +104,7 @@ class TableStructure {
                 if (!isset($field['length'])) {
                     $field['length'] = '255';
                 }
-                $res = '`'. $field['name'] .'` varchar('. $field['length'] .') NOT NULL';
+                $res = '`'. $field['name'] .'` varchar('. $field['length'] .') NOT NULL ';
                 break;
 
             case 'char':
@@ -129,7 +129,7 @@ class TableStructure {
                         $field['length'] = 10;
                     }
                 }
-                $res = '`'. $field['name'] .'` int('. $field['length'] .') '. ($unsigned ? ' unsigned ' : '') .' NOT NULL ' . (isset($field['auto_increment']) && $field['auto_increment'] ? ' AUTO_INCREMENT ' : '');
+                $res = '`'. $field['name'] .'` int('. $field['length'] .') '. ($unsigned ? ' unsigned ' : '') .' NOT NULL';
                 break;
 
             case 'bool':
@@ -146,11 +146,19 @@ class TableStructure {
                 // Convert to db format
                 $field['length'] = str_replace('.', ',', $field['length']);
 
-                $res = '`'. $field['name'] .'` decimal('. $field['length'] .') '. ($unsigned ? ' unsigned ' : '') .' NOT NULL ' . (isset($field['auto_increment']) && $field['auto_increment'] ? ' AUTO_INCREMENT ' : '');
+                $res = '`'. $field['name'] .'` decimal('. $field['length'] .') '. ($unsigned ? ' unsigned ' : '') .' NOT NULL';
                 break;
 
             default:
                 trigger_error('Type "'. $field['type'] .'" not found in TableStructure');
+        }
+
+        if (isset($field['auto_increment'])) {
+            $res .= ' AUTO_INCREMENT ';
+        }
+
+        if (isset($field['comment'])) {
+            $res .= ' COMMENT '. $field['comment'];
         }
 
         return $res;

@@ -5,7 +5,7 @@ namespace neTpyceB\TMCms\Log\Entity;
 use neTpyceB\TMCms\Orm\EntityRepository;
 
 /**
- * Class UsageEntityRepository
+ * Class AppLogEntityRepository
  * @package neTpyceB\TMCms\Log\Entity
  *
  * @method $this setWhereUserId(int $user_id)
