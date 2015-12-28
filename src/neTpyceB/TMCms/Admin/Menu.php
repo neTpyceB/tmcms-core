@@ -146,7 +146,7 @@ class Menu
     public function addMenuItem($k, $v = '')
     {
         // Can not be added if disabled
-        if (!$this->addingFlag) {
+        if (!$this->isAddingItemsAllowed()) {
             return $this;
         }
 
@@ -176,7 +176,7 @@ class Menu
     public function addSubMenuItem($k, $v = '', $prefix = P)
     {
         // Check if may be added if disables
-        if (!$this->addingFlag) {
+        if (!$this->isAddingItemsAllowed()) {
             return $this;
         }
 
@@ -192,7 +192,7 @@ class Menu
 
         // Check if submenu item already exists
         if (isset($this->_menu[$prefix][$k])) {
-            error('Submenu item "' . $k . ' - ' . $v . '" already exists');
+            return $this;
         }
 
         // Check if have access to main menu item
@@ -223,6 +223,11 @@ class Menu
         $this->addingFlag = (bool)$flag;
 
         return $this;
+    }
+
+    public function isAddingItemsAllowed()
+    {
+        return $this->addingFlag;
     }
 
     /**
