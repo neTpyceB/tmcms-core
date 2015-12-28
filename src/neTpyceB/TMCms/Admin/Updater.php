@@ -87,9 +87,6 @@ class Updater
             return 0;
         }
 
-        // Check we have migration table in DB
-        $migrations = new MigrationEntityRepository();
-
         // Check we have DB structure and any migration applied
         $migrated_files = [];
         if (SQL::getTables()) {

@@ -79,8 +79,8 @@ class TableStructure {
 
         // Index keys
         $indexes = [];
-        foreach ($this->table_structure['indexes'] as $index) {
-            $indexes[] = 'KEY `'. $index['field'] .'` (`'. $index['field'] .'`)';
+        foreach ($this->table_structure['indexes'] as $index_name => $index_data) {
+            $indexes[] = strtoupper($index_data['type']) . ' `'. $index_name .'` (`'. $index_name .'`)';
         }
         if ($indexes) {
             $sql  .= ', ' . implode(', ', $indexes);
