@@ -132,6 +132,11 @@ class TableStructure {
                 $res = '`'. $field['name'] .'` int('. $field['length'] .') '. ($unsigned ? ' unsigned ' : '') .' NOT NULL ' . (isset($field['auto_increment']) && $field['auto_increment'] ? ' AUTO_INCREMENT ' : '');
                 break;
 
+            case 'bool':
+                // True or false, 0 | 1
+                $res = '`'. $field['name'] .'` tinyint(1) unsigned NOT NULL';
+                break;
+
             case 'float':
                 // Decimal
                 $unsigned = isset($field['unsigned']) && $field['unsigned'];
