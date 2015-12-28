@@ -23,8 +23,5 @@
       "type": "vcs",
       "url": "git@bitbucket.org:neTpyceB/tmcms.git"
     }
-  ],
-  "require": {
-    "neTpyceB/TMCms": "dev-master"
-  }
+  ]
 }
