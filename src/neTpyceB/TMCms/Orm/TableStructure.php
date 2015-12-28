@@ -100,17 +100,28 @@ class TableStructure {
 
         switch ($field['type']) {
             case 'varchar':
+                // Simple text input
                 if (!isset($field['length'])) {
                     $field['length'] = '255';
                 }
                 $res = '`'. $field['name'] .'` varchar('. $field['length'] .') NOT NULL';
                 break;
 
+            case 'char':
+                // Codes
+                if (!isset($field['length'])) {
+                    trigger_error('Length for "'. $field['name'] .'" required');
+                }
+                $res = '`'. $field['name'] .'` char('. $field['length'] .') NOT NULL';
+                break;
+
             case 'text':
+                // Large textares
                 $res = '`'. $field['name'] .'` text NOT NULL';
                 break;
 
             case 'int':
+                // Digit
                 $unsigned = isset($field['unsigned']) && $field['unsigned'];
                 if (!isset($field['length'])) {
                     $field['length'] = 11;
@@ -119,6 +130,18 @@ class TableStructure {
                     }
                 }
                 $res = '`'. $field['name'] .'` int('. $field['length'] .') '. ($unsigned ? ' unsigned ' : '') .' NOT NULL ' . (isset($field['auto_increment']) && $field['auto_increment'] ? ' AUTO_INCREMENT ' : '');
+                break;
+
+            case 'float':
+                // Decimal
+                $unsigned = isset($field['unsigned']) && $field['unsigned'];
+                if (!isset($field['length'])) {
+                    $field['length'] = 8.2;
+                }
+                // Convert to db format
+                $field['length'] = str_replace('.', ',', $field['length']);
+
+                $res = '`'. $field['name'] .'` decimal('. $field['length'] .') '. ($unsigned ? ' unsigned ' : '') .' NOT NULL ' . (isset($field['auto_increment']) && $field['auto_increment'] ? ' AUTO_INCREMENT ' : '');
                 break;
 
             default:
