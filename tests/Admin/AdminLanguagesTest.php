@@ -2,7 +2,7 @@
 
 namespace neTpyceB\Tests\TMCms\Admin;
 
-use neTpyceB\TMCms\Admin\AdminLanguages;
+use TMCms\Admin\AdminLanguages;
 
 class AdminLanguagesTest extends \PHPUnit_Framework_TestCase {
     public function testGetPairs() {

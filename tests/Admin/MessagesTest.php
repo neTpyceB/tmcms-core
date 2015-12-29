@@ -2,7 +2,7 @@
 
 namespace neTpyceB\Tests\TMCms\Admin;
 
-use neTpyceB\TMCms\Admin\Messages;
+use TMCms\Admin\Messages;
 use TMCms\Admin\Users\Object\UsersMessage;
 
 class MessagesTest extends \PHPUnit_Framework_TestCase {

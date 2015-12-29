@@ -2,8 +2,8 @@
 
 namespace neTpyceB\TMCms\Admin;
 
-use neTpyceB\TMCms\Admin\Entity\MigrationEntity;
-use neTpyceB\TMCms\Admin\Entity\MigrationEntityRepository;
+use TMCms\Admin\Entity\MigrationEntity;
+use TMCms\Admin\Entity\MigrationEntityRepository;
 use neTpyceB\TMCms\Cache\Cacher;
 use neTpyceB\TMCms\DB\SQL;
 use neTpyceB\TMCms\Files\FileSystem;

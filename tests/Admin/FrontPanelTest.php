@@ -2,7 +2,7 @@
 
 namespace neTpyceB\Tests\TMCms\Admin;
 
-use neTpyceB\TMCms\Admin\FrontPanel;
+use TMCms\Admin\FrontPanel;
 
 class FrontPanelTest extends \PHPUnit_Framework_TestCase {
     public function testGetView() {

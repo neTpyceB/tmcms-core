@@ -2,7 +2,7 @@
 
 namespace neTpyceB\TMCms\Modules;
 
-use neTpyceB\TMCms\Admin\Messages;
+use TMCms\Admin\Messages;
 use neTpyceB\TMCms\DB\SQL;
 use neTpyceB\TMCms\HTML\BreadCrumbs;
 use neTpyceB\TMCms\HTML\Cms\CmsFormHelper;
