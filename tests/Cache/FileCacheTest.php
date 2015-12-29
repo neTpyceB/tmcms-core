@@ -1,19 +1,19 @@
 <?php
 
-namespace neTpyceB\Tests\TMCms\Cache;
+namespace Tests\TMCms\Cache;
 
 define('FILECACHE_TEST_KEY', 'file_test_key_'. mt_rand(0, 999));
 define('FILECACHE_TEST_VALUE', mt_rand(0, 999));
 
-use neTpyceB\TMCms\Cache\Cacher;
-use neTpyceB\TMCms\Cache\FileCache;
+use TMCms\Cache\Cacher;
+use TMCms\Cache\FileCache;
 
 class FileCacheTest extends \PHPUnit_Framework_TestCase {
     public function testGetInstance()
     {
         $cacher = Cacher::getInstance()->getFileCacher();
 
-        $this->assertInstanceOf('\neTpyceB\TMCms\Cache\FileCache', $cacher);
+        $this->assertInstanceOf('\TMCms\Cache\FileCache', $cacher);
     }
 
 

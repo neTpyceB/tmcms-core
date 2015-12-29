@@ -1,20 +1,20 @@
 <?php
 
-namespace neTpyceB\Tests\TMCms\Cache;
+namespace Tests\TMCms\Cache;
 
 
 define('MEMCACHEDCACHE_TEST_KEY', 'memcached_test_key_'. mt_rand(0, 999));
 define('MEMCACHEDCACHE_TEST_VALUE', mt_rand(0, 999));
 
-use neTpyceB\TMCms\Cache\Cacher;
-use neTpyceB\TMCms\Cache\MemcachedCache;
+use TMCms\Cache\Cacher;
+use TMCms\Cache\MemcachedCache;
 
 class MemcachedCacheTest extends \PHPUnit_Framework_TestCase {
     public function testGetInstance()
     {
         $cacher = Cacher::getInstance()->getMemcachedCacher();
 
-        $this->assertInstanceOf('\neTpyceB\TMCms\Cache\MEmcachedCache', $cacher);
+        $this->assertInstanceOf('\TMCms\Cache\MEmcachedCache', $cacher);
     }
 
     public function testSet()

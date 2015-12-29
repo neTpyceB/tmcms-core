@@ -1,8 +1,8 @@
 <?php
 
-namespace neTpyceB\Tests\TMCms\Traits;
+namespace Tests\TMCms\Traits;
 
-use neTpyceB\TMCms\Traits\singletonOnlyInstanceTrait;
+use TMCms\Traits\singletonOnlyInstanceTrait;
 
 class singletonOnlyInstanceTraitTestInstance {
     use singletonOnlyInstanceTrait;

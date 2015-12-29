@@ -1,8 +1,8 @@
 <?php
 
-namespace neTpyceB\Tests\TMCms\Templates;
+namespace Tests\TMCms\Templates;
 
-use neTpyceB\TMCms\Templates\PageBody;
+use TMCms\Templates\PageBody;
 
 define('PAGEBODY_TEST_VALUE', 'page_body_test_value');
 
@@ -22,7 +22,7 @@ class PageBodyTest extends \PHPUnit_Framework_TestCase
         $res = $body->getContent();
 
         $this->assertEquals(PAGEBODY_TEST_VALUE, $res);
-        $this->assertInstanceOf('neTpyceB\TMCms\Templates\PageBody', $obj);
+        $this->assertInstanceOf('TMCms\Templates\PageBody', $obj);
     }
 
     public function testToString() {

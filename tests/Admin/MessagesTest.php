@@ -1,6 +1,6 @@
 <?php
 
-namespace neTpyceB\Tests\TMCms\Admin;
+namespace Tests\TMCms\Admin;
 
 use TMCms\Admin\Messages;
 use TMCms\Admin\Users\Object\UsersMessage;
@@ -15,7 +15,7 @@ class MessagesTest extends \PHPUnit_Framework_TestCase {
         // Remove test message
         $message->deleteObject();
 
-        $this->assertInstanceOf('neTpyceB\TMCms\Admin\Users\Object\UserMessage', $message);
+        $this->assertInstanceOf('TMCms\Admin\Users\Object\UserMessage', $message);
     }
 
     public function testReceiveMessages() {

@@ -1,6 +1,6 @@
 <?php
 
-namespace neTpyceB\Tests\TMCms\Admin;
+namespace Tests\TMCms\Admin;
 
 use TMCms\Admin\FrontPanel;
 

@@ -1,8 +1,8 @@
 <?php
 
-namespace neTpyceB\Tests\TMCms\Network;
+namespace Tests\TMCms\Network;
 
-use neTpyceB\TMCms\Network\SearchEngines;
+use TMCms\Network\SearchEngines;
 
 define('SearchEngines_TEST_URL', 'http://www.subsub.subdomain.google.lv/search?sourceid=chrome&ie=UTF-8&q=whaka+whaka');
 

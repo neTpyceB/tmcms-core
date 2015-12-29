@@ -1,8 +1,8 @@
 <?php
 
-namespace neTpyceB\Tests\TMCms\Log;
+namespace Tests\TMCms\Log;
 
-use neTpyceB\TMCms\Log\ILogger;
+use TMCms\Log\ILogger;
 
 class ILoggerTestInstance implements ILogger {
     /**

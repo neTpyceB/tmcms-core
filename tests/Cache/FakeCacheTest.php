@@ -1,19 +1,19 @@
 <?php
 
-namespace neTpyceB\Tests\TMCms\Cache;
+namespace Tests\TMCms\Cache;
 
 define('FAKECACHE_TEST_KEY', 'fake_test_key_'. mt_rand(0, 999));
 define('FAKECACHE_TEST_VALUE', mt_rand(0, 999));
 
-use neTpyceB\TMCms\Cache\Cacher;
-use neTpyceB\TMCms\Cache\FakeCache;
+use TMCms\Cache\Cacher;
+use TMCms\Cache\FakeCache;
 
 class FakeCacheTest extends \PHPUnit_Framework_TestCase {
     public function testGetInstance()
     {
         $cacher = Cacher::getInstance()->getFakeCacher();
 
-        $this->assertInstanceOf('\neTpyceB\TMCms\Cache\FakeCache', $cacher);
+        $this->assertInstanceOf('\TMCms\Cache\FakeCache', $cacher);
     }
 
 

@@ -1,8 +1,8 @@
 <?php
 
-namespace neTpyceB\Tests\TMCms\Templates;
+namespace Tests\TMCms\Templates;
 
-use neTpyceB\TMCms\Config\Configuration;
+use TMCms\Config\Configuration;
 
 $configuration_test_env = [
     'values' => [
