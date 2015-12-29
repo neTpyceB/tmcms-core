@@ -3,8 +3,7 @@
 namespace neTpyceB\Tests\TMCms\Admin;
 
 use neTpyceB\TMCms\Admin\Messages;
-use neTpyceB\TMCms\Admin\Users;
-use neTpyceB\TMCms\Admin\Users\Object\UsersMessage;
+use TMCms\Admin\Users\Object\UsersMessage;
 
 class MessagesTest extends \PHPUnit_Framework_TestCase {
     public function testSendMessage() {

@@ -2,7 +2,7 @@
 
 namespace neTpyceB\TMCms\Log;
 
-use neTpyceB\TMCms\Admin\Users\Object\AdminUserCollection;
+use TMCms\Admin\Users\Object\AdminUserCollection;
 use neTpyceB\TMCms\Config\Configuration;
 use neTpyceB\TMCms\Config\Settings;
 use neTpyceB\TMCms\Files\FileSystem;

@@ -2,9 +2,9 @@
 
 namespace neTpyceB\TMCms\Admin;
 
-use neTpyceB\TMCms\Admin\Users\Object\AdminUser;
-use neTpyceB\TMCms\Admin\Users\Object\UsersMessage;
-use neTpyceB\TMCms\Admin\Users\Object\UsersMessageRepository;
+use TMCms\Admin\Users\Object\AdminUser;
+use TMCms\Admin\Users\Object\UsersMessage;
+use TMCms\Admin\Users\Object\UsersMessageRepository;
 use neTpyceB\TMCms\Strings\Converter;
 use neTpyceB\TMCms\Traits\singletonOnlyInstanceTrait;
 

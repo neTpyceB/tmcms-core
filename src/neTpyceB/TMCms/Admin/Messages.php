@@ -2,8 +2,8 @@
 
 namespace neTpyceB\TMCms\Admin;
 
-use neTpyceB\TMCms\Admin\Users\Object\UsersMessage;
-use neTpyceB\TMCms\Admin\Users\Object\UsersMessageRepository;
+use TMCms\Admin\Users\Object\UsersMessage;
+use TMCms\Admin\Users\Object\UsersMessageRepository;
 use neTpyceB\TMCms\Traits\singletonOnlyInstanceTrait;
 
 /**
