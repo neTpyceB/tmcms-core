@@ -39,7 +39,7 @@ class TableStructure {
         }
 
         if (!$this->table_structure || !isset($this->table_structure['fields'])) {
-            trigger_error('Table structure is not set');
+            trigger_error('Table "'. $this->table_name .'" does not exist and structure is not set');
         }
 
         if (!isset($this->table_structure['indexes'])) {
