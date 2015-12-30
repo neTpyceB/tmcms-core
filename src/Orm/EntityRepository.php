@@ -19,6 +19,7 @@ class EntityRepository {
     private $sql_offset = 0;
     private $sql_limit = 0;
     private $order_fields = [];
+    private $order_by_locate_fields = [];
     private $order_random = false;
     private $group_by_fields = [];
     private $having_fields = [];
@@ -441,6 +442,27 @@ class EntityRepository {
                 'type' => 'simple'
             ];
         }
+
+        return $this;
+    }
+
+    /**
+     * @param $field
+     * @param $searchable_string
+     * @param string $table
+     * @return $this
+     */
+    public function addOrderByLocate($field, $searchable_string, $table = '') {
+        // No table provided
+        if (!$table) {
+            $table = $this->getDbTableName();
+        }
+
+        $this->order_fields[] = [
+            'table' => $table,
+            'type' => 'string',
+            'field' => 'LOCATE ("'. SQL::sql_prepare($searchable_string) .'", `'. $table .'`.`'. $field .'`)'
+        ];
 
         return $this;
     }
