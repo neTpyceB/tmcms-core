@@ -447,12 +447,12 @@ class EntityRepository {
     }
 
     /**
-     * @param $field
      * @param $searchable_string
+     * @param $field
      * @param string $table
      * @return $this
      */
-    public function addOrderByLocate($field, $searchable_string, $table = '') {
+    public function addOrderByLocate($searchable_string, $field , $table = '') {
         // No table provided
         if (!$table) {
             $table = $this->getDbTableName();
