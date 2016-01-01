@@ -9,9 +9,9 @@ use TMCms\Admin\Structure\Entity\StructurePagePermissionCollection;
 use TMCms\Admin\Users\Entity\AdminUserGroup;
 use TMCms\Admin\Users\Entity\GroupAccess;
 use TMCms\Admin\Users\Entity\GroupAccessCollection;
-use TMCms\Admin\Users\Entity\AdminUserGroupCollection;
+use TMCms\Admin\Users\Entity\AdminUserGroupRepository;
 use TMCms\Admin\Users\Entity\AdminUser;
-use TMCms\Admin\Users\Entity\AdminUserCollection;
+use TMCms\Admin\Users\Entity\AdminUserRepository;
 use TMCms\Config\Configuration;
 use TMCms\Routing\Languages;
 use TMCms\Traits\singletonOnlyInstanceTrait;
@@ -211,7 +211,7 @@ class Users
 
         // Check or init cache
         if (!isset(self::$cached_user_data[$id])) {
-            $user = AdminUserCollection::findOneEntityById($id);
+            $user = AdminUserRepository::findOneEntityById($id);
             if (!$user) {
                 return NULL;
             }
@@ -256,7 +256,7 @@ class Users
     {
         // Check or init cache
         if (!self::$cached_group_pairs) {
-            $user_collection = new AdminUserGroupCollection;
+            $user_collection = new AdminUserGroupRepository;
             $pairs = $user_collection->getPairs('title');
 
             self::$cached_group_pairs = $pairs;
@@ -346,7 +346,7 @@ class Users
     {
         // Check and init cache
         if (!self::$cached_users_pairs) {
-            $user_collection = new AdminUserCollection;
+            $user_collection = new AdminUserRepository;
             $user_collection->addOrderByField('name');
             foreach ($user_collection->getAsArrayOfObjects() as $v) {
                 /** @var AdminUser $v */
@@ -364,7 +364,7 @@ class Users
     {
         // Administrator group
         /** @var AdminUserGroup $group */
-        $group = AdminUserGroupCollection::findOneEntityById(1);
+        $group = AdminUserGroupRepository::findOneEntityById(1);
 
         // If no any Admin group - create new empty group
         if (!$group || !$group->getUndeletable() || !$group->getCanSetPermission() || !$group->getFullAccess()) {
@@ -377,7 +377,7 @@ class Users
             } else {
 
                 // Delete all groups
-                $group_collection = new AdminUserGroupCollection();
+                $group_collection = new AdminUserGroupRepository();
                 $group_collection->deleteObjectCollection();
 
                 // Drop auto-increment value
@@ -417,12 +417,12 @@ class Users
         unset($data);
 
         // Check we have any active Admin
-        $users_collection = new AdminUserCollection();
+        $users_collection = new AdminUserRepository();
         $users_collection->setWhereActive(1);
         $have_any_user = $users_collection->hasAnyObjectInCollection();
 
         // Check we have admin as first User
-        $users_collection = new AdminUserCollection();
+        $users_collection = new AdminUserRepository();
         $users_collection->setWhereActive(1);
         $users_collection->setWhereId(1);
         $users_collection->setWhereGroupId(1);
@@ -432,7 +432,7 @@ class Users
         // Recreate default User
         if (!$have_any_user || !$have_default_user) {
             //Remove all Users
-            $users_collection = new AdminUserCollection;
+            $users_collection = new AdminUserRepository;
             $users_collection->deleteObjectCollection();
 
             // Reset auto-increment

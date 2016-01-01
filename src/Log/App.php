@@ -2,7 +2,7 @@
 
 namespace TMCms\Log;
 
-use TMCms\Admin\Users\Entity\AdminUserCollection;
+use TMCms\Admin\Users\Entity\AdminUserRepository;
 use TMCms\Config\Configuration;
 use TMCms\Config\Settings;
 use TMCms\Files\FileSystem;
@@ -64,7 +64,7 @@ class App
         $app_log->addOrderByField('ts', true);
         $app_log->setGenerateOutputWithIterator(false);
 
-        $users = new AdminUserCollection();
+        $users = new AdminUserRepository();
         $users->setGenerateOutputWithIterator(false);
         $users->addSimpleSelectFieldsAsString('CONCAT(`' . $users->getDbTableName() . '`.`name`, " ", `' . $users->getDbTableName() . '`.`surname`) AS `user`');
 
