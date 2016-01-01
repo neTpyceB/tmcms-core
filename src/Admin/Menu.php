@@ -2,7 +2,7 @@
 
 namespace TMCms\Admin;
 
-use TMCms\Admin\Users\Object\AdminUser;
+use TMCms\Admin\Users\Entity\AdminUser;
 use TMCms\Admin\Users\Entity\UsersMessage;
 use TMCms\Admin\Users\Entity\UsersMessageRepository;
 use TMCms\Strings\Converter;

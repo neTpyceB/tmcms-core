@@ -2,7 +2,7 @@
 
 namespace TMCms\Log;
 
-use TMCms\Admin\Users\Object\AdminUserCollection;
+use TMCms\Admin\Users\Entity\AdminUserCollection;
 use TMCms\Config\Configuration;
 use TMCms\Config\Settings;
 use TMCms\Files\FileSystem;
