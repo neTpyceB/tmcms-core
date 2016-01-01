@@ -19,7 +19,6 @@ class EntityRepository {
     private $sql_offset = 0;
     private $sql_limit = 0;
     private $order_fields = [];
-    private $order_by_locate_fields = [];
     private $order_random = false;
     private $group_by_fields = [];
     private $having_fields = [];
@@ -1154,6 +1153,16 @@ FROM `'. $this->getDbTableName() .'`
 
     protected function getTableStructure() {
         return $this->table_structure;
+    }
+
+    // Reset auto_increment to 1
+    public function alterTableResetAutoIncrement()
+    {
+        $schema = new TableStructure();
+        $schema->setTableName($this->getDbTableName());
+        $schema->resetAutoIncrement();
+
+        return $this;
     }
 
 

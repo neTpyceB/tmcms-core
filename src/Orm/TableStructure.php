@@ -163,4 +163,19 @@ class TableStructure {
 
         return $res;
     }
+
+    public function resetAutoIncrement()
+    {
+        if (!$this->table_name) {
+            trigger_error('Table name is not set');
+        }
+
+        if (SQL::tableExists($this->table_name)) {
+            trigger_error('DB table "'. $this->table_name .'" already exists');
+        }
+
+        SQL::getInstance()->sql_query('ALTER TABLE `'. $this->table_name .'` AUTO_INCREMENT = 1');
+
+        return $this;
+    }
 }
