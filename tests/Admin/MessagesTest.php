@@ -3,7 +3,7 @@
 namespace Tests\TMCms\Admin;
 
 use TMCms\Admin\Messages;
-use TMCms\Admin\Users\Object\UsersMessage;
+use TMCms\Admin\Users\Entity\UsersMessage;
 
 class MessagesTest extends \PHPUnit_Framework_TestCase {
     public function testSendMessage() {

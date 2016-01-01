@@ -2,8 +2,8 @@
 
 namespace TMCms\Admin;
 
-use TMCms\Admin\Users\Object\UsersMessage;
-use TMCms\Admin\Users\Object\UsersMessageRepository;
+use TMCms\Admin\Users\Entity\UsersMessage;
+use TMCms\Admin\Users\Entity\UsersMessageRepository;
 use TMCms\Traits\singletonOnlyInstanceTrait;
 
 /**
