@@ -8,7 +8,7 @@ use TMCms\Admin\Entity\UsersSessionEntityRepository;
 use TMCms\Admin\Structure\Entity\StructurePagePermissionCollection;
 use TMCms\Admin\Users\Entity\AdminUserGroup;
 use TMCms\Admin\Users\Entity\GroupAccess;
-use TMCms\Admin\Users\Entity\GroupAccessCollection;
+use TMCms\Admin\Users\Entity\GroupAccessRepository;
 use TMCms\Admin\Users\Entity\AdminUserGroupRepository;
 use TMCms\Admin\Users\Entity\AdminUser;
 use TMCms\Admin\Users\Entity\AdminUserRepository;
@@ -257,6 +257,7 @@ class Users
         // Check or init cache
         if (!self::$cached_group_pairs) {
             $user_collection = new AdminUserGroupRepository;
+            $user_collection->addOrderByField('title');
             $pairs = $user_collection->getPairs('title');
 
             self::$cached_group_pairs = $pairs;
@@ -297,7 +298,7 @@ class Users
 
         // Check or init cache
         if (!self::$access) {
-            $group_access_collection = new GroupAccessCollection();
+            $group_access_collection = new GroupAccessRepository();
             $group_access_collection->setWhereGroupId((int)$group_id);
             foreach ($group_access_collection->getAsArrayOfObjectData() as $group_access) {
                 /** @var GroupAccess $group_access */
