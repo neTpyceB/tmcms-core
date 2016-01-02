@@ -998,7 +998,7 @@ FROM `'. $this->getDbTableName() .'`
             $table = $this->getDbTableName();
         }
 
-        $this->addWhereFieldAsString('`'. $table .'`.`'. $field .'` NOT "' . sql_prepare($value)  .'"');
+        $this->addWhereFieldAsString('`'. $table .'`.`'. $field .'` != "' . sql_prepare($value)  .'"');
 
         return $this;
     }
