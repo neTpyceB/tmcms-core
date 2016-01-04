@@ -221,7 +221,7 @@ class Users
             unset(self::$cached_user_data[$id]['password']);
         }
 
-        return self::$cached_user_data[$id][$key];
+        return isset(self::$cached_user_data[$id][$key]) ? self::$cached_user_data[$id][$key] : NULL;
     }
 
     /**
