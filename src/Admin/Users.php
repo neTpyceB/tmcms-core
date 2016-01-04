@@ -245,7 +245,7 @@ class Users
             self::$cached_group_data[$id] = $group->getAsArray();
         }
 
-        return self::$cached_group_data[$id][$key];
+        return isset(self::$cached_group_data[$id][$key]) ? self::$cached_group_data[$id][$key] : NULL;
     }
 
     /**
