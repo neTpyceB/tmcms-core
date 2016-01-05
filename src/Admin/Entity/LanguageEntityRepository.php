@@ -10,5 +10,16 @@ use TMCms\Orm\EntityRepository;
  * @method setWhereShort(string $short)
  */
 class LanguageEntityRepository extends EntityRepository {
-
+    protected $table_structure = [
+        'fields' => [
+            'short' => [
+                'type' => 'char',
+                'length' => 2,
+            ],
+            'full' => [
+                'type' => 'varchar',
+                'length' => 32,
+            ],
+        ],
+    ];
 }
