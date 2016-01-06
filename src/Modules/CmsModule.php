@@ -29,6 +29,7 @@ abstract class CmsModule implements IModule {
         $form_params = [
             'data' => $data,
             'action' => '?p=' . P . '&do=_add',
+            'combine' => 'true',
             'button' => __('Add'),
             'fields' => $fields
         ];

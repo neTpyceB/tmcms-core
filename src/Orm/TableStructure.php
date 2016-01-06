@@ -158,7 +158,7 @@ class TableStructure {
         }
 
         if (isset($field['comment'])) {
-            $res .= ' COMMENT '. $field['comment'];
+            $res .= ' COMMENT "'. $field['comment'] .'"';
         }
 
         return $res;
