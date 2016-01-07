@@ -4,7 +4,7 @@ namespace TMCms\Routing\Entity;
 
 use TMCms\Orm\EntityRepository;
 
-class PagesQuicklinkEntityRepository extends EntityRepository
+class PagesLandingEntityRepository extends EntityRepository
 {
     protected $table_structure = [
         'fields' => [
@@ -15,7 +15,7 @@ class PagesQuicklinkEntityRepository extends EntityRepository
             'href' => [
                 'type' => 'varchar',
             ],
-            'searchword' => [
+            'search_word' => [
                 'type' => 'bool',
             ],
         ],
