@@ -2,9 +2,9 @@
 
 namespace TMCms\Routing\Entity;
 
-use TMCms\Orm\EntityRepository;
+use TMCms\Orm\Entity;
 
-class PageComponentsDisabledEntity extends EntityRepository
+class PageComponentsDisabledEntity extends Entity
 {
     protected $db_table = 'cms_pages_components_disabled';
 }
