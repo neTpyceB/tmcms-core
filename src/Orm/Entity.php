@@ -50,6 +50,17 @@ class Entity {
     }
 
     /**
+     * Removed field from object
+     * @param string $field
+     * @return $this
+     */
+    public function unsetField($field) {
+        unset($this->data[$field]);
+
+        return $this;
+    }
+
+    /**
      * @param string $key
      * @param string $value
      * @param bool $skip_changed_fields
