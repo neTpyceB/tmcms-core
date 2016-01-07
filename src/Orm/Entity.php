@@ -139,7 +139,7 @@ class Entity {
 
             $res = $this->data[$field];
 
-            if ($this->encode_special_chars_for_html) {
+            if ($this->encode_special_chars_for_html && is_scalar($res)) {
                 $res = htmlspecialchars($res);
             }
 
