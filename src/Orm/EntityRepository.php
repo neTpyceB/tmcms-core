@@ -3,6 +3,7 @@
 namespace TMCms\Orm;
 
 use TMCms\Cache\Cacher;
+use TMCms\Config\Settings;
 use TMCms\DB\SQL;
 use TMCms\Files\FileSystem;
 use TMCms\Strings\Converter;
@@ -39,6 +40,10 @@ class EntityRepository {
     private $last_used_sql;
 
     public function __construct($ids = []) {
+        if (!Settings::isProductionState()) {
+            $this->ensureDbTableExists();
+        }
+
         if ($ids) {
             $this->setIds($ids);
         }
@@ -79,8 +84,6 @@ class EntityRepository {
             return $this;
         }
         $this->last_used_sql = $sql;
-
-        $this->ensureDbTableExists();
 
         // Check cache for this exact collection
         if ($this->use_cache) {
