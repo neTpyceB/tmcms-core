@@ -6,6 +6,7 @@ use TMCms\Orm\EntityRepository;
 
 class MigrationEntityRepository extends EntityRepository
 {
+    protected $db_table = 'cms_migrations';
     protected $table_structure = [
         'fields' => [
             'filename' => [
