@@ -61,6 +61,22 @@ class Entity {
     }
 
     /**
+     * Removed field from object
+     * @param string $field_from
+     * @param string $field_to
+     * @param bool $remove_renamed_field set false if need to keep both field
+     * @return $this
+     */
+    public function renameField($field_from, $field_to, $remove_renamed_field = true) {
+        $this->setField($field_to, $this->getField($field_from));
+        if ($remove_renamed_field) {
+            $this->unsetField($field_from);
+        }
+
+        return $this;
+    }
+
+    /**
      * @param string $key
      * @param string $value
      * @param bool $skip_changed_fields
