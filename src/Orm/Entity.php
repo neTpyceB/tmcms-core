@@ -23,6 +23,7 @@ class Entity {
 
     private $insert_low_priority = false;
     private $insert_delayed = false;
+    private $encode_special_chars_for_html = false; // Auto use of htmlspecialchar for output
 
     public function __construct($id = 0, $load_from_db = true) {
         $this->data['id'] = NULL;
@@ -136,7 +137,13 @@ class Entity {
                 }
             }
 
-            return $this->data[$field];
+            $res = $this->data[$field];
+
+            if ($this->encode_special_chars_for_html) {
+                $res = htmlspecialchars($res);
+            }
+
+            return $res;
         }
 
         return NULL;
@@ -395,6 +402,12 @@ class Entity {
 
     public function enableUpdateOnDuplicate() {
         $this->update_on_duplicate = true;
+
+        return $this;
+    }
+
+    public function enableSpecialCharEncodingForHtml() {
+        $this->encode_special_chars_for_html = true;
 
         return $this;
     }
