@@ -120,6 +120,11 @@ class TableStructure {
                 $res = '`'. $field['name'] .'` text NOT NULL';
                 break;
 
+            case 'mediumtext':
+                // Large textares
+                $res = '`'. $field['name'] .'` mediumtext NOT NULL';
+                break;
+
             case 'int':
                 // Digit
                 $unsigned = isset($field['unsigned']) && $field['unsigned'];

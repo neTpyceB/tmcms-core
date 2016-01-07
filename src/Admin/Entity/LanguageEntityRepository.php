@@ -10,6 +10,7 @@ use TMCms\Orm\EntityRepository;
  * @method setWhereShort(string $short)
  */
 class LanguageEntityRepository extends EntityRepository {
+    protected $db_table = 'cms_languages';
     protected $table_structure = [
         'fields' => [
             'short' => [
