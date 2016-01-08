@@ -137,6 +137,10 @@ class TableStructure {
                 $res = '`'. $field['name'] .'` int('. $field['length'] .') '. ($unsigned ? ' unsigned ' : '') .' NOT NULL';
                 break;
 
+            case 'translation':
+                $res = '`'. $field['name'] .'` int(10) unsigned NOT NULL';
+                break;
+
             case 'bool':
                 // True or false, 0 | 1
                 $res = '`'. $field['name'] .'` tinyint(1) unsigned NOT NULL';
