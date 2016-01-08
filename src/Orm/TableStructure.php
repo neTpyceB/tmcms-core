@@ -137,7 +137,12 @@ class TableStructure {
                 $res = '`'. $field['name'] .'` int('. $field['length'] .') '. ($unsigned ? ' unsigned ' : '') .' NOT NULL';
                 break;
 
+            case 'index':
+                $res = '`'. $field['name'] .'` int(10) unsigned NOT NULL';
+                break;
+
             case 'translation':
+                $field['comment'] = 'translation';
                 $res = '`'. $field['name'] .'` int(10) unsigned NOT NULL';
                 break;
 
