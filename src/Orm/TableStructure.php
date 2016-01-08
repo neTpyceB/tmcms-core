@@ -139,11 +139,19 @@ class TableStructure {
 
             case 'index':
                 $res = '`'. $field['name'] .'` int(10) unsigned NOT NULL';
+
+                // Add index if not exists
+                if (!isset($this->table_structure['indexes'][$field['name']])) {
+                    $this->table_structure['indexes'][$field['name']] = [
+                        'type' => 'key',
+                    ];
+                }
                 break;
 
             case 'translation':
-                $field['comment'] = 'translation';
+                // Int index with comment
                 $res = '`'. $field['name'] .'` int(10) unsigned NOT NULL';
+                $field['comment'] = 'translation';
                 break;
 
             case 'bool':
