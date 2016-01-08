@@ -156,7 +156,7 @@ class TableStructure {
 
             case 'bool':
                 // True or false, 0 | 1
-                $res = '`'. $field['name'] .'` tinyint(1) unsigned NOT NULL';
+                $res = '`'. $field['name'] .'` tinyint(1) unsigned NOT NULL DEFAULT "0"';
                 break;
 
             case 'float':
