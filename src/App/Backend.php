@@ -162,6 +162,12 @@ class Backend
             $_GET['do'] = '_default';
         }
 
+        // Render log=in form if if user is not auth-ed
+        if (!Users::getInstance()->isLogged()) {
+            $_GET['p'] = 'guest';
+            $this->no_menu = true;
+        }
+
         if (!defined('P')) {
             define('P', $_GET['p']);
         }
@@ -185,12 +191,6 @@ class Backend
         // For non-rewrite hostings remove last file name
         if (end($path) === 'index.php') {
             array_pop($path);
-        }
-
-        // Render log=in form if if user is not auth-ed
-        if (!Users::getInstance()->isLogged()) {
-            $_GET['p'] = 'guest';
-            $this->no_menu = true;
         }
 
         if ($this->no_menu) {
