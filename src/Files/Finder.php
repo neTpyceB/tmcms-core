@@ -52,31 +52,52 @@ class Finder {
 
 	public function searchForRealPath($real_file_path, $type = self::TYPE_ASSETS) {
 		$search_array = $this->getPathFolders($type);
+		$found_path = false;
 
 		// External path?
 		if (($url = @parse_url($real_file_path)) && isset($url['host']) && $url['host'] != CFG_DOMAIN) {
-			return $real_file_path;
+			$found_path = $real_file_path;
 		}
 
 		// Straight path to local file
-		if (file_exists(DIR_BASE . $real_file_path)) {
-			return $real_file_path;
+		if (!$found_path && file_exists(DIR_BASE . $real_file_path)) {
+			$found_path = $real_file_path;
 		}
 
-		foreach ($search_array as $folder) {
-			// Search folders with relative path
-			if (file_exists(rtrim(DIR_BASE, '/') . $folder . $real_file_path)) {
-				return rtrim(DIR_BASE_URL, '/') . $folder . $real_file_path;
-			}
+		if (!$found_path) {
+			foreach ($search_array as $folder) {
+				// Search folders with relative path
+				if (file_exists(rtrim(DIR_BASE, '/') . $folder . $real_file_path)) {
+					$found_path = rtrim(DIR_BASE_URL, '/') . $folder . $real_file_path;
+					break;
+				}
 
-			// Search folders with basename
-			$basename = basename($real_file_path);
-			if (file_exists(rtrim(DIR_BASE, '/') . $folder . $basename)) {
-				return rtrim(DIR_BASE_URL, '/') . $folder . $basename;
+				// Search folders with basename
+				$basename = basename($real_file_path);
+				if (file_exists(rtrim(DIR_BASE, '/') . $folder . $basename)) {
+					$found_path = rtrim(DIR_BASE_URL, '/') . $folder . $basename;
+					break;
+				}
 			}
 		}
 
-		return trigger_error('File "'. $real_file_path .'" with type "'. $type .'" not found');
+		// If file from external composer vendor - should copy to public dir
+		if (stripos($found_path, '/vendor/') === 0) {
+			$copy_from = DIR_BASE . ltrim($found_path, '/');
+			$copy_to = DIR_ASSETS . ltrim($real_file_path, '/');
+			if (file_exists($copy_from) && !file_exists($copy_to)) {
+				FileSystem::mkDir($copy_to);
+//				dump($copy_to, 0, 0);
+				copy($copy_from, $copy_to);
+			}
+			$found_path = DIR_ASSETS_URL . ltrim($real_file_path, '/');
+		}
+
+		if (!$found_path) {
+			trigger_error('File "'. $real_file_path .'" with type "'. $type .'" not found');
+		}
+
+		return $found_path;
 	}
 
 	/**
