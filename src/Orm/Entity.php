@@ -52,11 +52,14 @@ class Entity {
 
     /**
      * Removed field from object
-     * @param string $field
+     * @param string|array $fields
      * @return $this
      */
-    public function unsetField($field) {
-        unset($this->data[$field]);
+    public function unsetField($fields) {
+        $fields = (array)$fields;
+        foreach ($fields as $field) {
+            unset($this->data[$field]);
+        }
 
         return $this;
     }
