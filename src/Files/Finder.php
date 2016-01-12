@@ -86,8 +86,7 @@ class Finder {
 			$copy_from = DIR_BASE . ltrim($found_path, '/');
 			$copy_to = DIR_ASSETS . ltrim($real_file_path, '/');
 			if (file_exists($copy_from) && !file_exists($copy_to)) {
-				FileSystem::mkDir($copy_to);
-//				dump($copy_to, 0, 0);
+				FileSystem::mkDir(pathinfo($copy_to, PATHINFO_DIRNAME));
 				copy($copy_from, $copy_to);
 			}
 			$found_path = DIR_ASSETS_URL . ltrim($real_file_path, '/');
