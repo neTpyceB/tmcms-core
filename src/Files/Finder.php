@@ -80,7 +80,7 @@ class Finder {
 				}
 			}
 		}
-
+/*
 		// If file from external composer vendor - should copy to public dir
 		if (stripos($found_path, '/vendor/') === 0) {
 			$copy_from = DIR_BASE . ltrim($found_path, '/');
@@ -91,7 +91,7 @@ class Finder {
 			}
 			$found_path = DIR_ASSETS_URL . ltrim($real_file_path, '/');
 		}
-
+*/
 		if (!$found_path) {
 			trigger_error('File "'. $real_file_path .'" with type "'. $type .'" not found');
 		}
