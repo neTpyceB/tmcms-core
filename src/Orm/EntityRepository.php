@@ -901,6 +901,7 @@ FROM `'. $this->getDbTableName() .'`
         $data = [];
         $data['objects'] = serialize($objects);
         $data['class'] = Converter::getPathToClassFile($object);
+        $data['class'] = str_replace(DIR_BASE, '', $data['class']);
 
         $data = serialize($data);
 
