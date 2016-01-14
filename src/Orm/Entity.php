@@ -24,6 +24,7 @@ class Entity {
     private $insert_low_priority = false;
     private $insert_delayed = false;
     private $encode_special_chars_for_html = false; // Auto use of htmlspecialchar for output
+    private $field_callbacks = [];
 
     public function __construct($id = 0, $load_from_db = true) {
         $this->data['id'] = NULL;
@@ -141,6 +142,10 @@ class Entity {
             }
 
             $res = $this->data[$field];
+
+            foreach ($this->field_callbacks as $callback) {
+                $res = $callback($field, $res);
+            }
 
             if ($this->encode_special_chars_for_html && is_scalar($res)) {
                 $res = htmlspecialchars($res);
@@ -411,6 +416,12 @@ class Entity {
 
     public function enableSpecialCharEncodingForHtml() {
         $this->encode_special_chars_for_html = true;
+
+        return $this;
+    }
+
+    public function addCustomCallbackForFields(callable $callback) {
+        $this->field_callbacks[] = $callback;
 
         return $this;
     }
