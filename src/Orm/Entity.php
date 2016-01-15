@@ -101,6 +101,8 @@ class Entity {
             $this->data[$key] = $value;
         }
 
+        $this->deleteObjectDataFromCache();
+
         return $this;
     }
 
