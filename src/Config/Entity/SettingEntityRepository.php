@@ -13,6 +13,17 @@ use TMCms\Orm\EntityRepository;
  */
 class SettingEntityRepository extends EntityRepository
 {
+    protected $table_structure = [
+        'fields' => [
+            'name' => [
+                'type' => 'varchar',
+            ],
+            'value' => [
+                'type' => 'text',
+            ],
+        ],
+    ];
+
     public function setWherePrefix($prefix)
     {
         $this->addWhereFieldIsLike('name', $prefix, true, false);

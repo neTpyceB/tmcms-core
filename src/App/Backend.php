@@ -36,11 +36,7 @@ class Backend
     {
         // Check background services
         if (isset($_GET['cms_is_running_background']) && $_GET['cms_is_running_background'] == 1) {
-            // Run RabbitMQ Async
-            ServiceManager::runAsyncServerListener();
-            // Run usual background tasks
             ServiceManager::checkNeeded();
-
             exit;
         }
 

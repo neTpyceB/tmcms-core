@@ -687,7 +687,7 @@ FROM `'. $this->getDbTableName() .'`
             }
 
             // Emulate setWhereSomething($k, $v);
-            $this->addSimpleWhereField($param, ...$args);
+            $this->addSimpleWhereField($param, isset($args[0]) ? $args[0] : NULL);
 
         } elseif (substr($name, 0, 3) == 'set') { // set{Field} for every object in repository
 
@@ -699,7 +699,7 @@ FROM `'. $this->getDbTableName() .'`
             // Set field in every inner object
             foreach ($this->getCollectedObjects() as $object) {
                 /** @var Entity $object */
-                $object->{$name}(...$args);
+                $object->{$name}(isset($args[0]) ? $args[0] : NULL);
             }
 
         } else {
@@ -1183,6 +1183,7 @@ FROM `'. $this->getDbTableName() .'`
 
         /** @var EntityRepository $obj_collection */
         $obj_collection = new $class();
+        $obj_collection->setLimit(1);
         foreach ($criteria as $k => $v) {
             $method = 'setWhere' . Converter::to_camel_case($k);
             $obj_collection->{$method}($v);
