@@ -13,6 +13,8 @@ use TMCms\Orm\EntityRepository;
  */
 class SettingEntityRepository extends EntityRepository
 {
+    protected $db_table = 'cms_settings';
+
     protected $table_structure = [
         'fields' => [
             'name' => [

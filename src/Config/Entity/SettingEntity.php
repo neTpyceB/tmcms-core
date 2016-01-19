@@ -16,5 +16,5 @@ use TMCms\Orm\Entity;
  */
 class SettingEntity extends Entity
 {
-
+    protected $db_table = 'cms_settings';
 }
