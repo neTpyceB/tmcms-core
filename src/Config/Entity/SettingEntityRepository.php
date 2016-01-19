@@ -6,7 +6,7 @@ use TMCms\Orm\EntityRepository;
 
 /**
  * Class SettingCollection
- * @package TMCms\Config\Object
+ * @package TMCms\Config\Entity
  *
  * @method setWhereName(string $name)
  * @method setWhereValue(string $value)

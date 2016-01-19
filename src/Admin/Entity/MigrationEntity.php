@@ -6,7 +6,7 @@ use TMCms\Orm\Entity;
 
 /**
  * Class Migration
- * @package TMCms\Admin\Object
+ * @package TMCms\Admin\Entity
  *
  * @method setFilename(string $filename)
  * @method setTs(int $ts)

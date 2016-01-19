@@ -6,7 +6,7 @@ use TMCms\Orm\Entity;
 
 /**
  * Class Setting
- * @package TMCms\Setting\Object
+ * @package TMCms\Setting\Entity
  *
  * @method string getName()
  * @method string getValue()
