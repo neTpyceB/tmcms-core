@@ -30,6 +30,10 @@ class App
      */
     public static function add($message, $page = P, $action = P_DO, $time = NOW, $user_id = USER_ID, $url = SELF)
     {
+
+        // This is required for db autocreate
+        $log_check = new AppLogEntityRepository();
+
         $app_log = new AppLogEntity();
         $app_log->loadDataFromArray([
             'ts' => $time,
