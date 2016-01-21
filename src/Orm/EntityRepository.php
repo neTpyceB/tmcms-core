@@ -1145,7 +1145,7 @@ FROM `'. $this->getDbTableName() .'`
     private function ensureDbTableExists() {
         $table = $this->getDbTableName();
         // May be empty
-        if ($table == 'm_s' || SQL::tableExists($this->getDbTableName())) {
+        if ($table == 'm_s' || SQL::tableExists($table)) {
             return true;
         }
 
