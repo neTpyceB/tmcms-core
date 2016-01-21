@@ -88,7 +88,13 @@ class Users
         $user_id = (int)$user_id;
         $sid = $this->generateUserSid($user_id);
 
-        $session = new UsersSessionEntity();
+        $session = UsersSessionEntityRepository::findOneEntityByCriteria([
+            'sid' => $sid,
+            'user_id' => $user_id,
+        ]);
+        if (!$session) {
+            $session = new UsersSessionEntity();
+        }
         $session->setSid($sid);
         $session->setUserId($user_id);
         $session->save();
@@ -373,6 +379,7 @@ class Users
                 $group
                     ->setField('undeletable', 1)
                     ->setField('can_set_permissions', 1)
+                    ->setField('structure_permissions', 1)
                     ->setFullAccess(1)
                     ->save();
             } else {
@@ -391,6 +398,7 @@ class Users
                     [
                         'undeletable' => 1,
                         'can_set_permissions' => 1,
+                        'structure_permissions' => 1,
                         'full_access' => 1,
                         'title' => 'Developers',
                     ]
@@ -404,6 +412,7 @@ class Users
                     [
                         'undeletable' => 0,
                         'can_set_permissions' => 1,
+                        'structure_permissions' => 1,
                         'full_access' => 1,
                         'title' => 'Managers',
                         'default' => 1

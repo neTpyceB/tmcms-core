@@ -11,4 +11,18 @@ use TMCms\Orm\EntityRepository;
 class AdminUsageEntityRepository extends EntityRepository
 {
     protected $db_table = 'cms_usage';
+    protected $table_structure = [
+        'fields' => [
+            'function_class' => [
+                'type' => 'varchar',
+            ],
+            'function_name' => [
+                'type' => 'varchar',
+            ],
+            'counter' => [
+                'type' => 'int',
+                'unsigned' => true,
+            ],
+        ],
+    ];
 }

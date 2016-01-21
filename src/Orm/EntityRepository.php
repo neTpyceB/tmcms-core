@@ -1185,6 +1185,7 @@ FROM `'. $this->getDbTableName() .'`
 
         /** @var EntityRepository $obj_collection */
         $obj_collection = new $class();
+        $obj_collection->setLimit(1);
         foreach ($criteria as $k => $v) {
             $method = 'setWhere' . Converter::to_camel_case($k);
             $obj_collection->{$method}($v);
