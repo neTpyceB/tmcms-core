@@ -2,6 +2,7 @@
 
 namespace TMCms\Files;
 
+use TMCms\Config\Settings;
 use TMCms\Traits\singletonInstanceTrait;
 
 defined('INC') or exit;
@@ -95,6 +96,12 @@ class Finder {
 		if (!$found_path) {
 			trigger_error('File "'. $real_file_path .'" with type "'. $type .'" not found');
 		}
+
+		// Add cache stamp for frontend assets
+		if ($type == self::TYPE_ASSETS) {
+			$found_path .= '?' . Settings::get('last_assets_invalidate_time');
+		}
+
 
 		return $found_path;
 	}
