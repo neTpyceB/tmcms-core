@@ -304,7 +304,7 @@ class Menu
             <?php endif; ?>
             <ul class="nav navbar-nav navbar-right">
                 <li class="off-right">
-                    <a href="/" title="Open site">
+                    <a href="/" title="Open site" target="_blank">
                         <span class="hidden-xs ml10">
                             <i class="fa fa-files-o"></i>
                         </span>

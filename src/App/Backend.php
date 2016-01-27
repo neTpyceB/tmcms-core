@@ -233,7 +233,8 @@ class Backend
         PageHead::getInstance()
             ->setTitle((P_DO !== '_default' ? Converter::symb2Ttl(P_DO) . ' / ' : '') . Converter::symb2Ttl(P) . ' / ' . Configuration::getInstance()->get('site')['name'] . ' / ' . CMS_NAME . ' v. ' . CMS_VERSION)
             ->setFavicon(DIR_CMS_IMAGES_URL . 'logo_square.png')
-            ->addMeta('name=' . CMS_NAME . ' - ' . Configuration::getInstance()->get('site')['name'] . '; action-uri=http://' . CFG_DOMAIN . '/cms/; icon-uri=http://' . DIR_CMS_IMAGES_URL . 'logo_square.png', 'msapplication-task');
+            ->addMeta('name=' . CMS_NAME . ' - ' . Configuration::getInstance()->get('site')['name'] . '; action-uri=http://' . CFG_DOMAIN . '/cms/; icon-uri=http://' . DIR_CMS_IMAGES_URL . 'logo_square.png', 'msapplication-task')
+        ;
 
         // Core - main design
         PageHead::getInstance()
@@ -244,12 +245,13 @@ class Backend
             ->addCssUrl('css/skins/palette.css')
             ->addCssUrl('css/fonts/font.css')
             ->addCssUrl('css/main.css')
-            ->addJsUrl('plugins/modernizr.js');
+            ->addJsUrl('plugins/modernizr.js')
+            ->addCssUrl('css.css')
+        ;
 
         // Only for auth-ed users
         if (Users::getInstance()->isLogged()) {
             PageHead::getInstance()
-                ->addCssUrl('css.css')
                 ->addCssUrl('print_css.css', 'print')
                 ->addJsUrl(DIR_CMS_SCRIPTS_URL . 'jquery-2.1.0.min.js')
                 ->addJsUrl(DIR_CMS_SCRIPTS_URL . 'jquery.form.min.js')// Ajaxify forms
