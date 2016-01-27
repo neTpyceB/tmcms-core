@@ -10,5 +10,15 @@ use TMCms\Orm\EntityRepository;
  */
 class PagesWordEntityRepository extends EntityRepository
 {
-
+    protected $db_table = 'cms_pages_words';
+    protected $table_structure = [
+        'fields' => [
+            'name' => [
+                'type' => 'varchar',
+            ],
+            'word' => [
+                'type' => 'mediumtext',
+            ],
+        ],
+    ];
 }
