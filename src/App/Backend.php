@@ -259,7 +259,15 @@ class Backend
                 ->addJs('cms_data.site_name="' . Configuration::getInstance()->get('site')['name'] . '"') // Required for notifications
                 ->addJsUrl('cms_js.js')
                 ->addJsUrl(DIR_CMS_SCRIPTS_URL . 'scripts.js')
-                ->addJsURL('plupload/plupload.full.min.js');
+                ->addJsURL('plupload/plupload.full.min.js')
+            ;
+
+            // Script for sending JS errors
+            if (CFG_MAIL_ERRORS && Settings::isProductionState() && !Settings::get('do_not_send_js_errors')) {
+                PageHead::getInstance()
+                    ->addJsUrl('send_error.js')
+                    ->addJS('register_js_error.ini(\'' . DIR_CMS_URL . '\');');
+            }
 
             PageTail::getInstance()
                 ->addCssURL('context_menu/menu.css')
@@ -280,7 +288,8 @@ class Backend
                 ->addJsUrl('plugins/chosen/chosen.jquery.min.js')
                 ->addJsUrl('plugins/chosen/chosen.order.jquery.js')
                 ->addJsURL('ckeditor/ckeditor.js') // Wysiwyg
-                ->addJsURL('plugins/parsley.min.js'); // Input validation
+                ->addJsURL('plugins/parsley.min.js') // Input validation
+            ;
         }
 
         // Set head for page
