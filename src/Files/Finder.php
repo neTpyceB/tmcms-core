@@ -54,10 +54,12 @@ class Finder {
 	public function searchForRealPath($real_file_path, $type = self::TYPE_ASSETS) {
 		$search_array = $this->getPathFolders($type);
 		$found_path = false;
+		$external = false;
 
 		// External path?
 		if (($url = @parse_url($real_file_path)) && isset($url['host']) && $url['host'] != CFG_DOMAIN) {
 			$found_path = $real_file_path;
+			$external = true;
 		}
 
 		// Straight path to local file
@@ -98,7 +100,7 @@ class Finder {
 		}
 
 		// Add cache stamp for frontend assets
-		if ($type == self::TYPE_ASSETS) {
+		if (!$external && $type == self::TYPE_ASSETS) {
 			$found_path .= '?' . Settings::get('last_assets_invalidate_time');
 		}
 
