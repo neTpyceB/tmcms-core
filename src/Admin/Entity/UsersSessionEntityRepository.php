@@ -20,6 +20,10 @@ class UsersSessionEntityRepository extends EntityRepository {
                 'type' => 'char',
                 'length' => 32,
             ],
+            'ip_long' => [
+                'type' => 'int',
+                'unsigned' => true,
+            ],
             'ts' => [
                 'type' => 'int',
                 'unsigned' => true,

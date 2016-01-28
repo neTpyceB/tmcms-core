@@ -14,5 +14,6 @@ class UsersSessionEntity extends Entity {
 
     protected function beforeCreate() {
         $this->setTs(NOW);
+        $this->setIpLong(IP_LONG);
     }
 }
