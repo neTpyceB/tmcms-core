@@ -39,6 +39,7 @@ class Users
     private static $cached_user_data = [];
     private static $access = [];
     private static $_structure_permissions = [];
+    private $_online_status_cached = [];
 
     /**
      * Generate unique hash for password or any other string
@@ -64,6 +65,19 @@ class Users
             && $_SESSION['admin_logged'] && $_SESSION['admin_id']
             && $this->checkSession($_SESSION['admin_id'], $_SESSION['admin_sid'], true)
         );
+    }
+
+    public function isOnline($user_id) {
+        if (isset($this->_online_status_cached[$user_id])) {
+            return $this->_online_status_cached[$user_id];
+        }
+
+        // Check session for current user exists
+        $sessions = new UsersSessionEntityRepository();
+        $sessions->setWhereUserId($user_id);
+        $sessions->setLimit(1);
+        $sessions->addWhereFieldIsHigher('ts', (NOW - 600)); // 10 minutes
+        return $this->_online_status_cached[$user_id] = $sessions->hasAnyObjectInCollection();
     }
 
     /**
