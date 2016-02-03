@@ -95,13 +95,13 @@ class Finder {
 			$found_path = DIR_ASSETS_URL . ltrim($real_file_path, '/');
 		}
 */
-		if (!$found_path) {
-			trigger_error('File "'. $real_file_path .'" with type "'. $type .'" not found');
-		}
-
 		// Add cache stamp for frontend assets
 		if (!$external && $type == self::TYPE_ASSETS) {
 			$found_path .= '?' . Settings::get('last_assets_invalidate_time');
+		}
+
+		if (!$found_path) {
+			trigger_error('File "'. $real_file_path .'" with type "'. $type .'" not found');
 		}
 
 
