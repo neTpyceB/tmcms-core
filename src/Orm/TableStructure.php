@@ -104,7 +104,7 @@ class TableStructure {
                 if (!isset($field['length'])) {
                     $field['length'] = '255';
                 }
-                $res = '`'. $field['name'] .'` varchar('. $field['length'] .') NOT NULL ';
+                $res = '`'. $field['name'] .'` varchar('. $field['length'] .') NULL ';
                 break;
 
             case 'char':
@@ -112,17 +112,17 @@ class TableStructure {
                 if (!isset($field['length'])) {
                     trigger_error('Length for "'. $field['name'] .'" required');
                 }
-                $res = '`'. $field['name'] .'` char('. $field['length'] .') NOT NULL';
+                $res = '`'. $field['name'] .'` char('. $field['length'] .') NULL';
                 break;
 
             case 'text':
                 // Large textares
-                $res = '`'. $field['name'] .'` text NOT NULL';
+                $res = '`'. $field['name'] .'` text NULL';
                 break;
 
             case 'mediumtext':
                 // Large textares
-                $res = '`'. $field['name'] .'` mediumtext NOT NULL';
+                $res = '`'. $field['name'] .'` mediumtext NULL';
                 break;
 
             case 'int':
@@ -134,11 +134,11 @@ class TableStructure {
                         $field['length'] = 10;
                     }
                 }
-                $res = '`'. $field['name'] .'` int('. $field['length'] .') '. ($unsigned ? ' unsigned ' : '') .' NOT NULL';
+                $res = '`'. $field['name'] .'` int('. $field['length'] .') '. ($unsigned ? ' unsigned ' : '') .' NULL';
                 break;
 
             case 'index':
-                $res = '`'. $field['name'] .'` int(10) unsigned NOT NULL';
+                $res = '`'. $field['name'] .'` int(10) unsigned NULL';
 
                 // Add index if not exists
                 if (!isset($this->table_structure['indexes'][$field['name']])) {
@@ -150,13 +150,13 @@ class TableStructure {
 
             case 'translation':
                 // Int index with comment
-                $res = '`'. $field['name'] .'` int(10) unsigned NOT NULL';
+                $res = '`'. $field['name'] .'` int(10) unsigned NULL';
                 $field['comment'] = 'translation';
                 break;
 
             case 'bool':
                 // True or false, 0 | 1
-                $res = '`'. $field['name'] .'` tinyint(1) unsigned NOT NULL DEFAULT "0"';
+                $res = '`'. $field['name'] .'` tinyint(1) unsigned NULL DEFAULT "0"';
                 break;
 
             case 'float':
@@ -168,7 +168,7 @@ class TableStructure {
                 // Convert to db format
                 $field['length'] = str_replace('.', ',', $field['length']);
 
-                $res = '`'. $field['name'] .'` decimal('. $field['length'] .') '. ($unsigned ? ' unsigned ' : '') .' NOT NULL';
+                $res = '`'. $field['name'] .'` decimal('. $field['length'] .') '. ($unsigned ? ' unsigned ' : '') .' NULL';
                 break;
 
             default:
