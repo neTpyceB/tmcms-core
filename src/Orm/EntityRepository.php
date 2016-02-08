@@ -51,6 +51,10 @@ class EntityRepository {
         return $this;
     }
 
+    public static function getInstance($ids = []) {
+        return new static($ids);
+    }
+
     public function deleteObjectCollection() {
         $this->collectObjects();
 
