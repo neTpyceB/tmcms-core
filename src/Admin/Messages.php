@@ -21,20 +21,23 @@ class Messages
      * @param string $text Text to be sent
      * @param int $to_user_id recipient user id
      * @param int $from_user_id sender user id
+     * @param bool $notify_toastr
      * @return UsersMessage that was sent
      */
-    public static function sendMessage($text, $to_user_id = USER_ID, $from_user_id = 0)
+    public static function sendMessage($text, $to_user_id = USER_ID, $from_user_id = 0, $notify_toastr = false)
     {
         $message = new UsersMessage();
         $message->setFromUserId($from_user_id);
         $message->setToUserId($to_user_id);
         $message->setMessage($text);
+        $message->setNotify($notify_toastr);
         $message->save();
 
         return $message;
     }
 
     /**
+     * Notification using browser API
      * Get array of UserMessage
      * @param int $from_user_id sender user id
      * @param int $to_user_id recipient user id
@@ -71,5 +74,17 @@ class Messages
         });
 
         return $messages;
+    }
+
+    /**
+     * Notification using green toastr alerts
+     * @param string $text Text to be sent
+     * @param int $to_user_id recipient user id
+     * @param int $from_user_id sender user id
+     * @return UsersMessage that was sent
+     */
+    public static function sendGreenAlert($text, $to_user_id = USER_ID, $from_user_id = 0)
+    {
+        return self::sendMessage($text, $to_user_id, $from_user_id, true);
     }
 }
