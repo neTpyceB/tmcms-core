@@ -198,6 +198,8 @@ class Entity {
             $this->create();
         }
 
+        $this->afterSave();
+
         return $this;
     }
 
@@ -388,6 +390,10 @@ class Entity {
         return $this;
     }
 
+    public function isFieldChangedForUpdate($field) {
+        return isset($this->changed_fields_for_update[$field]);
+    }
+
     /**
      * Method for catching setField + getField
      * @param $name
@@ -503,6 +509,14 @@ class Entity {
      * Auto-call before any Create or Update
      */
     protected function beforeSave() {
+
+    }
+
+
+    /**
+     * Auto-call after any Create or Update
+     */
+    protected function afterSave() {
 
     }
 
