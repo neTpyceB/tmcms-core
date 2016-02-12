@@ -3,6 +3,7 @@
 namespace TMCms\Orm;
 
 use TMCms\DB\SQL;
+use TMCms\DB\Sync;
 
 class TableStructure {
 
@@ -30,12 +31,20 @@ class TableStructure {
 
     public function createTableIfNotExists()
     {
-        if (!$this->table_name) {
-            trigger_error('Table name is not set');
-        }
-
         if (SQL::tableExists($this->table_name)) {
             trigger_error('DB table "'. $this->table_name .'" already exists');
+        }
+
+        $sql = $this->getCreateTableStatement();
+        q($sql);
+
+        return true;
+    }
+
+    public function getCreateTableStatement()
+    {
+        if (!$this->table_name) {
+            trigger_error('Table name is not set');
         }
 
         if (!$this->table_structure || !isset($this->table_structure['fields'])) {
@@ -55,6 +64,7 @@ class TableStructure {
                     'unsigned' => true,
                     'length' => 10,
                     'auto_increment' => true,
+                    'null' => false,
                 ]
             ];
 
@@ -64,7 +74,7 @@ class TableStructure {
         }
 
         // Start with creation
-        $sql = 'CREATE TABLE IF NOT EXISTS `'. $this->getTableName() .'` ( ';
+        $sql = 'CREATE TABLE `'. $this->getTableName() .'` ( ';
 
         // Add fields
         $fields = [];
@@ -75,7 +85,7 @@ class TableStructure {
         $sql  .= implode(', ', $fields);
 
         // Set pripary key
-        $sql .= ', PRIMARY KEY (`id`) ';
+        $sql .= ', PRIMARY KEY (`id`)';
 
         // Index keys
         $indexes = [];
@@ -87,11 +97,11 @@ class TableStructure {
         }
 
         // Set engine and encoding
-        $sql .= ' ) ENGINE=InnoDB ';
+        $sql .= ') ENGINE=InnoDB ';
         $sql .= ' AUTO_INCREMENT=1 ';
         $sql .= ' DEFAULT CHARSET=utf8 ';
 
-        q($sql);
+        return $sql;
     }
 
     private function getFieldCreate($field)
@@ -112,7 +122,7 @@ class TableStructure {
                 if (!isset($field['length'])) {
                     trigger_error('Length for "'. $field['name'] .'" required');
                 }
-                $res = '`'. $field['name'] .'` char('. $field['length'] .') NULL';
+                $res = '`'. $field['name'] .'` char('. $field['length'] .') DEFAULT NULL';
                 break;
 
             case 'text':
@@ -134,11 +144,11 @@ class TableStructure {
                         $field['length'] = 10;
                     }
                 }
-                $res = '`'. $field['name'] .'` int('. $field['length'] .') '. ($unsigned ? ' unsigned ' : '') .' NULL';
+                $res = '`'. $field['name'] .'` int('. $field['length'] .') '. ($unsigned ? ' unsigned ' : '') . (isset($field['null']) && !$field['null'] ? ' NOT NULL' : ((isset($field['auto_increment']) ? '' : ' DEFAULT') . ' NULL'));
                 break;
 
             case 'index':
-                $res = '`'. $field['name'] .'` int(10) unsigned NULL';
+                $res = '`'. $field['name'] .'` int(10) unsigned DEFAULT NULL';
 
                 // Add index if not exists
                 if (!isset($this->table_structure['indexes'][$field['name']])) {
@@ -176,7 +186,7 @@ class TableStructure {
         }
 
         if (isset($field['auto_increment'])) {
-            $res .= ' AUTO_INCREMENT ';
+            $res .= ' AUTO_INCREMENT';
         }
 
         if (isset($field['comment'])) {
@@ -195,5 +205,24 @@ class TableStructure {
         SQL::getInstance()->sql_query('ALTER TABLE `'. $this->table_name .'` AUTO_INCREMENT = 1');
 
         return $this;
+    }
+
+    public function ensureDbTableStructureIsFresh()
+    {
+        $source = SQL::getCreateTable($this->getTableName());
+        $destination = $this->getCreateTableStatement();
+
+        $sync = new Sync();
+        $sync->makeItWork();
+        $sql = $sync->getUpdates($source, $destination);
+
+        // Commented - do not auto run migrations, but only show desired changes
+//        if ($sql) {
+//            foreach ($sql as $item) {
+//                q($item);
+//            }
+//        }
+
+        return $sql;
     }
 }

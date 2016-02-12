@@ -41,6 +41,7 @@ class EntityRepository {
 
     public function __construct($ids = []) {
         if (!Settings::isProductionState()) {
+            // Create or update table
             $this->ensureDbTableExists();
         }
 
@@ -1149,14 +1150,21 @@ FROM `'. $this->getDbTableName() .'`
     private function ensureDbTableExists() {
         $table = $this->getDbTableName();
         // May be empty
-        if ($table == 'm_s' || SQL::tableExists($table)) {
+        if ($table == 'm_s') {
             return true;
         }
 
         $schema = new TableStructure();
         $schema->setTableName($this->getDbTableName());
         $schema->setTableStructure($this->getTableStructure());
-        $schema->createTableIfNotExists();
+
+        if (!SQL::tableExists($table)) {
+            // Create table;
+            $schema->createTableIfNotExists();
+        }
+
+        // Update structure using auto-created migrations
+//        $schema->ensureDbTableStructureIsFresh(); // This changes a lot of required items, do not use in future
 
         return true;
     }
