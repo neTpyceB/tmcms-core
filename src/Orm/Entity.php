@@ -132,7 +132,6 @@ class Entity {
      */
     public function getField($field)
     {
-        $this->debug($this);
         if (isset($this->data[$field]) || isset($this->translation_data[$field])) {
             if (in_array($field, $this->translation_fields)) {
                 if (isset($this->translation_data[$field][LNG])) {
