@@ -1189,36 +1189,48 @@ FROM `'. $this->getDbTableName() .'`
 
     /**
      * Return one Entity by array of criteria
-     * @param array $criteria
+     * @param array $criteria select AND
+     * @param array $exclude selecr NOT
      * @return Entity
      */
-    public static function findOneEntityByCriteria(array $criteria) {
+    public static function findOneEntityByCriteria(array $criteria = [], array $exclude = []) {
         $class = static::class;
 
         /** @var EntityRepository $obj_collection */
         $obj_collection = new $class();
         $obj_collection->setLimit(1);
+
         foreach ($criteria as $k => $v) {
-            $method = 'setWhere' . Converter::to_camel_case($k);
-            $obj_collection->{$method}($v);
+            $obj_collection->addSimpleWhereField($k, $v);
         }
+
+        foreach ($exclude as $k => $v) {
+            $obj_collection->addWhereFieldIsNot($k, $v);
+        }
+
         return $obj_collection->getFirstObjectFromCollection();
     }
 
     /**
      * Return array of Entity by array of criteria
-     * @param array $criteria
+     * @param array $criteria select AND
+     * @param array $exclude selecr NOT
      * @return array
      */
-    public static function findAllEntitiesByCriteria(array $criteria) {
+    public static function findAllEntitiesByCriteria(array $criteria = [], array $exclude = []) {
         $class = static::class;
 
         /** @var EntityRepository $obj_collection */
         $obj_collection = new $class();
+
         foreach ($criteria as $k => $v) {
-            $method = 'setWhere' . Converter::to_camel_case($k);
-            $obj_collection->{$method}($v);
+            $obj_collection->addSimpleWhereField($k, $v);
         }
+
+        foreach ($exclude as $k => $v) {
+            $obj_collection->addWhereFieldIsNot($k, $v);
+        }
+
         return $obj_collection->getAsArrayOfObjects();
     }
 
