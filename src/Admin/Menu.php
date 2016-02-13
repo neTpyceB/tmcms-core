@@ -297,8 +297,8 @@ class Menu
             </div>
             <?php if ($this->help_texts): ?>
                 <div class="text-white pull-left" id="cms_page_help_tips">
-                    <div style="display: none; font-size: 20px;">
-                        <?= implode('<br>', $this->help_texts) ?>
+                    <div style="display: none">
+                        <?= implode('<br><hr><br>', $this->help_texts) ?>
                     </div>
                 </div>
             <?php endif; ?>
@@ -386,7 +386,7 @@ class Menu
                     <ul class="dropdown-menu animated fadeIn">
                         <?php if ($this->help_texts): ?>
                             <li>
-                                <a href="" onclick="$('#cms_page_help_tips').find('> div').toggle(); return false;">Page help</a>
+                                <a href="" onclick="$('#cms_page_help_tips').find('> div').stop().toggle('fast'); return false;">Page help</a>
                             </li>
                         <?php endif; ?>
                         <li>
