@@ -51,4 +51,16 @@ class ModuleManager
     {
         return array_diff(scandir(DIR_MODULES), ['.', '..']);
     }
+
+    /**
+     * @param string $module
+     * @return array
+     */
+    public static function moduleExists($module)
+    {
+        // Require all classes from custom folder
+        self::requireModule($module);
+
+        return class_exists('TMCms\Modules\\'. ucfirst($module) .'\Module'. ucfirst($module));
+    }
 }
