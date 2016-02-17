@@ -61,6 +61,6 @@ class ModuleManager
         // Require all classes from custom folder
         self::requireModule($module);
 
-        return class_exists('Module'. ucfirst($module));
+        return class_exists('TMCms\Modules\\'. ucfirst($module) .'\Module'. ucfirst($module));
     }
 }
