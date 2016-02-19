@@ -132,16 +132,20 @@ class Entity {
      */
     public function getField($field)
     {
+        $res = NULL;
+
         if (isset($this->data[$field]) || isset($this->translation_data[$field])) {
             if (in_array($field, $this->translation_fields)) {
                 if (isset($this->translation_data[$field][LNG])) {
                     return $this->translation_data[$field][LNG];
-                } else {
+                } elseif (isset($this->data[$field])) {
                     return Translations::get($this->data[$field], LNG);
                 }
             }
 
-            $res = $this->data[$field];
+            if (isset($this->data[$field])) {
+                $res = $this->data[$field];
+            }
 
             foreach ($this->field_callbacks as $callback) {
                 $res = $callback($field, $res);
@@ -154,7 +158,7 @@ class Entity {
             return $res;
         }
 
-        return NULL;
+        return $res;
     }
 
     public function deleteObject() {
