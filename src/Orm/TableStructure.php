@@ -147,6 +147,11 @@ class TableStructure {
                 $res = '`'. $field['name'] .'` int('. $field['length'] .') '. ($unsigned ? ' unsigned ' : '') . (isset($field['null']) && !$field['null'] ? ' NOT NULL' : ((isset($field['auto_increment']) ? '' : ' DEFAULT') . ' NULL'));
                 break;
 
+            case 'ts':
+                // Digit
+                $res = '`'. $field['name'] .'` int(10) unsigned NULL';
+                break;
+
             case 'index':
                 $res = '`'. $field['name'] .'` int(10) unsigned DEFAULT NULL';
 
