@@ -134,9 +134,9 @@ class RenderComponentHelper {
         }
 
         // Required for Widgets
-//        if ($field) {
+        if ($field) {
             $field->setAttribute('data-page_id', $this->page_id);
-//        }
+        }
 
         // Set Widget
         switch ($this->widget_type) {
