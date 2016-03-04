@@ -67,7 +67,7 @@ class ColumnGallery extends Column {
 				foreach ($images as $k => $image) {
 					if ($k < 3) {
 						// Draw miniature
-						$images_html[] = '<img src="' . $image . '&resizefit=30x30&key='. Configuration::getInstance()->get('cms')['unique_key'] .'" style="display: inline-block; vertical-align: top; margin: 0 .25rem .25rem 0; border-radius: 3px;">';
+						$images_html[] = '<img src="' . $image . '&resizefit=30x30&key=' . Configuration::getInstance()->get('cms')['unique_key'] . '" style="display: inline-block; vertical-align: top; margin: 0 .25rem .25rem 0; border-radius: 3px;">';
 					} else {
 						// Draw last step
 						$images_html[] = '<div style="display: inline-block; vertical-align: top; text-align: center; height: 30px; min-width: 30px; padding: 0 .75rem; background: #EBEDF4; border-radius: 3px;"><span style="line-height: 30px; font-weight: 600">+' . (count($images) - $k) . '</span></div>';
@@ -80,8 +80,6 @@ class ColumnGallery extends Column {
 
 			$value = implode('', $images_html);
 		}
-
-		$this->setValue($value);
 
 		$linker_array = array('do' => 'images', 'id' => $row_data['id']);
 		$href = $this->getHref($row_data, $linker, $linker_array);
