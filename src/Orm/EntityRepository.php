@@ -201,13 +201,7 @@ class EntityRepository {
     }
 
     public function getIds() {
-        $ids = [];
-
-        foreach ($this->getAsArrayOfObjectData() as $v) {
-            $ids[] = $v['id'];
-        }
-
-        return $ids;
+        return array_values($this->getPairs('id'));
     }
 
     public function getSumOfOneField($field) {
