@@ -28,8 +28,8 @@ class MemcacheCache implements ICache
             self::$instance = new self;
             self::$Memcache = new Memcache();
             self::$Memcache->addServer(self::HOST, self::PORT);
-
         }
+
         return self::$instance;
     }
 

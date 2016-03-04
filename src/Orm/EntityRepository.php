@@ -290,6 +290,7 @@ class EntityRepository {
      */
     public function getCountOfObjectsInCollection()
     {
+        $this->setGenerateOutputWithIterator(false);
         $this->collectObjects(true);
 
         return count($this->collected_objects_data);
@@ -300,6 +301,7 @@ class EntityRepository {
      */
     public function getCountOfMaxPossibleFoundObjectsWithoutFilters()
     {
+        $this->setGenerateOutputWithIterator(false);
         return (int)q_value($this->getSelectSql(true));
     }
 

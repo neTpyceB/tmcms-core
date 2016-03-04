@@ -114,7 +114,7 @@ class TableStructure {
                 if (!isset($field['length'])) {
                     $field['length'] = '255';
                 }
-                $res = '`'. $field['name'] .'` varchar('. $field['length'] .') NULL ';
+                $res = '`'. $field['name'] .'` varchar('. $field['length'] .') NOT NULL';
                 break;
 
             case 'char':
@@ -127,12 +127,12 @@ class TableStructure {
 
             case 'text':
                 // Large textares
-                $res = '`'. $field['name'] .'` text NULL';
+                $res = '`'. $field['name'] .'` text NOT NULL';
                 break;
 
             case 'mediumtext':
                 // Large textares
-                $res = '`'. $field['name'] .'` mediumtext NULL';
+                $res = '`'. $field['name'] .'` mediumtext NOT NULL';
                 break;
 
             case 'int':
@@ -145,6 +145,11 @@ class TableStructure {
                     }
                 }
                 $res = '`'. $field['name'] .'` int('. $field['length'] .') '. ($unsigned ? ' unsigned ' : '') . (isset($field['null']) && !$field['null'] ? ' NOT NULL' : ((isset($field['auto_increment']) ? '' : ' DEFAULT') . ' NULL'));
+                break;
+
+            case 'ts':
+                // Digit
+                $res = '`'. $field['name'] .'` int(10) unsigned NOT NULL DEFAULT 0';
                 break;
 
             case 'index':
@@ -160,13 +165,13 @@ class TableStructure {
 
             case 'translation':
                 // Int index with comment
-                $res = '`'. $field['name'] .'` int(10) unsigned NULL';
+                $res = '`'. $field['name'] .'` int(10) unsigned NOT NULL DEFAULT "0"';
                 $field['comment'] = 'translation';
                 break;
 
             case 'bool':
                 // True or false, 0 | 1
-                $res = '`'. $field['name'] .'` tinyint(1) unsigned NULL DEFAULT "0"';
+                $res = '`'. $field['name'] .'` tinyint(1) unsigned NOT NULL DEFAULT "0"';
                 break;
 
             case 'float':
@@ -178,7 +183,7 @@ class TableStructure {
                 // Convert to db format
                 $field['length'] = str_replace('.', ',', $field['length']);
 
-                $res = '`'. $field['name'] .'` decimal('. $field['length'] .') '. ($unsigned ? ' unsigned ' : '') .' NULL';
+                $res = '`'. $field['name'] .'` decimal('. $field['length'] .') '. ($unsigned ? ' unsigned ' : '') .' NOT NULL DEFAULT 0';
                 break;
 
             default:
