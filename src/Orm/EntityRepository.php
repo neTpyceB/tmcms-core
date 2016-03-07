@@ -545,6 +545,10 @@ class EntityRepository {
     }
 
     public function getTotalSelectedRowsWithoutLimit() {
+        if (!$this->require_to_count_total_rows) {
+            dump('You need to call setRequireCountRowsWithoutLimits(true) before requesting result');
+        }
+
         return $this->total_count_rows;
     }
 
