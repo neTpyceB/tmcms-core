@@ -549,6 +549,8 @@ class EntityRepository {
             dump('You need to call setRequireCountRowsWithoutLimits(true) before requesting result');
         }
 
+        $this->collectObjects();
+
         return $this->total_count_rows;
     }
 
