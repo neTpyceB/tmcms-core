@@ -379,7 +379,7 @@ class EntityRepository {
         $pairs = [];
         foreach ($this->getAsArrayOfObjects() as $v) {
             /** @var Entity $v */
-            //$v->loadDataFromDB(); CACHE
+            $v->loadDataFromDB();
 
             $key_method = 'get' . ucfirst($key_field);
             $value_method = 'get' . ucfirst($value_field);
