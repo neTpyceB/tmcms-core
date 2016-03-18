@@ -3,6 +3,7 @@
 namespace TMCms\Orm;
 
 use TMCms\Cache\Cacher;
+use TMCms\Config\Settings;
 use TMCms\DB\SQL;
 use TMCms\Strings\Converter;
 use TMCms\Strings\Translations;
@@ -296,6 +297,10 @@ class Entity {
 
     private function getObjectDataFromCache()
     {
+        if (!Settings::isProductionState()) {
+            return NULL;
+        }
+
         return Cacher::getInstance()->getDefaultCacher()->get($this->getCacheKey());
     }
 
