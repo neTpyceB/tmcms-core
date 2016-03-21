@@ -186,6 +186,14 @@ class TableStructure {
                 $res = '`'. $field['name'] .'` decimal('. $field['length'] .') '. ($unsigned ? ' unsigned ' : '') .' NOT NULL DEFAULT 0';
                 break;
 
+            case 'enum':
+                if (!isset($field['options'])) {
+                    dump('Param "options" must be set for field "enum"');
+                }
+
+                $res = '`'. $field['name'] .'` enum("'. implode('","', $field['options']) .'") NOT NULL';
+                break;
+
             default:
                 trigger_error('Type "'. $field['type'] .'" not found in TableStructure');
         }
