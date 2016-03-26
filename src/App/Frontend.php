@@ -58,12 +58,12 @@ class Frontend
         $this->parse();
     }
 
-    public function __destruct() {
+    public function __destruct()
+    {
         // Save all previous DB queries to analyzer if enabled (for debug and benchmarks)
         if (Settings::get('analyze_db_queries')) {
             QueryAnalyzer::getInstance()
-                ->store()
-            ;
+                ->store();
         }
     }
 
@@ -103,8 +103,7 @@ class Frontend
             if (Settings::isCacheEnabled()) {
                 $this->cached_page_html = Cacher::getInstance()
                     ->getDefaultCacher()
-                    ->get('html_' . PATH_INTERNAL_MD5)
-                ;
+                    ->get('html_' . PATH_INTERNAL_MD5);
             }
             if ($this->cached_page_html) {
                 return;
@@ -127,8 +126,7 @@ class Frontend
 
         // Start Visual edit for drawing editable fields around system components - if enabled
         VisualEdit::getInstance()
-            ->init()
-        ;
+            ->init();
 
         /* Start composing HTML page */
 
@@ -144,8 +142,7 @@ class Frontend
         if (CFG_MAIL_ERRORS && Settings::isProductionState() && !Settings::get('do_not_send_js_errors')) {
             PageHead::getInstance()
                 ->addJsUrl('send_error.js')
-                ->addJS('register_js_error.ini(\'' . DIR_CMS_URL . '\');')
-            ;
+                ->addJS('register_js_error.ini(\'' . DIR_CMS_URL . '\');');
         }
 
         /* Start replacing template vars with appropriate component content */
@@ -153,8 +150,7 @@ class Frontend
         if (Settings::isCacheEnabled()) {
             $cached_replaces = Cacher::getInstance()
                 ->getDefaultCacher()
-                ->get('template_elements_' . PATH_INTERNAL_MD5)
-            ;
+                ->get('template_elements_' . PATH_INTERNAL_MD5);
         } else {
             $cached_replaces = [];
         }
@@ -195,8 +191,7 @@ class Frontend
                         ->set('template_elements_' . PATH_INTERNAL_MD5, [
                             'elements' => $elements,
                             'replaces' => $res
-                        ])
-                    ;
+                        ]);
                 }
             } else {
                 // ... or set from cache
@@ -240,14 +235,15 @@ class Frontend
 
             // Nothing found
         } else {
-            $this->html = 'No template "'. $this->router_instance->getPageData()['template_file'] .'" for this page.';
+            $this->html = 'No template "' . $this->router_instance->getPageData()['template_file'] . '" for this page.';
         }
     }
 
     /**
      * File may be preprocessed with external template engine(-s) before parsing for components
      */
-    private function processExternalTemplater() {
+    private function processExternalTemplater()
+    {
         $template_extension = pathinfo($this->router_instance->getPageData()['file'], PATHINFO_EXTENSION);
 
         if ($template_extension == 'twig') {
@@ -315,8 +311,7 @@ class Frontend
             if ($selected_plugin_file) {
                 // Require file with plugin class
                 $file_with_plugin = Finder::getInstance()
-                    ->searchForRealPath($selected_plugin_file, Finder::TYPE_PLUGINS)
-                ;
+                    ->searchForRealPath($selected_plugin_file, Finder::TYPE_PLUGINS);
                 require_once DIR_BASE . $file_with_plugin;
 
                 $plugin_class_name = str_replace('.php', '', $selected_plugin_file);
@@ -452,7 +447,7 @@ class Frontend
             // Put body tag if not found in template
             if (!strpos($this->html, '<body')) { // No trailing bracket ! may have class
                 $classes = PageHead::getInstance()->getBodyCssClasses();
-                echo '<body'. ($classes ? ' class="'. implode(' ', $classes) .'"' : '') .'>';
+                echo '<body' . ($classes ? ' class="' . implode(' ', $classes) . '"' : '') . '>';
             }
 
             // Main page content
@@ -481,8 +476,7 @@ class Frontend
         if (Settings::get('use_file_cache_for_all_pages') && Settings::isCacheEnabled()) {
             Cacher::getInstance()
                 ->getDefaultCacher()
-                ->set('html_' . PATH_INTERNAL_MD5, $html)
-            ;
+                ->set('html_' . PATH_INTERNAL_MD5, $html);
         }
 
         // Encode ff browser supports gzip
@@ -494,7 +488,7 @@ class Frontend
         // Set cache headers for one hour
         if (Settings::isCacheEnabled() && !headers_sent()) {
             header("Cache-Control: max-age=2592000");
-            header('Expires: '.gmdate('D, d M Y H:i:s \G\M\T', time() + 3600));
+            header('Expires: ' . gmdate('D, d M Y H:i:s \G\M\T', time() + 3600));
         }
 
         return $html;
