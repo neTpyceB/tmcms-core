@@ -209,19 +209,21 @@ class SQL
 
     /**
      * @param string $tbl
+     * @param bool $use_cache
      * @return bool
      */
-    public static function tableExists($tbl)
+    public static function tableExists($tbl, $use_cache = true)
     {
-        return in_array($tbl, self::getTables());
+        return in_array($tbl, self::getTables(NULL, $use_cache));
     }
 
     /**
      * Show tables in database
      * @param string $db - database name
+     * @param bool $use_cache
      * @return array - list of non-temporary tables, by pairs key/value
      */
-    public static function getTables($db = NULL)
+    public static function getTables($db = NULL, $use_cache = true)
     {
         if (!$db) {
             $db = Configuration::getInstance()->get('db')['name'];
@@ -230,8 +232,8 @@ class SQL
             }
         }
 
-        if (!isset(self::$_table_list[$db])) {
-            self::$_table_list[$db] = q_pairs('SHOW TABLES FROM `' . $db . '`');
+        if (!isset(self::$_table_list[$db]) || !$use_cache) {
+            self::$_table_list[$db] = self::getInstance()->q_pairs('SHOW TABLES FROM `' . $db . '`');
         }
 
         return self::$_table_list[$db];
