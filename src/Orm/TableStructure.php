@@ -31,7 +31,7 @@ class TableStructure {
 
     public function createTableIfNotExists()
     {
-        if (SQL::tableExists($this->table_name)) {
+        if (SQL::tableExists($this->table_name, false)) {
             trigger_error('DB table "'. $this->table_name .'" already exists');
         }
 
