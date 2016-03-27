@@ -15,7 +15,7 @@ class WhereTree extends Tree
      */
     public function getByKey($key)
     {
-        $res = array();
+        $res = [];
         foreach ($this->childs as $node) {
             /* @var $node WhereTree */
             $node_parser = $node->getValue();
