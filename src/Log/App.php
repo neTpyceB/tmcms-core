@@ -96,7 +96,7 @@ class App
             if (!file_exists(DIR_CACHE)) {
                 FileSystem::mkDir(DIR_CACHE);
             }
-            dump($data);
+
             file_put_contents(DIR_CACHE . 'log_data', gzencode(json_encode($data)));
 
             // Send stats
