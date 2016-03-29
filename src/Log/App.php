@@ -74,7 +74,7 @@ class App
 
         $app_log->mergeWithCollection($users, 'user_id');
 
-        $data_log = $app_log->getAsArrayOfObjectData();
+        $data_log = $app_log->getAsArrayOfObjectData(true);
 
         $usage = new AdminUsageEntityRepository();
 
