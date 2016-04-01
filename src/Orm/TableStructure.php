@@ -32,7 +32,7 @@ class TableStructure {
     public function createTableIfNotExists()
     {
         if (SQL::tableExists($this->table_name)) {
-            trigger_error('DB table "'. $this->table_name .'" already exists');
+            dump('DB table "'. $this->table_name .'" already exists');
         }
 
         $sql = $this->getCreateTableStatement();
@@ -44,11 +44,11 @@ class TableStructure {
     public function getCreateTableStatement()
     {
         if (!$this->table_name) {
-            trigger_error('Table name is not set');
+            dump('Table name is not set');
         }
 
         if (!$this->table_structure || !isset($this->table_structure['fields'])) {
-            trigger_error('Table "'. $this->table_name .'" does not exist and structure is not set');
+            dump('Table "'. $this->table_name .'" does not exist and structure is not set');
         }
 
         if (!isset($this->table_structure['indexes'])) {
@@ -120,7 +120,7 @@ class TableStructure {
             case 'char':
                 // Codes
                 if (!isset($field['length'])) {
-                    trigger_error('Length for "'. $field['name'] .'" required');
+                    dump('Length for "'. $field['name'] .'" required');
                 }
                 $res = '`'. $field['name'] .'` char('. $field['length'] .') DEFAULT NULL';
                 break;
@@ -186,8 +186,16 @@ class TableStructure {
                 $res = '`'. $field['name'] .'` decimal('. $field['length'] .') '. ($unsigned ? ' unsigned ' : '') .' NOT NULL DEFAULT 0';
                 break;
 
+            case 'enum':
+                if (!isset($field['options'])) {
+                    dump('Param "options" must be set for field "enum"');
+                }
+
+                $res = '`'. $field['name'] .'` enum("'. implode('","', $field['options']) .'") NOT NULL';
+                break;
+
             default:
-                trigger_error('Type "'. $field['type'] .'" not found in TableStructure');
+                dump('Type "'. $field['type'] .'" not found in TableStructure');
         }
 
         if (isset($field['auto_increment'])) {
@@ -204,7 +212,7 @@ class TableStructure {
     public function resetAutoIncrement()
     {
         if (!$this->table_name) {
-            trigger_error('Table name is not set');
+            dump('Table name is not set');
         }
 
         SQL::getInstance()->sql_query('ALTER TABLE `'. $this->table_name .'` AUTO_INCREMENT = 1');

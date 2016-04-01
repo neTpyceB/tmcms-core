@@ -74,7 +74,7 @@ class App
 
         $app_log->mergeWithCollection($users, 'user_id');
 
-        $data_log = $app_log->getAsArrayOfObjectData();
+        $data_log = $app_log->getAsArrayOfObjectData(true);
 
         $usage = new AdminUsageEntityRepository();
 
@@ -96,7 +96,8 @@ class App
             if (!file_exists(DIR_CACHE)) {
                 FileSystem::mkDir(DIR_CACHE);
             }
-            file_put_contents(DIR_CACHE . 'log_data', gzencode(serialize($data)));
+
+            file_put_contents(DIR_CACHE . 'log_data', gzencode(json_encode($data)));
 
             // Send stats
             Mailer::getInstance()

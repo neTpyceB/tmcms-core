@@ -53,7 +53,7 @@ class Updater
         }
 
         // Clear all caches - may be required to show fresh data
-        Cacher::getInstance()->clearAllCaches();
+        @Cacher::getInstance()->clearAllCaches();
 
         return $this;
     }

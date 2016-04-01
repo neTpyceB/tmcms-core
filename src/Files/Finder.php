@@ -101,7 +101,7 @@ class Finder {
 		}
 
 		if (!$found_path) {
-			trigger_error('File "'. $real_file_path .'" with type "'. $type .'" not found');
+			dump('File "'. $real_file_path .'" with type "'. $type .'" not found');
 		}
 
 
