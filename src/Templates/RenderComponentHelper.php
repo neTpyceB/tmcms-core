@@ -4,6 +4,7 @@ namespace TMCms\Templates;
 
 use TMCms\Files\FileSystem;
 use TMCms\HTML\Cms\Element\CmsCheckbox;
+use TMCms\HTML\Cms\Element\CmsCheckboxList;
 use TMCms\HTML\Cms\Element\CmsInputText;
 use TMCms\HTML\Cms\Element\CmsSelect;
 use TMCms\HTML\Cms\Element\CmsTextarea;
@@ -106,6 +107,25 @@ class RenderComponentHelper {
                 if (isset($this->field_value['checked'])) {
                     $field->setChecked($this->field_value['checked']);
                 }
+                break;
+
+            case 'checkbox_list':
+                $field = CmsCheckboxList::getInstance($this->component_name);
+
+                if (isset($this->field_value['checkboxes'])) {
+                    $field->setCheckboxes($this->field_value['checkboxes']);
+                }
+
+                if (!isset($this->field_value['selected']) && isset($this->data[$this->component_name])) {
+                    $this->field_value['selected'] = unserialize($this->data[$this->component_name]);
+                }
+
+                if (isset($this->field_value['selected'])) {
+                    $field->setChecked(array_keys($this->field_value['selected']));
+                }
+
+                $field->setListView(true);
+
                 break;
 
             case 'options':
