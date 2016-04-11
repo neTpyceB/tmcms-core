@@ -5,6 +5,7 @@ namespace TMCms\Admin;
 use TMCms\Admin\Users\Entity\AdminUser;
 use TMCms\Admin\Users\Entity\UsersMessage;
 use TMCms\Admin\Users\Entity\UsersMessageRepository;
+use TMCms\Config\Configuration;
 use TMCms\Strings\Converter;
 use TMCms\Traits\singletonOnlyInstanceTrait;
 
@@ -291,8 +292,8 @@ class Menu
 
         <header class="header header-fixed navbar">
             <div class="brand">
-                <a class="navbar-brand" href="<?= CMS_SITE ?>" target="_blank">
-                    <div id="petrik_logo"></div>
+                <a class="navbar-brand" href="<?= Configuration::getInstance()->get('cms')['logo_link'] ?>" target="_blank">
+                    <div id="petrik_logo" style="background-image: url('<?= Configuration::getInstance()->get('cms')['logo'] ?>')"></div>
                 </a>
             </div>
             <?php if ($this->help_texts): ?>
