@@ -5,6 +5,7 @@ namespace TMCms\Admin;
 use TMCms\Admin\Users\Entity\AdminUser;
 use TMCms\Admin\Users\Entity\UsersMessage;
 use TMCms\Admin\Users\Entity\UsersMessageRepository;
+use TMCms\Config\Configuration;
 use TMCms\Strings\Converter;
 use TMCms\Traits\singletonOnlyInstanceTrait;
 
@@ -274,6 +275,15 @@ class Menu
         $messages_collection->setLimit(5);
 
         $notifications = $messages_collection->getAsArrayOfObjects();
+
+        if (array_key_exists('logo_link', Configuration::getInstance()->get('cms'))) {
+            $logo_link = Configuration::getInstance()->get('cms')['logo_link'];
+        }
+
+        if (array_key_exists('logo', Configuration::getInstance()->get('cms'))) {
+            $logo = Configuration::getInstance()->get('cms')['logo'];
+        }
+
         ?>
         <div id="menu_loading" class="bg-success"></div>
         <script>
@@ -291,8 +301,8 @@ class Menu
 
         <header class="header header-fixed navbar">
             <div class="brand">
-                <a class="navbar-brand" href="<?= CMS_SITE ?>" target="_blank">
-                    <div id="petrik_logo"></div>
+                <a class="navbar-brand" href="<?= isset($logo_link) ? $logo_link : CMS_SITE ?>" target="_blank">
+                    <div id="petrik_logo" style="background-image: url('<?= isset($logo) ? $logo : '' ?>')"></div>
                 </a>
             </div>
             <?php if ($this->help_texts): ?>

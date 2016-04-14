@@ -95,7 +95,7 @@ class SQL
         if (!$pdo_query) {
             $err = $this->pdo_db->errorInfo()[2];
 
-            dump($err . '<br><br>Query:<br><br>' . $q);
+            trigger_error($err . '<br><br>Query:<br><br>' . $q);
         }
 
         if (isset($ts)) {
