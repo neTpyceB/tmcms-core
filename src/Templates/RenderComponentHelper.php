@@ -11,6 +11,7 @@ use TMCms\HTML\Cms\Element\CmsTextarea;
 use TMCms\HTML\Cms\Widget\Calendar;
 use TMCms\HTML\Cms\Widget\FileManager;
 use TMCms\HTML\Cms\Widget\SitemapPages;
+use TMCms\HTML\Cms\Widget\Tinymce;
 use TMCms\HTML\Element;
 use TMCms\Traits\singletonInstanceTrait;
 
@@ -87,7 +88,6 @@ class RenderComponentHelper {
                 $field = CmsInputText::getInstance($this->component_name);
                 break;
 
-
             case 'textarea':
                 $field = CmsTextarea::getInstance($this->component_name);
 
@@ -125,7 +125,6 @@ class RenderComponentHelper {
                 }
 
                 $field->setListView(true);
-
                 break;
 
             case 'options':
@@ -165,6 +164,32 @@ class RenderComponentHelper {
 
             case 'wysiwyg':
                 $field->enableWysiwyg();
+                break;
+
+            case 'tinymce':
+                $tinymce = new Tinymce();
+
+                if (isset($this->field_value['menubar'])) {
+                    $tinymce->setMenubar($this->field_value['menubar']);
+                }
+
+                if (isset($this->field_value['statusbar'])) {
+                    $tinymce->setStatusbar($this->field_value['statusbar']);
+                }
+
+                if (isset($this->field_value['plugins'])) {
+                    $tinymce->setPlugins($this->field_value['plugins']);
+                }
+
+                if (isset($this->field_value['toolbar'])) {
+                    $tinymce->setToolbar($this->field_value['toolbar']);
+                }
+
+                if (isset($this->field_value['content_css'])) {
+                    $tinymce->setContentCss($this->field_value['content_css']);
+                }
+
+                $field->setWidget($tinymce);
                 break;
 
             case 'calendar':
