@@ -190,6 +190,7 @@ class RenderComponentHelper {
                 }
 
                 $field->setWidget($tinymce);
+                $field->helper(false);
                 break;
 
             case 'calendar':
