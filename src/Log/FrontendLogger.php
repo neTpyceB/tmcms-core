@@ -24,7 +24,7 @@ class FrontendLogger implements ILogger
      */
     private function __construct()
     {
-
+        $this->startLog();
     }
 
     /**
@@ -44,7 +44,10 @@ class FrontendLogger implements ILogger
      */
     public function write($str = '', $flag = ILogger::WRITE_LOG)
     {
-        $this->stack[] = $str;
+        $this->stack[] = [
+            'text' => $str,
+            'flag' => $flag,
+        ];
     }
 
     /**
@@ -72,10 +75,8 @@ class FrontendLogger implements ILogger
     {
         foreach ($this->stack as $v) {
             $log = new FrontLogEntity();
-            $log->loadDataFromArray([
-                'ts' => NOW,
-                'text' => $v,
-            ]);
+            $log->setText($v['text']);
+            $log->setFlag($v['flag']);
             $log->save();
         }
     }

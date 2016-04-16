@@ -56,6 +56,14 @@ class Settings
     }
 
     /**
+     * @return bool
+     */
+    public static function isFrontendLogEnabled()
+    {
+        return self::get('save_frontend_log');
+    }
+
+    /**
      * @return string
      */
     public static function getCommonEmail()

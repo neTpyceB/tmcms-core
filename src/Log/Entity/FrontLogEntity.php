@@ -11,4 +11,11 @@ use TMCms\Orm\Entity;
 class FrontLogEntity extends Entity
 {
     protected $db_table = 'cms_front_log';
+
+    protected function beforeCreate()
+    {
+        $this->setTs(NOW);
+        $this->setIpLong(IP_LONG);
+        $this->setVisitorHash(VISITOR_HASH);
+    }
 }

@@ -6,6 +6,7 @@ use TMCms\Cache\Cacher;
 use TMCms\Config\Settings;
 use TMCms\DB\QueryAnalyzer;
 use TMCms\Files\Finder;
+use TMCms\Log\FrontendLogger;
 use TMCms\Routing\MVC;
 use TMCms\Routing\Router;
 use TMCms\Routing\Structure;
@@ -72,6 +73,7 @@ class Frontend
         // Check if allowed to open site in case of IP-restricted access
         $ips = Settings::get('allowed_ips');
         if ($ips) {
+
             // IPs are separated by newline
             $ips = explode("\n", $ips);
             // Remove empty lines and odd spaces
@@ -81,6 +83,11 @@ class Frontend
 
             // If still have IP in range and client is blocked - show error
             if ($ips && !in_array(IP, $ips)) {
+
+                if (Settings::isFrontendLogEnabled()) {
+                    FrontendLogger::getInstance()->err('IP forbidden');
+                }
+
                 if (!headers_sent()) {
                     header('HTTP/1.1 403 Forbidden');
                 }
@@ -106,6 +113,9 @@ class Frontend
                     ->get('html_' . PATH_INTERNAL_MD5);
             }
             if ($this->cached_page_html) {
+                if (Settings::isFrontendLogEnabled()) {
+                    FrontendLogger::getInstance()->log('Loading cached HTML');
+                }
                 return;
             }
         }
@@ -148,6 +158,9 @@ class Frontend
         /* Start replacing template vars with appropriate component content */
 
         if (Settings::isCacheEnabled()) {
+            if (Settings::isFrontendLogEnabled()) {
+                FrontendLogger::getInstance()->log('Loading cached replaceable elements');
+            }
             $cached_replaces = Cacher::getInstance()
                 ->getDefaultCacher()
                 ->get('template_elements_' . PATH_INTERNAL_MD5);
@@ -220,6 +233,10 @@ class Frontend
     {
         // Get page content if static file used
         if ($this->router_instance->getPageData()['html_file'] && file_exists(DIR_BASE . $this->router_instance->getPageData()['html_file'])) {
+            if (Settings::isFrontendLogEnabled()) {
+                FrontendLogger::getInstance()->log('Rendering simple HTML file');
+            }
+
             ob_start();
             // Read file as is
             require_once DIR_BASE . $this->router_instance->getPageData()['html_file'];
@@ -230,6 +247,11 @@ class Frontend
 
             // Usual template read for parsing
         } elseif (is_file($this->router_instance->getPageData()['template_file'])) {
+
+            if (Settings::isFrontendLogEnabled()) {
+                FrontendLogger::getInstance()->log('Loading page using ccomponents');
+            }
+
             // Get page content with components
             $this->html = file_get_contents($this->router_instance->getPageData()['template_file']);
 
@@ -247,6 +269,9 @@ class Frontend
         $template_extension = pathinfo($this->router_instance->getPageData()['file'], PATHINFO_EXTENSION);
 
         if ($template_extension == 'twig') {
+            if (Settings::isFrontendLogEnabled()) {
+                FrontendLogger::getInstance()->log('Processing twig template');
+            }
             $templater = new ExternalTemplater('twig');
             $this->html = $templater->processHtml($this->html, $this->router_instance->getPageData());
         }
