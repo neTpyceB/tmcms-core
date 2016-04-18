@@ -6,6 +6,7 @@ use TMCms\Files\FileSystem;
 use TMCms\HTML\Cms\Element\CmsCheckbox;
 use TMCms\HTML\Cms\Element\CmsCheckboxList;
 use TMCms\HTML\Cms\Element\CmsInputText;
+use TMCms\HTML\Cms\Element\CmsMultipleSelect;
 use TMCms\HTML\Cms\Element\CmsSelect;
 use TMCms\HTML\Cms\Element\CmsTextarea;
 use TMCms\HTML\Cms\Widget\Calendar;
@@ -145,6 +146,28 @@ class RenderComponentHelper {
                 } else {
                     $this->selected = false;
                 }
+                break;
+
+            case 'multiselect':
+                $field = CmsMultipleSelect::getInstance($this->component_name);
+
+                if (isset($this->field_value['options'])) {
+                    $field->setOptions($this->field_value['options']);
+                }
+
+                if (!isset($this->field_value['selected']) && isset($this->data[$this->component_name])) {
+                    $this->field_value['selected'] = $this->data[$this->component_name];
+                }
+
+                if (isset($this->field_value['selected'])) {
+                    $field->setSelected($this->field_value['selected']);
+                    $this->selected = $this->field_value['selected'];
+                } else {
+                    $this->selected = false;
+                }
+
+                $field->helper(false);
+
                 break;
 
             case 'custom':
