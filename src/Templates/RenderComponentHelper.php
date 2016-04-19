@@ -4,12 +4,15 @@ namespace TMCms\Templates;
 
 use TMCms\Files\FileSystem;
 use TMCms\HTML\Cms\Element\CmsCheckbox;
+use TMCms\HTML\Cms\Element\CmsCheckboxList;
 use TMCms\HTML\Cms\Element\CmsInputText;
+use TMCms\HTML\Cms\Element\CmsMultipleSelect;
 use TMCms\HTML\Cms\Element\CmsSelect;
 use TMCms\HTML\Cms\Element\CmsTextarea;
 use TMCms\HTML\Cms\Widget\Calendar;
 use TMCms\HTML\Cms\Widget\FileManager;
 use TMCms\HTML\Cms\Widget\SitemapPages;
+use TMCms\HTML\Cms\Widget\Tinymce;
 use TMCms\HTML\Element;
 use TMCms\Traits\singletonInstanceTrait;
 
@@ -86,7 +89,6 @@ class RenderComponentHelper {
                 $field = CmsInputText::getInstance($this->component_name);
                 break;
 
-
             case 'textarea':
                 $field = CmsTextarea::getInstance($this->component_name);
 
@@ -106,6 +108,24 @@ class RenderComponentHelper {
                 if (isset($this->field_value['checked'])) {
                     $field->setChecked($this->field_value['checked']);
                 }
+                break;
+
+            case 'checkbox_list':
+                $field = CmsCheckboxList::getInstance($this->component_name);
+
+                if (isset($this->field_value['checkboxes'])) {
+                    $field->setCheckboxes($this->field_value['checkboxes']);
+                }
+
+                if (!isset($this->field_value['selected']) && isset($this->data[$this->component_name])) {
+                    $this->field_value['selected'] = unserialize($this->data[$this->component_name]);
+                }
+
+                if (isset($this->field_value['selected'])) {
+                    $field->setChecked(array_keys($this->field_value['selected']));
+                }
+
+                $field->setListView(true);
                 break;
 
             case 'options':
@@ -128,6 +148,28 @@ class RenderComponentHelper {
                 }
                 break;
 
+            case 'multiselect':
+                $field = CmsMultipleSelect::getInstance($this->component_name);
+
+                if (isset($this->field_value['options'])) {
+                    $field->setOptions($this->field_value['options']);
+                }
+
+                if (!isset($this->field_value['selected']) && isset($this->data[$this->component_name])) {
+                    $this->field_value['selected'] = $this->data[$this->component_name];
+                }
+
+                if (isset($this->field_value['selected'])) {
+                    $field->setSelected($this->field_value['selected']);
+                    $this->selected = $this->field_value['selected'];
+                } else {
+                    $this->selected = false;
+                }
+
+                $field->helper(false);
+
+                break;
+
             case 'custom':
                 // Skip because we have separate page for it
                 break;
@@ -145,6 +187,33 @@ class RenderComponentHelper {
 
             case 'wysiwyg':
                 $field->enableWysiwyg();
+                break;
+
+            case 'tinymce':
+                $tinymce = new Tinymce();
+
+                if (isset($this->field_value['menubar'])) {
+                    $tinymce->setMenubar($this->field_value['menubar']);
+                }
+
+                if (isset($this->field_value['statusbar'])) {
+                    $tinymce->setStatusbar($this->field_value['statusbar']);
+                }
+
+                if (isset($this->field_value['plugins'])) {
+                    $tinymce->setPlugins($this->field_value['plugins']);
+                }
+
+                if (isset($this->field_value['toolbar'])) {
+                    $tinymce->setToolbar($this->field_value['toolbar']);
+                }
+
+                if (isset($this->field_value['content_css'])) {
+                    $tinymce->setContentCss($this->field_value['content_css']);
+                }
+
+                $field->setWidget($tinymce);
+                $field->helper(false);
                 break;
 
             case 'calendar':

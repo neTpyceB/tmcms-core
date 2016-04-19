@@ -35,6 +35,7 @@ class Users
     private static $is_logged;
     private static $cached_group_pairs = [];
     private static $cached_users_pairs = [];
+    private static $cached_users_pairs_with_groups;
     private static $cached_group_data = [];
     private static $cached_user_data = [];
     private static $access = [];
@@ -376,6 +377,27 @@ class Users
         }
 
         return self::$cached_users_pairs;
+    }
+
+    /**
+     * Get key-value array of Users
+     * @return array
+     */
+    public function getUsersPairsWithGroupNamesForSelects()
+    {
+        // Check and init cache
+        if (!self::$cached_users_pairs_with_groups) {
+            $user_collection = new AdminUserRepository;
+            $user_collection->addOrderByField('name');
+            foreach ($user_collection->getAsArrayOfObjects() as $v) {
+                /** @var AdminUser $v */
+
+                $group = new AdminUserGroup($v->getGroupId());
+                self::$cached_users_pairs_with_groups[$group->getTitle()][$v->getId()] = $v->getName() . ' ' . $v->getSurname() . ' [' . $v->getLogin() . ']';
+            }
+        }
+
+        return self::$cached_users_pairs_with_groups;
     }
 
     /**

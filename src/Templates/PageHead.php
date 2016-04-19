@@ -153,7 +153,7 @@ class PageHead
             ]
         ];
         if (!isset($doc_types[$doctype], $doc_types[$doctype][$version], $doc_types[$doctype][$version][$type])) {
-            trigger_error('Non-existing doctype requested');
+            dump('Non-existing doctype requested');
         }
         $this->doctype = $doc_types[$doctype][$version][$type];
         return $this;

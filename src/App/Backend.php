@@ -419,7 +419,7 @@ class Backend
 
             // Final check we have anything to run
             if (!method_exists($class, $method)) {
-                trigger_error('Method "' . $method . '" not found in class "' . $class . '"');
+                dump('Method "' . $method . '" not found in class "' . $class . '"');
             }
         }
 

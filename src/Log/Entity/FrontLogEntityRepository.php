@@ -15,8 +15,16 @@ class FrontLogEntityRepository extends EntityRepository
     protected $table_structure = [
         'fields' => [
             'ts' => [
-                'type' => 'int',
-                'unsigned' => true,
+                'type' => 'ts',
+            ],
+            'ip_long' => [
+                'type' => 'ts',
+            ],
+            'flag' => [
+                'type' => 'varchar',
+            ],
+            'visitor_hash' => [
+                'type' => 'char',
             ],
             'text' => [
                 'type' => 'text'
