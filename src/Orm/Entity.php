@@ -494,6 +494,21 @@ class Entity {
         return $this;
     }
 
+    /**
+     * If you need to add translation field on the fly, e.g. when merging repositories
+     * @param string $field_name
+     * @return $this
+     */
+    public function addTranslationFieldForAutoSelects($field_name) {
+        $this->translation_fields[] = $field_name;
+
+        return $this;
+    }
+
+    public function getTranslationFields() {
+        return $this->translation_fields;
+    }
+
 
     /**
      * Auto-call before object is Deleted
