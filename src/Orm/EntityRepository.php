@@ -405,6 +405,17 @@ class EntityRepository {
     }
 
     /**
+     * If you need to add translation field on the fly, e.g. when merging repositories
+     * @param string $field_name
+     * @return $this
+     */
+    public function addTranslationFieldForAutoSelects($field_name) {
+        $this->translation_fields[] = $field_name;
+
+        return $this;
+    }
+
+    /**
      * @param string $field
      * @param bool $direction_desc
      * @param string $table
