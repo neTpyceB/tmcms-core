@@ -41,7 +41,7 @@ class Backend
         }
 
         // Try updating CMS
-        if (isset($_GET['key']) && $_GET['key'] == Configuration::getInstance()->get('cms')['unique_key']) {
+        if (isset($_GET['key']) && $_GET['key'] == Configuration::getInstance()->get('cms')['unique_key'] && count($_GET) === 2) {
 
             $updater = Updater::getInstance();
 

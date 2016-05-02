@@ -12,7 +12,7 @@ use TMCms\Modules\ModuleManager;
  * Class ColumnGallery
  */
 class ColumnGallery extends Column {
-	protected $width = '145';
+	protected $width = '155';
 	protected $images = [];
 
 	/**
