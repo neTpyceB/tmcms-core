@@ -405,6 +405,21 @@ class EntityRepository {
     }
 
     /**
+     * If you need to add translation field on the fly, e.g. when merging repositories
+     * @param string $field_name
+     * @return $this
+     */
+    public function addTranslationFieldForAutoSelects($field_name) {
+        $this->translation_fields[] = $field_name;
+
+        return $this;
+    }
+
+    public function getTranslationFields() {
+        return $this->translation_fields;
+    }
+
+    /**
      * @param string $field
      * @param bool $direction_desc
      * @param string $table
@@ -735,6 +750,11 @@ FROM `'. $this->getDbTableName() .'`
         $order_fields = $collection->getOrderFields();
         foreach ($order_fields as $order_field) {
             $this->order_fields[] = $order_field;
+        }
+
+        $translation_fields = $collection->getTranslationFields();
+        foreach ($translation_fields as $translation_field) {
+            $this->translation_fields[] = $translation_field;
         }
 
         $join_tables = $collection->getJoinTables();
