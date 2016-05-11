@@ -342,9 +342,10 @@ class Entity {
     }
 
     /**
+     * @param bool $load_translations
      * @return array
      */
-    public function getAsArray() {
+    public function getAsArray($load_translations = false) {
         $res = $this->data;
 
         // Multi lng data in separate field
@@ -354,6 +355,13 @@ class Entity {
                 $tmp = $this->translation_data[$v];
             }
             $res['translation_data'][$v] = $tmp;
+        }
+
+        if ($load_translations) {
+            foreach ($res['translation_data'] as $translation_field => $translation_field_data) {
+                $res[$translation_field] = $translation_field_data[LNG];
+            }
+            unset($res['translation_data']);
         }
 
         return $res;
