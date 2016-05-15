@@ -410,7 +410,7 @@ class Users
         $group = AdminUserGroupRepository::findOneEntityById(1);
 
         // If no any Admin group - create new empty group
-        if (!$group || !$group->getUndeletable() || !$group->getCanSetPermission() || !$group->getFullAccess()) {
+        if (!$group || !$group->getUndeletable() || !$group->getCanSetPermissions() || !$group->getFullAccess()) {
             if ($group) {
                 $group
                     ->setField('undeletable', 1)
