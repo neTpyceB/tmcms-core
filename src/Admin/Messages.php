@@ -30,7 +30,7 @@ class Messages
         $message->setFromUserId($from_user_id);
         $message->setToUserId($to_user_id);
         $message->setMessage($text);
-        $message->setNotify($notify_toastr);
+        $message->setNotify((int)$notify_toastr);
         $message->save();
 
         return $message;
