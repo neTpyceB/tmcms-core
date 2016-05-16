@@ -7,7 +7,7 @@ use TMCms\Config\Configuration;
 use TMCms\Config\Settings;
 use TMCms\DB\SQL;
 use TMCms\Strings\Converter;
-use TMCms\Strings\SaferCrypto;
+use TMCms\Strings\SimpleCrypto;
 use TMCms\Strings\Translations;
 
 class Entity {
@@ -15,7 +15,7 @@ class Entity {
     protected $translation_fields = []; // Should be overwritten in extended class
 
     private static $_cache_key_prefix = 'orm_entity_';
-    protected $encryption_enabled = false;
+    protected $encrypted_fields = [];
 
     private $data = [];
     private $translation_data = [];
@@ -200,7 +200,7 @@ class Entity {
 
         $this->beforeSave();
 
-        if ($this->encryption_enabled) {
+        if ($this->encrypted_fields) {
             $this->encryptValues();
         }
 
@@ -334,7 +334,7 @@ class Entity {
             }
         }
 
-        if ($this->encryption_enabled) {
+        if ($this->encrypted_fields) {
             $this->decryptValues();
         }
 
@@ -532,37 +532,35 @@ class Entity {
     protected function encryptValues() {
         $key = $this->getEncryptionCheckSumKey();
 
-        // Usual fields
-        foreach ($this->data as $field_key => $field_data) {
-            if (is_string($field_data) && !$this->isFieldEncrypted($field_data)) {
-                $this->data[$field_key] = SaferCrypto::encrypt($field_data, $key);
+        foreach ($this->encrypted_fields as $field_name) {
+            if (isset($this->data[$field_name])) {
+                if (is_string($this->data[$field_name]) && !$this->isFieldEncrypted($this->data[$field_name])) {
+                    $this->data[$field_name] = SimpleCrypto::encrypt($this->data[$field_name], $key);
+                }
+            }
+
+            if (isset($this->translation_data[$field_name], $this->translation_data[$field_name][LNG])) {
+                if (is_string($this->translation_data[$field_name][LNG]) && !$this->isFieldEncrypted($this->translation_data[$field_name][LNG])) {
+                    $this->translation_data[$field_name][LNG] = SimpleCrypto::encrypt($this->translation_data[$field_name][LNG], $key);
+                }
             }
         }
-
-        // Translation fields
-        foreach ($this->translation_data as $field_key => $field_data) {
-            if (is_string($field_data) && !$this->isFieldEncrypted($field_data)) {
-                $this->data[$field_key] = SaferCrypto::encrypt($field_data, $key);
-            }
-        }
-
-        dump($this->data);
     }
 
     protected function decryptValues() {
         $key = $this->getEncryptionCheckSumKey();
 
-        // Usual fields
-        foreach ($this->data as $field_key => $field_data) {
-            if (is_string($field_data) && $this->isFieldEncrypted($field_data)) {
-                $this->data[$field_key] = SaferCrypto::decrypt($field_data, $key);
+        foreach ($this->encrypted_fields as $field_name) {
+            if (isset($this->data[$field_name])) {
+                if (is_string($this->data[$field_name]) && $this->isFieldEncrypted($this->data[$field_name])) {
+                    $this->data[$field_name] = SimpleCrypto::decrypt($this->data[$field_name], $key);
+                }
             }
-        }
 
-        // Translation fields
-        foreach ($this->translation_data as $field_key => $field_data) {
-            if (is_string($field_data) && $this->isFieldEncrypted($field_data)) {
-                $this->data[$field_key] = SaferCrypto::decrypt($field_data, $key);
+            if (isset($this->translation_data[$field_name], $this->translation_data[$field_name][LNG])) {
+                if (is_string($this->translation_data[$field_name][LNG]) && $this->isFieldEncrypted($this->translation_data[$field_name][LNG])) {
+                    $this->translation_data[$field_name][LNG] = SimpleCrypto::decrypt($this->translation_data[$field_name][LNG], $key);
+                }
             }
         }
     }
@@ -585,7 +583,8 @@ class Entity {
     }
 
     private function isFieldEncrypted($text) {
-        return false;
+        $key = SimpleCrypto::PREFIX;
+        return substr($text, 0, strlen($key)) == SimpleCrypto::PREFIX;
     }
 
 
