@@ -3,9 +3,11 @@
 namespace TMCms\Orm;
 
 use TMCms\Cache\Cacher;
+use TMCms\Config\Configuration;
 use TMCms\Config\Settings;
 use TMCms\DB\SQL;
 use TMCms\Strings\Converter;
+use TMCms\Strings\SaferCrypto;
 use TMCms\Strings\Translations;
 
 class Entity {
@@ -13,6 +15,7 @@ class Entity {
     protected $translation_fields = []; // Should be overwritten in extended class
 
     private static $_cache_key_prefix = 'orm_entity_';
+    protected $encryption_enabled = false;
 
     private $data = [];
     private $translation_data = [];
@@ -26,6 +29,7 @@ class Entity {
     private $insert_delayed = false;
     private $encode_special_chars_for_html = false; // Auto use of htmlspecialchar for output
     private $field_callbacks = [];
+    private $encryption_key; // Key used to encrypt and decrypt db data
 
     public function __construct($id = 0, $load_from_db = true) {
         $this->data['id'] = NULL;
@@ -196,6 +200,10 @@ class Entity {
 
         $this->beforeSave();
 
+        if ($this->encryption_enabled) {
+            $this->encryptValues();
+        }
+
         if ($this->getId()) {
             $this->update();
         } else {
@@ -324,6 +332,10 @@ class Entity {
             } elseif (isset($this->data[$v])) {
                 $this->translation_data[$v] = Translations::get($this->data[$v]);
             }
+        }
+
+        if ($this->encryption_enabled) {
+            $this->decryptValues();
         }
 
         $this->afterLoad();
@@ -515,6 +527,65 @@ class Entity {
 
     public function getTranslationFields() {
         return $this->translation_fields;
+    }
+
+    protected function encryptValues() {
+        $key = $this->getEncryptionCheckSumKey();
+
+        // Usual fields
+        foreach ($this->data as $field_key => $field_data) {
+            if (is_string($field_data) && !$this->isFieldEncrypted($field_data)) {
+                $this->data[$field_key] = SaferCrypto::encrypt($field_data, $key);
+            }
+        }
+
+        // Translation fields
+        foreach ($this->translation_data as $field_key => $field_data) {
+            if (is_string($field_data) && !$this->isFieldEncrypted($field_data)) {
+                $this->data[$field_key] = SaferCrypto::encrypt($field_data, $key);
+            }
+        }
+
+        dump($this->data);
+    }
+
+    protected function decryptValues() {
+        $key = $this->getEncryptionCheckSumKey();
+
+        // Usual fields
+        foreach ($this->data as $field_key => $field_data) {
+            if (is_string($field_data) && $this->isFieldEncrypted($field_data)) {
+                $this->data[$field_key] = SaferCrypto::decrypt($field_data, $key);
+            }
+        }
+
+        // Translation fields
+        foreach ($this->translation_data as $field_key => $field_data) {
+            if (is_string($field_data) && $this->isFieldEncrypted($field_data)) {
+                $this->data[$field_key] = SaferCrypto::decrypt($field_data, $key);
+            }
+        }
+    }
+
+    private function getEncryptionCheckSumKey() {
+        if ($this->encryption_key) {
+            $config = Configuration::getInstance();
+            $this->encryption_key = crc32(
+                // All sensitive data
+                $config->get('cms')['unique_key']
+                . CMS_NAME
+                . CMS_DEVELOPERS
+                . CMS_OWNER_COMPANY
+                . CMS_SUPPORT_EMAIL
+                . CMS_SITE
+            );
+        }
+
+        return $this->encryption_key;
+    }
+
+    private function isFieldEncrypted($text) {
+        return false;
     }
 
 
