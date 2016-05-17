@@ -29,7 +29,7 @@ class Entity {
     private $insert_delayed = false;
     private $encode_special_chars_for_html = false; // Auto use of htmlspecialchar for output
     private $field_callbacks = [];
-    private $encryption_key; // Key used to encrypt and decrypt db data
+    private static $encryption_key; // Key used to encrypt and decrypt db data
 
     public function __construct($id = 0, $load_from_db = true) {
         $this->data['id'] = NULL;
@@ -534,13 +534,13 @@ class Entity {
 
         foreach ($this->encrypted_fields as $field_name) {
             if (isset($this->data[$field_name])) {
-                if (is_string($this->data[$field_name]) && !$this->isFieldEncrypted($this->data[$field_name])) {
+                if (is_string($this->data[$field_name]) && !self::isFieldEncrypted($this->data[$field_name])) {
                     $this->data[$field_name] = SimpleCrypto::encrypt($this->data[$field_name], $key);
                 }
             }
 
             if (isset($this->translation_data[$field_name], $this->translation_data[$field_name][LNG])) {
-                if (is_string($this->translation_data[$field_name][LNG]) && !$this->isFieldEncrypted($this->translation_data[$field_name][LNG])) {
+                if (is_string($this->translation_data[$field_name][LNG]) && !self::isFieldEncrypted($this->translation_data[$field_name][LNG])) {
                     $this->translation_data[$field_name][LNG] = SimpleCrypto::encrypt($this->translation_data[$field_name][LNG], $key);
                 }
             }
@@ -552,23 +552,23 @@ class Entity {
 
         foreach ($this->encrypted_fields as $field_name) {
             if (isset($this->data[$field_name])) {
-                if (is_string($this->data[$field_name]) && $this->isFieldEncrypted($this->data[$field_name])) {
+                if (is_string($this->data[$field_name]) && self::isFieldEncrypted($this->data[$field_name])) {
                     $this->data[$field_name] = SimpleCrypto::decrypt($this->data[$field_name], $key);
                 }
             }
 
             if (isset($this->translation_data[$field_name], $this->translation_data[$field_name][LNG])) {
-                if (is_string($this->translation_data[$field_name][LNG]) && $this->isFieldEncrypted($this->translation_data[$field_name][LNG])) {
+                if (is_string($this->translation_data[$field_name][LNG]) && self::isFieldEncrypted($this->translation_data[$field_name][LNG])) {
                     $this->translation_data[$field_name][LNG] = SimpleCrypto::decrypt($this->translation_data[$field_name][LNG], $key);
                 }
             }
         }
     }
 
-    private function getEncryptionCheckSumKey() {
-        if ($this->encryption_key) {
+    public static function getEncryptionCheckSumKey() {
+        if (self::$encryption_key) {
             $config = Configuration::getInstance();
-            $this->encryption_key = crc32(
+            self::$encryption_key = crc32(
                 // All sensitive data
                 $config->get('cms')['unique_key']
                 . CMS_NAME
@@ -579,10 +579,10 @@ class Entity {
             );
         }
 
-        return $this->encryption_key;
+        return self::$encryption_key;
     }
 
-    private function isFieldEncrypted($text) {
+    public static function isFieldEncrypted($text) {
         $key = SimpleCrypto::PREFIX;
         return substr($text, 0, strlen($key)) == SimpleCrypto::PREFIX;
     }
