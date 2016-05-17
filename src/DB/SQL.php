@@ -127,7 +127,7 @@ class SQL
      * @param bool $local
      * @return PDO
      */
-    public function connect($user = NULL, $pass = NULL, $host = CFG_DB_SERVER, $db = NULL, $local = true)
+    public function connect($user = NULL, $pass = NULL, $host = NULL, $db = NULL, $local = true)
     {
         if (!$user) {
             $user = Configuration::getInstance()->get('db')['login'];
@@ -138,6 +138,14 @@ class SQL
 
         if (!$db) {
             $db = Configuration::getInstance()->get('db')['name'];
+        }
+
+
+        if (!$host && isset(Configuration::getInstance()->get('db')['host'])) {
+            $host = Configuration::getInstance()->get('db')['host'];
+            if (!$host) {
+                $host = CFG_DB_SERVER;
+            }
         }
 
         // Connect as usual
