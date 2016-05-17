@@ -30,6 +30,6 @@ class SimpleCrypto
 
     public static function decrypt($string, $key) {
         $key = self::SALT . $key;
-        return mb_substr(mb_substr(base64_decode(strrev($string)), 0, -strlen($key)), 0, mb_strlen(self::PREFIX));
+        return mb_substr(base64_decode(strrev(mb_substr($string, mb_strlen(self::PREFIX)))), 0, -mb_strlen($key));
     }
 }
