@@ -412,6 +412,7 @@ class Users
         // If no any Admin group - create new empty group
         if (!$group || !$group->getUndeletable() || !$group->getCanSetPermission() || !$group->getFullAccess()) {
             if ($group) {
+                $group->is_superadmin = true;
                 $group
                     ->setField('undeletable', 1)
                     ->setField('can_set_permissions', 1)
