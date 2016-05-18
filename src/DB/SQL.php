@@ -128,17 +128,28 @@ class SQL
      * @param bool $local
      * @return PDO
      */
-    public function connect($user = NULL, $pass = NULL, $host = CFG_DB_SERVER, $db = NULL, $local = true)
+    public function connect($user = NULL, $pass = NULL, $host = NULL, $db = NULL, $local = true)
     {
+
+        $conn_data = Configuration::getInstance()->get('db');
+
         if (!$user) {
-            $user = Configuration::getInstance()->get('db')['login'];
+            $user = $conn_data['login'];
         }
         if (!$pass) {
-            $pass = Configuration::getInstance()->get('db')['password'];
+            $pass = $conn_data['password'];
         }
 
         if (!$db) {
-            $db = Configuration::getInstance()->get('db')['name'];
+            $db = $conn_data['name'];
+        }
+
+
+        if (!$host && isset($conn_data['host'])) {
+            $host = $conn_data['host'];
+            if (!$host) {
+                $host = CFG_DB_SERVER;
+            }
         }
 
         // Connect as usual
