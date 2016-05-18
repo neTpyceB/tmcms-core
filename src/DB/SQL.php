@@ -244,8 +244,21 @@ class SQL
             }
         }
 
+        if (Settings::isCacheEnabled()) {
+            $cache_key = 'db_table_list_all';
+            $cacher = Cacher::getInstance()->getDefaultCacher();
+
+            if (!isset(self::$_table_list[$db])) {
+                self::$_table_list[$db] = $cacher->get($cache_key);
+            }
+        }
+
         if (!isset(self::$_table_list[$db]) || !$use_cache) {
             self::$_table_list[$db] = self::getInstance()->q_pairs('SHOW TABLES FROM `' . $db . '`');
+        }
+
+        if (Settings::isCacheEnabled()) {
+            $cacher->set($cache_key, self::$_table_list[$db], 86400);
         }
 
         return self::$_table_list[$db];
@@ -374,11 +387,13 @@ class SQL
      */
     public static function getFields($tbl)
     {
-        $cache_key = 'db_table_columns_' . $tbl;
-        $cacher = Cacher::getInstance()->getDefaultCacher();
+        if (Settings::isCacheEnabled()) {
+            $cache_key = 'db_table_columns_' . $tbl;
+            $cacher = Cacher::getInstance()->getDefaultCacher();
 
-        if (!isset(self::$_cached_tbl_columns[$tbl])) {
-            self::$_cached_tbl_columns[$tbl] = $cacher->get($cache_key);
+            if (!isset(self::$_cached_tbl_columns[$tbl])) {
+                self::$_cached_tbl_columns[$tbl] = $cacher->get($cache_key);
+            }
         }
 
         if (isset(self::$_cached_tbl_columns[$tbl])) {
@@ -392,7 +407,9 @@ class SQL
             $res[] = $q[0];
         }
 
-        $cacher->set($cache_key, $res, 86400);
+        if (Settings::isCacheEnabled()) {
+            $cacher->set($cache_key, $res, 86400);
+        }
 
         return self::$_cached_tbl_columns[$tbl] = $res;
     }
