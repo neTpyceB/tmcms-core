@@ -3,6 +3,7 @@
 namespace TMCms\DB;
 
 use Exception;
+use TMCms\Cache\Cacher;
 use TMCms\Config\Configuration;
 use TMCms\Config\Settings;
 use TMCms\Log\Errors;
@@ -362,6 +363,13 @@ class SQL
      */
     public static function getFields($tbl)
     {
+        $cache_key = 'db_table_columns_' . $tbl;
+        $cacher = Cacher::getInstance()->getDefaultCacher();
+
+        if (!isset(self::$_cached_tbl_columns[$tbl])) {
+            self::$_cached_tbl_columns[$tbl] = $cacher->get($cache_key);
+        }
+
         if (isset(self::$_cached_tbl_columns[$tbl])) {
             return self::$_cached_tbl_columns[$tbl];
         }
@@ -372,6 +380,8 @@ class SQL
         while ($q = $sql->fetch(PDO::FETCH_NUM)) {
             $res[] = $q[0];
         }
+
+        $cacher->set($cache_key, $res, 86400);
 
         return self::$_cached_tbl_columns[$tbl] = $res;
     }
