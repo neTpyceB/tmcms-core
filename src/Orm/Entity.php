@@ -547,8 +547,23 @@ class Entity {
         }
     }
 
-    public function addFieldForDecryption($field) {
-        $this->encrypted_fields[] = $field;
+    public function addFieldForDecryption($field_name) {
+        $this->encrypted_fields[] = $field_name;
+
+        $key = $this->getEncryptionCheckSumKey();
+
+        // Decrypt field
+        if (isset($this->data[$field_name])) {
+            if (is_string($this->data[$field_name]) && self::isFieldEncrypted($this->data[$field_name])) {
+                $this->data[$field_name] = SimpleCrypto::decrypt($this->data[$field_name], $key);
+            }
+        }
+
+        if (isset($this->translation_data[$field_name], $this->translation_data[$field_name][LNG])) {
+            if (is_string($this->translation_data[$field_name][LNG]) && self::isFieldEncrypted($this->translation_data[$field_name][LNG])) {
+                $this->translation_data[$field_name][LNG] = SimpleCrypto::decrypt($this->translation_data[$field_name][LNG], $key);
+            }
+        }
 
         return $this;
     }
