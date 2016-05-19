@@ -547,6 +547,12 @@ class Entity {
         }
     }
 
+    public function addFieldForDecryption($field) {
+        $this->encrypted_fields[] = $field;
+
+        return $this;
+    }
+
     protected function decryptValues() {
         $key = $this->getEncryptionCheckSumKey();
 

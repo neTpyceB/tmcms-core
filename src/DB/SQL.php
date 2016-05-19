@@ -657,7 +657,6 @@ class SQL
      * @param string $id_col
      * @param bool $low_priority
      * @return bool
-     * @internal param bool $dalayed
      */
     public static function update($tbl, array $data, $id, $id_col = 'id', $low_priority = false)
     {
