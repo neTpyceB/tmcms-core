@@ -263,12 +263,16 @@ class Entity {
             $this->setId($id, false); // Prevent recursion
         }
 
-        // Try loading object from cache
-        $data = $this->getObjectDataFromCache();
+        $data = NULL;
 
-        // We have to have more than only ID field
-        if (count($data) === 1) {
-            $data = NULL;
+        // Try loading object from cache
+        if (Settings::isCacheEnabled()) {
+            $data = $this->getObjectDataFromCache();
+
+            // We have to have more than only ID field
+            if (count($data) === 1) {
+                $data = NULL;
+            }
         }
 
         // Do we need to update translations
