@@ -309,6 +309,10 @@ class Entity {
 
     private function getObjectDataFromCache()
     {
+        if (!Settings::isCacheEnabled()) {
+            return NULL;
+        }
+
         return Cacher::getInstance()->getDefaultCacher()->get($this->getCacheKey());
     }
 
