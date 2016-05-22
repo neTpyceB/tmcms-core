@@ -426,6 +426,10 @@ class Entity {
         return isset($this->changed_fields_for_update[$field]);
     }
 
+    public function getChangedDataFields() {
+        return array_keys($this->changed_fields_for_update);
+    }
+
     /**
      * Method for catching setField + getField
      * @param $name
