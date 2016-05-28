@@ -144,7 +144,7 @@ class TableStructure {
                         $field['length'] = 10;
                     }
                 }
-                $res = '`'. $field['name'] .'` int('. $field['length'] .') '. ($unsigned ? ' unsigned ' : '') . (isset($field['null']) && !$field['null'] ? ' NULL' : ((isset($field['auto_increment']) ? '' : ' DEFAULT') . ' NULL'));
+                $res = '`'. $field['name'] .'` int('. $field['length'] .') '. ($unsigned ? ' unsigned ' : '') . (isset($field['null']) && !$field['null'] ? ' NOT NULL' : ((isset($field['auto_increment']) ? '' : ' DEFAULT') . ' NULL'));
                 break;
 
             case 'ts':
