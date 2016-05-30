@@ -401,8 +401,10 @@ class Entity {
         // Set data values for every available field
         foreach ($fields as $v) {
             // Translation
-            if (in_array($v, $this->translation_fields) && isset($this->translation_data[$v])) {
-                unset($this->translation_data[$v]['id']); // Save new Translation
+            if (in_array($v, $this->translation_fields) && isset($this->translation_data[$v]) && is_array($this->translation_data[$v])) {
+                if (isset($this->translation_data[$v]['id']) ) {
+                    unset($this->translation_data[$v]['id']); // Save new Translation
+                }
                 $data[$v] = Translations::save($this->translation_data[$v]);
 
                 $this->setField($v, $data[$v]);
