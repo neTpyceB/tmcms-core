@@ -161,7 +161,6 @@ class SQL
             try {
                 $this->pdo_db = new PDO('mysql:dbname=' . $db . ';host=' . $host, $user, $pass, [
                     PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES "utf8"',
-                    PDO::MYSQL_ATTR_INIT_COMMAND => 'SET SESSION sql_mode="TRADITIONAL";'
                 ]);
                 $connected = true;
             } catch (Exception $e) {
