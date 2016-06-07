@@ -1114,6 +1114,37 @@ FROM `'. $this->getDbTableName() .'`
 
     /**
      * Filter collection by value exclusive
+     * @param $fields
+     * @param string $like_value
+     * @param bool $left_any
+     * @param bool $right_any
+     * @param string $table
+     * @return $this
+     */
+    public function addWhereFieldsIsLike($fields = [], $like_value, $left_any = true, $right_any = true, $table = '')
+    {
+        if (!$table) {
+            $table = $this->getDbTableName();
+        }
+
+        $sql = [];
+
+        foreach ($fields as $field) {
+            $sql[] = '(`'. $table .'`.`'. $field .'` LIKE "'. ($left_any ? '%' : '') . sql_prepare($like_value, true) . ($right_any ? '%' : '') .'")';
+        }
+        if (!$sql) {
+            return $this;
+        }
+
+        $sql = implode(' OR ', $sql);
+
+        $this->addWhereFieldAsString('('. $sql .')');
+
+        return $this;
+    }
+
+    /**
+     * Filter collection by value exclusive
      * @param $field
      * @param string $like_value
      * @param bool $left_any

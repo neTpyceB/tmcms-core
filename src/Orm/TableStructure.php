@@ -97,7 +97,7 @@ class TableStructure {
         }
 
         // Set engine and encoding
-        $sql .= ') ENGINE=MyISAM ';
+        $sql .= ') ENGINE=InnoDB ';
         $sql .= ' AUTO_INCREMENT=1 ';
         $sql .= ' DEFAULT CHARSET=utf8 ';
 
@@ -114,7 +114,7 @@ class TableStructure {
                 if (!isset($field['length'])) {
                     $field['length'] = '255';
                 }
-                $res = '`'. $field['name'] .'` varchar('. $field['length'] .') NULL DEFAULT ""';
+                $res = '`'. $field['name'] .'` varchar('. $field['length'] .') NULL';
                 break;
 
             case 'char':
@@ -127,12 +127,12 @@ class TableStructure {
 
             case 'text':
                 // Large textares
-                $res = '`'. $field['name'] .'` text NULL DEFAULT ""';
+                $res = '`'. $field['name'] .'` text NULL';
                 break;
 
             case 'mediumtext':
                 // Large textares
-                $res = '`'. $field['name'] .'` mediumtext NULL DEFAULT ""';
+                $res = '`'. $field['name'] .'` mediumtext NULL';
                 break;
 
             case 'int':
@@ -149,11 +149,11 @@ class TableStructure {
 
             case 'ts':
                 // Digit
-                $res = '`'. $field['name'] .'` int(10) unsigned NULL DEFAULT "0"';
+                $res = '`'. $field['name'] .'` int(10) unsigned NULL DEFAULT 0';
                 break;
 
             case 'index':
-                $res = '`'. $field['name'] .'` int(10) unsigned DEFAULT "0"';
+                $res = '`'. $field['name'] .'` int(10) unsigned DEFAULT NULL';
 
                 // Add index if not exists
                 if (!isset($this->table_structure['indexes'][$field['name']])) {
@@ -183,7 +183,7 @@ class TableStructure {
                 // Convert to db format
                 $field['length'] = str_replace('.', ',', $field['length']);
 
-                $res = '`'. $field['name'] .'` decimal('. $field['length'] .') '. ($unsigned ? ' unsigned ' : '') .' NULL DEFAULT "0"';
+                $res = '`'. $field['name'] .'` decimal('. $field['length'] .') '. ($unsigned ? ' unsigned ' : '') .' NULL DEFAULT 0';
                 break;
 
             case 'enum':
