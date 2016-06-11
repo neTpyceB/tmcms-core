@@ -692,4 +692,9 @@ class Entity {
     {
 
     }
+
+    public function __clone()
+    {
+        $this->setId(0, false);
+    }
 }
