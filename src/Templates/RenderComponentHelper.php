@@ -5,6 +5,7 @@ namespace TMCms\Templates;
 use TMCms\Files\FileSystem;
 use TMCms\HTML\Cms\Element\CmsCheckbox;
 use TMCms\HTML\Cms\Element\CmsCheckboxList;
+use TMCms\HTML\Cms\Element\CmsInputTags;
 use TMCms\HTML\Cms\Element\CmsInputText;
 use TMCms\HTML\Cms\Element\CmsMultipleSelect;
 use TMCms\HTML\Cms\Element\CmsSelect;
@@ -168,6 +169,10 @@ class RenderComponentHelper {
 
                 $field->helper(false);
 
+                break;
+
+            case 'tags':
+                $field = CmsInputTags::getInstance($this->component_name);
                 break;
 
             case 'custom':
