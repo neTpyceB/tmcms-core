@@ -114,7 +114,7 @@ class TableStructure {
                 if (!isset($field['length'])) {
                     $field['length'] = '255';
                 }
-                $res = '`'. $field['name'] .'` varchar('. $field['length'] .') NULL DEFAULT ""';
+                $res = '`'. $field['name'] .'` varchar('. $field['length'] .') NULL';
                 break;
 
             case 'char':
@@ -122,7 +122,7 @@ class TableStructure {
                 if (!isset($field['length'])) {
                     dump('Length for "'. $field['name'] .'" required');
                 }
-                $res = '`'. $field['name'] .'` char('. $field['length'] .') DEFAULT NULL';
+                $res = '`'. $field['name'] .'` char('. $field['length'] .') NULL';
                 break;
 
             case 'text':
@@ -132,7 +132,7 @@ class TableStructure {
 
             case 'mediumtext':
                 // Large textares
-                $res = '`'. $field['name'] .'` mediumtext NULL DEFAULT ""';
+                $res = '`'. $field['name'] .'` mediumtext NULL';
                 break;
 
             case 'int':
