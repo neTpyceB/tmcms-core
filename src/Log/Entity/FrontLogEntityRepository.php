@@ -25,6 +25,7 @@ class FrontLogEntityRepository extends EntityRepository
             ],
             'visitor_hash' => [
                 'type' => 'char',
+                'length' => 32,
             ],
             'text' => [
                 'type' => 'text'

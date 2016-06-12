@@ -3,6 +3,8 @@
 namespace TMCms\Log;
 
 use TMCms\Log\Entity\FrontLogEntity;
+use TMCms\Log\Entity\FrontLogEntityRepository;
+use TMCms\Traits\singletonInstanceTrait;
 
 /**
  * Class FrontendLogger
@@ -10,13 +12,11 @@ use TMCms\Log\Entity\FrontLogEntity;
  */
 class FrontendLogger implements ILogger
 {
+    use singletonInstanceTrait;
+
     private $stack = [];
     /**
      * @var $this
-     */
-    private static $instance;
-    /**
-     * @var string
      */
 
     /**
@@ -27,16 +27,6 @@ class FrontendLogger implements ILogger
         $this->startLog();
     }
 
-    /**
-     * @return $this
-     */
-    public static function getInstance()
-    {
-        if (!self::$instance) {
-            self::$instance = new self;
-        }
-        return self::$instance;
-    }
 
     /**
      * @param string $str
@@ -73,6 +63,8 @@ class FrontendLogger implements ILogger
 
     public function endLog()
     {
+        new FrontLogEntityRepository; // Check bd exists
+
         foreach ($this->stack as $v) {
             $log = new FrontLogEntity();
             $log->setText($v['text']);
