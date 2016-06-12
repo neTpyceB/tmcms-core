@@ -127,7 +127,7 @@ class TableStructure {
 
             case 'text':
                 // Large textares
-                $res = '`'. $field['name'] .'` text NULL DEFAULT ""';
+                $res = '`'. $field['name'] .'` text NULL';
                 break;
 
             case 'mediumtext':
