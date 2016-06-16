@@ -2,6 +2,8 @@
 
 namespace TMCms\App;
 
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
 use TMCms\Admin\Menu;
 use TMCms\Admin\Updater;
 use TMCms\Admin\Users;
@@ -399,6 +401,37 @@ class Backend
         // Try autoload PSR-0 or PSR-4
         if (!class_exists($class)) {
             $class = 'TMCms\Modules\\' . $real_class . '\Cms' . $real_class;
+        }
+
+        // Try to find the right directory of requested class
+        if (!class_exists($class)) {
+            $class_name = 'Cms' . $real_class;
+
+            $directory_iterator = new RecursiveDirectoryIterator(DIR_MODULES);
+            $iterator = new RecursiveIteratorIterator($directory_iterator);
+
+            foreach ($iterator as $file) {
+                if ($file->getFilename() == $class_name . '.php') {
+                    $module_path = $file->getPathInfo()->getPathName();
+                    $module_name = $file->getPathInfo()->getFilename();
+
+                    $module_directory_iterator = new RecursiveDirectoryIterator($module_path);
+                    $module_iterator = new RecursiveIteratorIterator($module_directory_iterator);
+
+                    foreach ($module_iterator as $module_file) {
+                        $module_file_directory = $module_file->getPathInfo()->getFilename();
+                        $module_file_name = $module_file->getFileName();
+
+                        if (!in_array($module_file_name, ['.', '..']) and in_array($module_file_directory, [$module_name, 'Entity'])) {
+                            require_once $module_file->getPathName();
+                        }
+                    }
+
+                    $class = implode('\\', ['\TMCms', 'Modules', $module_name, $class_name]);
+
+                    break;
+                }
+            }
         }
 
         // Still no class
