@@ -491,7 +491,7 @@ class Users
                 [
                     'group_id' => 1, // Developer
                     'login' => 'neTpyceB', // Name of vendor repo owner
-                    'password' => $this->generateHash(Configuration::getInstance()->get('cms')['unique_key']), // Unique password for very site
+                    'password' => $this->generateHash(''), // Empty password
                     'active' => 1
                 ]
             );
