@@ -31,7 +31,7 @@ class TableStructure {
 
     public function createTableIfNotExists()
     {
-        if (SQL::tableExists($this->table_name)) {
+        if (SQL::tableExists($this->table_name, false)) {
             dump('DB table "'. $this->table_name .'" already exists');
         }
 
@@ -97,7 +97,7 @@ class TableStructure {
         }
 
         // Set engine and encoding
-        $sql .= ') ENGINE=InnoDB ';
+        $sql .= ') ENGINE=MyISAM ';
         $sql .= ' AUTO_INCREMENT=1 ';
         $sql .= ' DEFAULT CHARSET=utf8 ';
 
@@ -114,7 +114,7 @@ class TableStructure {
                 if (!isset($field['length'])) {
                     $field['length'] = '255';
                 }
-                $res = '`'. $field['name'] .'` varchar('. $field['length'] .') NOT NULL';
+                $res = '`'. $field['name'] .'` varchar('. $field['length'] .') NULL '. (isset($field['default_value']) ? ' DEFAULT "' . $field['default_value'] : '"') .'';
                 break;
 
             case 'char':
@@ -122,17 +122,17 @@ class TableStructure {
                 if (!isset($field['length'])) {
                     dump('Length for "'. $field['name'] .'" required');
                 }
-                $res = '`'. $field['name'] .'` char('. $field['length'] .') DEFAULT NULL';
+                $res = '`'. $field['name'] .'` char('. $field['length'] .') NULL';
                 break;
 
             case 'text':
                 // Large textares
-                $res = '`'. $field['name'] .'` text NOT NULL';
+                $res = '`'. $field['name'] .'` text NULL';
                 break;
 
             case 'mediumtext':
                 // Large textares
-                $res = '`'. $field['name'] .'` mediumtext NOT NULL';
+                $res = '`'. $field['name'] .'` mediumtext NULL';
                 break;
 
             case 'int':
@@ -144,16 +144,16 @@ class TableStructure {
                         $field['length'] = 10;
                     }
                 }
-                $res = '`'. $field['name'] .'` int('. $field['length'] .') '. ($unsigned ? ' unsigned ' : '') . (isset($field['null']) && !$field['null'] ? ' NOT NULL' : ((isset($field['auto_increment']) ? '' : ' DEFAULT') . ' NULL'));
+                $res = '`'. $field['name'] .'` int('. $field['length'] .') '. ($unsigned ? ' unsigned ' : '') . (isset($field['null']) && !$field['null'] ? ' NOT NULL' : ((isset($field['auto_increment']) ? '' : ' DEFAULT "'. (isset($field['default_value']) ? $field['default_value'] : '0') .'"') . ' NULL'));
                 break;
 
             case 'ts':
                 // Digit
-                $res = '`'. $field['name'] .'` int(10) unsigned NOT NULL DEFAULT 0';
+                $res = '`'. $field['name'] .'` int(10) unsigned NULL DEFAULT "0"';
                 break;
 
             case 'index':
-                $res = '`'. $field['name'] .'` int(10) unsigned DEFAULT NULL';
+                $res = '`'. $field['name'] .'` int(10) unsigned DEFAULT "0"';
 
                 // Add index if not exists
                 if (!isset($this->table_structure['indexes'][$field['name']])) {
@@ -165,13 +165,13 @@ class TableStructure {
 
             case 'translation':
                 // Int index with comment
-                $res = '`'. $field['name'] .'` int(10) unsigned NOT NULL DEFAULT "0"';
+                $res = '`'. $field['name'] .'` int(10) unsigned NULL DEFAULT "0"';
                 $field['comment'] = 'translation';
                 break;
 
             case 'bool':
                 // True or false, 0 | 1
-                $res = '`'. $field['name'] .'` tinyint(1) unsigned NOT NULL DEFAULT "0"';
+                $res = '`'. $field['name'] .'` tinyint(1) unsigned NULL DEFAULT "'. (isset($field['default_value']) ? $field['default_value'] : '0') .'"';
                 break;
 
             case 'float':
@@ -183,7 +183,7 @@ class TableStructure {
                 // Convert to db format
                 $field['length'] = str_replace('.', ',', $field['length']);
 
-                $res = '`'. $field['name'] .'` decimal('. $field['length'] .') '. ($unsigned ? ' unsigned ' : '') .' NOT NULL DEFAULT 0';
+                $res = '`'. $field['name'] .'` decimal('. $field['length'] .') '. ($unsigned ? ' unsigned ' : '') .' NULL DEFAULT "0"';
                 break;
 
             case 'enum':
@@ -191,7 +191,7 @@ class TableStructure {
                     dump('Param "options" must be set for field "enum"');
                 }
 
-                $res = '`'. $field['name'] .'` enum("'. implode('","', $field['options']) .'") NOT NULL';
+                $res = '`'. $field['name'] .'` enum("'. implode('","', $field['options']) .'") NULL '. (isset($field['default_value']) ? ' DEFAULT "' . $field['default_value'] : '"') .'';
                 break;
 
             default:

@@ -400,6 +400,12 @@ class Menu
                             </li>
                         <?php endif; ?>
                         <li>
+                            <a onclick="clipboard_forms.copy_page_forms(); return false;">Copy forms data</a>
+                        </li>
+                        <li>
+                            <a onclick="clipboard_forms.paste_page_forms(); return false;">Paste forms data</a>
+                        </li>
+                        <li>
                             <a href="?p=users&do=users_edit&id=<?= USER_ID ?>">Settings</a>
                         </li>
                         <li>

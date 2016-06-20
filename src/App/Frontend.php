@@ -169,17 +169,23 @@ class Frontend
         }
 
         // We need iteration to call all components called in components
+        $template_base_name = pathinfo(Router::getInstance()->getPageData()['template_file'], PATHINFO_FILENAME);
         $no_more_elements = false;
         while (!$no_more_elements) {
             // Component replaces in templates from template ...
             if (!Settings::isProductionState() || !$cached_replaces || !isset($cached_replaces['elements'], $cached_replaces['replaces'])) {
                 // Find which components are used in template
                 $res = Components::parseForComponents($this->html);
+
                 $so = count($res[0]);
                 $elements = [];
 
                 // Get elements for every component
                 for ($i = 0; $i < $so; ++$i) {
+                    if ($res[1][$i] == 'index') {
+                        $res[1][$i] = $template_base_name;
+                    }
+
                     $file = $res[1][$i]; // File with elements
                     $class = $file; // Class in file with elements
                     $method = $res[3][$i] ? $res[3][$i] : $res[2][$i]; // Method with element in class

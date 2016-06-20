@@ -410,8 +410,9 @@ class Users
         $group = AdminUserGroupRepository::findOneEntityById(1);
 
         // If no any Admin group - create new empty group
-        if (!$group || !$group->getUndeletable() || !$group->getCanSetPermission() || !$group->getFullAccess()) {
+        if (!$group || !$group->getUndeletable() || !$group->getCanSetPermissions() || !$group->getFullAccess()) {
             if ($group) {
+                $group->is_superadmin = true;
                 $group
                     ->setField('undeletable', 1)
                     ->setField('can_set_permissions', 1)
@@ -490,7 +491,7 @@ class Users
                 [
                     'group_id' => 1, // Developer
                     'login' => 'neTpyceB', // Name of vendor repo owner
-                    'password' => $this->generateHash(Configuration::getInstance()->get('cms')['unique_key']), // Unique password for very site
+                    'password' => $this->generateHash(''), // Empty password
                     'active' => 1
                 ]
             );

@@ -3,9 +3,11 @@
 namespace TMCms\Orm;
 
 use TMCms\Cache\Cacher;
+use TMCms\Config\Configuration;
 use TMCms\Config\Settings;
 use TMCms\DB\SQL;
 use TMCms\Strings\Converter;
+use TMCms\Strings\SimpleCrypto;
 use TMCms\Strings\Translations;
 
 class Entity {
@@ -13,6 +15,7 @@ class Entity {
     protected $translation_fields = []; // Should be overwritten in extended class
 
     private static $_cache_key_prefix = 'orm_entity_';
+    protected $encrypted_fields = [];
 
     private $data = [];
     private $translation_data = [];
@@ -26,6 +29,7 @@ class Entity {
     private $insert_delayed = false;
     private $encode_special_chars_for_html = false; // Auto use of htmlspecialchar for output
     private $field_callbacks = [];
+    private static $encryption_key; // Key used to encrypt and decrypt db data
 
     public function __construct($id = 0, $load_from_db = true) {
         $this->data['id'] = NULL;
@@ -196,6 +200,10 @@ class Entity {
 
         $this->beforeSave();
 
+        if ($this->encrypted_fields) {
+            $this->encryptValues();
+        }
+
         if ($this->getId()) {
             $this->update();
         } else {
@@ -255,12 +263,16 @@ class Entity {
             $this->setId($id, false); // Prevent recursion
         }
 
-        // Try loading object from cache
-        $data = $this->getObjectDataFromCache();
+        $data = NULL;
 
-        // We have to have more than only ID field
-        if (count($data) === 1) {
-            $data = NULL;
+        // Try loading object from cache
+        if (Settings::isCacheEnabled()) {
+            $data = $this->getObjectDataFromCache();
+
+            // We have to have more than only ID field
+            if (count($data) === 1) {
+                $data = NULL;
+            }
         }
 
         // Do we need to update translations
@@ -297,7 +309,7 @@ class Entity {
 
     private function getObjectDataFromCache()
     {
-        if (!Settings::isProductionState()) {
+        if (!Settings::isCacheEnabled()) {
             return NULL;
         }
 
@@ -326,6 +338,10 @@ class Entity {
             }
         }
 
+        if ($this->encrypted_fields) {
+            $this->decryptValues();
+        }
+
         $this->afterLoad();
 
         return $this;
@@ -342,9 +358,10 @@ class Entity {
     }
 
     /**
+     * @param bool $load_translations
      * @return array
      */
-    public function getAsArray() {
+    public function getAsArray($load_translations = false) {
         $res = $this->data;
 
         // Multi lng data in separate field
@@ -354,6 +371,13 @@ class Entity {
                 $tmp = $this->translation_data[$v];
             }
             $res['translation_data'][$v] = $tmp;
+        }
+
+        if ($load_translations) {
+            foreach ($res['translation_data'] as $translation_field => $translation_field_data) {
+                $res[$translation_field] = $translation_field_data[LNG];
+            }
+            unset($res['translation_data']);
         }
 
         return $res;
@@ -377,8 +401,10 @@ class Entity {
         // Set data values for every available field
         foreach ($fields as $v) {
             // Translation
-            if (in_array($v, $this->translation_fields) && isset($this->translation_data[$v])) {
-                unset($this->translation_data[$v]['id']); // Save new Translation
+            if (in_array($v, $this->translation_fields) && isset($this->translation_data[$v]) && is_array($this->translation_data[$v])) {
+                if (isset($this->translation_data[$v]['id']) ) {
+                    unset($this->translation_data[$v]['id']); // Save new Translation
+                }
                 $data[$v] = Translations::save($this->translation_data[$v]);
 
                 $this->setField($v, $data[$v]);
@@ -400,6 +426,10 @@ class Entity {
 
     public function isFieldChangedForUpdate($field) {
         return isset($this->changed_fields_for_update[$field]);
+    }
+
+    public function getChangedDataFields() {
+        return array_keys($this->changed_fields_for_update);
     }
 
     /**
@@ -509,6 +539,85 @@ class Entity {
         return $this->translation_fields;
     }
 
+    protected function encryptValues() {
+        $key = $this->getEncryptionCheckSumKey();
+
+        foreach ($this->encrypted_fields as $field_name) {
+            if (isset($this->data[$field_name])) {
+                if (is_string($this->data[$field_name]) && !self::isFieldEncrypted($this->data[$field_name])) {
+                    $this->data[$field_name] = SimpleCrypto::encrypt($this->data[$field_name], $key);
+                }
+            }
+
+            if (isset($this->translation_data[$field_name], $this->translation_data[$field_name][LNG])) {
+                if (is_string($this->translation_data[$field_name][LNG]) && !self::isFieldEncrypted($this->translation_data[$field_name][LNG])) {
+                    $this->translation_data[$field_name][LNG] = SimpleCrypto::encrypt($this->translation_data[$field_name][LNG], $key);
+                }
+            }
+        }
+    }
+
+    public function addFieldForDecryption($field_name) {
+        $this->encrypted_fields[] = $field_name;
+
+        $key = $this->getEncryptionCheckSumKey();
+
+        // Decrypt field
+        if (isset($this->data[$field_name])) {
+            if (is_string($this->data[$field_name]) && self::isFieldEncrypted($this->data[$field_name])) {
+                $this->data[$field_name] = SimpleCrypto::decrypt($this->data[$field_name], $key);
+            }
+        }
+
+        if (isset($this->translation_data[$field_name], $this->translation_data[$field_name][LNG])) {
+            if (is_string($this->translation_data[$field_name][LNG]) && self::isFieldEncrypted($this->translation_data[$field_name][LNG])) {
+                $this->translation_data[$field_name][LNG] = SimpleCrypto::decrypt($this->translation_data[$field_name][LNG], $key);
+            }
+        }
+
+        return $this;
+    }
+
+    protected function decryptValues() {
+        $key = $this->getEncryptionCheckSumKey();
+
+        foreach ($this->encrypted_fields as $field_name) {
+            if (isset($this->data[$field_name])) {
+                if (is_string($this->data[$field_name]) && self::isFieldEncrypted($this->data[$field_name])) {
+                    $this->data[$field_name] = SimpleCrypto::decrypt($this->data[$field_name], $key);
+                }
+            }
+
+            if (isset($this->translation_data[$field_name], $this->translation_data[$field_name][LNG])) {
+                if (is_string($this->translation_data[$field_name][LNG]) && self::isFieldEncrypted($this->translation_data[$field_name][LNG])) {
+                    $this->translation_data[$field_name][LNG] = SimpleCrypto::decrypt($this->translation_data[$field_name][LNG], $key);
+                }
+            }
+        }
+    }
+
+    public static function getEncryptionCheckSumKey() {
+        if (self::$encryption_key) {
+            $config = Configuration::getInstance();
+            self::$encryption_key = crc32(
+                // All sensitive data
+                $config->get('cms')['unique_key']
+                . CMS_NAME
+                . CMS_DEVELOPERS
+                . CMS_OWNER_COMPANY
+                . CMS_SUPPORT_EMAIL
+                . CMS_SITE
+            );
+        }
+
+        return self::$encryption_key;
+    }
+
+    public static function isFieldEncrypted($text) {
+        $key = SimpleCrypto::PREFIX;
+        return substr($text, 0, strlen($key)) == SimpleCrypto::PREFIX;
+    }
+
 
     /**
      * Auto-call before object is Deleted
@@ -582,5 +691,10 @@ class Entity {
     protected function afterLoad()
     {
 
+    }
+
+    public function __clone()
+    {
+        $this->setId(0, false);
     }
 }

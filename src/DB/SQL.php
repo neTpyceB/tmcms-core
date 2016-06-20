@@ -3,6 +3,7 @@
 namespace TMCms\DB;
 
 use Exception;
+use TMCms\Cache\Cacher;
 use TMCms\Config\Configuration;
 use TMCms\Config\Settings;
 use TMCms\Log\Errors;
@@ -127,17 +128,28 @@ class SQL
      * @param bool $local
      * @return PDO
      */
-    public function connect($user = NULL, $pass = NULL, $host = CFG_DB_SERVER, $db = NULL, $local = true)
+    public function connect($user = NULL, $pass = NULL, $host = NULL, $db = NULL, $local = true)
     {
+
+        $conn_data = Configuration::getInstance()->get('db');
+
         if (!$user) {
-            $user = Configuration::getInstance()->get('db')['login'];
+            $user = $conn_data['login'];
         }
         if (!$pass) {
-            $pass = Configuration::getInstance()->get('db')['password'];
+            $pass = $conn_data['password'];
         }
 
         if (!$db) {
-            $db = Configuration::getInstance()->get('db')['name'];
+            $db = $conn_data['name'];
+        }
+
+
+        if (!$host && isset($conn_data['host'])) {
+            $host = $conn_data['host'];
+            if (!$host) {
+                $host = CFG_DB_SERVER;
+            }
         }
 
         // Connect as usual
@@ -148,7 +160,7 @@ class SQL
         while ($i < CFG_DB_MAX_CONNECT_ATTEMPTS && !$connected) {
             try {
                 $this->pdo_db = new PDO('mysql:dbname=' . $db . ';host=' . $host, $user, $pass, [
-                    PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"
+                    PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES "utf8"',
                 ]);
                 $connected = true;
             } catch (Exception $e) {
@@ -232,8 +244,21 @@ class SQL
             }
         }
 
+        if (Settings::isCacheEnabled()) {
+            $cache_key = 'db_table_list_all';
+            $cacher = Cacher::getInstance()->getDefaultCacher();
+
+            if (!isset(self::$_table_list[$db])) {
+                self::$_table_list[$db] = $cacher->get($cache_key);
+            }
+        }
+
         if (!isset(self::$_table_list[$db]) || !$use_cache) {
             self::$_table_list[$db] = self::getInstance()->q_pairs('SHOW TABLES FROM `' . $db . '`');
+        }
+
+        if (Settings::isCacheEnabled()) {
+            $cacher->set($cache_key, self::$_table_list[$db], 86400);
         }
 
         return self::$_table_list[$db];
@@ -362,6 +387,15 @@ class SQL
      */
     public static function getFields($tbl)
     {
+        if (Settings::isCacheEnabled()) {
+            $cache_key = 'db_table_columns_' . $tbl;
+            $cacher = Cacher::getInstance()->getDefaultCacher();
+
+            if (!isset(self::$_cached_tbl_columns[$tbl])) {
+                self::$_cached_tbl_columns[$tbl] = $cacher->get($cache_key);
+            }
+        }
+
         if (isset(self::$_cached_tbl_columns[$tbl])) {
             return self::$_cached_tbl_columns[$tbl];
         }
@@ -371,6 +405,10 @@ class SQL
 
         while ($q = $sql->fetch(PDO::FETCH_NUM)) {
             $res[] = $q[0];
+        }
+
+        if (Settings::isCacheEnabled()) {
+            $cacher->set($cache_key, $res, 86400);
         }
 
         return self::$_cached_tbl_columns[$tbl] = $res;
@@ -619,7 +657,6 @@ class SQL
      * @param string $id_col
      * @param bool $low_priority
      * @return bool
-     * @internal param bool $dalayed
      */
     public static function update($tbl, array $data, $id, $id_col = 'id', $low_priority = false)
     {
