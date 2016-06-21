@@ -2,6 +2,7 @@
 
 namespace TMCms\Log;
 
+use TMCms\Config\Settings;
 use TMCms\Log\Entity\FrontLogEntity;
 use TMCms\Log\Entity\FrontLogEntityRepository;
 use TMCms\Traits\singletonInstanceTrait;
@@ -63,6 +64,11 @@ class FrontendLogger implements ILogger
 
     public function endLog()
     {
+        // Do nothing if log is disabled
+        if (Settings::get('save_frontend_log')) {
+            return;
+        }
+
         new FrontLogEntityRepository; // Check bd exists
 
         foreach ($this->stack as $v) {
