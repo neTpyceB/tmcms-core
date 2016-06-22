@@ -114,7 +114,7 @@ class TableStructure {
                 if (!isset($field['length'])) {
                     $field['length'] = '255';
                 }
-                $res = '`'. $field['name'] .'` varchar('. $field['length'] .') NULL '. (isset($field['default_value']) ? ' DEFAULT "' . $field['default_value'] : '"') .'';
+                $res = '`'. $field['name'] .'` varchar('. $field['length'] .') NULL '.(isset($field['default_value']) ? ' DEFAULT "' . $field['default_value'] . '"' : '').'';
                 break;
 
             case 'char':
