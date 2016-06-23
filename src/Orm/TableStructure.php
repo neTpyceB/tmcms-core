@@ -114,7 +114,7 @@ class TableStructure {
                 if (!isset($field['length'])) {
                     $field['length'] = '255';
                 }
-                $res = '`'. $field['name'] .'` varchar('. $field['length'] .') NULL';
+                $res = '`'. $field['name'] .'` varchar('. $field['length'] .') NULL '.(isset($field['default_value']) ? ' DEFAULT "' . $field['default_value'] . '"' : '').'';
                 break;
 
             case 'char':
@@ -144,7 +144,7 @@ class TableStructure {
                         $field['length'] = 10;
                     }
                 }
-                $res = '`'. $field['name'] .'` int('. $field['length'] .') '. ($unsigned ? ' unsigned ' : '') . (isset($field['null']) && !$field['null'] ? ' NOT NULL' : ((isset($field['auto_increment']) ? '' : ' DEFAULT "0"') . ' NULL'));
+                $res = '`'. $field['name'] .'` int('. $field['length'] .') '. ($unsigned ? ' unsigned ' : '') . (isset($field['null']) && !$field['null'] ? ' NOT NULL' : ((isset($field['auto_increment']) ? '' : ' DEFAULT "'. (isset($field['default_value']) ? $field['default_value'] : '0') .'"') . ' NULL'));
                 break;
 
             case 'ts':
@@ -171,7 +171,7 @@ class TableStructure {
 
             case 'bool':
                 // True or false, 0 | 1
-                $res = '`'. $field['name'] .'` tinyint(1) unsigned NULL DEFAULT "0"';
+                $res = '`'. $field['name'] .'` tinyint(1) unsigned NULL DEFAULT "'. (isset($field['default_value']) ? $field['default_value'] : '0') .'"';
                 break;
 
             case 'float':
@@ -191,7 +191,7 @@ class TableStructure {
                     dump('Param "options" must be set for field "enum"');
                 }
 
-                $res = '`'. $field['name'] .'` enum("'. implode('","', $field['options']) .'") NULL';
+                $res = '`'. $field['name'] .'` enum("'. implode('","', $field['options']) .'") NULL '. (isset($field['default_value']) ? ' DEFAULT "' . $field['default_value'] : '"') .'';
                 break;
 
             default:
