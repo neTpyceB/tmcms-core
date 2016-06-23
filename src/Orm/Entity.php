@@ -51,7 +51,7 @@ class Entity {
      * @return $this
      */
     public function flipBoolValue($field) {
-        $this->setField($field, !$this->getfield($field));
+        $this->setField($field, (int)!$this->getfield($field));
 
         return $this;
     }
