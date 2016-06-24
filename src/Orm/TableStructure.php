@@ -191,7 +191,7 @@ class TableStructure {
                     dump('Param "options" must be set for field "enum"');
                 }
 
-                $res = '`'. $field['name'] .'` enum("'. implode('","', $field['options']) .'") NULL '. (isset($field['default_value']) ? ' DEFAULT "' . $field['default_value'] : '"') .'';
+                $res = '`'. $field['name'] .'` enum("'. implode('","', $field['options']) .'") NULL '. (isset($field['default_value']) ? ' DEFAULT "' . $field['default_value'] . '"' : '') .'';
                 break;
 
             default:
