@@ -373,7 +373,7 @@ class Entity {
             $res['translation_data'][$v] = $tmp;
         }
 
-        if ($load_translations) {
+        if ($load_translations && isset($res['translation_data']) && $res['translation_data']) {
             foreach ($res['translation_data'] as $translation_field => $translation_field_data) {
                 $res[$translation_field] = $translation_field_data[LNG];
             }
