@@ -148,6 +148,7 @@ class TableStructure {
                 break;
 
             case 'ts':
+            case 'order':
                 // Digit
                 $res = '`'. $field['name'] .'` int(10) unsigned NULL DEFAULT "0"';
                 break;
