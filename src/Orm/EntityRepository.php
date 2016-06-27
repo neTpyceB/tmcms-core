@@ -292,6 +292,7 @@ class EntityRepository {
     }
 
     /**
+     * Remove all limits and where fields, and get total amount in collection
      * @return bool
      */
     public function getCountOfMaxPossibleFoundObjectsWithoutFilters()
@@ -554,6 +555,10 @@ class EntityRepository {
         return $this->sql_select_fields;
     }
 
+    /**
+     * Select count(*)
+     * @return int
+     */
     public function getTotalSelectedRowsWithoutLimit() {
         if (!$this->require_to_count_total_rows) {
             dump('You need to call setRequireCountRowsWithoutLimits(true) before requesting result');
