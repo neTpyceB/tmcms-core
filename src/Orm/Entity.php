@@ -375,7 +375,7 @@ class Entity {
 
         if ($load_translations && isset($res['translation_data']) && $res['translation_data']) {
             foreach ($res['translation_data'] as $translation_field => $translation_field_data) {
-                $res[$translation_field] = $translation_field_data[LNG];
+                $res[$translation_field] = isset($translation_field_data[LNG]) ? $translation_field_data[LNG] : NULL;
             }
             unset($res['translation_data']);
         }
