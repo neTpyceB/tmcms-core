@@ -170,6 +170,11 @@ class TableStructure {
                 $field['comment'] = 'translation';
                 break;
 
+            case 'current_timestamp':
+                // Default : CURRENT_TIMESTAMP
+                $res = '`'. $field['name'] .'` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP';
+                break;
+
             case 'bool':
                 // True or false, 0 | 1
                 $res = '`'. $field['name'] .'` tinyint(1) unsigned NULL DEFAULT "'. (isset($field['default_value']) ? $field['default_value'] : '0') .'"';
