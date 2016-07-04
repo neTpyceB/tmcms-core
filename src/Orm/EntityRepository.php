@@ -460,6 +460,18 @@ class EntityRepository {
         return $this;
     }
 
+    public function addOrderByFieldAsString($sql) {
+        $this->order_fields[] = [
+            'table' => false,
+            'field' => $sql,
+            'direction' => false,
+            'do_not_use_table_in_sql' => true,
+            'type' => 'string'
+        ];
+
+        return $this;
+    }
+
     /**
      * @param $searchable_string
      * @param $field
