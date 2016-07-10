@@ -17,8 +17,9 @@ class FrontLogEntityRepository extends EntityRepository
             'ts' => [
                 'type' => 'ts',
             ],
-            'ip_long' => [
-                'type' => 'ts',
+            'ip' => [
+                'type' => 'varchar',
+                'length' => 15,
             ],
             'flag' => [
                 'type' => 'varchar',

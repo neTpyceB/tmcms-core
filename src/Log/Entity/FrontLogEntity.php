@@ -15,7 +15,7 @@ class FrontLogEntity extends Entity
     protected function beforeCreate()
     {
         $this->setTs(NOW);
-        $this->setIpLong(IP_LONG);
+        $this->setIp(IP);
         $this->setVisitorHash(VISITOR_HASH);
     }
 }
