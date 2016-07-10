@@ -65,7 +65,7 @@ class FrontendLogger implements ILogger
     public function endLog()
     {
         // Do nothing if log is disabled
-        if (Settings::get('save_frontend_log')) {
+        if (!Settings::get('save_frontend_log')) {
             return;
         }
 
