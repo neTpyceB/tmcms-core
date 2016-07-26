@@ -8,6 +8,8 @@ use TMCms\Orm\Entity;
  * Class PagesWordEntity
  * @package TMCms\Routing\Entity
  *
+ * @method string getName()
+ *
  * @method string getWord()
  * @method setName(string $name)
  * @method setWord(string $word)
