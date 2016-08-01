@@ -195,30 +195,7 @@ class RenderComponentHelper {
                 break;
 
             case 'tinymce':
-                $tinymce = new Tinymce();
-
-                if (isset($this->field_value['menubar'])) {
-                    $tinymce->setMenubar($this->field_value['menubar']);
-                }
-
-                if (isset($this->field_value['statusbar'])) {
-                    $tinymce->setStatusbar($this->field_value['statusbar']);
-                }
-
-                if (isset($this->field_value['plugins'])) {
-                    $tinymce->setPlugins($this->field_value['plugins']);
-                }
-
-                if (isset($this->field_value['toolbar'])) {
-                    $tinymce->setToolbar($this->field_value['toolbar']);
-                }
-
-                if (isset($this->field_value['content_css'])) {
-                    $tinymce->setContentCss($this->field_value['content_css']);
-                }
-
-                $field->setWidget($tinymce);
-                $field->helper(false);
+                $field->enableWysiwyg();
                 break;
 
             case 'calendar':
