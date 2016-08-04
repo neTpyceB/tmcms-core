@@ -406,9 +406,6 @@ class Menu
                             <a onclick="clipboard_forms.paste_page_forms(); return false;">Paste forms data</a>
                         </li>
                         <li>
-                            <a href="?p=users&do=users_edit&id=<?= USER_ID ?>">Settings</a>
-                        </li>
-                        <li>
                             <a href="<?= DIR_CMS_URL ?>?p=home&do=_exit" onclick="return confirm('<?= __('Are you sure?') ?>');">Logout</a>
                         </li>
                     </ul>
