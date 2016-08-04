@@ -316,7 +316,7 @@ class Menu
                 <li class="off-right">
                     <a href="/" title="Open site" target="_blank">
                         <span class="hidden-xs ml10">
-                            <i class="fa fa-files-o"></i>
+                            <i class="fa fa-home fa-2x"></i>
                         </span>
                     </a>
                 </li>
