@@ -73,18 +73,18 @@ class CmsTableHelper {
             }
 
             // Title
-            if (isset($column['title'])) {
-                $column->setTitle($column['title']);
+            if (isset($column_param['title'])) {
+                $column->setTitle($column_param['title']);
             }
 
             // Link
-            if (isset($column['href'])) {
-                $column->setHref($column['href']);
+            if (isset($column_param['href'])) {
+                $column->setHref($column_param['href']);
             }
 
             // Paired array
-            if (isset($column['pairs'])) {
-                $column->setPairedDataOptionsForKeys($column['pairs']);
+            if (isset($column_param['pairs'])) {
+                $column->setPairedDataOptionsForKeys($column_param['pairs']);
             }
 
             if ($column) {
