@@ -7,6 +7,7 @@ use TMCms\HTML\Cms\Column\ColumnData;
 use TMCms\HTML\Cms\Column\ColumnDelete;
 use TMCms\HTML\Cms\Column\ColumnEdit;
 use TMCms\HTML\Cms\Column\ColumnGallery;
+use TMCms\HTML\Cms\Column\ColumnImg;
 use TMCms\HTML\Cms\Column\ColumnOrder;
 use TMCms\HTML\Cms\Filter\Select;
 use TMCms\HTML\Cms\Filter\Text;
@@ -83,6 +84,9 @@ class CmsTableHelper {
                     break;
                 case 'gallery':
                     $column = new ColumnGallery($column_key);
+                    break;
+                case 'image':
+                    $column = new ColumnImg($column_key);
                     break;
             }
 
