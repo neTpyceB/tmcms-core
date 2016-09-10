@@ -6,6 +6,7 @@ use TMCms\HTML\Cms\Column\ColumnActive;
 use TMCms\HTML\Cms\Column\ColumnData;
 use TMCms\HTML\Cms\Column\ColumnDelete;
 use TMCms\HTML\Cms\Column\ColumnEdit;
+use TMCms\HTML\Cms\Column\ColumnOrder;
 use TMCms\HTML\Cms\Filter\Select;
 use TMCms\HTML\Cms\Filter\Text;
 
@@ -16,6 +17,12 @@ class CmsTableHelper {
             $params['columns'] = [];
         }
 
+        // Check order column
+        if (isset($params['order']) && !isset($params['columns']['order'])) {
+            $params['columns']['order'] = [
+                'type' => 'order',
+            ];
+        }
         // Check edit column
         if (isset($params['edit']) && !isset($params['columns']['edit'])) {
             $params['columns']['edit'] = [
@@ -60,6 +67,9 @@ class CmsTableHelper {
             switch ($column_param['type']) {
                 case 'data':
                     $column = new ColumnData($column_key);
+                    break;
+                case 'order':
+                    $column = new ColumnOrder($column_key);
                     break;
                 case 'edit':
                     $column = new ColumnEdit($column_key);
