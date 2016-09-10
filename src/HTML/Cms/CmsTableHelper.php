@@ -6,6 +6,7 @@ use TMCms\HTML\Cms\Column\ColumnActive;
 use TMCms\HTML\Cms\Column\ColumnData;
 use TMCms\HTML\Cms\Column\ColumnDelete;
 use TMCms\HTML\Cms\Column\ColumnEdit;
+use TMCms\HTML\Cms\Column\ColumnGallery;
 use TMCms\HTML\Cms\Column\ColumnOrder;
 use TMCms\HTML\Cms\Filter\Select;
 use TMCms\HTML\Cms\Filter\Text;
@@ -80,6 +81,9 @@ class CmsTableHelper {
                 case 'delete':
                     $column = new ColumnDelete($column_key);
                     break;
+                case 'gallery':
+                    $column = new ColumnGallery($column_key);
+                    break;
             }
 
             // Is multi-translatable data in column
@@ -95,6 +99,11 @@ class CmsTableHelper {
             // Title
             if (isset($column_param['title'])) {
                 $column->setTitle($column_param['title']);
+            }
+
+            // Images for gallery
+            if (isset($column_param['images'])) {
+                $column->setImages($column_param['images']);
             }
 
             // Width of column
