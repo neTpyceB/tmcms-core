@@ -100,6 +100,11 @@ class CmsTableHelper {
                 $column->enableOrderableColumn();
             }
 
+            // Is dragable
+            if (isset($column_param['order_drag']) && $column_param['order_drag']) {
+                $column->enableDraggable();
+            }
+
             // Title
             if (isset($column_param['title'])) {
                 $column->setTitle($column_param['title']);
