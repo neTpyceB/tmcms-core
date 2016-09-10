@@ -82,6 +82,11 @@ class CmsTableHelper {
                     break;
             }
 
+            // Is multi-translatable data in column
+            if (isset($column_param['translation']) && $column_param['translation']) {
+                $column->enableTranslationColumn();
+            }
+
             // Is orderable
             if (isset($column_param['order']) && $column_param['order']) {
                 $column->enableOrderableColumn();
