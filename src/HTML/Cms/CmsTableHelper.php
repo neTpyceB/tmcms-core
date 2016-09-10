@@ -82,6 +82,11 @@ class CmsTableHelper {
                     break;
             }
 
+            // Is orderable
+            if (isset($column_param['order']) && $column_param['order']) {
+                $column->enableOrderableColumn();
+            }
+
             // Title
             if (isset($column_param['title'])) {
                 $column->setTitle($column_param['title']);
