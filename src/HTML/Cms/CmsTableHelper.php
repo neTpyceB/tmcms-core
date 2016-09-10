@@ -121,7 +121,7 @@ class CmsTableHelper {
         }
 
         // Apply filter
-        if (isset($params['filters']) || $params['caption']) {
+        if (isset($params['filters']) || isset($params['caption'])) {
             $filter_form = new FilterForm;
 
             // Top caption above table
