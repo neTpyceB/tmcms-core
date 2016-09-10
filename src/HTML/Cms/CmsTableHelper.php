@@ -77,6 +77,14 @@ class CmsTableHelper {
                 $column->setTitle($column_param['title']);
             }
 
+            // Width of column
+            if (isset($column_param['narrow'])) {
+                $column->enableNarrowWidth();
+            }
+            if (isset($column_param['width'])) {
+                $column->setWidth($column_param['width']);
+            }
+
             // Link
             if (isset($column_param['href'])) {
                 $column->setHref($column_param['href']);
