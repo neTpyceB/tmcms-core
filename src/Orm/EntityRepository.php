@@ -435,7 +435,7 @@ class EntityRepository {
 
         $direction = $direction_desc ? 'DESC' : ' ASC';
 
-
+        // Swap fields with translation table
         if (in_array($field, $this->translation_fields)) {
             $k = count($this->translation_joins);
             $this->translation_joins[] = 'LEFT JOIN `cms_translations` AS `d' . $k . '` ON (`d' . $k . '`.`id` = `'. $table .'`.`' . $field . '`)';
@@ -1124,24 +1124,17 @@ FROM `'. $this->getDbTableName() .'`
             $table = $this->getDbTableName();
         }
 
+        // Swap fields with translation table
+        if (in_array($field, $this->translation_fields)) {
+            $k = count($this->translation_joins);
+            $this->translation_joins[] = 'LEFT JOIN `cms_translations` AS `d' . $k . '` ON (`d' . $k . '`.`id` = `' . $table . '`.`' . $field . '`)';
 
-        $field_is_translation = in_array($field, $this->translation_fields);
-
-        if ($field_is_translation) {
-
-            $q = q_assoc('SELECT *
-                FROM `'.$table.'`
-                    LEFT JOIN `cms_translations`
-                    ON `cms_translations`.`'.LNG.'` LIKE "%'.$like_value.'%"
-                WHERE `'.$table.'`.`'.$field.'` = `cms_translations`.`id`');
-
-            // TODO 4to be ne slomalosj navernjaka - remove in future
-            $this->addWhereFieldAsString('`'. $table .'`.`'. $field .'` LIKE "'. ($left_any ? '%' : '') . sql_prepare($like_value, true) . ($right_any ? '%' : '') .'"');
-
+            // Set real used table an field instead of requested
+            $table = $k;
+            $field = LNG;
         }
-        else {
-            $this->addWhereFieldAsString('`'. $table .'`.`'. $field .'` LIKE "'. ($left_any ? '%' : '') . sql_prepare($like_value, true) . ($right_any ? '%' : '') .'"');
-        }
+
+        $this->addWhereFieldAsString('`'. $table .'`.`'. $field .'` LIKE "'. ($left_any ? '%' : '') . sql_prepare($like_value, true) . ($right_any ? '%' : '') .'"');
 
         return $this;
     }
