@@ -624,12 +624,12 @@ class EntityRepository {
         $join_sql = $this->getJoinTablesSql();
 
         // Translations
-        $translation_sql = implode(', ', $this->getTranslationJoinTables());
+        $translation_joins_sql = implode(' ', $this->getTranslationJoinTables());
 
         // Counting total
         if ($for_max_object_count) {
             $select_sql = 'COUNT(*)';
-            $translation_sql = '';
+            $translation_joins_sql = '';
             $where_sql = '';
             $having_sql = '';
             $order_by_sql = '';
@@ -641,7 +641,7 @@ class EntityRepository {
         $sql = '
 SELECT '. $sql_calc_found_rows . $select_sql .'
 FROM `'. $this->getDbTableName() .'`
-'. $translation_sql .'
+'. $translation_joins_sql .'
 '. $join_sql .'
 '. $where_sql .'
 '. $group_sql .'
@@ -1110,59 +1110,43 @@ FROM `'. $this->getDbTableName() .'`
     }
 
     /**
-     * Filter collection by value exclusive
-     * @param $field
+     * Filter collection by value inclusive
+     * @param $fields - value or array of values, WHERE sentence uses OR between values in one array
      * @param string $like_value
      * @param bool $left_any
      * @param bool $right_any
      * @param string $table
      * @return $this
      */
-    public function addWhereFieldIsLike($field, $like_value, $left_any = true, $right_any = true, $table = '')
+    public function addWhereFieldIsLike($fields, $like_value, $left_any = true, $right_any = true, $table = '')
     {
+        $fields = (array)$fields;
+
         if (!$table) {
             $table = $this->getDbTableName();
         }
 
-        // Swap fields with translation table
-        if (in_array($field, $this->translation_fields)) {
-            $k = count($this->translation_joins);
-            $this->translation_joins[] = 'LEFT JOIN `cms_translations` AS `d' . $k . '` ON (`d' . $k . '`.`id` = `' . $table . '`.`' . $field . '`)';
-
-            // Set real used table an field instead of requested
-            $table = $k;
-            $field = LNG;
-        }
-
-        $this->addWhereFieldAsString('`'. $table .'`.`'. $field .'` LIKE "'. ($left_any ? '%' : '') . sql_prepare($like_value, true) . ($right_any ? '%' : '') .'"');
-
-        return $this;
-    }
-
-    /**
-     * Filter collection by value exclusive
-     * @param $fields
-     * @param string $like_value
-     * @param bool $left_any
-     * @param bool $right_any
-     * @param string $table
-     * @return $this
-     */
-    public function addWhereFieldsIsLike($fields = [], $like_value, $left_any = true, $right_any = true, $table = '')
-    {
-        if (!$table) {
-            $table = $this->getDbTableName();
-        }
+        // If not translation field present
+        $result_table = $table;
 
         $sql = [];
 
+        // All fields glued with OR
         foreach ($fields as $field) {
-            $sql[] = '(`'. $table .'`.`'. $field .'` LIKE "'. ($left_any ? '%' : '') . sql_prepare($like_value, true) . ($right_any ? '%' : '') .'")';
-        }
-        if (!$sql) {
-            return $this;
+            if (in_array($field, $this->translation_fields)) {
+                $k = count($this->translation_joins);
+                $this->translation_joins[] = 'LEFT JOIN `cms_translations` AS `d' . $k . '` ON (`d' . $k . '`.`id` = `' . $table . '`.`' . $field . '`)';
+
+                // Set real used table an field instead of requested
+                $result_table = 'd' . $k;
+                $field = LNG;
+            }
+
+            $sql[] = '`'. $result_table .'`.`'. $field .'` LIKE "'. ($left_any ? '%' : '') . sql_prepare($like_value, true) . ($right_any ? '%' : '') .'"';
+
         }
 
+        // Make one big WHERE
         $sql = implode(' OR ', $sql);
 
         $this->addWhereFieldAsString('('. $sql .')');
