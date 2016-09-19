@@ -57,7 +57,7 @@ abstract class CmsModule implements IModule {
 
         App::add($name . ' added');
 
-        Messages::sendMessage($name . ' added');
+        Messages::sendGreenAlert($name . ' added');
 
         go('?p='. P .'&highlight='. $entity->getId());
     }
@@ -95,7 +95,7 @@ abstract class CmsModule implements IModule {
 
         App::add($name . ' updated');
 
-        Messages::sendMessage($name . ' updated');
+        Messages::sendGreenAlert($name . ' updated');
 
         go('?p='. P .'&highlight='. $entity->getId());
     }
@@ -114,7 +114,7 @@ abstract class CmsModule implements IModule {
 
         App::add($name . ' ' . ($entity->getActive() ? '' : 'de') . 'activated');
 
-        Messages::sendMessage($name . ' updated');
+        Messages::sendGreenAlert($name . ' updated');
 
         if (IS_AJAX_REQUEST) {
             die('1');
@@ -148,7 +148,7 @@ abstract class CmsModule implements IModule {
 
         App::add($name . ' deleted');
 
-        Messages::sendMessage($name . ' deleted');
+        Messages::sendGreenAlert($name . ' deleted');
 
         back();
     }
