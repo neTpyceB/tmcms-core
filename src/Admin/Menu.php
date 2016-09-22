@@ -142,7 +142,7 @@ class Menu
      * Add menu item
      * @param string $k to use in links
      * @param string $v representation in menu
-     * @return bool whether added
+     * @return $this whether added
      */
     public function addMenuItem($k, $v = '')
     {
@@ -269,8 +269,9 @@ class Menu
         $messages_collection = new UsersMessageRepository;
         $messages_collection->setWhereToUserId(USER_ID);
         $messages_collection->addOrderByField('ts', true);
+        $messages_collection->setWhereSeen(0);
 
-        $total_notifications = $messages_collection->getCountOfMaxPossibleFoundObjectsWithoutFilters();
+        $total_notifications = $messages_collection->getCountOfObjectsInCollection();
 
         $messages_collection->setLimit(5);
 
