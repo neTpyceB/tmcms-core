@@ -129,7 +129,7 @@ class Backend
             <?= $menu ?>
             <section class="main-content">
                 <div class="content-wrap">
-                    <div class="wrapper" style="padding: 15px">
+                    <div class="wrapper custom_scrollbar">
                         <?= $this->content ?>
                     </div>
                 </div>

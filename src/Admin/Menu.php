@@ -79,21 +79,21 @@ class Menu
         ob_start();
         ?>
         <aside class="sidebar offscreen-left">
-            <nav class="main-navigation" data-height="auto" data-size="6px" data-distance="0" data-rail-visible="true" data-wheel-step="10">
-                <p class="nav-title"></p>
+            <p class="nav-top-overlay"></p>
+            <nav class="main-navigation custom_scrollbar" data-height="auto" data-size="6px" data-distance="0" data-rail-visible="true" data-wheel-step="10">
                 <ul class="nav">
                     <?php foreach ($this->_menu as $k => $v):
                         // Current module - rebder all submenu items
                         if (P == $k): ?>
                             <li class="open">
-                                <a href="javascript:">
-                                    <i class="toggle-accordion"></i>
+                                <a href="">
                                     <i class="ti-home"></i>
                                     <span><?= __(Converter::symb2Ttl(is_array($v) ? $v[$k] : $v)) ?></span>
                                 </a>
                                 <ul class="sub-menu" style="display: block;">
-                                    <li class="">
+                                    <li class="<?= P_DO == '_default' ? ' active' : '' ?>">
                                         <a href="/cms?p=<?= P ?>">
+                                            <i class="ti-arrow-right"></i>
                                             <span><?= __('Main') ?></span>
                                             <?php if (isset($this->menu_labels[P]['_default'])): ?>
                                                 <span class="pull-right small label label-info animated flash">
@@ -111,6 +111,7 @@ class Menu
                                             ?>
                                             <li class="<?= P_DO == $k_in ? ' active' : '' ?>">
                                                 <a href="/cms?p=<?= P . '&do=' . $k_in ?>">
+                                                    <i class="ti-arrow-right"></i>
                                                     <span><?= __(Converter::symb2Ttl($v_in)) ?></span>
                                                     <?php if (isset($this->menu_labels[P][$k_in])): ?>
                                                         <span class="pull-right small label label-danger animated flash">
@@ -303,8 +304,9 @@ class Menu
         <header class="header header-fixed navbar">
             <div class="brand">
                 <a class="navbar-brand" href="<?= isset($logo_link) ? $logo_link : CMS_SITE ?>" target="_blank">
-                    <div id="petrik_logo" style="background-image: url('<?= isset($logo) ? $logo : '' ?>')"></div>
+                    <div id="devp_logo" style="background-image: url('<?= isset($logo) ? $logo : '' ?>')"></div>
                 </a>
+                <div id="brand_site_name"><?= Configuration::getInstance()->get('site')['name'] ?></div>
             </div>
             <?php if ($this->help_texts): ?>
                 <div class="text-white pull-left" id="cms_page_help_tips">
