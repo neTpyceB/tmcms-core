@@ -29,26 +29,36 @@ class Finder {
 	public function addAssetsSearchPath($path)
 	{
 		$this->assets_search_folders[] = $path;
+
+        return $this;
 	}
 
 	public function addAjaxSearchPath($path)
 	{
 		$this->ajax_search_folders[] = $path;
+
+        return $this;
 	}
 
 	public function addPluginsSearchPath($path)
 	{
 		$this->plugin_search_folders[] = $path;
+
+        return $this;
 	}
 
 	public function addServicesSearchPath($path)
 	{
 		$this->services_search_folders[] = $path;
+
+        return $this;
 	}
 
 	public function addTranslationsSearchPath($path)
 	{
 		$this->translations_search_folders[] = $path;
+
+        return $this;
 	}
 
 	public function searchForRealPath($real_file_path, $type = self::TYPE_ASSETS) {
