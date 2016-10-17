@@ -13,6 +13,7 @@ use TMCms\Admin\Users\Entity\AdminUserGroupRepository;
 use TMCms\Admin\Users\Entity\AdminUser;
 use TMCms\Admin\Users\Entity\AdminUserRepository;
 use TMCms\Config\Configuration;
+use TMCms\Log\App;
 use TMCms\Routing\Languages;
 use TMCms\Traits\singletonOnlyInstanceTrait;
 
@@ -115,6 +116,24 @@ class Users
         $session->save();
 
         return $sid;
+    }
+
+    /**
+     * After that user is logged-in
+     * @param AdminUser $user
+     * @return string session id
+     */
+    public function setUserLoggedIn($user)
+    {
+        $_SESSION['admin_logged'] = true;
+        $_SESSION['admin_id'] = $user->getId();
+        $_SESSION['admin_login'] = $user->getLogin();
+        $_SESSION['admin_sid'] = Users::getInstance()->startSession($user->getId());
+        if (!defined('USER_ID')) {
+            define('USER_ID', $user->getId());
+        }
+
+        App::add('User "' . $user->getLogin() . '" logged in.');
     }
 
     /**
