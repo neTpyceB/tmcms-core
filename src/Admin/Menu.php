@@ -306,7 +306,11 @@ class Menu
                 <a class="navbar-brand" href="<?= isset($logo_link) ? $logo_link : CMS_SITE ?>" target="_blank">
                     <div id="devp_logo" style="background-image: url('<?= isset($logo) ? $logo : '' ?>')"></div>
                 </a>
-                <div id="brand_site_name"><?= Configuration::getInstance()->get('site')['name'] ?></div>
+                <div id="brand_site_name">
+                    <a href="<?= DIR_CMS_URL ?>">
+                        <?= Configuration::getInstance()->get('site')['name'] ?>
+                    </a>
+                </div>
             </div>
             <?php if ($this->help_texts): ?>
                 <div class="text-white pull-left" id="cms_page_help_tips">
