@@ -62,7 +62,7 @@ a:hover {
 .sidebar {
   background-color: #f5f5f5;
   color: #e2e4f6;
-  border-right: 1px solid #0f0f0f;
+  border-right: 3px solid #0f0f0f;
 }
 .sidebar a,
 .sidebar .nav-title {
