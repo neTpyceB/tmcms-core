@@ -90,10 +90,6 @@ class FileSystem
             return false;
         }
 
-        if (!is_writable($path)) {
-            dump("You have to make path ". $path .'" writable');
-        }
-
         $umask = umask();
         $res = mkdir($path, CFG_DEFAULT_DIR_PERMISSIONS, true);
         umask($umask);
