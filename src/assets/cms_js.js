@@ -571,7 +571,7 @@ var PopupModal = function (options) {
 
         showLoadingBlock.css({
             "display": "block",
-            "background": "url(/vendor/neTpyceB/TMCms/src/assets/images/loading.gif) center no-repeat",
+            "background": "url(/vendor/neTpyceB/TMCms-core/src/assets/images/loading.gif) center no-repeat",
             "background-color": "rgb(0, 0, 0)",
             "position": "fixed",
             "top": "0px",
