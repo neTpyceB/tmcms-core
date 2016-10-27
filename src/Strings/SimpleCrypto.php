@@ -2,7 +2,7 @@
 
 namespace TMCms\Strings;
 
-use Exception;
+use TMCms\Config\Configuration;
 
 defined('INC') or exit;
 
@@ -20,16 +20,25 @@ var_dump($encrypted, $decrypted);
  */
 class SimpleCrypto
 {
-    const SALT = 'df465y*!th1-rhgrshdff';
     const PREFIX = 'encrypt_';
 
     public static function encrypt($string, $key) {
-        $key = self::SALT . $key;
+        $key = self::getSalt() . $key;
         return SimpleCrypto::PREFIX . strrev(base64_encode($string . $key));
     }
 
     public static function decrypt($string, $key) {
-        $key = self::SALT . $key;
+        $key = self::getSalt() . $key;
         return mb_substr(base64_decode(strrev(mb_substr($string, mb_strlen(self::PREFIX)))), 0, -mb_strlen($key));
+    }
+
+    private static function getSalt() {
+
+        $config = Configuration::getInstance()->get('db');
+        if (isset($config['salt'])) {
+            return $config['salt'];
+        }
+
+        dump('If you with to use SimpleCrypto, please set key "salt" for "db" section in your config file');
     }
 }
