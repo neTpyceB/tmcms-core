@@ -68,8 +68,18 @@ class CmsTableHelper {
 
             switch ($column_param['type']) {
                 case 'data':
+
                     $column = new ColumnData($column_key);
+
                     break;
+
+                case 'date':
+
+                    $column = new ColumnData($column_key);
+                    $column->setDataTypeAsTsToDatetime();
+
+                    break;
+
                 case 'order':
                     $column = new ColumnOrder($column_key);
                     break;
@@ -88,6 +98,26 @@ class CmsTableHelper {
                 case 'image':
                     $column = new ColumnImg($column_key);
                     break;
+
+                default:
+
+                    dump('Unknown column type "'. $column_param['type'] .'"');
+
+                    break;
+            }
+
+            // Disable cutting long texts by column
+            if (isset($column_param['cut_long_strings'])) {
+                if (!$column_param['cut_long_strings']) {
+                    $column->disableCutLongStrings();
+                }
+            }
+
+            // Disable cutting long texts by entire table
+            if (isset($params['cut_long_strings'])) {
+                if (!$params['cut_long_strings']) {
+                    $column->disableCutLongStrings();
+                }
             }
 
             // Is multi-translatable data in column
