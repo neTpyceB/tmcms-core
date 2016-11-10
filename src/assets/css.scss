@@ -572,3 +572,16 @@ tr.highlight td {
 #cms_page_help_tips div {
     padding: 8px;
 }
+
+// Overwrite selector to be flat
+.chosen-container-single .chosen-single {
+    background: #fff !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+}
+
+input[type=radio], input[type=checkbox] {
+    margin: 0;
+    width: 16px;
+    height: 16px;
+}
