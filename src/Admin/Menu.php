@@ -286,6 +286,8 @@ class Menu
             $logo = Configuration::getInstance()->get('cms')['logo'];
         }
 
+        $avatar = Users::getInstance()->getUserData('avatar');
+
         ?>
         <div id="menu_loading" class="bg-success"></div>
         <script>
@@ -301,7 +303,7 @@ class Menu
             }, 100);
         </script>
 
-        <header class="header header-fixed navbar">
+        <header class="header header-fixed navbar page-header navbar-fixed-top">
             <div class="brand">
                 <a class="navbar-brand" href="<?= isset($logo_link) ? $logo_link : CMS_SITE ?>" target="_blank">
                     <div id="devp_logo" style="background-image: url('<?= isset($logo) ? $logo : '' ?>')"></div>
@@ -319,7 +321,7 @@ class Menu
                     </div>
                 </div>
             <?php endif; ?>
-            <ul class="nav navbar-nav navbar-right">
+            <ul class="nav navbar-nav navbar-right nav pull-right">
                 <li class="off-right">
                     <a href="/" title="Open site" target="_blank">
                         <span class="hidden-xs ml10">
@@ -380,7 +382,7 @@ class Menu
                 <li class="off-right">
                     <a href="javascript:" data-toggle="dropdown">
                         <span class="hidden-xs ml10">
-                            <?= Users::getInstance()->getUserLng() ?>
+                            <?= strtoupper(Users::getInstance()->getUserLng()) ?>
                         </span>
                         <i class="ti-angle-down ti-caret hidden-xs"></i>
                     </a>
@@ -395,6 +397,9 @@ class Menu
 
                 <li class="off-right">
                     <a href="javascript:" data-toggle="dropdown">
+                        <?php if ($avatar): ?>
+                            <img src="<?= $avatar ?>&resizefit=20x20&round=9x000000&key=<?= Configuration::getInstance()->get('cms')['unique_key'] ?>">
+                        <?php endif; ?>
                         <span class="hidden-xs ml10">
                             <?= Users::getInstance()->getUserData('login') ?>
                         </span>

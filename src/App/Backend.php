@@ -240,8 +240,12 @@ class Backend
 
         // Core - main design
         PageHead::getInstance()
-            ->addCssUrl('bootstrap/css/bootstrap.min.css')
             ->addCssUrl('css/font-awesome.css')
+//            ->addCssUrl('css/metronic/simple-line-icons.css')
+            ->addCssUrl('bootstrap/css/bootstrap.min.css')
+//            ->addCssUrl('css/metronic/components.css')
+//            ->addCssUrl('css/metronic/layout.css')
+//            ->addCssUrl('css/metronic/darkblue.css')
             ->addCssUrl('css/themify-icons.css')
             ->addCssUrl('css/animate.min.css')
             ->addCssUrl('css/skins/palette.css')
