@@ -231,11 +231,19 @@ class Backend
      */
     private function prepareHead()
     {
+        $config = Configuration::getInstance();
+
+        // Favicon url
+        $favicon = $config->get('cms')['favicon'];
+        if (!$favicon) {
+            $favicon = DIR_CMS_IMAGES_URL . 'logo_square.png';
+        }
+
         // Prepare page HTML for head
         PageHead::getInstance()
-            ->setTitle((P_DO !== '_default' ? Converter::symb2Ttl(P_DO) . ' / ' : '') . Converter::symb2Ttl(P) . ' / ' . Configuration::getInstance()->get('site')['name'] . ' / ' . CMS_NAME . ' v. ' . CMS_VERSION)
-            ->setFavicon(DIR_CMS_IMAGES_URL . 'logo_square.png')
-            ->addMeta('name=' . CMS_NAME . ' - ' . Configuration::getInstance()->get('site')['name'] . '; action-uri=http://' . CFG_DOMAIN . '/cms/; icon-uri=http://' . DIR_CMS_IMAGES_URL . 'logo_square.png', 'msapplication-task')
+            ->setTitle((P_DO !== '_default' ? Converter::symb2Ttl(P_DO) . ' / ' : '') . Converter::symb2Ttl(P) . ' / ' . $config->get('site')['name'] . ' / ' . CMS_NAME . ' v. ' . CMS_VERSION)
+            ->setFavicon($favicon)
+            ->addMeta('name=' . CMS_NAME . ' - ' . $config->get('site')['name'] . '; action-uri=http://' . CFG_DOMAIN . '/cms/; icon-uri=http://' . DIR_CMS_IMAGES_URL . 'logo_square.png', 'msapplication-task')
         ;
 
         // Core - main design
@@ -264,7 +272,7 @@ class Backend
                 ->addJsUrl('js/jquery.bpopup.min.js')// Popup modals
                 ->addJs('var cms_data = {};') // Required for global data
                 ->addJs('cms_data.cfg_domain="' . CFG_DOMAIN . '"') // Required for notifications
-                ->addJs('cms_data.site_name="' . Configuration::getInstance()->get('site')['name'] . '"') // Required for notifications
+                ->addJs('cms_data.site_name="' . $config->get('site')['name'] . '"') // Required for notifications
                 ->addJsUrl('cms_js.js')
                 ->addJsUrl(DIR_CMS_SCRIPTS_URL . 'scripts.js')
                 ->addJsURL('plupload/plupload.full.min.js')
