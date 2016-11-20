@@ -24,12 +24,18 @@ class Messages
      * @param bool $notify_toastr
      * @return UsersMessage that was sent
      */
-    public static function sendMessage($text, $to_user_id = USER_ID, $from_user_id = 0, $notify_toastr = false)
+    public static function sendMessage($text, $to_user_id = USER_ID, $from_user_id = 0, $notify_toastr = 0)
     {
         $message = new UsersMessage();
         $message->setFromUserId($from_user_id);
         $message->setToUserId($to_user_id);
         $message->setMessage($text);
+        /* setNotify =
+         * 0 - def. browser notify
+         * 1 - green
+         * 2 - red
+         * 3 - black
+         */
         $message->setNotify((int)$notify_toastr);
         $message->save();
 
@@ -85,6 +91,21 @@ class Messages
      */
     public static function sendGreenAlert($text, $to_user_id = USER_ID, $from_user_id = 0)
     {
-        return self::sendMessage($text, $to_user_id, $from_user_id, true);
+        return self::sendMessage($text, $to_user_id, $from_user_id, 1);
+    }
+    /**
+     * Notification using red toastr alerts
+     * @param string $text Text to be sent
+     * @param int $to_user_id recipient user id
+     * @param int $from_user_id sender user id
+     * @return UsersMessage that was sent
+     */
+    public static function sendRedAlert($text, $to_user_id = USER_ID, $from_user_id = 0)
+    {
+        return self::sendMessage($text, $to_user_id, $from_user_id, 2);
+    }
+    public static function sendBlackAlert($text, $to_user_id = USER_ID, $from_user_id = 0)
+    {
+        return self::sendMessage($text, $to_user_id, $from_user_id, 3);
     }
 }

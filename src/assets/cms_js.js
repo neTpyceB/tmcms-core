@@ -903,7 +903,20 @@ var ajax_toasters = {
                     if (Notification && data[i].notify == '0') {
                         cms_notifications.show(data[i].message);
                     } else {
-                        toastr.success(data[i].message);
+                        switch (parseInt(data[i].notify)) {
+                            // 1 - green
+                            // 2 - red
+                            // 3 - black
+                            case 1:
+                                toastr.success(data[i].message);
+                                break;
+                            case 2:
+                                toastr.error(data[i].message);
+                                break;
+                            default:
+                                toastr.warning(data[i].message);
+                                break;
+                        }
                     }
                 }
                 setTimeout(ajax_toasters.request_new_messages, 15000);
