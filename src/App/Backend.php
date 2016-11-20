@@ -232,12 +232,8 @@ class Backend
     private function prepareHead()
     {
         $config = Configuration::getInstance();
-
         // Favicon url
-        $favicon = $config->get('cms')['favicon'];
-        if (!$favicon) {
-            $favicon = DIR_CMS_IMAGES_URL . 'logo_square.png';
-        }
+        $favicon = !empty($config->get('cms')['favicon']) ? $config->get('cms')['favicon'] : DIR_CMS_IMAGES_URL . 'logo_square.png';
 
         // Prepare page HTML for head
         PageHead::getInstance()
