@@ -760,7 +760,7 @@ var popup_modal = {
     result_element: '',
     reload_on_close: false,
     show_loading: function() {
-        $('body').append('<div id="cms_show_loading" style="background: url(/vendor/neTpyceB/TMCms/src/assets/images/loading.gif) center no-repeat; display: block; position: fixed; top: 0px; right: 0px; bottom: 0px; left: 0px; opacity: 0.5; z-index: 19998; background-color: rgb(0, 0, 0);"></div>');
+        $('body').append('<div id="cms_show_loading" style="background: url(/vendor/neTpyceB/TMCms-core/src/assets/images/loading.gif) center no-repeat; display: block; position: fixed; top: 0px; right: 0px; bottom: 0px; left: 0px; opacity: 0.5; z-index: 19998; background-color: rgb(0, 0, 0);"></div>');
     },
     hide_loading: function() {
         $('#cms_show_loading').remove();
@@ -794,7 +794,7 @@ var cms_notifications = {
         }
 
         var notification = new Notification(title, {
-            icon: 'http://facility.lv/vendor/neTpyceB/TMCms/src/assets/images/logo_square.png',
+            icon: 'http://facility.lv/vendor/neTpyceB/TMCms-core/src/assets/images/logo_square.png',
             body: text
         });
 
