@@ -357,6 +357,9 @@ class CmsFormHelper {
                         if (isset($field['validate']['is_digit']) || in_array('is_digit', $field['validate'])) {
                             $cms_field->validateDigits();
                         }
+                        if (isset($field['validate']['number']) || in_array('number', $field['validate'])) {
+                            $cms_field->validateNumber();
+                        }
                         if (isset($field['validate']['alphanum']) || in_array('alphanum', $field['validate'])) {
                             $cms_field->validateAlphaNumeric();
                         }
