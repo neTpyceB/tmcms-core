@@ -846,7 +846,7 @@ AND TABLE_NAME = "' . self::sql_prepare($table) . '"
         }
 
         if ($res == array_sum($data)) { // Direct Exchange
-            $sql2 = self::q_assoc_row('SELECT ' . (strpos($idFld, '`') === false ? '`' . $idFld . '`' : $idFld) . ', `' . $orderFld . '` FROM `' . $tbl . '` WHERE `' . $orderFld . '`' . ($direction == 'up' ? '<' : '>') . $ord1 . ' ORDER BY `'. $orderFld .'`' . ($direction == 'up' ? ' DESC' : null) . ' LIMIT 1');
+            $sql2 = self::q_assoc_row('SELECT ' . (strpos($idFld, '`') === false ? '`' . $idFld . '`' : $idFld) . ' AS `id`, `' . $orderFld . '` AS `order` FROM `' . $tbl . '` WHERE `' . $orderFld . '`' . ($direction == 'up' ? '<' : '>') . $ord1 . ' ORDER BY `'. $orderFld .'`' . ($direction == 'up' ? ' DESC' : '') . ' LIMIT 1');
             if (!$sql2) {
                 return false;
             }
