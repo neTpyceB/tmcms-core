@@ -258,7 +258,7 @@ define('CMS_DEVELOPERS', 'Vadims Petrusevs, neTpyceB');
 define('CMS_OWNER_COMPANY', 'SIA DEVP');
 define('CMS_SUPPORT_EMAIL', 'info@devp.eu'); // Support e-mail for errors, etc.
 define('CMS_SITE', 'http://devp.eu/');
-define('IS_AJAX_REQUEST', (int)isset($_REQUEST['ajax']) || stripos(SELF, '_ajax') === 0 || stripos(SELF, '/ajax/') !== false || (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest'));
+define('IS_AJAX_REQUEST', (int)isset($_REQUEST['ajax']) || stripos(SELF, '_ajax') === 0 || stripos(SELF, '/'. CFG_AJAX_ROUTE .'/') !== false || (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest'));
 
 
 /* Helper functions */
