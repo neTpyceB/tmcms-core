@@ -1,8 +1,8 @@
 {
-  "name": "neTpyceB/TMCms-core",
+  "name": "devp-eu/tmcms-core",
   "type": "library",
-  "description": "Core for TMCms",
-  "keywords": ["cms"],
+  "description": "Core libraries for TMCms",
+  "keywords": ["cms", "TMcms"],
   "homepage": "http://devp.eu/",
   "license": "proprietary",
   "authors": [
