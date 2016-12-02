@@ -224,6 +224,10 @@ class CmsFormHelper {
                     if (isset($field['required'])) {
                         $cms_field->validateRequired();
                     }
+                    if (isset($field['uid'])){
+                        $cms_field->setUid($field['uid']);
+                    }
+
 
                     // Disable custom css styles for select elements
                     if (isset($field['disable_custom_plugin'])) {
