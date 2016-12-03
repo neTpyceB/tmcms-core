@@ -106,7 +106,7 @@ class Finder {
 		}
 */
 		// Add cache stamp for frontend assets
-		if (!$external && $type == self::TYPE_ASSETS) {
+		if (!$external && $type == self::TYPE_ASSETS && $found_path) {
 			$found_path .= '?' . Settings::get('last_assets_invalidate_time');
 		}
 

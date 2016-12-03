@@ -260,6 +260,8 @@ define('CMS_SUPPORT_EMAIL', 'info@devp.eu'); // Support e-mail for errors, etc.
 define('CMS_SITE', 'http://devp.eu/');
 define('IS_AJAX_REQUEST', (int)isset($_REQUEST['ajax']) || stripos(SELF, '_ajax') === 0 || stripos(SELF, '/'. CFG_AJAX_ROUTE .'/') !== false || (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest'));
 
+// Dates
+define('Y', date('Y'));
 
 /* Helper functions */
 

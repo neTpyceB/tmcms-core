@@ -522,25 +522,6 @@ function closeCMenu() {
     cMenu = false;
 }
 
-var page_loader = {
-    timer: 0,
-    loaded_percent: 0,
-    show_progress: function() {
-        $('#menu_loading').show().animate({
-            'width': page_loader.loaded_percent +'%'
-        }, 50);
-
-        // Drop timer
-        if (page_loader.loaded_percent > 99) {
-            clearInterval(page_loader.timer);
-            setTimeout(function() {
-                $('#menu_loading').hide();
-            }, 300);
-        }
-
-    }
-};
-
 var PopupModal = function (options) {
     this.id = null;
     this.window = null;
@@ -835,8 +816,6 @@ $(function () {
             });
         });
     }
-    // Show page loaded
-    page_loader.loaded_percent += 100; // Can set on heavy page to add some % for every part of page
 
     $('[data-popup-url]').click(function (event) {
         event.preventDefault();
