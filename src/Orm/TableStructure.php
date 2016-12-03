@@ -32,7 +32,7 @@ class TableStructure {
     public function createTableIfNotExists()
     {
         if (SQL::tableExists($this->table_name, false)) {
-            dump('DB table "'. $this->table_name .'" already exists');
+            return false;
         }
 
         $sql = $this->getCreateTableStatement();
