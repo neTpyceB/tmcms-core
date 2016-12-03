@@ -245,34 +245,34 @@ class Backend
 
         // Core - main design
         PageHead::getInstance()
-//            ->addCssUrl('css/font-awesome.css')
-//            ->addCssUrl('css/metronic/simple-line-icons.css')
-//            ->addCssUrl('bootstrap/css/bootstrap.min.css')
+            ->addCssUrl('css/font-awesome.css')
+            ->addCssUrl('css/metronic/simple-line-icons.css')
+            ->addCssUrl('bootstrap/css/bootstrap.min.css')
 //            ->addCssUrl('css/metronic/components.css')
 //            ->addCssUrl('css/metronic/layout.css')
 //            ->addCssUrl('css/metronic/darkblue.css')
-//            ->addCssUrl('css/themify-icons.css')
-//            ->addCssUrl('css/animate.min.css')
-//            ->addCssUrl('css/skins/palette.css')
-//            ->addCssUrl('css/fonts/font.css')
-//            ->addCssUrl('css/main.css')
-//            ->addJsUrl('plugins/modernizr.js')
-//            ->addCssUrl('css.css')
+            ->addCssUrl('css/themify-icons.css')
+            ->addCssUrl('css/animate.min.css')
+            ->addCssUrl('css/skins/palette.css')
+            ->addCssUrl('css/fonts/font.css')
+            ->addCssUrl('css/main.css')
+            ->addJsUrl('plugins/modernizr.js')
+            ->addCssUrl('css.css')
         ;
 
         // Only for auth-ed users
         if (Users::getInstance()->isLogged()) {
             PageHead::getInstance()
-//                ->addCssUrl('print_css.css', 'print')
-//                ->addJsUrl(DIR_CMS_SCRIPTS_URL . 'jquery-2.1.0.min.js')
-//                ->addJsUrl(DIR_CMS_SCRIPTS_URL . 'jquery.form.min.js')// Ajaxify forms
-//                ->addJsUrl('js/jquery.bpopup.min.js')// Popup modals
-//                ->addJs('var cms_data = {};') // Required for global data
-//                ->addJs('cms_data.cfg_domain="' . CFG_DOMAIN . '"') // Required for notifications
-//                ->addJs('cms_data.site_name="' . $config->get('site')['name'] . '"') // Required for notifications
-//                ->addJsUrl('cms_js.js')
-//                ->addJsUrl(DIR_CMS_SCRIPTS_URL . 'scripts.js')
-//                ->addJsURL('plupload/plupload.full.min.js')
+                ->addCssUrl('print_css.css', 'print')
+                ->addJsUrl(DIR_CMS_SCRIPTS_URL . 'jquery-2.1.0.min.js')
+                ->addJsUrl(DIR_CMS_SCRIPTS_URL . 'jquery.form.min.js')// Ajaxify forms
+                ->addJsUrl('js/jquery.bpopup.min.js')// Popup modals
+                ->addJs('var cms_data = {};') // Required for global data
+                ->addJs('cms_data.cfg_domain="' . CFG_DOMAIN . '"') // Required for notifications
+                ->addJs('cms_data.site_name="' . $config->get('site')['name'] . '"') // Required for notifications
+                ->addJsUrl('cms_js.js')
+                ->addJsUrl(DIR_CMS_SCRIPTS_URL . 'scripts.js')
+                ->addJsUrl('plupload/plupload.full.min.js')
             ;
 
             // Script for sending JS errors
@@ -284,25 +284,25 @@ class Backend
             }
 
             PageTail::getInstance()
-//                ->addCssURL('context_menu/menu.css')
-//                ->addCssURL('plugins/toastr/toastr.min.css')
-//                ->addCssURL('plugins/chosen/chosen.min.css') // Beautify selects
-//                ->addJsURL('context_menu/menu.js') // Context menu
-//                ->addJsUrl('bootstrap/js/bootstrap.js')
-//                ->addJsUrl('plugins/jquery.slimscroll.min.js')
-//                ->addJsUrl('plugins/jquery.easing.min.js') // Animations
-//                ->addJsUrl('plugins/appear/jquery.appear.js')
-//                ->addJsUrl('plugins/jquery.placeholder.js')
-//                ->addJsUrl('plugins/fastclick.js')
-//                ->addJsUrl('js/offscreen.js')
-//                ->addJsUrl('js/main.js')
-//                ->addJsUrl('js/buttons.js')
-//                ->addJsUrl('plugins/toastr/toastr.min.js') // Notifications
-//                ->addJsUrl('js/notifications.js')
-//                ->addJsUrl('plugins/chosen/chosen.jquery.min.js')
-//                ->addJsUrl('plugins/chosen/chosen.order.jquery.js')
-//                ->addJsURL('ckeditor/ckeditor.js') // Wysiwyg
-//                ->addJsURL('plugins/parsley.min.js') // Input validation
+                ->addCssUrl('context_menu/menu.css')
+                ->addCssUrl('plugins/toastr/toastr.min.css')
+                ->addCssUrl('plugins/chosen/chosen.min.css') // Beautify selects
+                ->addJsUrl('context_menu/menu.js') // Context menu
+                ->addJsUrl('bootstrap/js/bootstrap.js')
+                ->addJsUrl('plugins/jquery.slimscroll.min.js')
+                ->addJsUrl('plugins/jquery.easing.min.js') // Animations
+                ->addJsUrl('plugins/appear/jquery.appear.js')
+                ->addJsUrl('plugins/jquery.placeholder.js')
+                ->addJsUrl('plugins/fastclick.js')
+                ->addJsUrl('js/offscreen.js')
+                ->addJsUrl('js/main.js')
+                ->addJsUrl('js/buttons.js')
+                ->addJsUrl('plugins/toastr/toastr.min.js') // Notifications
+                ->addJsUrl('js/notifications.js')
+                ->addJsUrl('plugins/chosen/chosen.jquery.min.js')
+                ->addJsUrl('plugins/chosen/chosen.order.jquery.js')
+                ->addJsUrl('ckeditor/ckeditor.js') // Wysiwyg
+                ->addJsUrl('plugins/parsley.min.js') // Input validation
             ;
         }
 
