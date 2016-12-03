@@ -2,7 +2,10 @@
   "name": "devp-eu/tmcms-core",
   "type": "library",
   "description": "Core libraries for TMCms",
-  "keywords": ["cms", "TMcms"],
+  "keywords": [
+    "cms",
+    "TMCms"
+  ],
   "homepage": "http://devp.eu/",
   "license": "proprietary",
   "authors": [
@@ -13,10 +16,15 @@
       "role": "Developer"
     }
   ],
+  "suggest": {
+    "devp-eu/tmcms-panel": "dev-master"
+  },
   "autoload": {
     "psr-4": {
       "TMCms\\": "src"
     },
-    "files": ["src/Boot.php"]
+    "files": [
+      "src/Boot.php"
+    ]
   }
 }
