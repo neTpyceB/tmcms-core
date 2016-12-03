@@ -252,9 +252,9 @@ if (!defined('CFG_GIT_BRANCH')) {
 }
 
 /* CMS */
-define('CMS_VERSION', '16.06');
+define('CMS_VERSION', '16.12');
 define('CMS_NAME', 'The Modern CMS');
-define('CMS_DEVELOPERS', 'Vadims Petrusevs, neTpyceB');
+define('CMS_DEVELOPERS', 'Vadims Petrusevs, neTpyceB, Bogdans Laidiņš, Armands Grundmanis');
 define('CMS_OWNER_COMPANY', 'SIA DEVP');
 define('CMS_SUPPORT_EMAIL', 'info@devp.eu'); // Support e-mail for errors, etc.
 define('CMS_SITE', 'http://devp.eu/');
