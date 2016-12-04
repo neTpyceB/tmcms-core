@@ -1,3 +1,4 @@
+// Inner pages
 .logo-default {
     height: 18px;
 }
@@ -5,4 +6,19 @@
 .cms_hint {
     text-align: right;
     font-size: smaller;
+}
+
+#header_home_bar {
+    width: 49px;
+}
+
+// Login page
+body.login {
+    .logo {
+        a {
+            img {
+                height: 17px;
+            }
+        }
+    }
 }

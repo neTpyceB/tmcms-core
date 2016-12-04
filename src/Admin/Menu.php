@@ -92,9 +92,9 @@ class Menu
                         <div class="sidebar-toggler"></div>
                     </li>
                     <li class="sidebar-search-wrapper hidden-xs">
-                        <div class="sidebar-search sidebar-search-bordered sidebar-search-solid">
+                        <div class="sidebar-search">
                             <div class="input-group">
-                                <input type="text" id="menu_search_input" autofocus class="form-control" placeholder="Search items..." onkeyup="search_in_main_menu();">
+                                <input type="text" id="menu_search_input" autofocus class="form-control" placeholder="Search..." onkeyup="search_in_main_menu();">
                                 <span class="input-group-btn">
 							</span>
                             </div>
@@ -111,7 +111,7 @@ class Menu
                         <?php if (isset($this->_menu[$k]['items']) && is_array($this->_menu[$k]['items'])): ?>
                             <ul class="sub-menu">
                                 <?php foreach ($this->_menu[$k]['items'] as $k_in => $v_in): ?>
-                                <li class="<?= P_DO == $k_in ? 'active' : '' ?>">
+                                <li class="<?= (P == $k && P_DO == $k_in) ? 'active' : '' ?>">
                                     <a href="?p=<?= $k . '&do=' . $k_in ?>">
                                         <?php // TODO set icons in pages or menu file ?>
 <!--                                        <i class="icon-home"></i>-->
@@ -427,53 +427,55 @@ class Menu
         if (!$user_avatar) {
             $user_avatar = '/vendor/devp-eu/tmcms-core/src/assets/cms/layout/img/avatar.png';
         }
+
+        $languages = AdminLanguages::getPairs();
+        $current_language = Users::getInstance()->getUserLng();
+
         ?>
         <div class="page-header-inner">
-            <div class="page-logo">
-                <?php if ($logo): ?>
+            <?php if ($logo): ?>
+                <div class="page-logo">
                     <a href="<?= $logo_link ?>">
                         <img src="<?= $logo ?>" alt="logo" class="logo-default">
                     </a>
-                <?php endif; ?>
-            </div>
+                </div>
+            <?php endif; ?>
             <a href="javascript:;" class="menu-toggler responsive-toggler" data-toggle="collapse" data-target=".navbar-collapse"></a>
             <div class="top-menu">
                 <ul class="nav navbar-nav pull-right">
-                    <li class="dropdown dropdown-extended dropdown-notification">
+                    <li class="dropdown dropdown-extended dropdown-home" id="header_home_bar">
                         <a href="/" target="_blank" class="dropdown-toggle" data-hover="dropdown" data-close-others="true">
                             <i class="icon-home"></i>
                         </a>
                     </li>
-                    <li class="dropdown dropdown-extended dropdown-notification">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
-                            <i class="icon-flag"></i>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li>
-                                <p>
-                                    <?= strtoupper(Users::getInstance()->getUserLng()) ?>
-                                </p>
-                            </li>
-                            <li>
-                                <ul class="dropdown-menu-list scroller" style="height: 250px;">
-                                    <?php foreach (AdminLanguages::getPairs() as $k => $v): ?>
-                                        <li>
-                                            <a href="?p=users&do=_change_lng&lng=<?= $k ?>">
-                                                <?= $v ?>
-                                            </a>
-                                        </li>
-                                    <?php endforeach; ?>
-                                </ul>
-                            </li>
-                            <li class="external">
-                                <a href="?p=home&do=notifications">
-                                    See all notifications <i class="m-icon-swapright"></i>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
+                    <?php if (count($languages) > 1): ?>
+                        <li class="dropdown dropdown-extended dropdown-languages" id="header_languages_bar">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                <i class="icon-flag"></i>
+                                <span class="badge badge-default"><?= count($languages); ?></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <ul class="dropdown-menu-list scroller" style="height: 250px;">
+                                        <?php foreach ($languages as $k => $v): ?>
+                                            <li>
+                                                <a href="<?= $current_language == $k ? '#' : ('?p=users&do=_change_lng&lng='.  $k) ?>">
+                                                    <?= $v ?>
+                                                </a>
+                                            </li>
+                                        <?php endforeach; ?>
+                                    </ul>
+                                </li>
+                                <li class="external">
+                                    <a href="?p=home&do=notifications">
+                                        See all notifications <i class="m-icon-swapright"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    <?php endif; ?>
                     <?php if ($notifications): ?>
-                        <li class="dropdown dropdown-extended dropdown-notification">
+                        <li class="dropdown dropdown-extended dropdown-notification" id="header_notification_bar">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
                                 <i class="icon-bell"></i>
                                 <span class="badge badge-default"><?= count($notifications); ?></span>
@@ -510,7 +512,7 @@ class Menu
                         </li>
                     <?php endif; ?>
                     <?php if ($messages): ?>
-                        <li class="dropdown dropdown-extended dropdown-inbox">
+                        <li class="dropdown dropdown-extended dropdown-inbox" id="header_inbox_bar">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
                                 <i class="icon-envelope-open"></i>
                                 <span class="badge badge-default"><?= count($messages); ?></span>

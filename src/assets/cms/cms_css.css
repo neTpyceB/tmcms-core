@@ -5,4 +5,10 @@
   text-align: right;
   font-size: smaller; }
 
+#header_home_bar {
+  width: 49px; }
+
+body.login .logo a img {
+  height: 17px; }
+
 /*# sourceMappingURL=cms_css.css.map */
