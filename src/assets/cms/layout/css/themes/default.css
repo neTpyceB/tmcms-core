@@ -63,7 +63,7 @@ Page Header
   background: #333333;
 }
 .page-header.navbar .menu-toggler {
-  background-image: url(../../img/sidebar_toggler_icon_default.png);
+  background-image: url(/vendor/devp-eu/tmcms-core/src/assets/cms/layout/img/sidebar_toggler_icon_default.png);
 }
 
 /* Default Horizontal Menu */
@@ -253,12 +253,12 @@ Page Header
 .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.active > a > .selected, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.active.open > a > .selected,
 .page-sidebar .page-sidebar-menu > li.active > a > .selected,
 .page-sidebar .page-sidebar-menu > li.active.open > a > .selected {
-  background-image: url("../../img/sidebar-menu-arrow.png");
+  background-image: url("/vendor/devp-eu/tmcms-core/src/assets/cms/layout/img/sidebar-menu-arrow.png");
 }
 .page-sidebar-reversed .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.active > a > .selected, .page-sidebar-reversed .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.active.open > a > .selected, .page-sidebar-reversed
 .page-sidebar .page-sidebar-menu > li.active > a > .selected, .page-sidebar-reversed
 .page-sidebar .page-sidebar-menu > li.active.open > a > .selected {
-  background-image: url("../../img/sidebar-menu-arrow-reverse.png");
+  background-image: url("/vendor/devp-eu/tmcms-core/src/assets/cms/layout/img/sidebar-menu-arrow-reverse.png");
 }
 .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.active + li > a,
 .page-sidebar .page-sidebar-menu > li.active + li > a {
@@ -334,7 +334,7 @@ Page Header
 }
 .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .sidebar-toggler,
 .page-sidebar .sidebar-toggler {
-  background: url(../../img/sidebar_inline_toggler_icon_default.jpg);
+  background: url(/vendor/devp-eu/tmcms-core/src/assets/cms/layout/img/sidebar_inline_toggler_icon_default.jpg);
 }
 .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .sidebar-search .input-group,
 .page-sidebar .sidebar-search .input-group {

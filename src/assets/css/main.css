@@ -4843,7 +4843,7 @@ html[dir="rtl"] .select2-container .select2-choice .select2-arrow {
  *
  */
 .editableform-loading {
-  background: url('../images/loading.gif') center center no-repeat;
+  background: url('/vendor/devp-eu/tmcms-core/src/assets/images/loading.gif') center center no-repeat;
 }
 .editable-clear-x {
   background: none;
@@ -4942,7 +4942,7 @@ html[dir="rtl"] .select2-container .select2-choice .select2-arrow {
   position: absolute;
   top: 25px;
   right: 25px;
-  background: url(../images/close.gif) no-repeat center center;
+  background: url(/vendor/devp-eu/tmcms-core/src/assets/images/close.gif) no-repeat center center;
   width: 35px;
   height: 35px;
 }
@@ -5326,7 +5326,7 @@ table.dataTable {
 .irs-line-right,
 .irs-diapason,
 .irs-slider {
-  background: url(../images/sprite-skin-flat.png) repeat-x;
+  background: url(/vendor/devp-eu/tmcms-core/src/assets/images/sprite-skin-flat.png) repeat-x;
 }
 .irs-slider {
   background-position: 0 -90px;
@@ -6036,7 +6036,7 @@ a.fc-event,
   padding: 0;
   width: 18px;
   height: 18px;
-  background: url(../images/minimal.png) no-repeat;
+  background: url(/vendor/devp-eu/tmcms-core/src/assets/images/minimal.png) no-repeat;
   border: none;
   cursor: pointer;
 }
@@ -6076,7 +6076,7 @@ a.fc-event,
 @media (-o-min-device-pixel-ratio: 5/4), (-webkit-min-device-pixel-ratio: 1.25), (min-resolution: 120dpi) {
   .icheckbox,
   .iradio {
-    background-image: url(../images/minimal@2x.png);
+    background-image: url(/vendor/devp-eu/tmcms-core/src/assets/images/minimal@2x.png);
     background-size: 200px 20px;
   }
 }

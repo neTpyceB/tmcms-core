@@ -2161,7 +2161,7 @@ Theme Panel
   padding: 20px;
   cursor: pointer;
   position: absolute;
-  background: #d5dade url(../img/icon-color.png) center no-repeat;
+  background: #d5dade url(/vendor/devp-eu/tmcms-core/src/assets/cms/layout/img/icon-color.png) center no-repeat;
 }
 .theme-panel > .toggler:hover {
   background-color: #3d3d3d !important;
@@ -2173,7 +2173,7 @@ Theme Panel
   padding: 20px;
   cursor: pointer;
   position: absolute;
-  background: #3d3d3d url(../img/icon-color-close.png) center no-repeat !important;
+  background: #3d3d3d url(/vendor/devp-eu/tmcms-core/src/assets/cms/layout/img/icon-color-close.png) center no-repeat !important;
 }
 .theme-panel > .toggler-close:hover {
   background-color: #222 !important;

@@ -11,7 +11,7 @@ use TMCms\Admin\Users\Entity\UserLog;
 use TMCms\Config\Configuration;
 use TMCms\Config\Settings;
 use TMCms\Files\Finder;
-use TMCms\Services\ServiceManager;
+use TMCms\HTML\BreadCrumbs;use TMCms\Services\ServiceManager;
 use TMCms\Log\App;
 use TMCms\Log\Usage;
 use TMCms\Network\Mailer;
@@ -138,27 +138,10 @@ class Backend
             <div class="page-content">
             <div class="row">
                 <div class="col-md-12">
-                    <?php // TODO page title and breadcrumbs here ?>
-                    <!--                            <h3 class="page-title">-->
-                    <!--                                Dashboard <small>statistics and more</small>-->
-                    <!--                            </h3>-->
-                    <!--                            <ul class="page-breadcrumb breadcrumb">-->
-                    <!--                                <li>-->
-                    <!--                                    <i class="fa fa-home"></i>-->
-                    <!--                                    <a href="index.html">Home</a>-->
-                    <!--                                    <i class="fa fa-angle-right"></i>-->
-                    <!--                                </li>-->
-                    <!--                                <li>-->
-                    <!--                                    <a href="#">Dashboard</a>-->
-                    <!--                                </li>-->
-                    <!--                                <li class="pull-right">-->
-                    <!--                                    <div id="dashboard-report-range" class="dashboard-date-range tooltips" data-placement="top" data-original-title="Change dashboard date range">-->
-                    <!--                                        <i class="icon-calendar"></i>-->
-                    <!--                                        <span></span>-->
-                    <!--                                        <i class="fa fa-angle-down"></i>-->
-                    <!--                                    </div>-->
-                    <!--                                </li>-->
-                    <!--                            </ul>-->
+                    <h3 class="page-title">
+                        <?= $menu->getPageTitle() ?> <small><?= $menu->getPageDescription() ?></small>
+                    </h3>
+                    <?= BreadCrumbs::getInstance(); ?>
                 </div>
             </div>
         <?php endif;
@@ -1044,9 +1027,9 @@ class Backend
         // Search for custom css
         $custom_css_url = DIR_ASSETS_URL . 'cms.css';
         if (file_exists(DIR_BASE . $custom_css_url)) {
-//            PageHead::getInstance()->addCssUrl($custom_css_url);
+            PageHead::getInstance()->addCssUrl($custom_css_url);
         } else {
-//            PageHead::getInstance()->addCustomString('<!--Create file "'. $custom_css_url .'" if you wish to use custom css file-->');
+            PageHead::getInstance()->addCustomString('<!--Create file "'. $custom_css_url .'" if you wish to use custom css file-->');
         }
 
         // Set head for page

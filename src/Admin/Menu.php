@@ -47,6 +47,9 @@ class Menu
      */
     private $help_texts = [];
 
+    private $page_title = '';
+    private $page_description = '';
+
     /**
      * Label hints near menu items
      * @var array
@@ -88,14 +91,13 @@ class Menu
         <div class="page-sidebar-wrapper">
             <div class="page-sidebar navbar-collapse collapse">
                 <ul class="page-sidebar-menu" data-auto-scroll="true" data-slide-speed="200">
-                    <li class="sidebar-toggler-wrapper">
-                        <div class="sidebar-toggler"></div>
-                    </li>
                     <li class="sidebar-search-wrapper hidden-xs">
-                        <div class="sidebar-search">
+                        <div class="sidebar-search sidebar-search-bordered sidebar-search-solid">
                             <div class="input-group">
                                 <input type="text" id="menu_search_input" autofocus class="form-control" placeholder="Search..." onkeyup="search_in_main_menu();">
                                 <span class="input-group-btn">
+                                    <a href="javascript:;" class="btn submit"><i class="icon-magnifier"></i></a>
+                                </span>
 							</span>
                             </div>
                         </div>
@@ -438,6 +440,7 @@ class Menu
                     <a href="<?= $logo_link ?>">
                         <img src="<?= $logo ?>" alt="logo" class="logo-default">
                     </a>
+                    <div class="menu-toggler sidebar-toggler"></div>
                 </div>
             <?php endif; ?>
             <a href="javascript:;" class="menu-toggler responsive-toggler" data-toggle="collapse" data-target=".navbar-collapse"></a>
@@ -449,28 +452,24 @@ class Menu
                         </a>
                     </li>
                     <?php if (count($languages) > 1): ?>
-                        <li class="dropdown dropdown-extended dropdown-languages" id="header_languages_bar">
+                        <li class="dropdown dropdown-language">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
-                                <i class="icon-flag"></i>
-                                <span class="badge badge-default"><?= count($languages); ?></span>
+                                <img alt="" src="/vendor/devp-eu/tmcms-core/src/assets/cms/img/flags/<?= LNG ?>.png">
+                                <span class="langname"><?= strtoupper(LNG) ?> </span>
+                                <i class="fa fa-angle-down"></i>
                             </a>
                             <ul class="dropdown-menu">
+                                <?php foreach ($languages as $k => $v):
+                                    if ($k == LNG) {
+                                        continue;
+                                    }
+                                    ?>
                                 <li>
-                                    <ul class="dropdown-menu-list scroller" style="height: 250px;">
-                                        <?php foreach ($languages as $k => $v): ?>
-                                            <li>
-                                                <a href="<?= $current_language == $k ? '#' : ('?p=users&do=_change_lng&lng='.  $k) ?>">
-                                                    <?= $v ?>
-                                                </a>
-                                            </li>
-                                        <?php endforeach; ?>
-                                    </ul>
-                                </li>
-                                <li class="external">
-                                    <a href="?p=home&do=notifications">
-                                        See all notifications <i class="m-icon-swapright"></i>
+                                    <a href="?p=users&do=_change_lng&lng=<?= $k ?>">
+                                        <img alt="" src="/vendor/devp-eu/tmcms-core/src/assets/cms/img/flags/<?= $k ?>.png"> <?= $v?>
                                     </a>
                                 </li>
+                                <?php endforeach; ?>
                             </ul>
                         </li>
                     <?php endif; ?>
@@ -587,11 +586,6 @@ class Menu
                             </li>
                             <li class="divider"></li>
                             <li>
-                                <a href="?p=home&do=lock">
-                                    <i class="icon-lock"></i>Lock Screen
-                                </a>
-                            </li>
-                            <li>
                                 <a href="?p=home&do=_exit" onclick="return confirm('<?= __('Are you sure?') ?>');">
                                     <i class="icon-key"></i> Log Out
                                 </a>
@@ -645,5 +639,43 @@ class Menu
         </li>
         <?php
         return ob_get_clean();
+    }
+
+    /**
+     * @return string
+     */
+    public function getPageTitle()
+    {
+        return $this->page_title;
+    }
+
+    /**
+     * @param string $page_title
+     * @return $this
+     */
+    public function setPageTitle($page_title)
+    {
+        $this->page_title = $page_title;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPageDescription()
+    {
+        return $this->page_description;
+    }
+
+    /**
+     * @param string $page_description
+     * @return $this
+     */
+    public function setPageDescription($page_description)
+    {
+        $this->page_description = $page_description;
+
+        return $this;
     }
 }

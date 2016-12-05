@@ -2,11 +2,11 @@
 @font-face {
 	font-family: 'Simple-Line-Icons';
 
-	src:url('fonts/Simple-Line-Icons.eot');
-	src:url('fonts/Simple-Line-Icons.eot?#iefix') format('embedded-opentype'),
-		url('fonts/Simple-Line-Icons.woff') format('woff'),
-		url('fonts/Simple-Line-Icons.ttf') format('truetype'),
-		url('fonts/Simple-Line-Icons.svg#Simple-Line-Icons') format('svg');
+	src:url('/vendor/devp-eu/tmcms-core/src/assets/cms/plugins/simple-line-icons/fonts/Simple-Line-Icons.eot');
+	src:url('/vendor/devp-eu/tmcms-core/src/assets/cms/plugins/simple-line-icons/fonts/Simple-Line-Icons.eot?#iefix') format('embedded-opentype'),
+		url('/vendor/devp-eu/tmcms-core/src/assets/cms/plugins/simple-line-icons/fonts/Simple-Line-Icons.woff') format('woff'),
+		url('/vendor/devp-eu/tmcms-core/src/assets/cms/plugins/simple-line-icons/fonts/Simple-Line-Icons.ttf') format('truetype'),
+		url('/vendor/devp-eu/tmcms-core/src/assets/cms/plugins/simple-line-icons/fonts/Simple-Line-Icons.svg#Simple-Line-Icons') format('svg');
 	font-weight: normal;
 	font-style: normal;
 }
@@ -14,7 +14,7 @@
 @media screen and (-webkit-min-device-pixel-ratio:0) {
 	@font-face {
 		font-family: 'Simple-Line-Icons';
-		src: url('fonts/Simple-Line-Icons.svg#Simple-Line-Icons') format('svg');
+		src: url('/vendor/devp-eu/tmcms-core/src/assets/cms/plugins/simple-line-icons/fonts/Simple-Line-Icons.svg#Simple-Line-Icons') format('svg');
 	}
 }
 
