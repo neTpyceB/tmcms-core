@@ -330,13 +330,12 @@ class PageHead
         if ($this->replace_for_standard_html_tag):
             echo $this->replace_for_standard_html_tag;
         else:
-            ?><html<?= ($this->html_tag_attributes ? ' ' . implode(' ', $this->html_tag_attributes) : '') ?>><?php
-        endif;
-        ?>
-
+            ?><html<?= ($this->html_tag_attributes ? ' ' . implode(' ', $this->html_tag_attributes) : '') ?>>
+        <?php endif; ?>
         <head>
             <?php if (!Settings::get('do_not_expose_generator')): ?>
-                <meta name="generator" content="<?= CMS_NAME ?>, <?= CMS_SITE ?>"><?php endif; ?>
+                <meta name="generator" content="<?= CMS_NAME ?>, <?= CMS_SITE ?>">
+            <?php endif; ?>
             <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
             <meta charset="utf-8">
             <title><?= htmlspecialchars($this->title, ENT_QUOTES) ?></title><?php

@@ -91,7 +91,10 @@ class FileSystem
         }
 
         $umask = umask();
-        $res = mkdir($path, CFG_DEFAULT_DIR_PERMISSIONS, true);
+        $res = @mkdir($path, CFG_DEFAULT_DIR_PERMISSIONS, true);
+        if ($res === false) {
+            die('Can not create directory "'. $path .'" - no permissions.');
+        }
         umask($umask);
 
         return $res;

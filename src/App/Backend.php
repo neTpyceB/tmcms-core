@@ -237,15 +237,16 @@ class Backend
 
         // Prepare page HTML for head
         PageHead::getInstance()
+            ->addHtmlTagAttributes('lang="en" class="no-js"')
             ->setTitle((P_DO !== '_default' ? Converter::symb2Ttl(P_DO) . ' / ' : '') . Converter::symb2Ttl(P) . ' / ' . $config->get('site')['name'] . ' / ' . CMS_NAME . ' v. ' . CMS_VERSION)
-            ->setFavicon($favicon)
-            ->addMeta('name=' . CMS_NAME . ' - ' . $config->get('site')['name'] . '; action-uri=http://' . CFG_DOMAIN . '/cms/; icon-uri=http://' . DIR_CMS_IMAGES_URL . 'logo_square.png', 'msapplication-task')
+//            ->setFavicon($favicon)
+//            ->addMeta('name=' . CMS_NAME . ' - ' . $config->get('site')['name'] . '; action-uri=http://' . CFG_DOMAIN . '/cms/; icon-uri=http://' . DIR_CMS_IMAGES_URL . 'logo_square.png', 'msapplication-task')
         ;
 
         // Core - main design
         PageHead::getInstance()
             ->addCssUrl('css/font-awesome.css')
-//            ->addCssUrl('css/metronic/simple-line-icons.css')
+            ->addCssUrl('css/metronic/simple-line-icons.css')
             ->addCssUrl('bootstrap/css/bootstrap.min.css')
 //            ->addCssUrl('css/metronic/components.css')
 //            ->addCssUrl('css/metronic/layout.css')
@@ -271,21 +272,22 @@ class Backend
                 ->addJs('cms_data.site_name="' . $config->get('site')['name'] . '"') // Required for notifications
                 ->addJsUrl('cms_js.js')
                 ->addJsUrl(DIR_CMS_SCRIPTS_URL . 'scripts.js')
-                ->addJsURL('plupload/plupload.full.min.js')
+                ->addJsUrl('plupload/plupload.full.min.js')
             ;
 
             // Script for sending JS errors
             if (CFG_MAIL_ERRORS && Settings::isProductionState() && !Settings::get('do_not_send_js_errors')) {
                 PageHead::getInstance()
-                    ->addJsUrl('send_error.js')
-                    ->addJS('register_js_error.ini(\'' . DIR_CMS_URL . '\');');
+//                    ->addJsUrl('send_error.js')
+//                    ->addJS('register_js_error.ini(\'' . DIR_CMS_URL . '\');')
+                ;
             }
 
             PageTail::getInstance()
-                ->addCssURL('context_menu/menu.css')
-                ->addCssURL('plugins/toastr/toastr.min.css')
-                ->addCssURL('plugins/chosen/chosen.min.css') // Beautify selects
-                ->addJsURL('context_menu/menu.js') // Context menu
+                ->addCssUrl('context_menu/menu.css')
+                ->addCssUrl('plugins/toastr/toastr.min.css')
+                ->addCssUrl('plugins/chosen/chosen.min.css') // Beautify selects
+                ->addJsUrl('context_menu/menu.js') // Context menu
                 ->addJsUrl('bootstrap/js/bootstrap.js')
                 ->addJsUrl('plugins/jquery.slimscroll.min.js')
                 ->addJsUrl('plugins/jquery.easing.min.js') // Animations
@@ -299,17 +301,17 @@ class Backend
                 ->addJsUrl('js/notifications.js')
                 ->addJsUrl('plugins/chosen/chosen.jquery.min.js')
                 ->addJsUrl('plugins/chosen/chosen.order.jquery.js')
-                ->addJsURL('ckeditor/ckeditor.js') // Wysiwyg
-                ->addJsURL('plugins/parsley.min.js') // Input validation
+                ->addJsUrl('ckeditor/ckeditor.js') // Wysiwyg
+                ->addJsUrl('plugins/parsley.min.js') // Input validation
             ;
         }
 
         // Search for custom css
         $custom_css_url = DIR_ASSETS_URL . 'cms.css';
         if (file_exists(DIR_BASE . $custom_css_url)) {
-            PageHead::getInstance()->addCssUrl($custom_css_url);
+//            PageHead::getInstance()->addCssUrl($custom_css_url);
         } else {
-            PageHead::getInstance()->addCustomString('<!--Create file "'. $custom_css_url .'" if you wish to use custom css file-->');
+//            PageHead::getInstance()->addCustomString('<!--Create file "'. $custom_css_url .'" if you wish to use custom css file-->');
         }
 
         // Set head for page
