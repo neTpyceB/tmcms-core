@@ -67,8 +67,6 @@ class CmsFormHelper {
         // Generate form
         $form = new CmsForm;
 
-        $form->enableTranslationTabs();
-
         if (!isset($params['action'])) {
             $tmp = $_GET;
             $tmp['do'] = '_'. $tmp['do'];
