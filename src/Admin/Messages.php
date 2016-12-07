@@ -2,8 +2,8 @@
 
 namespace TMCms\Admin;
 
-use TMCms\Admin\Users\Entity\UsersMessage;
-use TMCms\Admin\Users\Entity\UsersMessageRepository;
+use TMCms\Admin\Users\Entity\UsersMessageEntity;
+use TMCms\Admin\Users\Entity\UsersMessageEntityRepository;
 use TMCms\Traits\singletonOnlyInstanceTrait;
 
 /**
@@ -22,11 +22,11 @@ class Messages
      * @param int $to_user_id recipient user id
      * @param int $from_user_id sender user id
      * @param bool $notify_toastr
-     * @return UsersMessage that was sent
+     * @return UsersMessageEntity that was sent
      */
     public static function sendMessage($text, $to_user_id = USER_ID, $from_user_id = 0, $notify_toastr = 0)
     {
-        $message = new UsersMessage();
+        $message = new UsersMessageEntity();
         $message->setFromUserId($from_user_id);
         $message->setToUserId($to_user_id);
         $message->setMessage($text);
@@ -52,14 +52,14 @@ class Messages
     public static function receiveMessages($from_user_id, $to_user_id = USER_ID)
     {
         // Direction A -> B
-        $message_collection = new UsersMessageRepository();
+        $message_collection = new UsersMessageEntityRepository();
         $message_collection->setWhereFromUserId($from_user_id);
         $message_collection->setWhereToUserId($to_user_id);
 
         $messages = $message_collection->getAsArrayOfObjects();
 
         // Direction B -> A
-        $message_collection = new UsersMessageRepository();
+        $message_collection = new UsersMessageEntityRepository();
         $message_collection->setWhereFromUserId($to_user_id);
         $message_collection->setWhereToUserId($from_user_id);
 
@@ -68,8 +68,8 @@ class Messages
 
         // Sort by time
         usort($messages, function ($a, $b) {
-            /** @var UsersMessage $a */
-            /** @var UsersMessage $b */
+            /** @var UsersMessageEntity $a */
+            /** @var UsersMessageEntity $b */
             $a = $a->getTs();
             $b = $b->getTs();
 
@@ -87,7 +87,7 @@ class Messages
      * @param string $text Text to be sent
      * @param int $to_user_id recipient user id
      * @param int $from_user_id sender user id
-     * @return UsersMessage that was sent
+     * @return UsersMessageEntity that was sent
      */
     public static function sendGreenAlert($text, $to_user_id = USER_ID, $from_user_id = 0)
     {
@@ -98,7 +98,7 @@ class Messages
      * @param string $text Text to be sent
      * @param int $to_user_id recipient user id
      * @param int $from_user_id sender user id
-     * @return UsersMessage that was sent
+     * @return UsersMessageEntity that was sent
      */
     public static function sendRedAlert($text, $to_user_id = USER_ID, $from_user_id = 0)
     {

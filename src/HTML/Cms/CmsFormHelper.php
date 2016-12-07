@@ -78,15 +78,26 @@ class CmsFormHelper {
         }
 
         if (isset($params['title'])) {
-            $form->setHeadingTitle($params['title']);
+            $form->setFormTitle($params['title']);
         }
 
         if (isset($params['button'])) {
             $form->setSubmitButton($params['button']);
         }
 
+        if (isset($params['collapsed'])) {
+            $form->setCollapsed($params['collapsed']);
+        }
+
+        if (isset($params['ajax']) && $params['ajax']) {
+            $form->enableAjax();
+        }
+
         if (isset($params['cancel']) && $params['cancel']) {
-            $form->setCancelButton(__('Cancel'));
+            if (is_bool($params['cancel'])) {
+                $params['cancel'] = __('Cancel');
+            }
+            $form->setCancelButton($params['cancel']);
         }
 
         if (isset($params['fields'])) {

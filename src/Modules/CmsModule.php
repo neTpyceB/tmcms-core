@@ -40,7 +40,7 @@ abstract class CmsModule implements IModule {
     public function add() {
         $entity_name = $this->getRealEntityName();
 
-        echo BreadCrumbs::getInstance()
+        BreadCrumbs::getInstance()
             ->addCrumb(ucfirst(P))
             ->addCrumb(__('Add '. $entity_name))
         ;
@@ -71,7 +71,7 @@ abstract class CmsModule implements IModule {
         $entity = $this->getRealEntityInUse($id);
         $entity_name = $this->getRealEntityName($entity);
 
-        echo BreadCrumbs::getInstance()
+        BreadCrumbs::getInstance()
             ->addCrumb(ucfirst(P), '?p='. P)
             ->addCrumb(__('Edit '. $entity_name))
         ;

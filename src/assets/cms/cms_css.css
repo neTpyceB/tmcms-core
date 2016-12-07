@@ -8,6 +8,9 @@
 #header_home_bar {
   width: 49px; }
 
+.page-breadcrumb.breadcrumb {
+  margin-bottom: 15px; }
+
 body.login .logo a img {
   height: 17px; }
 

@@ -3,8 +3,8 @@
 namespace TMCms\Admin;
 
 use TMCms\Admin\Users\Entity\AdminUser;
-use TMCms\Admin\Users\Entity\UsersMessage;
-use TMCms\Admin\Users\Entity\UsersMessageRepository;
+use TMCms\Admin\Users\Entity\UsersMessageEntity;
+use TMCms\Admin\Users\Entity\UsersMessageEntityRepository;
 use TMCms\Config\Configuration;
 use TMCms\Strings\Converter;
 use TMCms\Traits\singletonOnlyInstanceTrait;
@@ -93,13 +93,12 @@ class Menu
                 <ul class="page-sidebar-menu" data-auto-scroll="true" data-slide-speed="200">
                     <li class="sidebar-search-wrapper hidden-xs">
                         <div class="sidebar-search sidebar-search-bordered sidebar-search-solid">
-                            <div class="input-group">
-                                <input type="text" id="menu_search_input" autofocus class="form-control" placeholder="Search..." onkeyup="search_in_main_menu();">
-                                <span class="input-group-btn">
-                                    <a href="javascript:;" class="btn submit"><i class="icon-magnifier"></i></a>
-                                </span>
-							</span>
-                            </div>
+<!--                            <div class="input-group">-->
+<!--                                <input type="text" id="menu_search_input" autofocus class="form-control" placeholder="Search..." onkeyup="search_in_main_menu();">-->
+<!--                                <span class="input-group-btn">-->
+<!--                                    <a href="javascript:;" class="btn submit"><i class="icon-magnifier"></i></a>-->
+<!--                                </span>-->
+<!--                            </div>-->
                         </div>
                     </li>
                     <?php foreach ($this->_menu as $k => $v): ?>
@@ -118,11 +117,11 @@ class Menu
                                         <?php // TODO set icons in pages or menu file ?>
 <!--                                        <i class="icon-home"></i>-->
                                         <?= __($v_in['title']) ?>
-                                        <?php /* if (isset($this->menu_labels[P][$k_in])): // TODO badges ?>
-                                            <span class="badge badge-roundless badge-success">
+                                        <?php if (isset($this->menu_labels[P][$k_in])): // TODO badges ?>
+                                            <span class="badge badge-roundless badge-warning">
                                                 <?= __($this->menu_labels[P][$k_in]) ?>
                                             </span>
-                                        <?php endif; */ ?>
+                                        <?php endif; ?>
                                     </a>
                                 </li>
                                 <?php endforeach; ?>
@@ -384,7 +383,7 @@ class Menu
         ob_start();
 
         // Notifications from system
-        $notification_repository = new UsersMessageRepository;
+        $notification_repository = new UsersMessageEntityRepository;
         $notification_repository->setWhereToUserId(USER_ID);
         $notification_repository->setWhereFromUserId(0);
         $notification_repository->addOrderByField('ts', true);
@@ -397,7 +396,7 @@ class Menu
         $notifications = $notification_repository->getAsArrayOfObjects();
 
         // Messages from users
-        $messages_repository = new UsersMessageRepository;
+        $messages_repository = new UsersMessageEntityRepository;
         $messages_repository->setWhereToUserId(USER_ID);
         $messages_repository->addWhereFieldIsNot('from_user_id', 0);
         $messages_repository->addOrderByField('ts', true);
@@ -487,7 +486,7 @@ class Menu
                                 </li>
                                 <li>
                                     <ul class="dropdown-menu-list scroller" style="height: 250px;">
-                                        <?php foreach ($notifications as $k => $message): /** @var UsersMessage $message */ ?>
+                                        <?php foreach ($notifications as $k => $message): /** @var UsersMessageEntity $message */ ?>
                                             <li>
                                                 <a href="#">
                                                     <span class="label label-sm label-icon label-warning">
@@ -524,7 +523,7 @@ class Menu
                                 </li>
                                 <li>
                                     <ul class="dropdown-menu-list scroller" style="height: 250px;">
-                                        <?php foreach ($notifications as $k => $message): /** @var UsersMessage $message */
+                                        <?php foreach ($notifications as $k => $message): /** @var UsersMessageEntity $message */
                                             $user = new AdminUser($message->getFromUserId());
                                             $avatar = $user->getAvatar(); ?>
                                             <li>
