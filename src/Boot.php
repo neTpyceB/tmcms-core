@@ -145,6 +145,9 @@ if (empty($_SESSION['__session_name_validated'])) {
 }
 
 // Ini with required keys
+if (!isset($_SERVER['SERVER_ADDR'])) {
+    $_SERVER['SERVER_ADDR'] = '127.0.0.1';
+}
 if (!isset($_SERVER['HTTP_HOST'])) {
     $_SERVER['HTTP_HOST'] = '';
 }

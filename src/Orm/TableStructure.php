@@ -74,7 +74,7 @@ class TableStructure {
         }
 
         // Start with creation
-        $sql = 'CREATE TABLE `'. $this->getTableName() .'` ( ';
+        $sql = 'CREATE TABLE IF NOT EXISTS `'. $this->getTableName() .'` ( ';
 
         // Add fields
         $fields = [];
