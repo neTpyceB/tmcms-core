@@ -959,12 +959,12 @@ class Backend
 //                ->addJsUrl(DIR_CMS_SCRIPTS_URL . 'jquery-2.1.0.min.js')
             ->addJsUrl(DIR_CMS_SCRIPTS_URL . 'jquery.form.min.js')// Ajaxify forms
 //                ->addJsUrl('js/jquery.bpopup.min.js')// Popup modals
-//                ->addJs('var cms_data = {};') // Required for global data
-//                ->addJs('cms_data.cfg_domain="' . CFG_DOMAIN . '"') // Required for notifications
-//                ->addJs('cms_data.site_name="' . $config->get('site')['name'] . '"') // Required for notifications
+                ->addJs('var cms_data = {};') // Required for global data
+                ->addJs('cms_data.cfg_domain="' . CFG_DOMAIN . '"') // Required for notifications
+                ->addJs('cms_data.site_name="' . $config->get('site')['name'] . '"') // Required for notifications
             ->addJsUrl('cms_js.js')
 //                ->addJsUrl(DIR_CMS_SCRIPTS_URL . 'scripts.js')
-//                ->addJsURL('plupload/plupload.full.min.js')
+                ->addJsURL('plupload/plupload.full.min.js')
         ;
 
         // Script for sending JS errors
@@ -986,6 +986,8 @@ class Backend
             ->addJsUrl('cms/jquery.cokie.min.js')
             ->addJsUrl('cms/plugins/uniform/jquery.uniform.min.js')
             ->addJsUrl('cms/plugins/bootstrap-switch/js/bootstrap-switch.min.js')
+            ->addCssUrl('cms/plugins/jquery-contextmenu/jquery.contextMenu.css')
+            ->addJsUrl('cms/plugins/jquery-contextmenu/jquery.contextMenu.js')
             // Pages
             ->addJsUrl('cms/plugins/jquery-validation/js/jquery.validate.min.js')
             ->addJsUrl('cms/plugins/backstretch/jquery.backstretch.min.js')
