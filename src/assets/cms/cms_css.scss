@@ -1,0 +1,109 @@
+// Inner pages
+.logo-default {
+    height: 18px;
+}
+
+.cms_hint {
+    text-align: right;
+    font-size: smaller;
+}
+
+#header_home_bar {
+    width: 49px;
+}
+
+.page-breadcrumb.breadcrumb {
+    margin-bottom: 15px;
+}
+
+// Login page
+body.login {
+    .logo {
+        a {
+            img {
+                height: 17px;
+            }
+        }
+    }
+}
+
+// Form filters
+.filter_button {
+
+}
+
+
+
+// Filemanager
+
+
+#con_bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 100;
+    background: #000;
+    opacity: 0.3;
+    display: none
+}
+
+#con_bg_in {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    width: 400px;
+    height: 200px;
+    z-index: 110;
+    display: none;
+    margin-left: -200px;
+}
+
+#con_rename, #con_content, #con_dir_create, #con_file_create {
+    background: #fff;
+    display: none;
+    padding: 7px;
+}
+.toggle_checkbox {
+    height: 16px;
+}
+
+.toggle_checkbox td:first-child {
+    padding-left: 16px;
+    padding-bottom: 3px;
+}
+
+.toggle_checkbox td:nth-child(3) {
+    white-space: nowrap;
+    padding: 0 5px;
+}
+
+.toggle_checkbox td:nth-child(4) {
+    padding: 0 5px;
+}
+
+.toggle_checkbox input[type=checkbox] {
+    /*display: inline;*/
+    position: relative;
+    left: -10px;
+    top: 2px;
+    height: 12px;
+    line-height: 12px;
+}
+
+.toggle_checkbox:hover input[type=checkbox].cb_hide {
+    visibility: visible;
+}
+
+.toggle_checkbox input[type=checkbox]:checked {
+    visibility: visible;
+}
+
+#multiple_commands {
+    display: none;
+}
+
+.cb_hide {
+    visibility: hidden;
+}

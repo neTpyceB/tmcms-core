@@ -240,9 +240,6 @@ class RenderComponentHelper {
         if (isset($this->field_value['hint'])) {
             $field->setHintText($this->field_value['hint']);
         }
-        if (isset($this->field_value['help'])) {
-            $field->setHelpText($this->field_value['help']);
-        }
 
         return $field;
     }
