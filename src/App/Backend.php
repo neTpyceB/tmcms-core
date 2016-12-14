@@ -959,19 +959,19 @@ class Backend
 //                ->addJsUrl(DIR_CMS_SCRIPTS_URL . 'jquery-2.1.0.min.js')
             ->addJsUrl(DIR_CMS_SCRIPTS_URL . 'jquery.form.min.js')// Ajaxify forms
 //                ->addJsUrl('js/jquery.bpopup.min.js')// Popup modals
-                ->addJs('var cms_data = {};') // Required for global data
-                ->addJs('cms_data.cfg_domain="' . CFG_DOMAIN . '"') // Required for notifications
-                ->addJs('cms_data.site_name="' . $config->get('site')['name'] . '"') // Required for notifications
+            ->addJs('var cms_data = {};') // Required for global data
+            ->addJs('cms_data.cfg_domain="' . CFG_DOMAIN . '"') // Required for notifications
+            ->addJs('cms_data.site_name="' . $config->get('site')['name'] . '"') // Required for notifications
             ->addJsUrl('cms_js.js')
 //                ->addJsUrl(DIR_CMS_SCRIPTS_URL . 'scripts.js')
-                ->addJsURL('plupload/plupload.full.min.js')
+            ->addJsUrl('plupload/plupload.full.min.js')
         ;
 
         // Script for sending JS errors
         if (CFG_MAIL_ERRORS && Settings::isProductionState() && !Settings::get('do_not_send_js_errors')) {
             PageHead::getInstance()
-//                    ->addJsUrl('send_error.js')
-//                    ->addJS('register_js_error.ini(\'' . DIR_CMS_URL . '\');')
+                    ->addJsUrl('send_error.js')
+                    ->addJs('register_js_error.ini(\'' . DIR_CMS_URL . '\');')
             ;
         }
 
