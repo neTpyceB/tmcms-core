@@ -1043,71 +1043,10 @@ class Backend
         $menu = Menu::getInstance();
 
         $all_menu_items = [
-            'home' => [
-                'title' => 'Home',
-                'items' => [
-                    '_default' => [
-                        'title' => 'Main'
-                    ]
-                ],
-            ],
-            'structure' => [
-                'title' => 'Structure',
-                'items' => [
-                    '_default' => [
-                        'title' => 'Main'
-                    ],
-                    'words' => [
-                        'title' => 'Words'
-                    ],
-                    'quicklinks' => [
-                        'title' => 'Quick links'
-                    ],
-                    'permissions' => [
-                        'title' => 'Permissions'
-                    ],
-                    'languages' => [
-                        'title' => 'Languages'
-                    ],
-                    'plugins' => [
-                        'title' => 'Plugins'
-                    ],
-                ],
-            ],
-            'users' => [
-                'title' => 'Users',
-                'items' => [
-                    '_default' => [
-                        'title' => 'Main'
-                    ],
-                    'groups' => [
-                        'title' => 'Groups'
-                    ],
-                    'sessions' => [
-                        'title' => 'Sessions'
-                    ],
-                    'log' => [
-                        'title' => 'Log'
-                    ],
-                ],
-            ],
-            'tools' => [
-                'title' => 'Tools',
-                'items' => [
-                    '_default' => [
-                        'title' => 'Main'
-                    ],
-                    'settings' => [
-                        'title' => 'Settings'
-                    ],
-                    'services' => [
-                        'title' => 'Services'
-                    ],
-                    'development' => [
-                        'title' => 'Development'
-                    ],
-                ],
-            ]
+            'home' => [],
+            'structure' => [],
+            'users' => [],
+            'tools' => []
         ];
 
         // Combine items
@@ -1116,6 +1055,24 @@ class Backend
             $custom_items = include_once DIR_FRONT . 'menu.php';
         }
         $all_menu_items += $custom_items;
+
+        // For every main menu item search for module and submenu
+        foreach ($all_menu_items as $main_menu_key => $main_menu_data) {
+            $menu_class = 'TMCms\Admin\\'. Converter::to_camel_case($main_menu_key) .'\\Cms' . Converter::to_camel_case($main_menu_key);
+            if (!class_exists($menu_class)) {
+                $menu_class = 'TMCms\Modules\\'. Converter::to_camel_case($main_menu_key) .'\\Cms' . Converter::to_camel_case($main_menu_key);
+            }
+            if (class_exists($menu_class)) {
+                $reflection = new \ReflectionClass($menu_class);
+                $filename = $reflection->getFileName();
+                $folder = dirname($filename);
+                $module_menu_file = $folder . '/menu.php';
+                if (file_exists($module_menu_file)) {
+                    $module_menu_data = include_once $module_menu_file;
+                    $all_menu_items[$main_menu_key] = array_merge($all_menu_items[$main_menu_key], $module_menu_data);
+                }
+            }
+        }
 
         // Add menu items
         foreach ($all_menu_items as $key => $item) {
