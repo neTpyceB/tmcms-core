@@ -117,9 +117,9 @@ class Menu
                                         <?php // TODO set icons in pages or menu file ?>
 <!--                                        <i class="icon-home"></i>-->
                                         <?= __($v_in['title']) ?>
-                                        <?php if (isset($this->menu_labels[P][$k_in])): // TODO badges ?>
+                                        <?php if (isset($this->menu_labels[$k][$k_in])): // TODO badges ?>
                                             <span class="badge badge-roundless badge-warning">
-                                                <?= __($this->menu_labels[P][$k_in]) ?>
+                                                <?= __($this->menu_labels[$k][$k_in]) ?>
                                             </span>
                                         <?php endif; ?>
                                     </a>
