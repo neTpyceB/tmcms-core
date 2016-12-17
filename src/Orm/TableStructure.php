@@ -181,6 +181,7 @@ class TableStructure {
                 break;
 
             case 'float':
+            case 'decimal':
                 // Decimal
                 $unsigned = isset($field['unsigned']) && $field['unsigned'];
                 if (!isset($field['length'])) {
