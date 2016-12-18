@@ -265,11 +265,8 @@ class CmsFormHelper {
                     if (isset($field['backup'])) {
                         $cms_field->backup($field['backup']);
                     }
-                    if (isset($field['help'])) {
-                        $cms_field->help($field['help']);
-                    }
                     if (isset($field['hint'])) {
-                        $cms_field->hint($field['hint']);
+                        $cms_field->setHintText($field['hint']);
                     }
                     if (isset($field['min'])) {
                         $cms_field->min($field['min']);
@@ -279,6 +276,9 @@ class CmsFormHelper {
                     }
                     if (isset($field['step'])) {
                         $cms_field->step($field['step']);
+                    }
+                    if (isset($field['reveal'])) {
+                        $cms_field->reveal($field['reveal']);
                     }
                     if (isset($field['maxlength'])) {
                         $cms_field->maxlength($field['maxlength']);
