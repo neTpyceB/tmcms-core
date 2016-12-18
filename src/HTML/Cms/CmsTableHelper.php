@@ -2,9 +2,11 @@
 
 namespace TMCms\HTML\Cms;
 
+use TMCms\HTML\Cms\Column\ColumnAccept;
 use TMCms\HTML\Cms\Column\ColumnActive;
 use TMCms\HTML\Cms\Column\ColumnData;
 use TMCms\HTML\Cms\Column\ColumnDelete;
+use TMCms\HTML\Cms\Column\ColumnDone;
 use TMCms\HTML\Cms\Column\ColumnEdit;
 use TMCms\HTML\Cms\Column\ColumnGallery;
 use TMCms\HTML\Cms\Column\ColumnImg;
@@ -92,6 +94,9 @@ class CmsTableHelper {
 
                     break;
 
+                case 'accept':
+                    $column = new ColumnAccept($column_key);
+                    break;
                 case 'order':
                     $column = new ColumnOrder($column_key);
                     break;
@@ -109,6 +114,10 @@ class CmsTableHelper {
                     break;
                 case 'image':
                     $column = new ColumnImg($column_key);
+                    break;
+                case 'bool':
+                case 'done':
+                    $column = new ColumnDone($column_key);
                     break;
 
                 default:
