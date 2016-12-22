@@ -199,6 +199,11 @@ class CmsTableHelper {
                 $column->setValue($column_param['value']);
             }
 
+            // nl2br
+            if (isset($column_param['nl2br'])) {
+                $column->enbleNl2Br();
+            }
+
             // Add to filters
             if (isset($column_param['filter']) && !isset($params['filters'][$column_key])) {
                 $params['filters'][$column_key] = [];
