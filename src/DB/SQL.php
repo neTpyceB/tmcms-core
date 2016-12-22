@@ -86,7 +86,7 @@ class SQL
         }
 
         // Set query start time if debug is enabled or if we analyze queries
-        if (MODE === 'site' && (Settings::get('debug_panel') || Settings::get('analyze_db_queries'))) {
+        if (Settings::get('debug_panel') || Settings::get('analyze_db_queries')) {
             $ts = microtime(1);
         }
 
