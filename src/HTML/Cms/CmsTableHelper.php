@@ -11,6 +11,7 @@ use TMCms\HTML\Cms\Column\ColumnEdit;
 use TMCms\HTML\Cms\Column\ColumnGallery;
 use TMCms\HTML\Cms\Column\ColumnImg;
 use TMCms\HTML\Cms\Column\ColumnOrder;
+use TMCms\HTML\Cms\Column\ColumnView;
 use TMCms\HTML\Cms\Filter\Select;
 use TMCms\HTML\Cms\Filter\Text;
 
@@ -21,6 +22,12 @@ class CmsTableHelper {
             $params['columns'] = [];
         }
 
+        // Check view column
+        if (isset($params['view']) && !isset($params['columns']['view'])) {
+            $params['columns']['view'] = [
+                'type' => 'view',
+            ];
+        }
         // Check order column
         if (isset($params['order']) && !isset($params['columns']['order'])) {
             $params['columns']['order'] = [
@@ -102,6 +109,9 @@ class CmsTableHelper {
                     break;
                 case 'edit':
                     $column = ColumnEdit::getInstance($column_key);
+                    break;
+                case 'view':
+                    $column = ColumnView::getInstance($column_key);
                     break;
                 case 'active':
                     $column = ColumnActive::getInstance($column_key);

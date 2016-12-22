@@ -5,6 +5,7 @@ namespace TMCms\HTML\Cms;
 use TMCms\DB\SQL;
 use TMCms\HTML\Cms\Element\CmsCheckbox;
 use TMCms\HTML\Cms\Element\CmsCheckboxList;
+use TMCms\HTML\Cms\Element\CmsHtml;
 use TMCms\HTML\Cms\Element\CmsInputColor;
 use TMCms\HTML\Cms\Element\CmsInputDataList;
 use TMCms\HTML\Cms\Element\CmsInputEmail;
@@ -196,6 +197,10 @@ class CmsFormHelper {
                     $cms_field = CmsInputFile::getInstance($key);
                 } elseif ($field['type'] == 'color') {
                     $cms_field = CmsInputColor::getInstance($key);
+                } elseif ($field['type'] == 'html') {
+                    $cms_field = CmsHtml::getInstance($key);
+                } else {
+                    dump('Field type "'. $field['type'] .'" not found');
                 }
 
                 if ($cms_field) {
