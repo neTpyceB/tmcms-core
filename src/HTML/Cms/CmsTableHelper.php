@@ -90,6 +90,14 @@ class CmsTableHelper {
                 case 'date':
 
                     $column = new ColumnData($column_key);
+                    $column->setDataTypeAsTsToDate();
+
+                    break;
+
+
+                case 'datetime':
+
+                    $column = new ColumnData($column_key);
                     $column->setDataTypeAsTsToDatetime();
 
                     break;
