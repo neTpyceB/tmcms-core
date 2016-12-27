@@ -102,32 +102,38 @@ class Menu
                         </div>
                     </li>
                     <?php foreach ($this->_menu as $k => $v): ?>
-                    <li class="<?= P == $k ? 'active open' : '' ?>">
-                        <a href="#">
-                            <?php // TODO set icons in pages or menu file ?>
-<!--                            <i class="icon-basket"></i>-->
-                            <span class="title"><?= __($v['title']) ?></span>
-                            <span class="arrow "></span>
-                        </a>
-                        <?php if (isset($this->_menu[$k]['items']) && is_array($this->_menu[$k]['items'])): ?>
-                            <ul class="sub-menu">
-                                <?php foreach ($this->_menu[$k]['items'] as $k_in => $v_in): ?>
-                                <li class="<?= (P == $k && P_DO == $k_in) ? 'active' : '' ?>">
-                                    <a href="?p=<?= $k . '&do=' . $k_in ?>">
-                                        <?php // TODO set icons in pages or menu file ?>
-<!--                                        <i class="icon-home"></i>-->
-                                        <?= __($v_in['title']) ?>
-                                        <?php if (isset($this->menu_labels[$k][$k_in])): // TODO badges ?>
-                                            <span class="badge badge-roundless badge-warning">
-                                                <?= __($this->menu_labels[$k][$k_in]) ?>
-                                            </span>
-                                        <?php endif; ?>
-                                    </a>
-                                </li>
-                                <?php endforeach; ?>
-                            </ul>
+                        <?php if (!is_array($v)): ?>
+                            <li class="heading">
+                                <h3 class="uppercase"><?= $v ?></h3>
+                            </li>
+                        <?php else: ?>
+                            <li class="<?= P == $k ? 'active open' : '' ?>">
+                                <a href="#">
+                                    <?php // TODO set icons in pages or menu file ?>
+        <!--                            <i class="icon-basket"></i>-->
+                                    <span class="title"><?= __($v['title']) ?></span>
+                                    <span class="arrow "></span>
+                                </a>
+                                <?php if (isset($this->_menu[$k]['items']) && is_array($this->_menu[$k]['items'])): ?>
+                                    <ul class="sub-menu">
+                                        <?php foreach ($this->_menu[$k]['items'] as $k_in => $v_in): ?>
+                                        <li class="<?= (P == $k && P_DO == $k_in) ? 'active' : '' ?>">
+                                            <a href="?p=<?= $k . '&do=' . $k_in ?>">
+                                                <?php // TODO set icons in pages or menu file ?>
+        <!--                                        <i class="icon-home"></i>-->
+                                                <?= __($v_in['title']) ?>
+                                                <?php if (isset($this->menu_labels[$k][$k_in])): // TODO badges ?>
+                                                    <span class="badge badge-roundless badge-warning">
+                                                        <?= __($this->menu_labels[$k][$k_in]) ?>
+                                                    </span>
+                                                <?php endif; ?>
+                                            </a>
+                                        </li>
+                                        <?php endforeach; ?>
+                                    </ul>
+                                <?php endif; ?>
+                            </li>
                         <?php endif; ?>
-                    </li>
                     <?php endforeach; ?>
 
                     <?php // TODO multilevel menu items ?>
@@ -279,6 +285,24 @@ class Menu
 
         // Add to menu
         $this->_menu[$k] = $data;
+
+        return $this;
+    }
+
+    /**
+     * Add menu separator
+     * @param  string $data representation in menu
+     * @return $this whether added
+     */
+    public function addMenuSeparator(string $data)
+    {
+        // Can not be added if disabled
+        if (!$this->isAddingItemsAllowed()) {
+            return $this;
+        }
+
+        // Add to menu
+        $this->_menu[] = $data;
 
         return $this;
     }

@@ -77,4 +77,57 @@ body.login .logo a img {
 .cb_hide {
   visibility: hidden; }
 
+.page-sidebar .page-sidebar-menu > li.heading,
+.page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.heading {
+  padding: 15px 15px 15px 15px; }
+
+.page-sidebar .page-sidebar-menu > li.heading > h3,
+.page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.heading > h3 {
+  margin: 0;
+  padding: 0;
+  font-size: 14px;
+  font-weight: 300; }
+
+.page-sidebar .page-sidebar-menu > li.heading + li > a,
+.page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.heading + li > a {
+  border-top: 0; }
+
+.page-sidebar-closed .page-sidebar .page-sidebar-menu.page-sidebar-menu-closed > li:hover.heading {
+  width: 45px !important;
+  box-shadow: none; }
+
+.page-sidebar-closed .page-sidebar .page-sidebar-menu.page-sidebar-menu-closed > li.heading > h3 {
+  display: none; }
+
+.page-quick-sidebar-wrapper .page-quick-sidebar .list-heading {
+  font-size: 16px;
+  margin: 10px 10px;
+  color: #6c8296; }
+
+.page-quick-sidebar-wrapper .page-quick-sidebar .page-quick-sidebar-chat .page-quick-sidebar-chat-users .media-list .media .media-body .media-heading {
+  margin: 5px 0 0 0;
+  font-size: 14px; }
+
+.page-quick-sidebar-wrapper .page-quick-sidebar .page-quick-sidebar-chat .page-quick-sidebar-chat-users .media-list .media .media-body .media-heading-sub {
+  font-size: 11px;
+  text-transform: uppercase;
+  color: #657b8d; }
+
+.page-quick-sidebar-wrapper .page-quick-sidebar .page-quick-sidebar-chat .page-quick-sidebar-chat-users .media-list .media .media-body .media-heading-small {
+  font-size: 10px;
+  color: #5d7081; }
+
+.page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.heading > h3,
+.page-sidebar .page-sidebar-menu > li.heading > h3 {
+  color: #708096; }
+
+.page-sidebar-menu.page-sidebar-menu-light.page-sidebar-menu-closed > li.heading {
+  padding: 0;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  border-top: 1px solid #3d4957 !important; }
+
+.uppercase {
+  text-transform: uppercase; }
+
 /*# sourceMappingURL=cms_css.css.map */

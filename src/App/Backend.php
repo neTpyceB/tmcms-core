@@ -1042,10 +1042,12 @@ class Backend
         $menu = Menu::getInstance();
 
         $all_menu_items = [
+            'system',
             'home' => [],
             'structure' => [],
             'users' => [],
-            'tools' => []
+            'tools' => [],
+            'modules',
         ];
 
         // Combine items
@@ -1075,9 +1077,14 @@ class Backend
 
         // Add menu items
         foreach ($all_menu_items as $key => $item) {
-            // Add menu item if have access to page
-            if ($key && Users::getInstance()->checkAccess($key, '_default')) {
-                $menu->addMenuItem($key, $item);
+            // Separator
+            if (!is_array($item)) {
+                $menu->addMenuSeparator($item);
+            } else {
+                // Add menu item if have access to page
+                if ($key && Users::getInstance()->checkAccess($key, '_default')) {
+                    $menu->addMenuItem($key, $item);
+                }
             }
         }
 
