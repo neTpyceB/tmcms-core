@@ -1044,9 +1044,13 @@ class Backend
         $all_menu_items = [
             'system',
             'home' => [],
-            'structure' => [],
+            'structure' => [
+                'icon' => 'docs',
+            ],
             'users' => [],
-            'tools' => [],
+            'tools' => [
+                'icon' => 'rocket',
+            ],
             'modules',
         ];
 

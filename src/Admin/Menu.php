@@ -109,8 +109,7 @@ class Menu
                         <?php else: ?>
                             <li class="<?= P == $k ? 'active open' : '' ?>">
                                 <a href="#">
-                                    <?php // TODO set icons in pages or menu file ?>
-        <!--                            <i class="icon-basket"></i>-->
+                                    <i class="icon-<?= isset($v['icon']) ? $v['icon'] : 'home' ?>"></i>
                                     <span class="title"><?= __($v['title']) ?></span>
                                     <span class="arrow "></span>
                                 </a>
@@ -119,10 +118,9 @@ class Menu
                                         <?php foreach ($this->_menu[$k]['items'] as $k_in => $v_in): ?>
                                         <li class="<?= (P == $k && P_DO == $k_in) ? 'active' : '' ?>">
                                             <a href="?p=<?= $k . '&do=' . $k_in ?>">
-                                                <?php // TODO set icons in pages or menu file ?>
-        <!--                                        <i class="icon-home"></i>-->
+                                                <i class="icon-<?= isset($v_in['icon']) ? $v_in['icon'] : 'home' ?>"></i>
                                                 <?= __($v_in['title']) ?>
-                                                <?php if (isset($this->menu_labels[$k][$k_in])): // TODO badges ?>
+                                                <?php if (isset($this->menu_labels[$k][$k_in])): ?>
                                                     <span class="badge badge-roundless badge-warning">
                                                         <?= __($this->menu_labels[$k][$k_in]) ?>
                                                     </span>
