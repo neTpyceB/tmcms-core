@@ -106,7 +106,11 @@ class Menu
                             <li class="heading">
                                 <h3 class="uppercase"><?= $v ?></h3>
                             </li>
-                        <?php else: ?>
+                        <?php else:
+                            if (!isset($v['title'])) {
+                                $v['title'] = $k;
+                            }
+                            ?>
                             <li class="<?= P == $k ? 'active open' : '' ?>">
                                 <a href="#">
                                     <? if(isset($v['icon'])): ?>
@@ -117,7 +121,11 @@ class Menu
                                 </a>
                                 <?php if (isset($this->_menu[$k]['items']) && is_array($this->_menu[$k]['items'])): ?>
                                     <ul class="sub-menu">
-                                        <?php foreach ($this->_menu[$k]['items'] as $k_in => $v_in): ?>
+                                        <?php foreach ($this->_menu[$k]['items'] as $k_in => $v_in):
+                                            if (!isset($v_in['title'])) {
+                                                $v_in['title'] = $k_in;
+                                            }
+                                            ?>
                                         <li class="<?= (P == $k && P_DO == $k_in) ? 'active' : '' ?>">
                                             <a href="?p=<?= $k . '&do=' . $k_in ?>">
                                                 <? if(isset($v_in['icon'])): ?>
