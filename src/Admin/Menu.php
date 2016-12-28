@@ -3,8 +3,8 @@
 namespace TMCms\Admin;
 
 use TMCms\Admin\Users\Entity\AdminUser;
-use TMCms\Admin\Users\Entity\UsersMessage;
-use TMCms\Admin\Users\Entity\UsersMessageRepository;
+use TMCms\Admin\Users\Entity\UsersMessageEntity;
+use TMCms\Admin\Users\Entity\UsersMessageEntityRepository;
 use TMCms\Config\Configuration;
 use TMCms\Strings\Converter;
 use TMCms\Traits\singletonOnlyInstanceTrait;
@@ -47,6 +47,9 @@ class Menu
      */
     private $help_texts = [];
 
+    private $page_title = '';
+    private $page_description = '';
+
     /**
      * Label hints near menu items
      * @var array
@@ -78,6 +81,132 @@ class Menu
     {
         ob_start();
         ?>
+        <script>
+            function search_in_main_menu() {
+                var $el = $('#menu_search_input');
+                var text = $el.val();
+                <?php // TODO hide element in menu that are not found by indexOf ?>
+            }
+        </script>
+        <div class="page-sidebar-wrapper">
+            <div class="page-sidebar navbar-collapse collapse">
+                <ul class="page-sidebar-menu" data-auto-scroll="true" data-slide-speed="200">
+                    <li class="sidebar-search-wrapper hidden-xs">
+                        <div class="sidebar-search sidebar-search-bordered sidebar-search-solid">
+<!--                            <div class="input-group">-->
+<!--                                <input type="text" id="menu_search_input" autofocus class="form-control" placeholder="Search..." onkeyup="search_in_main_menu();">-->
+<!--                                <span class="input-group-btn">-->
+<!--                                    <a href="javascript:;" class="btn submit"><i class="icon-magnifier"></i></a>-->
+<!--                                </span>-->
+<!--                            </div>-->
+                        </div>
+                    </li>
+                    <?php foreach ($this->_menu as $k => $v): ?>
+                        <?php if (!is_array($v)): ?>
+                            <li class="heading">
+                                <h3 class="uppercase"><?= $v ?></h3>
+                            </li>
+                        <?php else: ?>
+                            <li class="<?= P == $k ? 'active open' : '' ?>">
+                                <a href="#">
+                                    <i class="icon-<?= isset($v['icon']) ? $v['icon'] : 'home' ?>"></i>
+                                    <span class="title"><?= __($v['title']) ?></span>
+                                    <span class="arrow "></span>
+                                </a>
+                                <?php if (isset($this->_menu[$k]['items']) && is_array($this->_menu[$k]['items'])): ?>
+                                    <ul class="sub-menu">
+                                        <?php foreach ($this->_menu[$k]['items'] as $k_in => $v_in): ?>
+                                        <li class="<?= (P == $k && P_DO == $k_in) ? 'active' : '' ?>">
+                                            <a href="?p=<?= $k . '&do=' . $k_in ?>">
+                                                <i class="icon-<?= isset($v_in['icon']) ? $v_in['icon'] : 'home' ?>"></i>
+                                                <?= __($v_in['title']) ?>
+                                                <?php if (isset($this->menu_labels[$k][$k_in])): ?>
+                                                    <span class="badge badge-roundless badge-warning">
+                                                        <?= __($this->menu_labels[$k][$k_in]) ?>
+                                                    </span>
+                                                <?php endif; ?>
+                                            </a>
+                                        </li>
+                                        <?php endforeach; ?>
+                                    </ul>
+                                <?php endif; ?>
+                            </li>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
+
+                    <?php // TODO multilevel menu items ?>
+<!--                    <li>-->
+<!--                        <a href="javascript:;">-->
+<!--                            <i class="icon-folder"></i>-->
+<!--                            <span class="title">Multi Level Menu</span>-->
+<!--                            <span class="arrow "></span>-->
+<!--                        </a>-->
+<!--                        <ul class="sub-menu">-->
+<!--                            <li>-->
+<!--                                <a href="javascript:;">-->
+<!--                                    <i class="icon-settings"></i> Item 1 <span class="arrow"></span>-->
+<!--                                </a>-->
+<!--                                <ul class="sub-menu">-->
+<!--                                    <li>-->
+<!--                                        <a href="javascript:;">-->
+<!--                                            <i class="icon-user"></i>-->
+<!--                                            Sample Link 1 <span class="arrow"></span>-->
+<!--                                        </a>-->
+<!--                                        <ul class="sub-menu">-->
+<!--                                            <li>-->
+<!--                                                <a href="#"><i class="icon-power"></i> Sample Link 1</a>-->
+<!--                                            </li>-->
+<!--                                            <li>-->
+<!--                                                <a href="#"><i class="icon-paper-plane"></i> Sample Link 1</a>-->
+<!--                                            </li>-->
+<!--                                            <li>-->
+<!--                                                <a href="#"><i class="icon-star"></i> Sample Link 1</a>-->
+<!--                                            </li>-->
+<!--                                        </ul>-->
+<!--                                    </li>-->
+<!--                                    <li>-->
+<!--                                        <a href="#"><i class="icon-camera"></i> Sample Link 1</a>-->
+<!--                                    </li>-->
+<!--                                    <li>-->
+<!--                                        <a href="#"><i class="icon-link"></i> Sample Link 2</a>-->
+<!--                                    </li>-->
+<!--                                    <li>-->
+<!--                                        <a href="#"><i class="icon-pointer"></i> Sample Link 3</a>-->
+<!--                                    </li>-->
+<!--                                </ul>-->
+<!--                            </li>-->
+<!--                            <li>-->
+<!--                                <a href="javascript:;">-->
+<!--                                    <i class="icon-globe"></i> Item 2 <span class="arrow"></span>-->
+<!--                                </a>-->
+<!--                                <ul class="sub-menu">-->
+<!--                                    <li>-->
+<!--                                        <a href="#"><i class="icon-tag"></i> Sample Link 1</a>-->
+<!--                                    </li>-->
+<!--                                    <li>-->
+<!--                                        <a href="#"><i class="icon-pencil"></i> Sample Link 1</a>-->
+<!--                                    </li>-->
+<!--                                    <li>-->
+<!--                                        <a href="#"><i class="icon-graph"></i> Sample Link 1</a>-->
+<!--                                    </li>-->
+<!--                                </ul>-->
+<!--                            </li>-->
+<!--                            <li>-->
+<!--                                <a href="#">-->
+<!--                                    <i class="icon-bar-chart"></i>-->
+<!--                                    Item 3 </a>-->
+<!--                            </li>-->
+<!--                        </ul>-->
+<!--                    </li>-->
+
+                </ul>
+            </div>
+        </div>
+        <?php
+        return ob_get_clean(); ?>
+
+
+
         <aside class="sidebar offscreen-left">
             <p class="nav-top-overlay"></p>
             <nav class="main-navigation custom_scrollbar" data-height="auto" data-size="6px" data-distance="0" data-rail-visible="true" data-wheel-step="10">
@@ -142,28 +271,36 @@ class Menu
     /**
      * Add menu item
      * @param string $k to use in links
-     * @param string $v representation in menu
+     * @param array $data representation in menu
      * @return $this whether added
      */
-    public function addMenuItem($k, $v = '')
+    public function addMenuItem($k, array $data)
     {
         // Can not be added if disabled
         if (!$this->isAddingItemsAllowed()) {
             return $this;
         }
 
-        // Set value same as key if not provided
-        if (!$v) {
-            $v = $k;
-        }
+        // Add to menu
+        $this->_menu[$k] = $data;
 
-        // Check if menu item already exists
-        if (isset($this->_menu[$k])) {
-            error('Menu item "' . $k . ' - ' . $v . '" already exists');
+        return $this;
+    }
+
+    /**
+     * Add menu separator
+     * @param  string $data representation in menu
+     * @return $this whether added
+     */
+    public function addMenuSeparator(string $data)
+    {
+        // Can not be added if disabled
+        if (!$this->isAddingItemsAllowed()) {
+            return $this;
         }
 
         // Add to menu
-        $this->_menu[$k] = $v;
+        $this->_menu[] = $data;
 
         return $this;
     }
@@ -267,164 +404,299 @@ class Menu
 
         ob_start();
 
-        $messages_collection = new UsersMessageRepository;
-        $messages_collection->setWhereToUserId(USER_ID);
-        $messages_collection->addOrderByField('ts', true);
-        $messages_collection->setWhereSeen(0);
+        // Notifications from system
+        $notification_repository = new UsersMessageEntityRepository;
+        $notification_repository->setWhereToUserId(USER_ID);
+        $notification_repository->setWhereFromUserId(0);
+        $notification_repository->addOrderByField('ts', true);
+        $notification_repository->setWhereSeen(0);
 
-        $total_notifications = $messages_collection->getCountOfObjectsInCollection();
+        $total_notifications = $notification_repository->getCountOfObjectsInCollection();
 
-        $messages_collection->setLimit(5);
+        $notification_repository->setLimit(10);
 
-        $notifications = $messages_collection->getAsArrayOfObjects();
+        $notifications = $notification_repository->getAsArrayOfObjects();
 
+        // Messages from users
+        $messages_repository = new UsersMessageEntityRepository;
+        $messages_repository->setWhereToUserId(USER_ID);
+        $messages_repository->addWhereFieldIsNot('from_user_id', 0);
+        $messages_repository->addOrderByField('ts', true);
+        $messages_repository->setWhereSeen(0);
+
+        $total_messages = $messages_repository->getCountOfObjectsInCollection();
+
+        $messages_repository->setLimit(10);
+
+        $messages = $messages_repository->getAsArrayOfObjects();
+
+        // Custom notifiers
+        // TODO
+        $custom_notifiers = [];
+
+        $custom_notifiers[] = $this->getHelpTextsNotifier();
+
+        // Logo image and link
+        $logo= '';
+        if (array_key_exists('logo', Configuration::getInstance()->get('cms'))) {
+            $logo = Configuration::getInstance()->get('cms')['logo'];
+        }
+        $logo_link = DIR_CMS_URL;
         if (array_key_exists('logo_link', Configuration::getInstance()->get('cms'))) {
             $logo_link = Configuration::getInstance()->get('cms')['logo_link'];
         }
 
-        if (array_key_exists('logo', Configuration::getInstance()->get('cms'))) {
-            $logo = Configuration::getInstance()->get('cms')['logo'];
+        $user_avatar = Users::getInstance()->getUserData('avatar');
+        if (!$user_avatar) {
+            $user_avatar = '/vendor/devp-eu/tmcms-core/src/assets/cms/layout/img/avatar.png';
         }
 
-        $avatar = Users::getInstance()->getUserData('avatar');
+        $languages = AdminLanguages::getPairs();
+        $current_language = Users::getInstance()->getUserLng();
 
         ?>
-        <div id="menu_loading" class="bg-success"></div>
-        <script>
-            // Show page loading
-            // Emulate loading
-            page_loader.timer = setInterval(function () {
-                // Add ten percents
-                page_loader.loaded_percent += 1;
-                if (page_loader.loaded_percent > 100) {
-                    page_loader.loaded_percent = 100;
-                }
-                page_loader.show_progress();
-            }, 100);
-        </script>
-
-        <header class="header header-fixed navbar page-header navbar-fixed-top">
-            <div class="brand">
-                <a class="navbar-brand" href="<?= isset($logo_link) ? $logo_link : CMS_SITE ?>" target="_blank">
-                    <div id="devp_logo" style="background-image: url('<?= isset($logo) ? $logo : '' ?>')"></div>
-                </a>
-                <div id="brand_site_name">
-                    <a href="<?= DIR_CMS_URL ?>">
-                        <?= Configuration::getInstance()->get('site')['name'] ?>
+        <div class="page-header-inner">
+            <?php if ($logo): ?>
+                <div class="page-logo">
+                    <a href="<?= $logo_link ?>">
+                        <img src="<?= $logo ?>" alt="logo" class="logo-default">
                     </a>
-                </div>
-            </div>
-            <?php if ($this->help_texts): ?>
-                <div class="text-white pull-left" id="cms_page_help_tips">
-                    <div style="display: none">
-                        <?= implode('<br><hr><br>', $this->help_texts) ?>
-                    </div>
+                    <div class="menu-toggler sidebar-toggler"></div>
                 </div>
             <?php endif; ?>
-            <ul class="nav navbar-nav navbar-right nav pull-right">
-                <li class="off-right">
-                    <a href="/" title="Open site" target="_blank">
-                        <span class="hidden-xs ml10">
-                            <i class="fa fa-home fa-2x"></i>
-                        </span>
-                    </a>
-                </li>
-                <?php if ($notifications): ?>
-                    <li class="notifications dropdown">
-                        <a href="javascript:" data-toggle="dropdown">
-                            <i class="ti-bell"></i>
-                            <div class="badge badge-top bg-danger animated flash">
-                                <span id="messages_count"><?= $total_notifications; ?></span>
-                            </div>
+            <a href="javascript:;" class="menu-toggler responsive-toggler" data-toggle="collapse" data-target=".navbar-collapse"></a>
+            <div class="top-menu">
+                <ul class="nav navbar-nav pull-right">
+                    <li class="dropdown dropdown-extended dropdown-home" id="header_home_bar">
+                        <a href="/" target="_blank" class="dropdown-toggle" data-hover="dropdown" data-close-others="true">
+                            <i class="icon-home"></i>
                         </a>
-                        <div class="dropdown-menu animated fadeIn">
-                            <div class="panel panel-default no-m">
-                                <div class="panel-heading small">
-                                    <b>Notifications</b>
-                                </div>
-                                <ul class="list-group">
-                                    <?php foreach ($notifications as $k => $message): /** @var UsersMessage $message */
-                                        $user = new AdminUser($message->getFromUserId()); ?>
-                                        <li class="list-group-item" data-message-item="<?= $message->getId() ?>">
-                                            <div class="m-body">
-                                                <div class="">
-                                                    <small>
-                                                        <b><?= $message->getFromUserId() ? $user->getName() : 'CMS System' ?></b>
-                                                    </small>
-                                                </div>
-                                                <span><?= $message->getMessage() ?></span>
-                                                <span class="time small">
-                                                    <?= Converter::getTimeFromEventAgo($message->getTs()) ?>
-                                                </span>
-                                            </div>
-                                        </li>
-                                    <?php endforeach; ?>
-                                </ul>
-                            </div>
-                        </div>
                     </li>
-                    <script>
-                        $('.message_close_button').click(function (event) {
-                            event.preventDefault();
-
-                            var $el = $(event.target);
-                            var m_id = $el.data('message-id');
-                            $('[data-message-item="' + m_id + '"]').remove();
-
-                            $.get('?p=structure&do=_ajax_delete_message&ajax&id=' + m_id);
-
-                            var $count = $('#messages_count');
-                            $count.html($count.html() - 1);
-                        });
-                    </script>
-                <?php endif; ?>
-
-                <li class="off-right">
-                    <a href="javascript:" data-toggle="dropdown">
-                        <span class="hidden-xs ml10">
-                            <?= strtoupper(Users::getInstance()->getUserLng()) ?>
-                        </span>
-                        <i class="ti-angle-down ti-caret hidden-xs"></i>
-                    </a>
-                    <ul class="dropdown-menu animated fadeIn">
-                        <?php foreach (AdminLanguages::getPairs() as $k => $v): ?>
+                    <?php if (count($languages) > 1): ?>
+                        <li class="dropdown dropdown-language">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                <img alt="" src="/vendor/devp-eu/tmcms-core/src/assets/cms/img/flags/<?= LNG ?>.png">
+                                <span class="langname"><?= strtoupper(LNG) ?> </span>
+                                <i class="fa fa-angle-down"></i>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <?php foreach ($languages as $k => $v):
+                                    if ($k == LNG) {
+                                        continue;
+                                    }
+                                    ?>
+                                <li>
+                                    <a href="?p=users&do=_change_lng&lng=<?= $k ?>">
+                                        <img alt="" src="/vendor/devp-eu/tmcms-core/src/assets/cms/img/flags/<?= $k ?>.png"> <?= $v?>
+                                    </a>
+                                </li>
+                                <?php endforeach; ?>
+                            </ul>
+                        </li>
+                    <?php endif; ?>
+                    <?php if ($notifications): ?>
+                        <li class="dropdown dropdown-extended dropdown-notification" id="header_notification_bar">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                <i class="icon-bell"></i>
+                                <span class="badge badge-default"><?= count($notifications); ?></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <p>
+                                        You have <?= $total_notifications; ?> new notifications
+                                    </p>
+                                </li>
+                                <li>
+                                    <ul class="dropdown-menu-list scroller" style="height: 250px;">
+                                        <?php foreach ($notifications as $k => $message): /** @var UsersMessageEntity $message */ ?>
+                                            <li>
+                                                <a href="#">
+                                                    <span class="label label-sm label-icon label-warning">
+                                                        <i class="fa fa-bell-o"></i>
+                                                    </span>
+                                                    <?= $message->getMessage() ?>
+                                                    <span class="time">
+                                                        <?= Converter::getTimeFromEventAgo($message->getTs()) ?>
+                                                    </span>
+                                                </a>
+                                            </li>
+                                        <?php endforeach; ?>
+                                    </ul>
+                                </li>
+                                <li class="external">
+                                    <a href="?p=home&do=notifications">
+                                        See all notifications <i class="m-icon-swapright"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    <?php endif; ?>
+                    <?php if ($messages): ?>
+                        <li class="dropdown dropdown-extended dropdown-inbox" id="header_inbox_bar">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                <i class="icon-envelope-open"></i>
+                                <span class="badge badge-default"><?= count($messages); ?></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <p>
+                                        You have <?= $total_messages; ?> new messages
+                                    </p>
+                                </li>
+                                <li>
+                                    <ul class="dropdown-menu-list scroller" style="height: 250px;">
+                                        <?php foreach ($notifications as $k => $message): /** @var UsersMessageEntity $message */
+                                            $user = new AdminUser($message->getFromUserId());
+                                            $avatar = $user->getAvatar(); ?>
+                                            <li>
+                                                <a href="?p=users&do=chat&user_id=2">
+                                                    <?php if ($avatar): ?>
+                                                        <span class="photo">
+                                                           <img src="<?= $avatar ?>" alt="" style="height=40px">
+                                                        </span>
+                                                    <?php endif; ?>
+                                                    <span class="subject">
+                                                        <span class="from"><?= $user->getName() ?></span>
+                                                        <span class="time"><?= Converter::getTimeFromEventAgo($message->getTs()) ?></span>
+                                                    </span>
+                                                    <span class="message"><?= Converter::cutLongStrings($message->getMessage()) ?></span>
+                                                </a>
+                                            </li>
+                                        <?php endforeach; ?>
+                                    </ul>
+                                </li>
+                                <li class="external">
+                                    <a href="?p=users&do=chat">
+                                        See all messages <i class="m-icon-swapright"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    <?php endif; ?>
+                    <?php if ($custom_notifiers): ?>
+                        <?= implode('', $custom_notifiers) ?>
+                    <?php endif; ?>
+                    <li class="dropdown dropdown-user">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                            <img alt="" class="img-circle" src="<?= $user_avatar ?>" style="height: 29px;">
+                            <span class="username"><?= Users::getInstance()->getUserData('name') ?></span>
+                            <i class="fa fa-angle-down"></i>
+                        </a>
+                        <ul class="dropdown-menu">
                             <li>
-                                <a href="?p=users&do=_change_lng&lng=<?= $k ?>"><?= $v ?></a>
+                                <a href="?p=users&do=users_edit&id=<?= USER_ID ?>">
+                                    <i class="icon-user"></i> My Profile
+                                </a>
+                            </li>
+                            <li>
+                                <a href="?p=home&do=notifications">
+                                    <i class="icon-envelope-open"></i>My notifications
+                                    <span class="badge badge-danger"> <?= count($notifications) ?></span>
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a href="#" onclick="clipboard_forms.copy_page_forms(); return false;">
+                                    <i class="icon-cloud-download"></i>Copy form data
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" onclick="clipboard_forms.paste_page_forms(); return false;">
+                                    <i class="icon-cloud-upload"></i>Paste form data
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a href="?p=home&do=_exit" onclick="return confirm('<?= __('Are you sure?') ?>');">
+                                    <i class="icon-key"></i> Log Out
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <?php // TODO right panel ?>
+<!--                    <li class="dropdown dropdown-quick-sidebar-toggler">-->
+<!--                        <a href="javascript:;" class="dropdown-toggle">-->
+<!--                            <i class="icon-logout"></i>-->
+<!--                        </a>-->
+<!--                    </li>-->
+                </ul>
+            </div>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    private function getHelpTextsNotifier()
+    {
+        if (!$this->help_texts) {
+            return '';
+        }
+
+        ob_start();
+        ?>
+        <li class="dropdown dropdown-extended dropdown-notification">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                <i class="icon-question"></i>
+                <span class="badge badge-default"><?= count($this->help_texts); ?></span>
+            </a>
+            <ul class="dropdown-menu">
+                <li>
+                    <p>
+                        <?= count($this->help_texts); ?> help texts for this page
+                    </p>
+                </li>
+                <li>
+                    <ul class="dropdown-menu-list scroller" style="height: 250px;">
+                        <?php foreach ($this->help_texts as $k => $message): ?>
+                            <li>
+                                <a href="#">
+                                    <?= $message ?>
+                                </a>
                             </li>
                         <?php endforeach; ?>
                     </ul>
                 </li>
-
-                <li class="off-right">
-                    <a href="javascript:" data-toggle="dropdown">
-                        <?php if ($avatar): ?>
-                            <img src="<?= $avatar ?>&resizefit=20x20&round=9x000000&key=<?= Configuration::getInstance()->get('cms')['unique_key'] ?>">
-                        <?php endif; ?>
-                        <span class="hidden-xs ml10">
-                            <?= Users::getInstance()->getUserData('login') ?>
-                        </span>
-                        <i class="ti-angle-down ti-caret hidden-xs"></i>
-                    </a>
-                    <ul class="dropdown-menu animated fadeIn">
-                        <?php if ($this->help_texts): ?>
-                            <li>
-                                <a href="" onclick="$('#cms_page_help_tips').find('> div').stop().toggle('fast'); return false;">Page help</a>
-                            </li>
-                        <?php endif; ?>
-                        <li>
-                            <a onclick="clipboard_forms.copy_page_forms(); return false;">Copy forms data</a>
-                        </li>
-                        <li>
-                            <a onclick="clipboard_forms.paste_page_forms(); return false;">Paste forms data</a>
-                        </li>
-                        <li>
-                            <a href="<?= DIR_CMS_URL ?>?p=home&do=_exit" onclick="return confirm('<?= __('Are you sure?') ?>');">Logout</a>
-                        </li>
-                    </ul>
-                </li>
             </ul>
-        </header>
+        </li>
         <?php
         return ob_get_clean();
+    }
+
+    /**
+     * @return string
+     */
+    public function getPageTitle()
+    {
+        return $this->page_title;
+    }
+
+    /**
+     * @param string $page_title
+     * @return $this
+     */
+    public function setPageTitle($page_title)
+    {
+        $this->page_title = $page_title;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPageDescription()
+    {
+        return $this->page_description;
+    }
+
+    /**
+     * @param string $page_description
+     * @return $this
+     */
+    public function setPageDescription($page_description)
+    {
+        $this->page_description = $page_description;
+
+        return $this;
     }
 }

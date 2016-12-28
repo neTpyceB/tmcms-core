@@ -5,6 +5,7 @@ namespace TMCms\HTML\Cms;
 use TMCms\DB\SQL;
 use TMCms\HTML\Cms\Element\CmsCheckbox;
 use TMCms\HTML\Cms\Element\CmsCheckboxList;
+use TMCms\HTML\Cms\Element\CmsHtml;
 use TMCms\HTML\Cms\Element\CmsInputColor;
 use TMCms\HTML\Cms\Element\CmsInputDataList;
 use TMCms\HTML\Cms\Element\CmsInputEmail;
@@ -67,8 +68,6 @@ class CmsFormHelper {
         // Generate form
         $form = new CmsForm;
 
-        $form->enableTranslationTabs();
-
         if (!isset($params['action'])) {
             $tmp = $_GET;
             $tmp['do'] = '_'. $tmp['do'];
@@ -80,15 +79,26 @@ class CmsFormHelper {
         }
 
         if (isset($params['title'])) {
-            $form->setHeadingTitle($params['title']);
+            $form->setFormTitle($params['title']);
         }
 
         if (isset($params['button'])) {
             $form->setSubmitButton($params['button']);
         }
 
+        if (isset($params['collapsed'])) {
+            $form->setCollapsed($params['collapsed']);
+        }
+
+        if (isset($params['ajax']) && $params['ajax']) {
+            $form->enableAjax();
+        }
+
         if (isset($params['cancel']) && $params['cancel']) {
-            $form->setCancelButton(__('Cancel'));
+            if (is_bool($params['cancel'])) {
+                $params['cancel'] = __('Cancel');
+            }
+            $form->setCancelButton($params['cancel']);
         }
 
         if (isset($params['fields'])) {
@@ -187,6 +197,10 @@ class CmsFormHelper {
                     $cms_field = CmsInputFile::getInstance($key);
                 } elseif ($field['type'] == 'color') {
                     $cms_field = CmsInputColor::getInstance($key);
+                } elseif ($field['type'] == 'html') {
+                    $cms_field = CmsHtml::getInstance($key);
+                } else {
+                    dump('Field type "'. $field['type'] .'" not found');
                 }
 
                 if ($cms_field) {
@@ -256,11 +270,8 @@ class CmsFormHelper {
                     if (isset($field['backup'])) {
                         $cms_field->backup($field['backup']);
                     }
-                    if (isset($field['help'])) {
-                        $cms_field->help($field['help']);
-                    }
                     if (isset($field['hint'])) {
-                        $cms_field->hint($field['hint']);
+                        $cms_field->setHintText($field['hint']);
                     }
                     if (isset($field['min'])) {
                         $cms_field->min($field['min']);
@@ -270,6 +281,9 @@ class CmsFormHelper {
                     }
                     if (isset($field['step'])) {
                         $cms_field->step($field['step']);
+                    }
+                    if (isset($field['reveal'])) {
+                        $cms_field->reveal($field['reveal']);
                     }
                     if (isset($field['maxlength'])) {
                         $cms_field->maxlength($field['maxlength']);

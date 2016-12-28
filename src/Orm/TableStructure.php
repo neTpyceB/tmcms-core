@@ -74,7 +74,7 @@ class TableStructure {
         }
 
         // Start with creation
-        $sql = 'CREATE TABLE `'. $this->getTableName() .'` ( ';
+        $sql = 'CREATE TABLE IF NOT EXISTS `'. $this->getTableName() .'` ( ';
 
         // Add fields
         $fields = [];
@@ -181,6 +181,7 @@ class TableStructure {
                 break;
 
             case 'float':
+            case 'decimal':
                 // Decimal
                 $unsigned = isset($field['unsigned']) && $field['unsigned'];
                 if (!isset($field['length'])) {

@@ -163,7 +163,7 @@ var HTMLGen = {
             helper = decodeURIComponent(helper).replace(/\+/gm, ' ');
             document.getElementById(id).parentNode.innerHTML = '<div style="position:relative">'
             + document.getElementById(id).parentNode.innerHTML
-            + '<div style="display:none" class="cms_hint">' + helper + '</div></div>';
+            + '<div style="visibility: hidden" class="cms_hint">' + helper + '</div></div>';
             var o = document.getElementById(id);
             HTMLGen.objects[id] = o;
             if (backup_hash != '') {
@@ -184,15 +184,15 @@ var HTMLGen = {
             if (!HTMLGen.storage.hint_blocked(id)) {
 
             }
-            HTMLGen.objects['help_' + id].style.display = '';
+            HTMLGen.objects['help_' + id].style.visibility = '';
         },
         hide: function (id) {
             if (!HTMLGen.storage.hint_blocked(id))
-                HTMLGen.objects['help_' + id].style.display = 'none';
+                HTMLGen.objects['help_' + id].style.visibility = 'hidden';
         }
     },
     show_restore: function (id) {
-        document.getElementById(id + '_restore').style.display = 'inline';
+        document.getElementById(id + '_restore').style.visibility = 'visible';
         HTMLGen.helpers.show(id);
     },
     count: function (id) {
@@ -522,25 +522,6 @@ function closeCMenu() {
     cMenu = false;
 }
 
-var page_loader = {
-    timer: 0,
-    loaded_percent: 0,
-    show_progress: function() {
-        $('#menu_loading').show().animate({
-            'width': page_loader.loaded_percent +'%'
-        }, 50);
-
-        // Drop timer
-        if (page_loader.loaded_percent > 99) {
-            clearInterval(page_loader.timer);
-            setTimeout(function() {
-                $('#menu_loading').hide();
-            }, 300);
-        }
-
-    }
-};
-
 var PopupModal = function (options) {
     this.id = null;
     this.window = null;
@@ -835,8 +816,6 @@ $(function () {
             });
         });
     }
-    // Show page loaded
-    page_loader.loaded_percent += 100; // Can set on heavy page to add some % for every part of page
 
     $('[data-popup-url]').click(function (event) {
         event.preventDefault();

@@ -2,13 +2,16 @@
 
 namespace TMCms\HTML\Cms;
 
+use TMCms\HTML\Cms\Column\ColumnAccept;
 use TMCms\HTML\Cms\Column\ColumnActive;
 use TMCms\HTML\Cms\Column\ColumnData;
 use TMCms\HTML\Cms\Column\ColumnDelete;
+use TMCms\HTML\Cms\Column\ColumnDone;
 use TMCms\HTML\Cms\Column\ColumnEdit;
 use TMCms\HTML\Cms\Column\ColumnGallery;
 use TMCms\HTML\Cms\Column\ColumnImg;
 use TMCms\HTML\Cms\Column\ColumnOrder;
+use TMCms\HTML\Cms\Column\ColumnView;
 use TMCms\HTML\Cms\Filter\Select;
 use TMCms\HTML\Cms\Filter\Text;
 
@@ -19,22 +22,28 @@ class CmsTableHelper {
             $params['columns'] = [];
         }
 
+        // Check view column
+        if (isset($params['view']) && !isset($params['columns']['view'])) {
+            $params['columns']['view'] = [
+                'type' => 'view',
+            ];
+        }
         // Check order column
         if (isset($params['order']) && !isset($params['columns']['order'])) {
             $params['columns']['order'] = [
                 'type' => 'order',
             ];
         }
-        // Check edit column
-        if (isset($params['edit']) && !isset($params['columns']['edit'])) {
-            $params['columns']['edit'] = [
-                'type' => 'edit',
-            ];
-        }
         // Check active column
         if (isset($params['active']) && !isset($params['columns']['active'])) {
             $params['columns']['active'] = [
                 'type' => 'active',
+            ];
+        }
+        // Check edit column
+        if (isset($params['edit']) && !isset($params['columns']['edit'])) {
+            $params['columns']['edit'] = [
+                'type' => 'edit',
             ];
         }
         // Check delete column
@@ -51,6 +60,11 @@ class CmsTableHelper {
 
         $table = new CmsTable();
         $table->addData($params['data']);
+
+        // Table title
+        if (isset($params['title'])) {
+            $table->setHeadingTitle($params['title']);
+        }
 
         foreach ($params['columns'] as $column_key => $column_param) {
             if (!is_array($column_param)) {
@@ -76,27 +90,52 @@ class CmsTableHelper {
                 case 'date':
 
                     $column = new ColumnData($column_key);
+                    $column->setDataTypeAsTsToDate();
+
+                    break;
+
+
+                case 'datetime':
+
+                    $column = new ColumnData($column_key);
                     $column->setDataTypeAsTsToDatetime();
 
                     break;
 
+                case 'email':
+
+                    $column = new ColumnData($column_key);
+                    $column->setDataTypeAsEmail();
+
+                    break;
+
+                case 'accept':
+                    $column = new ColumnAccept($column_key);
+                    break;
                 case 'order':
                     $column = new ColumnOrder($column_key);
                     break;
                 case 'edit':
-                    $column = new ColumnEdit($column_key);
+                    $column = ColumnEdit::getInstance($column_key);
+                    break;
+                case 'view':
+                    $column = ColumnView::getInstance($column_key);
                     break;
                 case 'active':
-                    $column = new ColumnActive($column_key);
+                    $column = ColumnActive::getInstance($column_key);
                     break;
                 case 'delete':
-                    $column = new ColumnDelete($column_key);
+                    $column = ColumnDelete::getInstance($column_key);
                     break;
                 case 'gallery':
                     $column = new ColumnGallery($column_key);
                     break;
                 case 'image':
                     $column = new ColumnImg($column_key);
+                    break;
+                case 'bool':
+                case 'done':
+                    $column = new ColumnDone($column_key);
                     break;
 
                 default:
@@ -163,6 +202,21 @@ class CmsTableHelper {
                 $column->setPairedDataOptionsForKeys($column_param['pairs']);
             }
 
+            // Value for column
+            if (isset($column_param['value'])) {
+                $column->setValue($column_param['value']);
+            }
+
+            // nl2br
+            if (isset($column_param['nl2br'])) {
+                $column->enbleNl2Br();
+            }
+
+            // Add to filters
+            if (isset($column_param['filter']) && !isset($params['filters'][$column_key])) {
+                $params['filters'][$column_key] = [];
+            }
+
             if ($column) {
                 $table->addColumn($column);
             }
@@ -182,7 +236,13 @@ class CmsTableHelper {
                 foreach ($params['filters'] as $filter_key => $filter_data) {
                     // Title is obligate
                     if (!isset($filter_data['title'])) {
-                        $filter_data['title'] = $filter_key;
+                        $filter_data['title'] = ucfirst(__($filter_key));
+                    }
+
+                    // Default type
+                    if (!isset($filter_data['type'])) {
+                        $filter_data['type'] = 'text';
+                        $filter_data['like'] = true;
                     }
 
                     //Filter types
@@ -193,6 +253,10 @@ class CmsTableHelper {
                             break;
                         case 'select':
                             $filter = Select::getInstance($filter_key);
+                            $filter->ignoreValue(-1); // For "empty" value
+                            break;
+                        default:
+                            dump('Unknown filter type "'. $filter_data['type'] .'"');
                             break;
                     }
 
@@ -204,6 +268,11 @@ class CmsTableHelper {
                     // Ignore values in selects
                     if (isset($filter_data['ignore'])) {
                         $filter->ignoreValue($filter_data['ignore']);
+                    }
+
+                    // Like search
+                    if (isset($filter_data['like'])) {
+                        $filter->enableActAsLike();
                     }
 
                     if ($filter) {
