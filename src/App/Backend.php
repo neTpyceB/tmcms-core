@@ -309,9 +309,9 @@ class Backend
         // Search for custom css
         $custom_css_url = DIR_ASSETS_URL . 'cms.css';
         if (file_exists(DIR_BASE . $custom_css_url)) {
-//            PageHead::getInstance()->addCssUrl($custom_css_url);
+            PageHead::getInstance()->addCssUrl($custom_css_url);
         } else {
-//            PageHead::getInstance()->addCustomString('<!--Create file "'. $custom_css_url .'" if you wish to use custom css file-->');
+            PageHead::getInstance()->addCustomString('<!--Create file "'. $custom_css_url .'" if you wish to use custom css file-->');
         }
 
         // Set head for page

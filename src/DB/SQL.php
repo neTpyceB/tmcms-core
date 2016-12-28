@@ -911,7 +911,7 @@ AND TABLE_NAME = "' . self::sql_prepare($table) . '"
      * @param string $orderFld - order field name ('order' by default)
      * @return bool true
      */
-    public static function orderCat($id1, $tbl, $catID, $catFld, $direction = 'up', $idFld = 'id', $orderFld = 'order')
+    public static function orderCat($id1, $tbl, $catID, $catFld, $direction = 'up', $idFld = 'id', $orderFld = 'order', $start_with = 0)
     {
         $data = [];
         $ord1 = '';
@@ -948,13 +948,13 @@ AND TABLE_NAME = "' . self::sql_prepare($table) . '"
                 $id2 = 0;
             }
             if (!$ord2) {
-                $ord2 = 0;
+                $ord2 = $start_with;
             }
 
             self::getInstance()->sql_query('UPDATE `' . $tbl . '` SET `' . $orderFld . '` = ' . $ord2 . ' WHERE ' . (strpos($idFld, '`') === false ? '`' . $idFld . '`' : $idFld) . '="' . $id1 . '" AND `' . $catFld . '` = "' . $catID . '" LIMIT 1');
             self::getInstance()->sql_query('UPDATE `' . $tbl . '` SET `' . $orderFld . '` = ' . $ord1 . ' WHERE ' . (strpos($idFld, '`') === false ? '`' . $idFld . '`' : $idFld) . '="' . $id2 . '" AND `' . $catFld . '` = "' . $catID . '" LIMIT 1');
         } else { // Exchange and then "Direct Exchange"
-            $i = 0;
+            $i = $start_with;
 
             foreach (array_keys($data) as $k) {
                 self::getInstance()->sql_query('UPDATE `' . $tbl . '` SET `' . $orderFld . '` = ' . $i . ' WHERE ' . (strpos($idFld, '`') === false ? '`' . $idFld . '`' : $idFld) . '="' . $k . '" AND `' . $catFld . '` = "' . $catID . '" LIMIT 1');
