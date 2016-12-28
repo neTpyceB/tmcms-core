@@ -1043,11 +1043,15 @@ class Backend
 
         $all_menu_items = [
             'system',
-            'home' => [],
+            'home' => [
+                'icon' => 'home',
+            ],
             'structure' => [
                 'icon' => 'docs',
             ],
-            'users' => [],
+            'users' => [
+                'icon' => 'users',
+            ],
             'tools' => [
                 'icon' => 'rocket',
             ],
@@ -1059,7 +1063,7 @@ class Backend
         if (file_exists(DIR_FRONT . 'menu.php')) {
             $custom_items = include_once DIR_FRONT . 'menu.php';
         }
-        $all_menu_items += $custom_items;
+        $all_menu_items = array_merge($all_menu_items, $custom_items);
 
         // For every main menu item search for module and submenu
         foreach ($all_menu_items as $main_menu_key => $main_menu_data) {
