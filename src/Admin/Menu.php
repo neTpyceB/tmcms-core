@@ -106,27 +106,23 @@ class Menu
                             <li class="heading">
                                 <h3 class="uppercase"><?= $v ?></h3>
                             </li>
-                        <?php else:
-                            if (!isset($v['title'])) {
-                                $v['title'] = $k;
-                            }
-                            ?>
+                        <?php else: ?>
                             <li class="<?= P == $k ? 'active open' : '' ?>">
                                 <a href="#">
-                                    <i class="icon-<?= isset($v['icon']) ? $v['icon'] : 'home' ?>"></i>
+                                    <? if(isset($v['icon'])): ?>
+                                    <i class="icon-<?= $v['icon'] ?>"></i>
+                                    <? endif; ?>
                                     <span class="title"><?= __($v['title']) ?></span>
                                     <span class="arrow "></span>
                                 </a>
                                 <?php if (isset($this->_menu[$k]['items']) && is_array($this->_menu[$k]['items'])): ?>
                                     <ul class="sub-menu">
-                                        <?php foreach ($this->_menu[$k]['items'] as $k_in => $v_in):
-                                            if (!isset($v_in['title'])) {
-                                                $v_in['title'] = $k_in;
-                                            }
-                                            ?>
+                                        <?php foreach ($this->_menu[$k]['items'] as $k_in => $v_in): ?>
                                         <li class="<?= (P == $k && P_DO == $k_in) ? 'active' : '' ?>">
                                             <a href="?p=<?= $k . '&do=' . $k_in ?>">
-                                                <i class="icon-<?= isset($v_in['icon']) ? $v_in['icon'] : 'home' ?>"></i>
+                                                <? if(isset($v_in['icon'])): ?>
+                                                <i class="icon-<?= $v_in['icon'] ?>"></i>
+                                                <? endif; ?>
                                                 <?= __($v_in['title']) ?>
                                                 <?php if (isset($this->menu_labels[$k][$k_in])): ?>
                                                     <span class="badge badge-roundless badge-warning">
@@ -300,7 +296,7 @@ class Menu
      * @param  string $data representation in menu
      * @return $this whether added
      */
-    public function addMenuSeparator(string $data)
+    public function addMenuSeparator($data)
     {
         // Can not be added if disabled
         if (!$this->isAddingItemsAllowed()) {
