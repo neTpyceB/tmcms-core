@@ -200,6 +200,20 @@ var HTMLGen = {
             return;
         }
         HTMLGen.objects['cntr_' + id].innerHTML = HTMLGen.objects[id].value.length;
+        if($(HTMLGen.objects[id]).data('max')){
+            if($(HTMLGen.objects[id]).data('max') < HTMLGen.objects[id].value.length){
+                $(HTMLGen.objects['cntr_' + id]).parent().addClass('danger-hint');
+            }else{
+                $(HTMLGen.objects['cntr_' + id]).parent().removeClass('danger-hint');
+            }
+        }
+        if($(HTMLGen.objects[id]).data('min')){
+            if($(HTMLGen.objects[id]).data('min') > HTMLGen.objects[id].value.length){
+                $(HTMLGen.objects['cntr_' + id]).parent().addClass('warning-hint');
+            }else{
+                $(HTMLGen.objects['cntr_' + id]).parent().removeClass('warning-hint');
+            }
+        }
     },
     storage: {
         objects: {},

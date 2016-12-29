@@ -279,6 +279,12 @@ class CmsFormHelper {
                     if (isset($field['max'])) {
                         $cms_field->max($field['max']);
                     }
+                    if (isset($field['min-symbols'])) {
+                        $cms_field->setAttribute('data-min', $field['min-symbols']);
+                    }
+                    if (isset($field['max-symbols'])) {
+                        $cms_field->setAttribute('data-max', $field['max-symbols']);
+                    }
                     if (isset($field['step'])) {
                         $cms_field->step($field['step']);
                     }

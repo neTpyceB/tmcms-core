@@ -481,13 +481,15 @@ class Menu
                 <ul class="nav navbar-nav pull-right">
                     <li class="dropdown dropdown-extended dropdown-home" id="header_home_bar">
                         <a href="/" target="_blank" class="dropdown-toggle" data-hover="dropdown" data-close-others="true">
-                            <i class="icon-home"></i>
+                            <i class="icon-globe"></i>
                         </a>
                     </li>
                     <?php if (count($languages) > 1): ?>
                         <li class="dropdown dropdown-language">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                <?/*
                                 <img alt="" src="/vendor/devp-eu/tmcms-core/src/assets/cms/img/flags/<?= LNG ?>.png">
+                                */?>
                                 <span class="langname"><?= strtoupper(LNG) ?> </span>
                                 <i class="fa fa-angle-down"></i>
                             </a>
@@ -499,7 +501,7 @@ class Menu
                                     ?>
                                 <li>
                                     <a href="?p=users&do=_change_lng&lng=<?= $k ?>">
-                                        <img alt="" src="/vendor/devp-eu/tmcms-core/src/assets/cms/img/flags/<?= $k ?>.png"> <?= $v?>
+                                        <?/*<img alt="" src="/vendor/devp-eu/tmcms-core/src/assets/cms/img/flags/<?= $k ?>.png"> */?><?= $v?>
                                     </a>
                                 </li>
                                 <?php endforeach; ?>

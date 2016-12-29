@@ -47,11 +47,7 @@ class BreadCrumbs
             <?php if ($this->actions): ?>
                 <li class="btn-group">
                     <?php if (1 === count($this->actions)): ?>
-                        <button type="button" class="btn white">
-                            <span>
-                                <a href="<?= array_values($this->actions)[0] ?>"><?= array_keys($this->actions)[0] ?></a>
-                            </span>
-                        </button>
+                        <a class="btn blue" href="<?= array_values($this->actions)[0] ?>"><?= array_keys($this->actions)[0] ?></a>
                     <?php else: ?>
                         <button type="button" class="btn blue dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="1000" data-close-others="true">
                             <span>Actions</span><i class="fa fa-angle-down"></i>

@@ -1047,13 +1047,13 @@ class Backend
                 'icon' => 'home',
             ],
             'structure' => [
-                'icon' => 'docs',
+                'icon' => 'layers',
             ],
             'users' => [
                 'icon' => 'users',
             ],
             'tools' => [
-                'icon' => 'rocket',
+                'icon' => 'wrench',
             ],
             'modules',
         ];
