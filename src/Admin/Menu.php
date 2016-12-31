@@ -110,6 +110,9 @@ class Menu
                             if (!isset($v['title'])) {
                                 $v['title'] = $k;
                             }
+                            if (!isset($v['icon'])) {
+                                $v['icon'] = 'home';
+                            }
                             ?>
                             <li class="<?= P == $k ? 'active open' : '' ?>">
                                 <a href="#">
@@ -124,6 +127,9 @@ class Menu
                                         <?php foreach ($this->_menu[$k]['items'] as $k_in => $v_in):
                                             if (!isset($v_in['title'])) {
                                                 $v_in['title'] = $k_in;
+                                            }
+                                            if (!isset($v_in['icon'])) {
+                                                $v_in['icon'] = 'home';
                                             }
                                             ?>
                                         <li class="<?= (P == $k && P_DO == $k_in) ? 'active' : '' ?>">
