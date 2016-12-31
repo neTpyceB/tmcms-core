@@ -117,6 +117,14 @@ class Entity {
     }
 
     /**
+     * This method sometimes is required for language selector
+     * @return string
+     */
+    public function getSlugUrl() {
+        return '';
+    }
+
+    /**
      * @param int $id
      * @param bool $load_from_db
      * @return $this
