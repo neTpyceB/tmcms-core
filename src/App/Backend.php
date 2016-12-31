@@ -1014,7 +1014,7 @@ class Backend
 //                ->addJsUrl('plugins/chosen/chosen.jquery.min.js')
 //                ->addJsUrl('plugins/chosen/chosen.order.jquery.js')
 //                ->addJsURL('ckeditor/ckeditor.js') // Wysiwyg
-            ->addJsUrl('plugins/parsley.min.js') // Input validation
+            ->addJsUrl('plugins/parsley.js') // Input validation
             ->addJsUrl('cms/respond.min.js')
             ->addJsUrl('cms/excanvas.min.js')
             ->addJs('$(function() {
