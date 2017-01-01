@@ -958,7 +958,7 @@ class Backend
 //                ->addJsUrl(DIR_CMS_SCRIPTS_URL . 'jquery-2.1.0.min.js')
             ->addJsUrl(DIR_CMS_SCRIPTS_URL . 'jquery.form.min.js')// Ajaxify forms
 //                ->addJsUrl('js/jquery.bpopup.min.js')// Popup modals
-            ->addJs('var cms_data = {};') // Required for global data
+            ->addJs('var cms_data = {context_menu_items: {}};') // Required for global data
             ->addJs('cms_data.cfg_domain="' . CFG_DOMAIN . '"') // Required for notifications
             ->addJs('cms_data.site_name="' . $config->get('site')['name'] . '"') // Required for notifications
             ->addJsUrl('cms_js.js')
