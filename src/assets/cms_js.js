@@ -545,6 +545,7 @@ var PopupModal = function (options) {
         width: 700,
         height: 500,
         onclose: null,
+        disable_autoresize: false,
         result_destination: null,
         result_callback: null
     };
@@ -596,6 +597,9 @@ var PopupModal = function (options) {
     };
 
     this.resize = function () {
+        if (instance.options.disable_autoresize) {
+            return;
+        }
         instance.window.height($window.height() - 100);
         instance.window.width($window.width() - 100);
 
@@ -838,6 +842,7 @@ $(function () {
         var popupModal = new PopupModal({
             url: $element.data('popup-url'),
             width: $element.data('popup-width'),
+            disable_autoresize: $element.data('popup-disable-autoresize'),
             height: $element.data('popup-height'),
             onclose: $element.data('popup-onclose'),
             result_destination: $element.data('popup-result-destination')

@@ -130,4 +130,7 @@ body.login .logo a img {
 .uppercase {
   text-transform: uppercase; }
 
+.select2-container-multi {
+  width: 100%; }
+
 /*# sourceMappingURL=cms_css.css.map */
