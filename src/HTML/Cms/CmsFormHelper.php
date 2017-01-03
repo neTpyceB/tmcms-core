@@ -242,7 +242,9 @@ class CmsFormHelper {
                         $cms_field->setUid($field['uid_options']['source'],
                             isset($field['uid_options']['max_uid_length'])?$field['uid_options']['max_uid_length']:255,
                             isset($field['uid_options']['connnect_onload'])?$field['uid_options']['connnect_onload']:false,
-                            isset($field['uid_options']['connect_onchange'])?$field['uid_options']['connect_onchange']:false
+                            isset($field['uid_options']['connect_onchange']) ?
+                                $field['uid_options']['connect_onchange'] :
+                                ((isset($params['data']['id']) && $params['data']['id']) ? true : false)
                         );
                     }
 
