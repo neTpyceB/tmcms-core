@@ -133,4 +133,26 @@ body.login .logo a img {
 .select2-container-multi {
   width: 100%; }
 
+.page-breadcrumb.breadcrumb > li > a.btn.blue {
+  color: white;
+}
+.columns-buttons {
+  margin-bottom: 15px;
+}
+
+.danger-hint {
+  color: #f3565d;
+}
+.warning-hint {
+  color: #ecbc29;
+}
+
+.page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.active > a > .selected, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.active.open > a > .selected, .page-sidebar .page-sidebar-menu > li.active > a > .selected, .page-sidebar .page-sidebar-menu > li.active.open > a > .selected {
+  width: 0;
+  border-top: 12px solid transparent;
+  border-bottom: 12px solid transparent;
+  border-right: 12px solid #fff;
+  background: none;
+}
+
 /*# sourceMappingURL=cms_css.css.map */

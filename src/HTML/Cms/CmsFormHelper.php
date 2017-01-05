@@ -81,6 +81,9 @@ class CmsFormHelper {
         if (isset($params['title'])) {
             $form->setFormTitle($params['title']);
         }
+        if (isset($params['icon'])) {
+            $form->setFormIcon($params['icon']);
+        }
 
         if (isset($params['button'])) {
             $form->setSubmitButton($params['button']);
