@@ -32,6 +32,18 @@ body.login {
 
 }
 
+fieldset {
+    border: 1px solid #000;
+}
+
+// Collapsable fieldset
+.collapsable_fieldset legend {
+    cursor: pointer;
+}
+.collapsable_fieldset div {
+    display: none;
+}
+
 // Tables
 .highlight, .highlight td {
     background-color: #c2c2c2 !important;
