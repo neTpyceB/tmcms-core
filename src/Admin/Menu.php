@@ -93,12 +93,12 @@ class Menu
                 <ul class="page-sidebar-menu" data-auto-scroll="true" data-slide-speed="200">
                     <li class="sidebar-search-wrapper hidden-xs">
                         <div class="sidebar-search sidebar-search-bordered sidebar-search-solid">
-<!--                            <div class="input-group">-->
-<!--                                <input type="text" id="menu_search_input" autofocus class="form-control" placeholder="Search..." onkeyup="search_in_main_menu();">-->
-<!--                                <span class="input-group-btn">-->
-<!--                                    <a href="javascript:;" class="btn submit"><i class="icon-magnifier"></i></a>-->
-<!--                                </span>-->
-<!--                            </div>-->
+                            <!--                            <div class="input-group">-->
+                            <!--                                <input type="text" id="menu_search_input" autofocus class="form-control" placeholder="Search..." onkeyup="search_in_main_menu();">-->
+                            <!--                                <span class="input-group-btn">-->
+                            <!--                                    <a href="javascript:;" class="btn submit"><i class="icon-magnifier"></i></a>-->
+                            <!--                                </span>-->
+                            <!--                            </div>-->
                         </div>
                     </li>
                     <?php foreach ($this->_menu as $k => $v): ?>
@@ -110,19 +110,16 @@ class Menu
                             if (!isset($v['title'])) {
                                 $v['title'] = $k;
                             }
-                            if (!isset($v['icon'])) {
-                                $v['icon'] = 'home';
-                            }
                             ?>
                             <li class="<?= P == $k ? 'active open' : '' ?>">
                                 <a href="#">
-                                    <? if(isset($v['icon'])): ?>
-                                    <i class="icon-<?= $v['icon'] ?>"></i>
-                                    <? endif; ?>
+                                    <?php if (isset($v['icon'])): ?>
+                                        <i class="icon-<?= $v['icon'] ?>"></i>
+                                    <?php endif; ?>
                                     <span class="title"><?= __($v['title']) ?></span>
-                                    <? if (P == $k):?>
-                                    <span class="selected"></span>
-                                    <? endif; ?>
+                                    <?php if (P == $k): ?>
+                                        <span class="selected"></span>
+                                    <?php endif; ?>
                                     <span class="arrow "></span>
                                 </a>
                                 <?php if (isset($this->_menu[$k]['items']) && is_array($this->_menu[$k]['items'])): ?>
@@ -131,23 +128,20 @@ class Menu
                                             if (!isset($v_in['title'])) {
                                                 $v_in['title'] = $k_in;
                                             }
-//                                            if (!isset($v_in['icon'])) {
-//                                                $v_in['icon'] = 'home';
-//                                            }
                                             ?>
-                                        <li class="<?= (P == $k && P_DO == $k_in) ? 'active' : '' ?>">
-                                            <a href="?p=<?= $k . '&do=' . $k_in ?>">
-                                                <? if(isset($v_in['icon'])): ?>
-                                                <i class="icon-<?= $v_in['icon'] ?>"></i>
-                                                <? endif; ?>
-                                                <?= __($v_in['title']) ?>
-                                                <?php if (isset($this->menu_labels[$k][$k_in])): ?>
-                                                    <span class="badge badge-roundless badge-warning">
+                                            <li class="<?= (P == $k && P_DO == $k_in) ? 'active' : '' ?>">
+                                                <a href="?p=<?= $k . '&do=' . $k_in ?>">
+                                                    <?php if (isset($v_in['icon'])): ?>
+                                                        <i class="icon-<?= $v_in['icon'] ?>"></i>
+                                                    <?php endif; ?>
+                                                    <?= __($v_in['title']) ?>
+                                                    <?php if (isset($this->menu_labels[$k][$k_in])): ?>
+                                                        <span class="badge badge-roundless badge-warning">
                                                         <?= __($this->menu_labels[$k][$k_in]) ?>
                                                     </span>
-                                                <?php endif; ?>
-                                            </a>
-                                        </li>
+                                                    <?php endif; ?>
+                                                </a>
+                                            </li>
                                         <?php endforeach; ?>
                                     </ul>
                                 <?php endif; ?>
@@ -155,77 +149,77 @@ class Menu
                         <?php endif; ?>
                     <?php endforeach; ?>
 
-                    <?php // TODO multilevel menu items ?>
-<!--                    <li>-->
-<!--                        <a href="javascript:;">-->
-<!--                            <i class="icon-folder"></i>-->
-<!--                            <span class="title">Multi Level Menu</span>-->
-<!--                            <span class="arrow "></span>-->
-<!--                        </a>-->
-<!--                        <ul class="sub-menu">-->
-<!--                            <li>-->
-<!--                                <a href="javascript:;">-->
-<!--                                    <i class="icon-settings"></i> Item 1 <span class="arrow"></span>-->
-<!--                                </a>-->
-<!--                                <ul class="sub-menu">-->
-<!--                                    <li>-->
-<!--                                        <a href="javascript:;">-->
-<!--                                            <i class="icon-user"></i>-->
-<!--                                            Sample Link 1 <span class="arrow"></span>-->
-<!--                                        </a>-->
-<!--                                        <ul class="sub-menu">-->
-<!--                                            <li>-->
-<!--                                                <a href="#"><i class="icon-power"></i> Sample Link 1</a>-->
-<!--                                            </li>-->
-<!--                                            <li>-->
-<!--                                                <a href="#"><i class="icon-paper-plane"></i> Sample Link 1</a>-->
-<!--                                            </li>-->
-<!--                                            <li>-->
-<!--                                                <a href="#"><i class="icon-star"></i> Sample Link 1</a>-->
-<!--                                            </li>-->
-<!--                                        </ul>-->
-<!--                                    </li>-->
-<!--                                    <li>-->
-<!--                                        <a href="#"><i class="icon-camera"></i> Sample Link 1</a>-->
-<!--                                    </li>-->
-<!--                                    <li>-->
-<!--                                        <a href="#"><i class="icon-link"></i> Sample Link 2</a>-->
-<!--                                    </li>-->
-<!--                                    <li>-->
-<!--                                        <a href="#"><i class="icon-pointer"></i> Sample Link 3</a>-->
-<!--                                    </li>-->
-<!--                                </ul>-->
-<!--                            </li>-->
-<!--                            <li>-->
-<!--                                <a href="javascript:;">-->
-<!--                                    <i class="icon-globe"></i> Item 2 <span class="arrow"></span>-->
-<!--                                </a>-->
-<!--                                <ul class="sub-menu">-->
-<!--                                    <li>-->
-<!--                                        <a href="#"><i class="icon-tag"></i> Sample Link 1</a>-->
-<!--                                    </li>-->
-<!--                                    <li>-->
-<!--                                        <a href="#"><i class="icon-pencil"></i> Sample Link 1</a>-->
-<!--                                    </li>-->
-<!--                                    <li>-->
-<!--                                        <a href="#"><i class="icon-graph"></i> Sample Link 1</a>-->
-<!--                                    </li>-->
-<!--                                </ul>-->
-<!--                            </li>-->
-<!--                            <li>-->
-<!--                                <a href="#">-->
-<!--                                    <i class="icon-bar-chart"></i>-->
-<!--                                    Item 3 </a>-->
-<!--                            </li>-->
-<!--                        </ul>-->
-<!--                    </li>-->
+                    <?php // TODO multilevel menu items
+                    ?>
+                    <!--                    <li>-->
+                    <!--                        <a href="javascript:;">-->
+                    <!--                            <i class="icon-folder"></i>-->
+                    <!--                            <span class="title">Multi Level Menu</span>-->
+                    <!--                            <span class="arrow "></span>-->
+                    <!--                        </a>-->
+                    <!--                        <ul class="sub-menu">-->
+                    <!--                            <li>-->
+                    <!--                                <a href="javascript:;">-->
+                    <!--                                    <i class="icon-settings"></i> Item 1 <span class="arrow"></span>-->
+                    <!--                                </a>-->
+                    <!--                                <ul class="sub-menu">-->
+                    <!--                                    <li>-->
+                    <!--                                        <a href="javascript:;">-->
+                    <!--                                            <i class="icon-user"></i>-->
+                    <!--                                            Sample Link 1 <span class="arrow"></span>-->
+                    <!--                                        </a>-->
+                    <!--                                        <ul class="sub-menu">-->
+                    <!--                                            <li>-->
+                    <!--                                                <a href="#"><i class="icon-power"></i> Sample Link 1</a>-->
+                    <!--                                            </li>-->
+                    <!--                                            <li>-->
+                    <!--                                                <a href="#"><i class="icon-paper-plane"></i> Sample Link 1</a>-->
+                    <!--                                            </li>-->
+                    <!--                                            <li>-->
+                    <!--                                                <a href="#"><i class="icon-star"></i> Sample Link 1</a>-->
+                    <!--                                            </li>-->
+                    <!--                                        </ul>-->
+                    <!--                                    </li>-->
+                    <!--                                    <li>-->
+                    <!--                                        <a href="#"><i class="icon-camera"></i> Sample Link 1</a>-->
+                    <!--                                    </li>-->
+                    <!--                                    <li>-->
+                    <!--                                        <a href="#"><i class="icon-link"></i> Sample Link 2</a>-->
+                    <!--                                    </li>-->
+                    <!--                                    <li>-->
+                    <!--                                        <a href="#"><i class="icon-pointer"></i> Sample Link 3</a>-->
+                    <!--                                    </li>-->
+                    <!--                                </ul>-->
+                    <!--                            </li>-->
+                    <!--                            <li>-->
+                    <!--                                <a href="javascript:;">-->
+                    <!--                                    <i class="icon-globe"></i> Item 2 <span class="arrow"></span>-->
+                    <!--                                </a>-->
+                    <!--                                <ul class="sub-menu">-->
+                    <!--                                    <li>-->
+                    <!--                                        <a href="#"><i class="icon-tag"></i> Sample Link 1</a>-->
+                    <!--                                    </li>-->
+                    <!--                                    <li>-->
+                    <!--                                        <a href="#"><i class="icon-pencil"></i> Sample Link 1</a>-->
+                    <!--                                    </li>-->
+                    <!--                                    <li>-->
+                    <!--                                        <a href="#"><i class="icon-graph"></i> Sample Link 1</a>-->
+                    <!--                                    </li>-->
+                    <!--                                </ul>-->
+                    <!--                            </li>-->
+                    <!--                            <li>-->
+                    <!--                                <a href="#">-->
+                    <!--                                    <i class="icon-bar-chart"></i>-->
+                    <!--                                    Item 3 </a>-->
+                    <!--                            </li>-->
+                    <!--                        </ul>-->
+                    <!--                    </li>-->
 
                 </ul>
             </div>
         </div>
         <?php
         return ob_get_clean(); ?>
-
 
 
         <aside class="sidebar offscreen-left">
@@ -458,7 +452,7 @@ class Menu
         $custom_notifiers[] = $this->getHelpTextsNotifier();
 
         // Logo image and link
-        $logo= '';
+        $logo = '';
         if (array_key_exists('logo', Configuration::getInstance()->get('cms'))) {
             $logo = Configuration::getInstance()->get('cms')['logo'];
         }
@@ -482,10 +476,12 @@ class Menu
                     <a href="<?= $logo_link ?>">
                         <img src="<?= $logo ?>" alt="logo" class="logo-default">
                     </a>
+
                     <div class="menu-toggler sidebar-toggler"></div>
                 </div>
             <?php endif; ?>
             <a href="javascript:;" class="menu-toggler responsive-toggler" data-toggle="collapse" data-target=".navbar-collapse"></a>
+
             <div class="top-menu">
                 <ul class="nav navbar-nav pull-right">
                     <li class="dropdown dropdown-extended dropdown-home" id="header_home_bar">
@@ -496,9 +492,9 @@ class Menu
                     <?php if (count($languages) > 1): ?>
                         <li class="dropdown dropdown-language">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
-                                <?/*
+                                <? /*
                                 <img alt="" src="/vendor/devp-eu/tmcms-core/src/assets/cms/img/flags/<?= LNG ?>.png">
-                                */?>
+                                */ ?>
                                 <span class="langname"><?= strtoupper(LNG) ?> </span>
                                 <i class="fa fa-angle-down"></i>
                             </a>
@@ -508,11 +504,12 @@ class Menu
                                         continue;
                                     }
                                     ?>
-                                <li>
-                                    <a href="?p=users&do=_change_lng&lng=<?= $k ?>">
-                                        <?/*<img alt="" src="/vendor/devp-eu/tmcms-core/src/assets/cms/img/flags/<?= $k ?>.png"> */?><?= $v?>
-                                    </a>
-                                </li>
+                                    <li>
+                                        <a href="?p=users&do=_change_lng&lng=<?= $k ?>">
+                                            <? /*<img alt="" src="/vendor/devp-eu/tmcms-core/src/assets/cms/img/flags/<?= $k ?>.png"> */
+                                            ?><?= $v ?>
+                                        </a>
+                                    </li>
                                 <?php endforeach; ?>
                             </ul>
                         </li>
@@ -636,12 +633,13 @@ class Menu
                             </li>
                         </ul>
                     </li>
-                    <?php // TODO right panel ?>
-<!--                    <li class="dropdown dropdown-quick-sidebar-toggler">-->
-<!--                        <a href="javascript:;" class="dropdown-toggle">-->
-<!--                            <i class="icon-logout"></i>-->
-<!--                        </a>-->
-<!--                    </li>-->
+                    <?php // TODO right panel
+                    ?>
+                    <!--                    <li class="dropdown dropdown-quick-sidebar-toggler">-->
+                    <!--                        <a href="javascript:;" class="dropdown-toggle">-->
+                    <!--                            <i class="icon-logout"></i>-->
+                    <!--                        </a>-->
+                    <!--                    </li>-->
                 </ul>
             </div>
         </div>
