@@ -936,7 +936,8 @@ class Backend
             ->addCssUrl('cms/css/components.css')
             ->addCssUrl('cms/css/plugins.css')
             ->addCssUrl('cms/layout/css/layout.css')
-            ->addCssUrl('cms/layout/css/themes/default.css') // TODO can switch in Settings
+//            ->addCssUrl('cms/layout/css/themes/default.css') // TODO can switch in Settings
+            ->addCssUrl('cms/layout/css/themes/darkblue.css') // TODO can switch in Settings
             ->addCssUrl('cms/layout/css/custom.css')
             ->addCssUrl('plugins/toastr/toastr.min.css')
             ->addJsUrl('cms/jquery-1.11.0.min.js')
@@ -1055,7 +1056,7 @@ class Backend
             'tools' => [
                 'icon' => 'wrench',
             ],
-            'modules',
+//            'modules',
         ];
 
         // Combine items
@@ -1063,7 +1064,7 @@ class Backend
         if (file_exists(DIR_FRONT . 'menu.php')) {
             $custom_items = include_once DIR_FRONT . 'menu.php';
         }
-        $all_menu_items = array_merge($all_menu_items, $custom_items);
+        $all_menu_items = array_merge($custom_items, $all_menu_items);
 
         // For every main menu item search for module and submenu
         foreach ($all_menu_items as $main_menu_key => $main_menu_data) {

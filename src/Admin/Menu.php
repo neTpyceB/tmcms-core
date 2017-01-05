@@ -120,6 +120,9 @@ class Menu
                                     <i class="icon-<?= $v['icon'] ?>"></i>
                                     <? endif; ?>
                                     <span class="title"><?= __($v['title']) ?></span>
+                                    <? if (P == $k):?>
+                                    <span class="selected"></span>
+                                    <? endif; ?>
                                     <span class="arrow "></span>
                                 </a>
                                 <?php if (isset($this->_menu[$k]['items']) && is_array($this->_menu[$k]['items'])): ?>
@@ -128,9 +131,9 @@ class Menu
                                             if (!isset($v_in['title'])) {
                                                 $v_in['title'] = $k_in;
                                             }
-                                            if (!isset($v_in['icon'])) {
-                                                $v_in['icon'] = 'home';
-                                            }
+//                                            if (!isset($v_in['icon'])) {
+//                                                $v_in['icon'] = 'home';
+//                                            }
                                             ?>
                                         <li class="<?= (P == $k && P_DO == $k_in) ? 'active' : '' ?>">
                                             <a href="?p=<?= $k . '&do=' . $k_in ?>">
