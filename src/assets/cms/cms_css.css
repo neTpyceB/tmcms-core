@@ -14,6 +14,12 @@
 body.login .logo a img {
   height: 17px; }
 
+.portlet {
+  margin-bottom: 10px; }
+
+.filter-div {
+  margin-bottom: 0; }
+
 fieldset {
   border: 1px solid #000; }
 
@@ -143,25 +149,22 @@ fieldset {
   width: 100%; }
 
 .page-breadcrumb.breadcrumb > li > a.btn.blue {
-  color: white;
-}
+  color: white; }
+
 .columns-buttons {
-  margin-bottom: 15px;
-}
+  margin-bottom: 15px; }
 
 .danger-hint {
-  color: #f3565d;
-}
+  color: #f3565d; }
+
 .warning-hint {
-  color: #ecbc29;
-}
+  color: #ecbc29; }
 
 .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.active > a > .selected, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.active.open > a > .selected, .page-sidebar .page-sidebar-menu > li.active > a > .selected, .page-sidebar .page-sidebar-menu > li.active.open > a > .selected {
   width: 0;
   border-top: 12px solid transparent;
   border-bottom: 12px solid transparent;
   border-right: 12px solid #fff;
-  background: none;
-}
+  background: none; }
 
 /*# sourceMappingURL=cms_css.css.map */
