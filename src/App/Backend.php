@@ -941,6 +941,8 @@ class Backend
             ->addCssUrl('cms/layout/css/custom.css')
             ->addCssUrl('plugins/toastr/toastr.min.css')
             ->addJsUrl('cms/jquery-1.11.0.min.js')
+            // Cms overwrites
+            ->addCssUrl('cms/cms_css.css')
 
 //            ->addCssUrl('css/font-awesome.css') // TODO remove all old files that are not in assets/cms/ folder
 //            ->addCssUrl('css/metronic/simple-line-icons.css')
@@ -997,8 +999,6 @@ class Backend
             ->addJsUrl('cms/layout/scripts/layout.js')
             ->addJsUrl('cms/layout/scripts/quick-sidebar.js')
             ->addJsUrl('cms/plugins/pace/pace.js')
-            // Cms overwrites
-            ->addCssUrl('cms/cms_css.css')
 //                ->addCssURL('plugins/chosen/chosen.min.css') // Beautify selects
 //                ->addJsURL('context_menu/menu.js') // Context menu
 //                ->addJsUrl('bootstrap/js/bootstrap.js')
