@@ -6,6 +6,7 @@ use TMCms\Admin\Users\Entity\AdminUser;
 use TMCms\Admin\Users\Entity\UsersMessageEntity;
 use TMCms\Admin\Users\Entity\UsersMessageEntityRepository;
 use TMCms\Config\Configuration;
+use TMCms\Config\Settings;
 use TMCms\Strings\Converter;
 use TMCms\Traits\singletonOnlyInstanceTrait;
 
@@ -492,7 +493,9 @@ class Menu
                     <?php if (count($languages) > 1): ?>
                         <li class="dropdown dropdown-language">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
-                                <img alt="" src="/vendor/devp-eu/tmcms-core/src/assets/cms/img/flags/<?= LNG ?>.png">
+                                <?php if (Settings::get('show_language_selector_flags')): ?>
+                                    <img alt="" src="/vendor/devp-eu/tmcms-core/src/assets/cms/img/flags/<?= LNG ?>.png">
+                                <?php endif; ?>
                                 <span class="langname"><?= strtoupper(LNG) ?> </span>
                                 <i class="fa fa-angle-down"></i>
                             </a>
@@ -504,7 +507,9 @@ class Menu
                                     ?>
                                     <li>
                                         <a href="?p=users&do=_change_lng&lng=<?= $k ?>">
-                                            <img alt="" src="/vendor/devp-eu/tmcms-core/src/assets/cms/img/flags/<?= $k ?>.png">
+                                            <?php if (Settings::get('show_language_selector_flags')): ?>
+                                                <img alt="" src="/vendor/devp-eu/tmcms-core/src/assets/cms/img/flags/<?= $k ?>.png">
+                                            <?php endif; ?>
                                             <?= $v ?>
                                         </a>
                                     </li>
