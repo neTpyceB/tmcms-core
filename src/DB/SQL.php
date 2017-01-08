@@ -28,9 +28,10 @@ class SQL
     private static $_cached_tbl_columns = [];
 
     /** @var PDO */
-    private $pdo_db; // Should be non-static because we can have more than one connection
+    private $pdo_db;
 
     /**
+     * Should be non-static because we can have more than one connection
      * Stop current connection
      */
     public function disconnect()
@@ -721,6 +722,15 @@ class SQL
         }
 
         return self::getInstance()->sql_query('DELETE FROM `' . $tbl . '` WHERE `' . $id_col . '` IN ("' . implode('", "', $id) . '")')->rowCount();
+    }
+
+    /**
+     * @param string $table
+     * @return array
+     */
+    public static function getTableColumns($table)
+    {
+        return self::q_assoc('SHOW COLUMNS FROM `' . self::sql_prepare($table) . '`');
     }
 
     public static function getColumnsComments($table, $column = '')
