@@ -922,6 +922,7 @@ class Backend
             ->addMeta('width=device-width, initial-scale=1', 'viewport')
             ->addMeta('IE=edge', '', 'X-UA-Compatible')
             ->addClassToBody('page-header-fixed')
+            ->addClassToBody('page-sidebar-fixed')
             ->addClassToBody('page-quick-sidebar-over-content')
             // Global styles
             ->addCssUrl('cms/fonts/open-sans.css')
