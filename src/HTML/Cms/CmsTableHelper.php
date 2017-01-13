@@ -2,6 +2,7 @@
 
 namespace TMCms\HTML\Cms;
 
+use TMCms\DB\SQL;
 use TMCms\HTML\Cms\Column\ColumnAccept;
 use TMCms\HTML\Cms\Column\ColumnActive;
 use TMCms\HTML\Cms\Column\ColumnData;
@@ -14,12 +15,23 @@ use TMCms\HTML\Cms\Column\ColumnOrder;
 use TMCms\HTML\Cms\Column\ColumnView;
 use TMCms\HTML\Cms\Filter\Select;
 use TMCms\HTML\Cms\Filter\Text;
+use TMCms\Orm\EntityRepository;
 
 class CmsTableHelper {
     public static function outputTable(array $params) {
+        // Check data is supplied
+        if (!isset($params['data'])) {
+            $params['data'] = [];
+        }
+
         // Check columns
         if (!isset($params['columns'])) {
             $params['columns'] = [];
+        }
+
+        // Generate fields from DB and combine with provided params
+        if (isset($params['combine']) && $params['combine']) {
+            $params['columns'] = array_merge(self::combineParamsFromDB($params), $params['columns']);
         }
 
         // Check view column
@@ -51,11 +63,6 @@ class CmsTableHelper {
             $params['columns']['delete'] = [
                 'type' => 'delete',
             ];
-        }
-
-        // Check params are supplied
-        if (!isset($params['data'])) {
-            $params['data'] = [];
         }
 
         $table = new CmsTable();
@@ -285,5 +292,50 @@ class CmsTableHelper {
         }
 
         return $table;
+    }
+
+    private static function combineParamsFromDB($params)
+    {
+        $table = '';
+        if ($params['data'] && is_object($params['data'])) {
+            /** @var EntityRepository $entity_repository */
+            $entity_repository = $params['data'];
+            $table = $entity_repository->getDbTableName();
+        }
+
+        // No table to fetch columns from
+        if (!$table) {
+            return [];
+        }
+
+        // Fields from DB
+        $columns = [];
+        foreach (SQL::getTableColumns($table) as $v) {
+            $column = [];
+
+            // Skip auto_increment field
+            if ($v['Field'] == 'id') {
+                continue;
+            }
+
+            // Email conversion to link
+            if ($v['Field'] == 'email') {
+                $column['type'] = 'email';
+            }
+
+            // Remove active column, it will be auto-rendered
+            if ($v['Field'] == 'active') {
+                continue;
+            }
+
+            // Checkboxes
+            if ($v['Type'] == 'tinyint(1) unsigned') {
+                $column['type'] = 'active';
+            }
+
+            $columns[$v['Field']] = $column;
+        }
+
+        return $columns;
     }
 }

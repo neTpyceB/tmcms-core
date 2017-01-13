@@ -303,6 +303,9 @@ class CmsFormHelper {
                     if (isset($field['maxlength'])) {
                         $cms_field->maxlength($field['maxlength']);
                     }
+                    if (isset($field['disabled'])) {
+                        $cms_field->setDisabled();
+                    }
 
                     // Editors
                     if (isset($field['edit'])) {
