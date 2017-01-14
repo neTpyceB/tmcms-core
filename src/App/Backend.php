@@ -1052,7 +1052,7 @@ class Backend
                 'icon' => 'layers',
             ],
             'users' => [
-                'icon' => 'users',
+                'icon' => 'user',
             ],
             'tools' => [
                 'icon' => 'wrench',
