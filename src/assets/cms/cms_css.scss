@@ -212,3 +212,10 @@ fieldset legend {
     border-right: 12px solid #fff;
     background: none;
 }
+
+.page-sidebar-closed .page-sidebar-menu > li.active.open > a > .selected,
+.page-sidebar-closed .page-sidebar .page-sidebar-menu > li.active > a > .selected,
+.page-sidebar-closed .page-sidebar .page-sidebar-menu > li.active.open > a > .selected
+{
+    display: none;
+}
