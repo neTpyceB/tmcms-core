@@ -180,7 +180,7 @@ define('SELF', isset($_SERVER['REDIRECT_URL']) ? $_SERVER['REDIRECT_URL'] : $_SE
 $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] ? 'https' : 'http';
 define('BASE_URL', $protocol .'://'. $_SERVER['HTTP_HOST']);
 define('BASE_URL_ASSETS', BASE_URL . '/public/assets/');
-define('CFG_PROTOCOL', $protocol);k
+define('CFG_PROTOCOL', $protocol);
 
 // Deny incorrect urls
 if (strlen(SELF) > 2000 || strpos(SELF, 'eval(') !== false || stripos(SELF, 'CONCAT') !== false || stripos(SELF, 'UNION+SELECT') !== false || stripos(SELF, 'base64') !== false) {
