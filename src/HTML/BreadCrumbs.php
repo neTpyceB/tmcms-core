@@ -20,6 +20,7 @@ class BreadCrumbs
     private $actions = [];
     private $notes = [];
     private $alerts = [];
+    private $first_action_button = false;
 
     /**
      * @param string $name
@@ -47,11 +48,22 @@ class BreadCrumbs
             <?php if ($this->actions): ?>
                 <li class="btn-group">
                     <?php if (1 === count($this->actions)): ?>
-                        <button type="button" class="btn white">
-                            <span>
-                                <a href="<?= array_values($this->actions)[0] ?>"><?= array_keys($this->actions)[0] ?></a>
-                            </span>
-                        </button>
+                        <a class="btn blue" href="<?= array_values($this->actions)[0] ?>"><?= array_keys($this->actions)[0] ?></a>
+                    <?php elseif($this->first_action_button): ?>
+                        <div class="btn-group">
+                            <a href="<?= array_values($this->actions)[0] ?>" class="btn blue"><?= array_keys($this->actions)[0] ?></a>
+                            <button type="button" class="btn blue dropdown-toggle" data-toggle="dropdown"><i class="fa fa-angle-down"></i></button>
+                            <ul class="dropdown-menu" role="menu">
+                            <?php
+                            $i = 0;
+                            foreach ($this->actions as $title => $link):
+                                if($i++ == 0) continue; ?>
+                                <li>
+                                    <a href="<?= $link ?>"><?= $title ?></a>
+                                </li>
+                            <?php endforeach; ?>
+                            </ul>
+                        </div>
                     <?php else: ?>
                         <button type="button" class="btn blue dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="1000" data-close-others="true">
                             <span>Actions</span><i class="fa fa-angle-down"></i>
@@ -112,6 +124,17 @@ class BreadCrumbs
         <?php
 
         return ob_get_clean();
+    }
+
+    /**
+     * @param bool|true $flag
+     * @return $this
+     */
+    public function setFirstActonButton($flag = true)
+    {
+        $this->first_action_button = $flag;
+
+        return $this;
     }
 
     /**

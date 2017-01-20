@@ -2,6 +2,7 @@
 
 namespace TMCms\Orm;
 
+use TMCms\Admin\Structure\Entity\TranslationRepository;
 use TMCms\Cache\Cacher;
 use TMCms\Config\Configuration;
 use TMCms\Config\Settings;
@@ -114,6 +115,14 @@ class Entity {
      */
     public function getId() {
         return $this->data['id'];
+    }
+
+    /**
+     * This method sometimes is required for language selector
+     * @return string
+     */
+    public function getSlugUrl() {
+        return '';
     }
 
     /**
@@ -234,7 +243,7 @@ class Entity {
 
                 // Translation field
                 if (in_array($v, $this->translation_fields) && isset($this->translation_data[$v]) && is_array($this->translation_data[$v])) {
-                    $data[$v] = Translations::update($this->translation_data[$v], $this->data[$v]);
+                    $data[$v] = Translations::update($this->translation_data[$v], $this->data[$v], $this);
                 } else {
                     // Usual field
                     if ($this->getField($v) !== NULL) {
@@ -398,6 +407,9 @@ class Entity {
         // Clear ID if created from another data
         unset($this->data['id']);
 
+        // For entity cross-save in translations
+        $translation_saved_ids = [];
+
         // Set data values for every available field
         foreach ($fields as $v) {
             // Translation
@@ -405,7 +417,7 @@ class Entity {
                 if (isset($this->translation_data[$v]['id']) ) {
                     unset($this->translation_data[$v]['id']); // Save new Translation
                 }
-                $data[$v] = Translations::save($this->translation_data[$v]);
+                $translation_saved_ids[] = $data[$v] = Translations::save($this->translation_data[$v], $this);
 
                 $this->setField($v, $data[$v]);
             } else {
@@ -418,6 +430,14 @@ class Entity {
 
         // Create entry in database
         $this->data['id'] = SQL::add($this->getDbTableName(), $data, true, $this->update_on_duplicate, $this->insert_low_priority, $this->insert_delayed);
+
+        // Save cross-reference in translatinos for entities
+        if ($translation_saved_ids) {
+            $translations = new TranslationRepository($translation_saved_ids[]);
+            $translations->setEntity(Converter::classWithNamespaceToUnqualifiedShort($this));
+            $translations->setEntityId($this->data['id']);
+            $translations->save();
+        }
 
         $this->afterCreate();
 

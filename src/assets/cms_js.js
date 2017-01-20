@@ -200,6 +200,20 @@ var HTMLGen = {
             return;
         }
         HTMLGen.objects['cntr_' + id].innerHTML = HTMLGen.objects[id].value.length;
+        if($(HTMLGen.objects[id]).data('max')){
+            if($(HTMLGen.objects[id]).data('max') < HTMLGen.objects[id].value.length){
+                $(HTMLGen.objects['cntr_' + id]).parent().addClass('danger-hint');
+            }else{
+                $(HTMLGen.objects['cntr_' + id]).parent().removeClass('danger-hint');
+            }
+        }
+        if($(HTMLGen.objects[id]).data('min')){
+            if($(HTMLGen.objects[id]).data('min') > HTMLGen.objects[id].value.length){
+                $(HTMLGen.objects['cntr_' + id]).parent().addClass('warning-hint');
+            }else{
+                $(HTMLGen.objects['cntr_' + id]).parent().removeClass('warning-hint');
+            }
+        }
     },
     storage: {
         objects: {},
@@ -531,6 +545,7 @@ var PopupModal = function (options) {
         width: 700,
         height: 500,
         onclose: null,
+        disable_autoresize: false,
         result_destination: null,
         result_callback: null
     };
@@ -582,6 +597,9 @@ var PopupModal = function (options) {
     };
 
     this.resize = function () {
+        if (instance.options.disable_autoresize) {
+            return;
+        }
         instance.window.height($window.height() - 100);
         instance.window.width($window.width() - 100);
 
@@ -824,6 +842,7 @@ $(function () {
         var popupModal = new PopupModal({
             url: $element.data('popup-url'),
             width: $element.data('popup-width'),
+            disable_autoresize: $element.data('popup-disable-autoresize'),
             height: $element.data('popup-height'),
             onclose: $element.data('popup-onclose'),
             result_destination: $element.data('popup-result-destination')
@@ -867,6 +886,13 @@ $(function () {
 
     $('.table a[href^="http://"], .table a[href^="https://"]').each(function() {
         $(this).attr('target', '_blank')
+    });
+
+    // Collapsable fieldset
+    $('.collapsable_fieldset legend').click(function() {
+        var $el = $(this);
+        var $form = $el.parent('fieldset');
+        $form.find('div').toggle();
     });
 });
 

@@ -28,9 +28,10 @@ class SQL
     private static $_cached_tbl_columns = [];
 
     /** @var PDO */
-    private $pdo_db; // Should be non-static because we can have more than one connection
+    private $pdo_db;
 
     /**
+     * Should be non-static because we can have more than one connection
      * Stop current connection
      */
     public function disconnect()
@@ -86,7 +87,7 @@ class SQL
         }
 
         // Set query start time if debug is enabled or if we analyze queries
-        if (MODE === 'site' && (Settings::get('debug_panel') || Settings::get('analyze_db_queries'))) {
+        if (Settings::get('debug_panel') || Settings::get('analyze_db_queries')) {
             $ts = microtime(1);
         }
 
@@ -723,6 +724,15 @@ class SQL
         return self::getInstance()->sql_query('DELETE FROM `' . $tbl . '` WHERE `' . $id_col . '` IN ("' . implode('", "', $id) . '")')->rowCount();
     }
 
+    /**
+     * @param string $table
+     * @return array
+     */
+    public static function getTableColumns($table)
+    {
+        return self::q_assoc('SHOW COLUMNS FROM `' . self::sql_prepare($table) . '`');
+    }
+
     public static function getColumnsComments($table, $column = '')
     {
         return self::q_assoc_iterator('SELECT
@@ -911,7 +921,7 @@ AND TABLE_NAME = "' . self::sql_prepare($table) . '"
      * @param string $orderFld - order field name ('order' by default)
      * @return bool true
      */
-    public static function orderCat($id1, $tbl, $catID, $catFld, $direction = 'up', $idFld = 'id', $orderFld = 'order')
+    public static function orderCat($id1, $tbl, $catID, $catFld, $direction = 'up', $idFld = 'id', $orderFld = 'order', $start_with = 0)
     {
         $data = [];
         $ord1 = '';
@@ -948,13 +958,13 @@ AND TABLE_NAME = "' . self::sql_prepare($table) . '"
                 $id2 = 0;
             }
             if (!$ord2) {
-                $ord2 = 0;
+                $ord2 = $start_with;
             }
 
             self::getInstance()->sql_query('UPDATE `' . $tbl . '` SET `' . $orderFld . '` = ' . $ord2 . ' WHERE ' . (strpos($idFld, '`') === false ? '`' . $idFld . '`' : $idFld) . '="' . $id1 . '" AND `' . $catFld . '` = "' . $catID . '" LIMIT 1');
             self::getInstance()->sql_query('UPDATE `' . $tbl . '` SET `' . $orderFld . '` = ' . $ord1 . ' WHERE ' . (strpos($idFld, '`') === false ? '`' . $idFld . '`' : $idFld) . '="' . $id2 . '" AND `' . $catFld . '` = "' . $catID . '" LIMIT 1');
         } else { // Exchange and then "Direct Exchange"
-            $i = 0;
+            $i = $start_with;
 
             foreach (array_keys($data) as $k) {
                 self::getInstance()->sql_query('UPDATE `' . $tbl . '` SET `' . $orderFld . '` = ' . $i . ' WHERE ' . (strpos($idFld, '`') === false ? '`' . $idFld . '`' : $idFld) . '="' . $k . '" AND `' . $catFld . '` = "' . $catID . '" LIMIT 1');

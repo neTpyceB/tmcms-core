@@ -776,17 +776,18 @@ FROM `'. $this->getDbTableName() .'`
 
         $join_tables = $collection->getJoinTables();
         foreach ($join_tables as $join_table) {
-            $this->addJoinTable($join_table['table'], $join_table['left'], $join_table['right'], $join_table['type']);
+            $this->addJoinTable($join_table['table'], $join_table['left'], $join_table['right'], $join_table['type'], $join_table['right_table']);
         }
 
         return $this;
     }
 
-    public function addJoinTable($table, $on_left, $on_right, $type = '') {
+    public function addJoinTable($table, $on_left, $on_right, $type = '', $right_table = null) {
         $this->join_tables[] = [
             'table' => $table,
             'left' => $on_left,
             'right' => $on_right,
+            'right_table' => $right_table ?: $this->getDbTableName(),
             'type' => $type
         ];
 
@@ -796,7 +797,7 @@ FROM `'. $this->getDbTableName() .'`
     public function getJoinTablesSql() {
         $sql = [];
         foreach ($this->join_tables as $table) {
-            $sql[] = $table['type'] .' JOIN `'. $table['table'] .'` ON (`'. $table['table'] .'`.`'. $table['left'] .'` = `'. $this->getDbTableName() .'`.`' . $table['right'] . '`)';
+            $sql[] = $table['type'] .' JOIN `'. $table['table'] .'` ON (`'. $table['table'] .'`.`'. $table['left'] .'` = `'. $table['right_table'] .'`.`' . $table['right'] . '`)';
         }
 
         return implode(' ', $sql);
@@ -962,8 +963,8 @@ FROM `'. $this->getDbTableName() .'`
      */
     public function mergeWithCollection(EntityRepository $collection, $join_on_key, $join_index = 'id', $join_type = 'INNER')
     {
-        $this->mergeCollectionSqlSelectWithAnotherCollection($collection);
         $this->addJoinTable($collection->getDbTableName(), $join_index, $join_on_key, $join_type);
+        $this->mergeCollectionSqlSelectWithAnotherCollection($collection);
 
         return $this;
     }
