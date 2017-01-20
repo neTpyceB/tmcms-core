@@ -179,7 +179,6 @@ define('SELF', isset($_SERVER['REDIRECT_URL']) ? $_SERVER['REDIRECT_URL'] : $_SE
 // Website base url with protocol
 $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] ? 'https' : 'http';
 define('BASE_URL', $protocol .'://'. $_SERVER['HTTP_HOST']);
-define('BASE_URL_ASSETS', BASE_URL . '/public/assets/');
 define('CFG_PROTOCOL', $protocol);
 
 // Deny incorrect urls
