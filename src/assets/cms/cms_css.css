@@ -21,7 +21,15 @@ body.login .logo a img {
   margin-bottom: 0; }
 
 fieldset {
-  border: 1px solid #000; }
+  border: 1px solid #f5f5f5;
+  margin-top: 10px;
+  margin-bottom: 10px; }
+
+fieldset legend {
+  background: #f5f5f5;
+  padding: 10px 10px 4px 10px;
+  box-sizing: border-box;
+  font-size: 13px; }
 
 .collapsable_fieldset legend {
   cursor: pointer; }
@@ -166,5 +174,10 @@ fieldset {
   border-bottom: 12px solid transparent;
   border-right: 12px solid #fff;
   background: none; }
+
+.page-sidebar-closed .page-sidebar-menu > li.active.open > a > .selected,
+.page-sidebar-closed .page-sidebar .page-sidebar-menu > li.active > a > .selected,
+.page-sidebar-closed .page-sidebar .page-sidebar-menu > li.active.open > a > .selected {
+  display: none; }
 
 /*# sourceMappingURL=cms_css.css.map */
