@@ -994,6 +994,22 @@ FROM `'. $this->getDbTableName() .'`
             $table = $this->getDbTableName();
         }
 
+        // Translation field
+        if (in_array($field, $this->getTranslationFields())) {
+            $k = count($this->translation_joins);
+            $this->translation_joins[] = 'LEFT JOIN `cms_translations` AS `d' . $k . '` ON (`d' . $k . '`.`id` = `'. $table .'`.`' . $field . '`)';
+
+            $this->sql_where_fields[] = [
+                'table' => 'd' . $k . '',
+                'field' => LNG,
+                'value' => $value,
+                'type' => 'simple'
+            ];
+
+            return $this;
+        }
+
+        // Simple field
         $this->sql_where_fields[] = [
             'table' => $table,
             'field' => $field,
