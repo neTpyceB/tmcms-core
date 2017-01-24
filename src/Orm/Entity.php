@@ -114,7 +114,7 @@ class Entity {
      * @return int
      */
     public function getId() {
-        return $this->data['id'];
+        return isset($this->data['id']) ? $this->data['id'] : NULL;
     }
 
     /**
@@ -431,9 +431,9 @@ class Entity {
         // Create entry in database
         $this->data['id'] = SQL::add($this->getDbTableName(), $data, true, $this->update_on_duplicate, $this->insert_low_priority, $this->insert_delayed);
 
-        // Save cross-reference in translatinos for entities
+        // Save cross-reference in translations for entities
         if ($translation_saved_ids) {
-            $translations = new TranslationRepository($translation_saved_ids[]);
+            $translations = new TranslationRepository($translation_saved_ids);
             $translations->setEntity(Converter::classWithNamespaceToUnqualifiedShort($this));
             $translations->setEntityId($this->data['id']);
             $translations->save();
