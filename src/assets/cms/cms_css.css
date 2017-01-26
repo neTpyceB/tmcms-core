@@ -17,6 +17,9 @@ body.login .logo a img {
 .portlet {
   margin-bottom: 10px; }
 
+.portlet.box > .portlet-title {
+  color: #000; }
+
 .filter-div {
   margin-bottom: 0; }
 
