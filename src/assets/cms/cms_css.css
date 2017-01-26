@@ -19,8 +19,9 @@ body.login .logo a img {
 
 .portlet.box > .portlet-title {
   color: #000;
-  padding: 0;
-  border-bottom: none; }
+  padding: 5px 0 0 5px;
+  border-bottom: none;
+  height: 21px; }
 
 .portlet.box > .portlet-body {
   padding: 0; }
