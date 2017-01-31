@@ -84,8 +84,6 @@ class Menu
         ?>
         <script>
             function search_in_main_menu() {
-                var $el = $('#menu_search_input');
-                var text = $el.val();
                 <?php // TODO hide element in menu that are not found by indexOf ?>
             }
         </script>
@@ -219,67 +217,6 @@ class Menu
                 </ul>
             </div>
         </div>
-        <?php
-        return ob_get_clean(); ?>
-
-
-        <aside class="sidebar offscreen-left">
-            <p class="nav-top-overlay"></p>
-            <nav class="main-navigation custom_scrollbar" data-height="auto" data-size="6px" data-distance="0" data-rail-visible="true" data-wheel-step="10">
-                <ul class="nav">
-                    <?php foreach ($this->_menu as $k => $v):
-                        // Current module - rebder all submenu items
-                        if (P == $k): ?>
-                            <li class="open">
-                                <a href="">
-                                    <i class="ti-home"></i>
-                                    <span><?= __(Converter::symb2Ttl(is_array($v) ? $v[$k] : $v)) ?></span>
-                                </a>
-                                <ul class="sub-menu" style="display: block;">
-                                    <li class="<?= P_DO == '_default' ? ' active' : '' ?>">
-                                        <a href="/cms?p=<?= P ?>">
-                                            <i class="ti-arrow-right"></i>
-                                            <span><?= __('Main') ?></span>
-                                            <?php if (isset($this->menu_labels[P]['_default'])): ?>
-                                                <span class="pull-right small label label-info animated flash">
-                                                    <?= __($this->menu_labels[P]['_default']) ?>
-                                                </span>
-                                            <?php endif; ?>
-                                        </a>
-                                    </li>
-                                    <?php if (isset($this->_menu[P]) && is_array($this->_menu[P])): // Have subitems ?>
-                                        <?php foreach ($this->_menu[P] as $k_in => $v_in):
-                                            if (!isset($first)) {
-                                                $first = true; // Skip main menu item
-                                                continue;
-                                            }
-                                            ?>
-                                            <li class="<?= P_DO == $k_in ? ' active' : '' ?>">
-                                                <a href="/cms?p=<?= P . '&do=' . $k_in ?>">
-                                                    <i class="ti-arrow-right"></i>
-                                                    <span><?= __(Converter::symb2Ttl($v_in)) ?></span>
-                                                    <?php if (isset($this->menu_labels[P][$k_in])): ?>
-                                                        <span class="pull-right small label label-danger animated flash">
-                                                            <?= __($this->menu_labels[P][$k_in]) ?>
-                                                        </span>
-                                                    <?php endif; ?>
-                                                </a>
-                                            </li>
-                                        <?php endforeach; ?>
-                                    <?php endif; ?>
-                                </ul>
-                            </li>
-                        <?php else: ?>
-                            <li>
-                                <a href="/cms?p=<?= $k ?>">
-                                    <span><?= __(Converter::symb2Ttl(is_array($v) ? $v[$k] : $v)) ?></span>
-                                </a>
-                            </li>
-                        <?php endif; ?>
-                    <?php endforeach; ?>
-                </ul>
-            </nav>
-        </aside>
         <?php
         return ob_get_clean();
     }
@@ -447,7 +384,6 @@ class Menu
         $messages = $messages_repository->getAsArrayOfObjects();
 
         // Custom notifiers
-        // TODO
         $custom_notifiers = [];
 
         $custom_notifiers[] = $this->getHelpTextsNotifier();
@@ -468,7 +404,6 @@ class Menu
         }
 
         $languages = AdminLanguages::getPairs();
-        $current_language = Users::getInstance()->getUserLng();
 
         ?>
         <div class="page-header-inner">

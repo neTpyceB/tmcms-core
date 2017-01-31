@@ -5,6 +5,7 @@ namespace TMCms\Templates;
 use TMCms\Files\FileSystem;
 use TMCms\HTML\Cms\Element\CmsCheckbox;
 use TMCms\HTML\Cms\Element\CmsCheckboxList;
+use TMCms\HTML\Cms\Element\CmsInputDate;
 use TMCms\HTML\Cms\Element\CmsInputTags;
 use TMCms\HTML\Cms\Element\CmsInputText;
 use TMCms\HTML\Cms\Element\CmsMultipleSelect;
@@ -88,6 +89,10 @@ class RenderComponentHelper {
             default:
             case 'text':
                 $field = CmsInputText::getInstance($this->component_name);
+                break;
+
+            case 'date':
+                $field = CmsInputDate::getInstance($this->component_name);
                 break;
 
             case 'textarea':
@@ -199,6 +204,7 @@ class RenderComponentHelper {
                 break;
 
             case 'calendar':
+                dump('Deprecated, use type=date and format');
                 $widget = new Calendar;
 
                 if (isset($this->field_value['format'])) {
