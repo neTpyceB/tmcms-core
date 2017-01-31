@@ -171,8 +171,14 @@ class TableStructure {
                 break;
 
             case 'current_timestamp':
-                // Default : CURRENT_TIMESTAMP
+                // Dates
                 $res = '`'. $field['name'] .'` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP';
+                break;
+
+            case 'date':
+            case 'datetime':
+                // Default : CURRENT_TIMESTAMP
+                $res = '`'. $field['name'] .'` datetime NOT NULL';
                 break;
 
             case 'bool':
