@@ -381,9 +381,9 @@ function error($str)
  * @param string $default
  * @return mixed|string|void
  */
-function w($k, $lng = LNG, $replaces = [], $default = '')
+function w($k, $lng = LNG, $replaces = [], $default = '', $no_cache = false)
 {
-    return Structure::getWord($k, $lng, $replaces, $default);
+    return Structure::getWord($k, $lng, $replaces, $default, $no_cache);
 }
 
 /**
