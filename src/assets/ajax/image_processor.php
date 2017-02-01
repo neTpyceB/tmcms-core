@@ -27,6 +27,8 @@ $src_path = ($path ? $path . '/' : NULL) . $file;
 
 if (!is_file(DIR_BASE . $src_path)) return;
 
+ini_set('memory_limit', '256M');
+
 // Rotate before EXIF data
 if ($ext == 'jpg' || $ext == 'jpeg') {
     $exif = @exif_read_data(DIR_BASE . $src_path);
