@@ -185,6 +185,13 @@ class RenderComponentHelper {
                 break;
         }
 
+        if($field){
+            // Disable custom css styles for select elements
+            if (isset($this->field_value['disable_custom_plugin'])) {
+                $field->disableCustomStyled();
+            }
+        }
+
         // Required for Widgets
         if ($field) {
             $field->setAttribute('data-page_id', $this->page_id);
