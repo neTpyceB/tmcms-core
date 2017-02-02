@@ -242,13 +242,17 @@ var Login = function () {
             handleLogin();
             handleForgetPassword();
             handleRegister();        
-	       
-	       	$.backstretch([
-		        "/vendor/devp-eu/tmcms-core/src/assets/cms/bg/1.jpg",
-    		    "/vendor/devp-eu/tmcms-core/src/assets/cms/bg/2.jpg",
-    		    "/vendor/devp-eu/tmcms-core/src/assets/cms/bg/3.jpg",
-    		    "/vendor/devp-eu/tmcms-core/src/assets/cms/bg/4.jpg"
-		        ], {
+
+			var slides = [
+				"/vendor/devp-eu/tmcms-core/src/assets/cms/bg/1.jpg",
+				"/vendor/devp-eu/tmcms-core/src/assets/cms/bg/2.jpg",
+				"/vendor/devp-eu/tmcms-core/src/assets/cms/bg/3.jpg",
+				"/vendor/devp-eu/tmcms-core/src/assets/cms/bg/4.jpg"
+			];
+			if(typeof(login_slides)!='undefined')
+				var slides = login_slides;
+
+	       	$.backstretch(slides, {
 		          fade: 1000,
 		          duration: 8000
 		    });
