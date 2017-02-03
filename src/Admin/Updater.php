@@ -5,6 +5,8 @@ namespace TMCms\Admin;
 use TMCms\Admin\Entity\MigrationEntity;
 use TMCms\Admin\Entity\MigrationEntityRepository;
 use TMCms\Cache\Cacher;
+use TMCms\Config\Entity\SettingEntity;
+use TMCms\Config\Entity\SettingEntityRepository;
 use TMCms\DB\SQL;
 use TMCms\Files\FileSystem;
 use TMCms\Traits\singletonOnlyInstanceTrait;
@@ -54,6 +56,16 @@ class Updater
 
         // Clear all caches - may be required to show fresh data
         @Cacher::getInstance()->clearAllCaches();
+
+        // Invalidate all frontend assets
+        $setting = SettingEntityRepository::findOneEntityByCriteria(['name' => 'last_assets_invalidate_time']);
+        if (!$setting) {
+            $setting = new SettingEntity();
+            $setting->setName('last_assets_invalidate_time');
+        }
+
+        $setting->setValue(NOW);
+        $setting->save();
 
         return $this;
     }
