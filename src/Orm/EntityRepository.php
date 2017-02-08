@@ -1113,6 +1113,25 @@ FROM `'. $this->getDbTableName() .'`
      * @param string $table
      * @return $this
      */
+    public function addWhereFieldIsLowerOrEqual($field, $value, $table = '')
+    {
+        if (!$table) {
+            $table = $this->getDbTableName();
+        }
+
+        $value = sql_prepare($value);
+
+        $this->addWhereFieldAsString('`'. $table .'`.`'. $field .'` <= "'. $value .'"');
+
+        return $this;
+    }
+
+    /**
+     * @param $field
+     * @param string $value
+     * @param string $table
+     * @return $this
+     */
     public function addWhereFieldIsHigher($field, $value, $table = '')
     {
         if (!$table) {
@@ -1122,6 +1141,25 @@ FROM `'. $this->getDbTableName() .'`
         $value = sql_prepare($value);
 
         $this->addWhereFieldAsString('`'. $table .'`.`'. $field .'` > "'. $value .'"');
+
+        return $this;
+    }
+
+    /**
+     * @param $field
+     * @param string $value
+     * @param string $table
+     * @return $this
+     */
+    public function addWhereFieldIsHigherOrEqual($field, $value, $table = '')
+    {
+        if (!$table) {
+            $table = $this->getDbTableName();
+        }
+
+        $value = sql_prepare($value);
+
+        $this->addWhereFieldAsString('`'. $table .'`.`'. $field .'` >= "'. $value .'"');
 
         return $this;
     }
