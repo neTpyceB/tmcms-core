@@ -80,7 +80,7 @@ class MVC
     }
 
     /**
-     * @return Controller
+     * @return string
      */
     public function getController()
     {
@@ -89,10 +89,13 @@ class MVC
 
     /**
      * @param string $controller
+     * @return $this
      */
     public function setController($controller)
     {
         $this->controller = $controller;
+
+        return $this;
     }
 
     /**
