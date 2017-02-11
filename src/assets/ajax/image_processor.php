@@ -313,11 +313,11 @@ if (!$image->save(DIR_CACHE . 'images/' . QUERY, $ext, 90) && !Settings::isProdu
 }
 
 // Run file optimizers
-$path_for_exec = str_replace(['&', '='], ['\&', '\='], QUERY);
+$path_for_exec = str_replace(['&', '=', ' ', '(', ')'], ['\&', '\=', '\ ', '\(', '\)'], QUERY);
 if ($ext == 'jpg') {
-    exec('jpegoptim --strip-all '. DIR_CACHE . 'images/' . $path_for_exec);
+    exec('jpegoptim --strip-all '. DIR_CACHE . 'images/' . $path_for_exec . '  2>&1');
 } elseif ($ext == 'png') {
-    exec('optipng '. DIR_CACHE . 'images/' . $path_for_exec);
+    exec('optipng '. DIR_CACHE . 'images/' . $path_for_exec . '  2>&1');
 }
 
 go('/' . QUERY);
