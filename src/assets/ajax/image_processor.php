@@ -107,9 +107,6 @@ foreach ($actions as $action => $params) {
     }
 
     switch ($action) {
-        default:
-            exit('Error. Unknown action "' . $action . '".');
-
         case 'height':
             if (!$params) break;
             if (!preg_match('/^[0-9]+$/', $params)) {
