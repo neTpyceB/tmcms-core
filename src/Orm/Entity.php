@@ -716,7 +716,7 @@ class Entity {
      * @param array $check_fields that must be unique
      * @return $this
      */
-    public function preventDuplicateByFields(array $check_fields)
+    public function findAndLoadPossibleDuplicateEntityByFields(array $check_fields)
     {
         $class_name = get_class($this) . 'Repository';
         /** @var EntityRepository $repo */
