@@ -18,31 +18,6 @@ class Messages
     use singletonOnlyInstanceTrait;
 
     /**
-     * @param string $text Text to be sent
-     * @param int $to_user_id recipient user id
-     * @param int $from_user_id sender user id
-     * @param bool $notify_toastr
-     * @return UsersMessageEntity that was sent
-     */
-    public static function sendMessage($text, $to_user_id = USER_ID, $from_user_id = 0, $notify_toastr = 0)
-    {
-        $message = new UsersMessageEntity();
-        $message->setFromUserId($from_user_id);
-        $message->setToUserId($to_user_id);
-        $message->setMessage($text);
-        /* setNotify =
-         * 0 - def. browser notify
-         * 1 - green
-         * 2 - red
-         * 3 - black
-         */
-        $message->setNotify((int)$notify_toastr);
-        $message->save();
-
-        return $message;
-    }
-
-    /**
      * Notification using browser API
      * Get array of UserMessage
      * @param int $from_user_id sender user id
@@ -93,6 +68,32 @@ class Messages
     {
         return self::sendMessage($text, $to_user_id, $from_user_id, 1);
     }
+
+    /**
+     * @param string $text Text to be sent
+     * @param int $to_user_id recipient user id
+     * @param int $from_user_id sender user id
+     * @param int $notify_toastr
+     * @return UsersMessageEntity that was sent
+     */
+    public static function sendMessage($text, $to_user_id = USER_ID, $from_user_id = 0, $notify_toastr = 0)
+    {
+        $message = new UsersMessageEntity();
+        $message->setFromUserId($from_user_id);
+        $message->setToUserId($to_user_id);
+        $message->setMessage($text);
+        /* setNotify =
+         * 0 - def. browser notify
+         * 1 - green
+         * 2 - red
+         * 3 - black
+         */
+        $message->setNotify((int)$notify_toastr);
+        $message->save();
+
+        return $message;
+    }
+
     /**
      * Notification using red toastr alerts
      * @param string $text Text to be sent
