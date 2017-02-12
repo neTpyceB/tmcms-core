@@ -58,23 +58,11 @@ class Backend
             // Update database
             $updater->runMigrations();
 
-            // Run PHPUnit tests
-            $updater->runTests();
-
             // Output
             $out = $updater->getResult();
             $text = json_encode($out, JSON_FORCE_OBJECT);
 
             echo $text;
-
-            if (stripos($text, 'Code Coverage Report') === false) {
-                Mailer::getInstance()
-                    ->setMessage('Did not find "Code Coverage Report" in updater response:<br><br>' . $text)
-                    ->setRecipient(CMS_SUPPORT_EMAIL)
-                    ->setSender(Settings::getCommonEmail(), Configuration::getInstance()->get('site')['name'] . ' - AutoUpdater')
-                    ->setSubject('Error found during update')
-                    ->send();
-            }
 
             exit;
         }

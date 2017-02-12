@@ -164,19 +164,6 @@ class Updater
     }
 
     /**
-     * Run PHPUnit tests from console
-     */
-    public function runTests()
-    {
-        chdir(DIR_BASE);
-        exec('tests/run_tests.sh 2>&1', $out);
-
-        $this->result_message[] = $out;
-
-        return $this;
-    }
-
-    /**
      * Get result of all migrations and updates
      * @return array result of update and migrations
      */
