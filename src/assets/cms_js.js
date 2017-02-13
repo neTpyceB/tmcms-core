@@ -325,6 +325,34 @@ var HTMLGen = {
     }
 };
 
+function checkHiddenInvalid(self){
+    var form = $(self).attr('form') ? $('#'+$(self).attr('form')) : $(self).parents('form');
+    var is_valid = true;
+    var invalid_tabs = {};
+    var tab_id;
+    $('input,select,textarea', form).each(function(){
+        if($(this).is(':hidden') && $(this).is(':invalid')){
+            console.log($(this).attr('name'),'is invalid');
+            if($(this).parents('.tab-pane').length) {
+                tab_id = $(this).parents('.tab-pane').attr('id');
+                if(typeof invalid_tabs[tab_id] == 'undefined') {
+                    invalid_tabs[tab_id] = true;
+                }
+            }
+        }
+    })
+    //console.log(invalid_tabs);
+    $('[data-toggle=tab]', form).each(function(id,v){
+        if(typeof invalid_tabs[$(this).attr('href').substr(1)] != 'undefined'){
+            $(this).addClass('error');
+        }else{
+            $(this).removeClass('error');
+        }
+
+    })
+
+}
+
 function addEvent(ev, o, func, useCapture) {
     // useCapture required only for compability with older versions
     if (!o) return false;

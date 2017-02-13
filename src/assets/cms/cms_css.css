@@ -193,4 +193,8 @@ fieldset legend {
 .form .form-actions {
   background-color: transparent; }
 
+.tabbable-custom > .nav-tabs > li.active > a.error:hover, .tabbable-custom > .nav-tabs > li > a.error {
+  background-color: #f2dede;
+}
+
 /*# sourceMappingURL=cms_css.css.map */
