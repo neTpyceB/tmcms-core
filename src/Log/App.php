@@ -6,9 +6,9 @@ use TMCms\Admin\Users\Entity\AdminUserRepository;
 use TMCms\Config\Configuration;
 use TMCms\Config\Settings;
 use TMCms\Files\FileSystem;
+use TMCms\Log\Entity\AdminUsageEntityRepository;
 use TMCms\Log\Entity\AppLogEntity;
 use TMCms\Log\Entity\AppLogEntityRepository;
-use TMCms\Log\Entity\AdminUsageEntityRepository;
 use TMCms\Network\Mailer;
 
 defined('INC') or exit;
@@ -24,9 +24,9 @@ class App
      * @param string $message
      * @param string $page
      * @param string $action
-     * @param int $time
+     * @param mixed $time
      * @param int $user_id
-     * @param string $url
+     * @param mixed|string $url
      */
     public static function add($message, $page = P, $action = P_DO, $time = NOW, $user_id = USER_ID, $url = SELF)
     {
@@ -101,7 +101,7 @@ class App
 
             // Send stats
             Mailer::getInstance()
-                ->setSubject('Application and Usage log from ' . Configuration::getInstance()->get('site')['name'] . '(till ' . date(CFG_CMS_DATETIME_FORMAT, NOW) . ')')
+                ->setSubject('Application and Usage log from ' . Configuration::getInstance()->get('site')['name'] . ' (till ' . date(CFG_CMS_DATETIME_FORMAT, NOW) . ')')
                 ->setSender(Configuration::getInstance()->get('site')['email'])
                 ->setRecipient(CMS_SUPPORT_EMAIL)
                 ->setMessage('View attached file')
@@ -117,7 +117,7 @@ class App
     /**
      * Report to stats server of the existing domain
      */
-    public static function sendInformation()
+    private static function sendInformation()
     {
         $url = CMS_SITE . 'ping.php?site=' . urlencode(Configuration::getInstance()->get('site')['name']) . '&host=' . urlencode(HOST) . '&ip=' . urlencode(IP) . '&server=' . urlencode(SERVER_IP) . '&key=' . urlencode(Configuration::getInstance()->get('cms')['unique_key']);
         $ch = curl_init($url);
