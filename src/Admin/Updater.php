@@ -5,6 +5,8 @@ namespace TMCms\Admin;
 use TMCms\Admin\Entity\MigrationEntity;
 use TMCms\Admin\Entity\MigrationEntityRepository;
 use TMCms\Cache\Cacher;
+use TMCms\Config\Entity\SettingEntity;
+use TMCms\Config\Entity\SettingEntityRepository;
 use TMCms\DB\SQL;
 use TMCms\Files\FileSystem;
 use TMCms\Traits\singletonOnlyInstanceTrait;
@@ -47,13 +49,23 @@ class Updater
         }
 
         // To use this command owner of folder and git repository must be the same as web user
-        exec('git reset --hard origin/' . $branch . ' 2>&1; git pull -v origin ' . $branch . ' 2>&1', $out);
+        exec('git reset --hard origin/' . $branch . ' 2>&1; git pull -vvv origin ' . $branch . ' 2>&1', $out);
         if ($out) {
             $this->result_message[] = $out;
         }
 
         // Clear all caches - may be required to show fresh data
         @Cacher::getInstance()->clearAllCaches();
+
+        // Invalidate all frontend assets
+        $setting = SettingEntityRepository::findOneEntityByCriteria(['name' => 'last_assets_invalidate_time']);
+        if (!$setting) {
+            $setting = new SettingEntity();
+            $setting->setName('last_assets_invalidate_time');
+        }
+
+        $setting->setValue(NOW);
+        $setting->save();
 
         return $this;
     }
@@ -65,7 +77,7 @@ class Updater
     {
         chdir(DIR_BASE);
 
-        exec('COMPOSER_HOME="' . substr(DIR_BASE, 0, -1) . '" php composer.phar -v update 2>&1', $out);
+        exec('COMPOSER_HOME="' . substr(DIR_BASE, 0, -1) . '" php composer.phar -vvv update --profile 2>&1', $out);
         if ($out) {
             $this->result_message[] = $out;
         }
@@ -147,19 +159,6 @@ class Updater
         $migration = new MigrationEntity();
         $migration->setFilename(sql_prepare($filename));
         @$migration->save();
-
-        return $this;
-    }
-
-    /**
-     * Run PHPUnit tests from console
-     */
-    public function runTests()
-    {
-        chdir(DIR_BASE);
-        exec('tests/run_tests.sh 2>&1', $out);
-
-        $this->result_message[] = $out;
 
         return $this;
     }

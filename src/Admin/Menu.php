@@ -240,6 +240,11 @@ class Menu
         return $this;
     }
 
+    public function isAddingItemsAllowed()
+    {
+        return $this->addingFlag;
+    }
+
     /**
      * Add menu separator
      * @param  string $data representation in menu
@@ -317,11 +322,6 @@ class Menu
         return $this;
     }
 
-    public function isAddingItemsAllowed()
-    {
-        return $this->addingFlag;
-    }
-
     /**
      * Add one line of help text for menu item
      * @param string $text
@@ -351,7 +351,7 @@ class Menu
      */
     public function getMenuHeaderView()
     {
-        if (!defined('USER_ID') || !USER_ID) {
+        if (!defined('USER_ID') || !USER_ID || !defined('LNG')) {
             return '';
         }
 

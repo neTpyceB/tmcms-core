@@ -190,4 +190,7 @@ fieldset legend {
 .page-sidebar-closed .page-sidebar .page-sidebar-menu > li.active.open > a > .selected {
   display: none; }
 
+.form .form-actions {
+  background-color: transparent; }
+
 /*# sourceMappingURL=cms_css.css.map */
