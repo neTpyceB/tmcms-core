@@ -9,12 +9,11 @@ use TMCms\Files\FileSystem;
 use TMCms\Strings\Converter;
 
 class EntityRepository {
+    private static $_cache_key_prefix = 'orm_entity_repository_'; // Should be overwritten in extended class
     protected $db_table = ''; // Should be overwritten in extended class
-    protected $translation_fields = []; // Should be overwritten in extended class
-    protected $table_structure = []; // Should be overwitten in extended class
-
-    private static $_cache_key_prefix = 'orm_entity_repository_';
-
+    protected $translation_fields = []; // Should be overwitten in extended class
+    protected $table_structure = [];
+    protected $debug = false;
     private $sql_where_fields = [];
     private $sql_select_fields = [];
     private $sql_offset = 0;
@@ -24,15 +23,11 @@ class EntityRepository {
     private $group_by_fields = [];
     private $having_fields = [];
     private $translation_joins = [];
-
     private $use_iterator = true;
     private $collected_objects = [];
     private $collected_objects_data = [];
-
     private $total_count_rows;
     private $require_to_count_total_rows = false;
-
-    protected $debug = false;
     private $use_cache = false;
     private $cache_ttl = 60;
 
@@ -52,8 +47,187 @@ class EntityRepository {
         return $this;
     }
 
+    /**
+     * @return bool table exists
+     */
+    private function ensureDbTableExists()
+    {
+        $table = $this->getDbTableName();
+        // May be empty
+        if ($table == 'm_s') {
+            return true;
+        }
+
+        $schema = new TableStructure();
+        $schema->setTableName($this->getDbTableName());
+        $schema->setTableStructure($this->getTableStructure());
+
+        if (!SQL::tableExists($table)) {
+            // Create table;
+            $schema->createTableIfNotExists();
+        }
+
+        // Update structure using auto-created migrations
+//        $schema->ensureDbTableStructureIsFresh(); // This changes a lot of required items, do not use in future
+
+        return true;
+    }
+
+    /**
+     * Return name in class or try to get from class name
+     * @return string
+     */
+    public function getDbTableName()
+    {
+        // Name set in class
+        if ($this->db_table) {
+            return $this->db_table;
+        }
+
+        $db_table_from_class = mb_strtolower(Converter::from_camel_case(str_replace(['Entity', 'Repository'], '', Converter::classWithNamespaceToUnqualifiedShort($this)))) . 's';
+
+        // Check DB in system tables
+        $this->db_table = 'cms_' . $db_table_from_class;
+        if (!SQL::tableExists($this->db_table)) {
+            // Or in module tables
+            $this->db_table = 'm_' . $db_table_from_class;
+        }
+
+        return $this->db_table;
+    }
+
+    protected function getTableStructure()
+    {
+        return $this->table_structure;
+    }
+
+    /**
+     * @param array $ids
+     * @return $this
+     */
+    public function setIds(array $ids)
+    {
+        $this->addWhereFieldIn('id', $ids);
+
+        return $this;
+    }
+
+    /**
+     * Filter collection by value inclusive
+     * @param $field
+     * @param array $values
+     * @param string $table
+     * @return $this
+     */
+    public function addWhereFieldIn($field, array $values, $table = '')
+    {
+        if (!$table) {
+            $table = $this->getDbTableName();
+        }
+
+        if (!$values) {
+            $values = [NULL];
+        }
+        foreach ($values as $k => & $v) {
+            $v = sql_prepare($v);
+        }
+
+        $this->addWhereFieldAsString('`' . $table . '`.`' . $field . '` IN ("' . implode('", "', $values) . '")');
+
+        return $this;
+    }
+
+    public function addWhereFieldAsString($sql)
+    {
+        $this->sql_where_fields[] = [
+            'table' => false,
+            'field' => false,
+            'value' => $sql,
+            'type' => 'string'
+        ];
+
+        return $this;
+    }
+
     public static function getInstance($ids = []) {
         return new static($ids);
+    }
+
+    /**
+     * Return array of Entity by array of criteria
+     * @param array $criteria select AND
+     * @param array $exclude selecr NOT
+     * @return array
+     */
+    public static function findAllEntitiesByCriteria(array $criteria = [], array $exclude = [])
+    {
+        $class = static::class;
+
+        /** @var EntityRepository $obj_collection */
+        $obj_collection = new $class();
+
+        foreach ($criteria as $k => $v) {
+            $obj_collection->addSimpleWhereField($k, $v);
+        }
+
+        foreach ($exclude as $k => $v) {
+            $obj_collection->addWhereFieldIsNot($k, $v);
+        }
+
+        return $obj_collection->getAsArrayOfObjects();
+    }
+
+    /**
+     * Filter collection by skipping value
+     * @param $field
+     * @param string $value
+     * @param string $table
+     * @return $this
+     */
+    public function addWhereFieldIsNot($field, $value, $table = '')
+    {
+        if (!$table) {
+            $table = $this->getDbTableName();
+        }
+
+        $this->addWhereFieldAsString('`' . $table . '`.`' . $field . '` != "' . sql_prepare($value) . '"');
+
+        return $this;
+    }
+
+    /**
+     * Create one Entity by id
+     * @param int $id
+     * @return Entity
+     */
+    public static function findOneEntityById($id)
+    {
+        return self::findOneEntityByCriteria(['id' => $id]);
+    }
+
+    /**
+     * Return one Entity by array of criteria
+     * @param array $criteria select AND
+     * @param array $exclude selecr NOT
+     * @return Entity
+     */
+    public static function findOneEntityByCriteria(array $criteria = [], array $exclude = [])
+    {
+        $class = static::class;
+
+        /** @var EntityRepository $obj_collection */
+        $obj_collection = new $class();
+        $obj_collection->setLimit(1);
+
+        foreach ($criteria as $k => $v) {
+            $obj_collection->addSimpleWhereField($k, $v);
+        }
+
+        foreach ($exclude as $k => $v) {
+            $obj_collection->addWhereFieldIsNot($k, $v);
+        }
+
+        return $obj_collection->getFirstObjectFromCollection();
     }
 
     public function deleteObjectCollection() {
@@ -66,14 +240,6 @@ class EntityRepository {
         }
 
         return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getDbTableFields()
-    {
-        return SQL::getFields($this->getDbTableName());
     }
 
     /**
@@ -151,6 +317,197 @@ class EntityRepository {
         return $this;
     }
 
+    public function getSelectSql($for_max_object_count = false)
+    {
+        // Select
+        if ($this->getSelectFields()) {
+            $select_sql = [];
+            foreach ($this->getSelectFields() as $field_data) {
+                // Simple select
+                if ($field_data['type'] == 'simple') {
+                    $select_sql[] = '`' . $field_data['table'] . '`.`' . $field_data['field'] . '`' . ($field_data['as'] ? ' AS `' . $field_data['as'] . '`' : '');
+                } elseif ($field_data['type'] == 'string') {
+                    $select_sql[] = $field_data['field'];
+                } elseif ($field_data['type'] == 'translation') {
+                    $select_sql[] = '`' . $field_data['table'] . '`.`' . $field_data['field'] . '` AS `' . $field_data['as'] . '`';
+                }
+            }
+            $select_sql = implode(', ', $select_sql);
+        } else {
+            $select_sql = '`' . $this->getDbTableName() . '`.*';
+        }
+
+        // Where
+        $where_sql = $this->getWhereSql();
+        $where_sql = $where_sql ? 'WHERE ' . $where_sql : '';
+
+        // Having
+        $having_sql = $this->getHavingSql();
+        $having_sql = $having_sql ? 'HAVING ' . $having_sql : '';
+
+        // Order by
+        $order_by_sql = $this->getOrderBySQL();
+
+        // Limit
+        $limit_sql = $this->sql_limit ? 'LIMIT ' . $this->sql_offset . ', ' . $this->sql_limit : '';
+
+        // Group by
+        $group_sql = $this->getGroupBySql();
+
+        // Joins
+        $join_sql = $this->getJoinTablesSql();
+
+        // Translations
+        $translation_joins_sql = implode(' ', $this->getTranslationJoinTables());
+
+        // Counting total
+        if ($for_max_object_count) {
+            $select_sql = 'COUNT(*)';
+            $translation_joins_sql = '';
+            $where_sql = '';
+            $having_sql = '';
+            $order_by_sql = '';
+            $limit_sql = '';
+        }
+
+        $sql_calc_found_rows = $this->require_to_count_total_rows ? ' SQL_CALC_FOUND_ROWS ' : '';
+
+        $sql = '
+SELECT ' . $sql_calc_found_rows . $select_sql . '
+FROM `' . $this->getDbTableName() . '`
+' . $translation_joins_sql . '
+' . $join_sql . '
+' . $where_sql . '
+' . $group_sql . '
+' . $having_sql . '
+' . $order_by_sql . '
+' . $limit_sql . '
+    ';
+
+        return $sql;
+    }
+
+    public function getSelectFields()
+    {
+        return $this->sql_select_fields;
+    }
+
+    /**
+     * @return string
+     */
+    private function getWhereSql()
+    {
+        $res = [];
+        foreach ($this->getWhereFields() as $field_data) {
+            if ($field_data['type'] == 'simple') {
+                $res[] = '`' . $field_data['table'] . '`.`' . $field_data['field'] . '` = "' . SQL::sql_prepare($field_data['value']) . '"';
+            } elseif ($field_data['type'] == 'string') {
+                $res[] = $field_data['value'];
+            }
+        }
+
+        return implode(' AND ', $res);
+    }
+
+    /**
+     * @return array
+     */
+    private function getWhereFields()
+    {
+        return $this->sql_where_fields;
+    }
+
+    private function getHavingSql()
+    {
+        $res = [];
+        foreach ($this->having_fields as $having) {
+            $res[] = '`' . $having['field'] . '` ' . $having['value'];
+        }
+        return implode(' AND ', $res);
+    }
+
+    /**
+     * @return string SQL string
+     */
+    private function getOrderBySQL()
+    {
+        if ($this->order_random) {
+            return ' ORDER BY RAND()';
+        }
+
+        $order_by = [];
+        foreach ($this->getOrderFields() as $field_data) {
+            if ($field_data['type'] == 'simple') {
+                $order_by[] = ($field_data['do_not_use_table_in_sql'] ? '' : '`' . $field_data['table'] . '`.') . '`' . $field_data['field'] . '` ' . $field_data['direction'];
+            } elseif ($field_data['type'] == 'string') {
+                $order_by[] = $field_data['field'];
+            }
+        }
+
+        if ($order_by) {
+            return ' ORDER BY ' . implode(', ', $order_by);
+        }
+
+        return '';
+    }
+
+    /**
+     * @return array
+     */
+    private function getOrderFields()
+    {
+        return $this->order_fields;
+    }
+
+    protected function getGroupBySql()
+    {
+        $res = [];
+        foreach ($this->group_by_fields as $group) {
+            $res[] = '`' . $group['table'] . '`.`' . $group['field'] . '`';
+        }
+        if ($res) {
+            return ' GROUP BY ' . implode(', ', $res);
+        }
+
+        return '';
+    }
+
+    public function getJoinTablesSql()
+    {
+        $sql = [];
+        foreach ($this->join_tables as $table) {
+            $sql[] = $table['type'] . ' JOIN `' . $table['table'] . '` ON (`' . $table['table'] . '`.`' . $table['left'] . '` = `' . $table['right_table'] . '`.`' . $table['right'] . '`)';
+        }
+
+        return implode(' ', $sql);
+    }
+
+    /**
+     * @return array
+     */
+    private function getTranslationJoinTables()
+    {
+        return $this->translation_joins;
+    }
+
+    /**
+     * @param string $hash_string
+     * @return string
+     */
+    private function getCacheKey($hash_string = '')
+    {
+        // Cache key = prefix + class name + unique session id (not obligate) + current created sql query
+        return self::$_cache_key_prefix . md5(str_replace('\\', '_', get_class($this)) . '_' . $hash_string);
+    }
+
+    private function getObjectClass()
+    {
+        // Create object for entity
+        $obj_class = substr(get_class($this), 0, -10); // Remove string "Collection" from name
+
+        return $obj_class;
+    }
+
     protected function getCollectedObjects()
     {
         return $this->collected_objects;
@@ -168,20 +525,12 @@ class EntityRepository {
         return $this;
     }
 
-    protected function getCollectedData()
-    {
-        return $this->collected_objects_data;
-    }
-
     /**
-     * @param array $ids
-     * @return $this
+     * @return array
      */
-    public function setIds(array $ids)
+    public function getDbTableFields()
     {
-        $this->addWhereFieldIn('id', $ids);
-
-        return $this;
+        return SQL::getFields($this->getDbTableName());
     }
 
     /**
@@ -199,6 +548,39 @@ class EntityRepository {
         return array_values($this->getPairs('id'));
     }
 
+    /**
+     * @param string $value_field
+     * @param string $key_field
+     * @return array
+     */
+    public function getPairs($value_field, $key_field = '')
+    {
+        if (!$key_field) {
+            $key_field = 'id';
+        }
+
+        $this->collectObjects();
+
+        $pairs = [];
+        foreach ($this->getAsArrayOfObjects() as $v) {
+            /** @var Entity $v */
+            $v->loadDataFromDB();
+
+            $key_method = 'get' . ucfirst($key_field);
+            $value_method = 'get' . ucfirst($value_field);
+            $pairs[$v->{$key_method}()] = $v->{$value_method}();
+        }
+
+        return $pairs;
+    }
+
+    public function getAsArrayOfObjects()
+    {
+        $this->collectObjects();
+
+        return $this->getCollectedObjects();
+    }
+
     public function getSumOfOneField($field) {
         $sum = 0;
 
@@ -207,6 +589,37 @@ class EntityRepository {
         }
 
         return $sum;
+    }
+
+    /**
+     * @param bool $non_iterator - do not use Iterator, may be usefull for dumping output
+     * @return array
+     */
+    public function getAsArrayOfObjectData($non_iterator = false)
+    {
+        if ($non_iterator) {
+            $this->setGenerateOutputWithIterator(false);
+        }
+
+        $this->collectObjects(true);
+
+        return $this->getCollectedData();
+    }
+
+    /**
+     * @param bool $flag
+     * @return $this
+     */
+    public function setGenerateOutputWithIterator($flag)
+    {
+        $this->use_iterator = $flag;
+
+        return $this;
+    }
+
+    protected function getCollectedData()
+    {
+        return $this->collected_objects_data;
     }
 
     public function addGroupBy($field, $table = '') {
@@ -270,6 +683,40 @@ class EntityRepository {
     }
 
     /**
+     * @return Entity
+     */
+    public function getFirstObjectFromCollection()
+    {
+        $limit_tmp = $this->sql_limit;
+        $this->setLimit(1);
+
+        foreach ($this->getAsArrayOfObjectData() as $obj_data) {
+            $this->setLimit($limit_tmp);
+
+            $class = $this->getObjectClass();
+            /** @var Entity $obj */
+            $obj = new $class();
+            $obj->loadDataFromArray($obj_data, true);
+
+            return $obj;
+        }
+
+        $this->setLimit($limit_tmp);
+        return NULL;
+    }
+
+    /**
+     * @param int $limit
+     * @return $this
+     */
+    public function setLimit($limit)
+    {
+        $this->sql_limit = (int)$limit;
+
+        return $this;
+    }
+
+    /**
      * @param int $count
      * @return bool
      */
@@ -304,29 +751,6 @@ class EntityRepository {
     /**
      * @return Entity
      */
-    public function getFirstObjectFromCollection()
-    {
-        $limit_tmp = $this->sql_limit;
-        $this->setLimit(1);
-
-        foreach ($this->getAsArrayOfObjectData() as $obj_data) {
-            $this->setLimit($limit_tmp);
-
-            $class = $this->getObjectClass();
-            /** @var Entity $obj */
-            $obj = new $class();
-            $obj->loadDataFromArray($obj_data, true);
-
-            return $obj;
-        }
-
-        $this->setLimit($limit_tmp);
-        return NULL;
-    }
-
-    /**
-     * @return Entity
-     */
     public function getLastObjectFromCollection()
     {
         $objects = $this->getAsArrayOfObjects();
@@ -335,64 +759,6 @@ class EntityRepository {
         }
 
         return NULL;
-    }
-
-    public function getAsArrayOfObjects()
-    {
-        $this->collectObjects();
-
-        return $this->getCollectedObjects();
-    }
-
-    /**
-     * @param bool $non_iterator - do not use Iterator, may be usefull for dumping output
-     * @return array
-     */
-    public function getAsArrayOfObjectData($non_iterator = false)
-    {
-        if ($non_iterator) {
-            $this->setGenerateOutputWithIterator(false);
-        }
-
-        $this->collectObjects(true);
-
-        return $this->getCollectedData();
-    }
-
-    /**
-     * @param string $value_field
-     * @param string $key_field
-     * @return array
-     */
-    public function getPairs($value_field, $key_field = '')
-    {
-        if (!$key_field) {
-            $key_field = 'id';
-        }
-
-        $this->collectObjects();
-
-        $pairs = [];
-        foreach ($this->getAsArrayOfObjects() as $v) {
-            /** @var Entity $v */
-            $v->loadDataFromDB();
-
-            $key_method = 'get' . ucfirst($key_field);
-            $value_method = 'get' . ucfirst($value_field);
-            $pairs[$v->{$key_method}()] = $v->{$value_method}();
-        }
-
-        return $pairs;
-    }
-
-    /**
-     * @param int $limit
-     * @return $this
-     */
-    public function setLimit($limit) {
-        $this->sql_limit = (int)$limit;
-
-        return $this;
     }
 
     /**
@@ -414,10 +780,6 @@ class EntityRepository {
         $this->translation_fields[] = $field_name;
 
         return $this;
-    }
-
-    public function getTranslationFields() {
-        return $this->translation_fields;
     }
 
     /**
@@ -515,15 +877,34 @@ class EntityRepository {
         }
 
         foreach ($fields as $k => $field) {
-            $this->sql_select_fields[] = [
-                'table' => $table,
-                'field' => $field,
-                'as' => false,
-                'type' => 'simple'
-            ];
+            // Translation field
+            if (in_array($field, $this->getTranslationFields())) {
+                $k = count($this->translation_joins);
+                $this->translation_joins[] = 'LEFT JOIN `cms_translations` AS `d' . $k . '` ON (`d' . $k . '`.`id` = `' . $table . '`.`' . $field . '`)';
+
+                $this->sql_select_fields[] = [
+                    'table' => 'd' . $k . '',
+                    'field' => LNG,
+                    'as' => $field,
+                    'type' => 'translation'
+                ];
+            } else {
+                // Simple field
+                $this->sql_select_fields[] = [
+                    'table' => $table,
+                    'field' => $field,
+                    'as' => false,
+                    'type' => 'simple'
+                ];
+            }
         }
 
         return $this;
+    }
+
+    public function getTranslationFields()
+    {
+        return $this->translation_fields;
     }
 
     public function addSimpleSelectFieldsAsAlias($field, $alias, $table = false) {
@@ -563,10 +944,6 @@ class EntityRepository {
         return $this;
     }
 
-    public function getSelectFields() {
-        return $this->sql_select_fields;
-    }
-
     /**
      * Select count(*)
      * @return int
@@ -585,122 +962,11 @@ class EntityRepository {
         return $this->require_to_count_total_rows = (bool)$flag;
     }
 
-    public function getSelectSql($for_max_object_count = false)
-    {
-        // Select
-        if ($this->sql_select_fields) {
-            $select_sql = [];
-            foreach ($this->sql_select_fields as $field_data) {
-                // Simple select
-                if ($field_data['type'] == 'simple') {
-                    $select_sql[] = '`' . $field_data['table'] . '`.`' . $field_data['field'] . '`' . ($field_data['as'] ? ' AS `'. $field_data['as'] .'`' : '');
-                } elseif ($field_data['type'] == 'string') {
-                    $select_sql[] = $field_data['field'];
-                }
-            }
-            $select_sql = implode(', ', $select_sql);
-        } else {
-            $select_sql = '`'. $this->getDbTableName() .'`.*';
-        }
-
-        // Where
-        $where_sql = $this->getWhereSql();
-        $where_sql = $where_sql ? 'WHERE ' . $where_sql : '';
-
-        // Having
-        $having_sql = $this->getHavingSql();
-        $having_sql = $having_sql ? 'HAVING ' . $having_sql : '';
-
-        // Order by
-        $order_by_sql = $this->getOrderBySQL();
-
-        // Limit
-        $limit_sql = $this->sql_limit ? 'LIMIT ' . $this->sql_offset . ', ' . $this->sql_limit : '';
-
-        // Group by
-        $group_sql = $this->getGroupBySql();
-
-        // Joins
-        $join_sql = $this->getJoinTablesSql();
-
-        // Translations
-        $translation_joins_sql = implode(' ', $this->getTranslationJoinTables());
-
-        // Counting total
-        if ($for_max_object_count) {
-            $select_sql = 'COUNT(*)';
-            $translation_joins_sql = '';
-            $where_sql = '';
-            $having_sql = '';
-            $order_by_sql = '';
-            $limit_sql = '';
-        }
-
-        $sql_calc_found_rows = $this->require_to_count_total_rows ? ' SQL_CALC_FOUND_ROWS ' : '';
-
-        $sql = '
-SELECT '. $sql_calc_found_rows . $select_sql .'
-FROM `'. $this->getDbTableName() .'`
-'. $translation_joins_sql .'
-'. $join_sql .'
-'. $where_sql .'
-'. $group_sql .'
-'. $having_sql .'
-'. $order_by_sql .'
-'. $limit_sql .'
-    ';
-
-        return $sql;
-    }
-
-    /**
-     * @return string SQL string
-     */
-    private function getOrderBySQL() {
-        if ($this->order_random) {
-            return ' ORDER BY RAND()';
-        }
-
-        $order_by = [];
-        foreach ($this->getOrderFields() as $field_data) {
-            if ($field_data['type'] == 'simple') {
-                $order_by[] = ($field_data['do_not_use_table_in_sql'] ? '' : '`'. $field_data['table'] .'`.') . '`'. $field_data['field'] .'` '. $field_data['direction'];
-            } elseif ($field_data['type'] == 'string') {
-                $order_by[] = $field_data['field'];
-            }
-        }
-
-        if ($order_by) {
-            return ' ORDER BY ' . implode(', ', $order_by);
-        }
-
-        return '';
-    }
-
-    /**
-     * @param mixed $data
-     * @param int $serialize
-     * @param int $clean
-     */
-    protected function debug($data, $serialize = 0, $clean = 1)
-    {
-        if (!$this->debug) return;
-
-        dump($data, $serialize, $clean);
-    }
-
     public function enableDebug()
     {
         $this->debug = true;
 
         return $this;
-    }
-
-    private function getObjectClass() {
-        // Create object for entity
-        $obj_class = substr(get_class($this), 0, -10); // Remove string "Collection" from name
-
-        return $obj_class;
     }
 
     /**
@@ -743,86 +1009,42 @@ FROM `'. $this->getDbTableName() .'`
         return $this;
     }
 
-    private function mergeCollectionSqlSelectWithAnotherCollection(EntityRepository $collection) {
-        $select_fields = $collection->getSelectFields();
-        foreach ($select_fields as $select_field) {
-            $this->sql_select_fields[] = $select_field;
+    /**
+     * @param string $field
+     * @param string $value
+     * @param string $table
+     * @return $this
+     */
+    protected function addSimpleWhereField($field, $value = '', $table = '')
+    {// No table provided
+        if (!$table) {
+            $table = $this->getDbTableName();
         }
 
-        $where_fields = $collection->getWhereFields();
-        foreach ($where_fields as $where_field) {
-            $this->sql_where_fields[] = $where_field;
+        // Translation field
+        if (in_array($field, $this->getTranslationFields())) {
+            $k = count($this->translation_joins);
+            $this->translation_joins[] = 'LEFT JOIN `cms_translations` AS `d' . $k . '` ON (`d' . $k . '`.`id` = `' . $table . '`.`' . $field . '`)';
+
+            $this->sql_where_fields[] = [
+                'table' => 'd' . $k . '',
+                'field' => LNG,
+                'value' => $value,
+                'type' => 'simple'
+            ];
+
+            return $this;
         }
 
-        $group_fields = $collection->getGroupByField();
-        foreach ($group_fields as $group_field) {
-            $this->group_by_fields[] = $group_field;
-        }
-
-        $having_fields = $collection->getHavingFields();
-        foreach ($having_fields as $having_field) {
-            $this->having_fields[] = $having_field;
-        }
-
-        $order_fields = $collection->getOrderFields();
-        foreach ($order_fields as $order_field) {
-            $this->order_fields[] = $order_field;
-        }
-
-        $translation_fields = $collection->getTranslationFields();
-        foreach ($translation_fields as $translation_field) {
-            $this->translation_fields[] = $translation_field;
-        }
-
-        $join_tables = $collection->getJoinTables();
-        foreach ($join_tables as $join_table) {
-            $this->addJoinTable($join_table['table'], $join_table['left'], $join_table['right'], $join_table['type'], $join_table['right_table']);
-        }
-
-        return $this;
-    }
-
-    public function addJoinTable($table, $on_left, $on_right, $type = '', $right_table = null) {
-        $this->join_tables[] = [
+        // Simple field
+        $this->sql_where_fields[] = [
             'table' => $table,
-            'left' => $on_left,
-            'right' => $on_right,
-            'right_table' => $right_table ?: $this->getDbTableName(),
-            'type' => $type
+            'field' => $field,
+            'value' => $value,
+            'type' => 'simple'
         ];
 
         return $this;
-    }
-
-    public function getJoinTablesSql() {
-        $sql = [];
-        foreach ($this->join_tables as $table) {
-            $sql[] = $table['type'] .' JOIN `'. $table['table'] .'` ON (`'. $table['table'] .'`.`'. $table['left'] .'` = `'. $table['right_table'] .'`.`' . $table['right'] . '`)';
-        }
-
-        return implode(' ', $sql);
-    }
-
-    /**
-     * Return name in class or try to get from class name
-     * @return string
-     */
-    public function getDbTableName() {
-        // Name set in class
-        if ($this->db_table) {
-            return $this->db_table;
-        }
-
-        $db_table_from_class = mb_strtolower(Converter::from_camel_case(str_replace(['Entity', 'Repository'], '', Converter::classWithNamespaceToUnqualifiedShort($this)))) . 's';
-
-        // Check DB in system tables
-        $this->db_table = 'cms_' . $db_table_from_class;
-        if (!SQL::tableExists($this->db_table)) {
-            // Or in module tables
-            $this->db_table = 'm_' . $db_table_from_class;
-        }
-
-        return $this->db_table;
     }
 
     /**
@@ -833,25 +1055,6 @@ FROM `'. $this->getDbTableName() .'`
         $this->db_table = $db_table;
 
         return $this;
-    }
-
-    /**
-     * @param bool $flag
-     * @return $this
-     */
-    public function setGenerateOutputWithIterator($flag) {
-        $this->use_iterator = $flag;
-
-        return $this;
-    }
-
-    /**
-     * @param string $hash_string
-     * @return string
-     */
-    private function getCacheKey($hash_string = '') {
-        // Cache key = prefix + class name + unique session id (not obligate) + current created sql query
-        return self::$_cache_key_prefix . md5(str_replace('\\', '_', get_class($this)) . '_' . $hash_string);
     }
 
     /**
@@ -866,55 +1069,6 @@ FROM `'. $this->getDbTableName() .'`
         $this->use_cache = true;
 
         return $this;
-    }
-
-    /**
-     * @return array
-     */
-    private function getWhereFields()
-    {
-        return $this->sql_where_fields;
-    }
-
-    /**
-     * @return string
-     */
-    private function getWhereSql()
-    {
-        $res = [];
-        foreach ($this->getWhereFields() as $field_data) {
-            if ($field_data['type'] == 'simple') {
-                $res[] = '`'. $field_data['table'] .'`.`'. $field_data['field'] .'` = "'. SQL::sql_prepare($field_data['value']) .'"';
-            } elseif ($field_data['type'] == 'string') {
-                $res[] = $field_data['value'];
-            }
-        }
-
-        return implode(' AND ', $res);
-    }
-
-    /**
-     * @return array
-     */
-    private function getOrderFields()
-    {
-        return $this->order_fields;
-    }
-
-    /**
-     * @return array
-     */
-    private function getJoinTables()
-    {
-        return $this->join_tables;
-    }
-
-    /**
-     * @return array
-     */
-    private function getTranslationJoinTables()
-    {
-        return $this->translation_joins;
     }
 
     /**
@@ -969,13 +1123,62 @@ FROM `'. $this->getDbTableName() .'`
         return $this;
     }
 
-    private function getHavingSql()
+    public function addJoinTable($table, $on_left, $on_right, $type = '', $right_table = null)
     {
-        $res = [];
-        foreach ($this->having_fields as $having) {
-            $res[] = '`' . $having['field'] . '` ' . $having['value'];
+        $this->join_tables[] = [
+            'table' => $table,
+            'left' => $on_left,
+            'right' => $on_right,
+            'right_table' => $right_table ?: $this->getDbTableName(),
+            'type' => $type
+        ];
+
+        return $this;
+    }
+
+    private function mergeCollectionSqlSelectWithAnotherCollection(EntityRepository $collection)
+    {
+        $select_fields = $collection->getSelectFields();
+        foreach ($select_fields as $select_field) {
+            $this->sql_select_fields[] = $select_field;
         }
-        return implode(' AND ', $res);
+
+        $where_fields = $collection->getWhereFields();
+        foreach ($where_fields as $where_field) {
+            $this->sql_where_fields[] = $where_field;
+        }
+
+        $group_fields = $collection->getGroupByField();
+        foreach ($group_fields as $group_field) {
+            $this->group_by_fields[] = $group_field;
+        }
+
+        $having_fields = $collection->getHavingFields();
+        foreach ($having_fields as $having_field) {
+            $this->having_fields[] = $having_field;
+        }
+
+        $order_fields = $collection->getOrderFields();
+        foreach ($order_fields as $order_field) {
+            $this->order_fields[] = $order_field;
+        }
+
+        $translation_fields = $collection->getTranslationFields();
+        foreach ($translation_fields as $translation_field) {
+            $this->translation_fields[] = $translation_field;
+        }
+
+        $join_tables = $collection->getJoinTables();
+        foreach ($join_tables as $join_table) {
+            $this->addJoinTable($join_table['table'], $join_table['left'], $join_table['right'], $join_table['type'], $join_table['right_table']);
+        }
+
+        return $this;
+    }
+
+    protected function getGroupByField()
+    {
+        return $this->group_by_fields;
     }
 
     private function getHavingFields()
@@ -984,83 +1187,11 @@ FROM `'. $this->getDbTableName() .'`
     }
 
     /**
-     * @param string $field
-     * @param string $value
-     * @param string $table
-     * @return $this
+     * @return array
      */
-    protected function addSimpleWhereField($field, $value = '', $table = '') {// No table provided
-        if (!$table) {
-            $table = $this->getDbTableName();
-        }
-
-        // Translation field
-        if (in_array($field, $this->getTranslationFields())) {
-            $k = count($this->translation_joins);
-            $this->translation_joins[] = 'LEFT JOIN `cms_translations` AS `d' . $k . '` ON (`d' . $k . '`.`id` = `'. $table .'`.`' . $field . '`)';
-
-            $this->sql_where_fields[] = [
-                'table' => 'd' . $k . '',
-                'field' => LNG,
-                'value' => $value,
-                'type' => 'simple'
-            ];
-
-            return $this;
-        }
-
-        // Simple field
-        $this->sql_where_fields[] = [
-            'table' => $table,
-            'field' => $field,
-            'value' => $value,
-            'type' => 'simple'
-        ];
-
-        return $this;
-    }
-
-    /**
-     * Filter collection by value inclusive
-     * @param $field
-     * @param array $values
-     * @param string $table
-     * @return $this
-     */
-    public function addWhereFieldIn($field, array $values, $table = '')
+    private function getJoinTables()
     {
-        if (!$table) {
-            $table = $this->getDbTableName();
-        }
-
-        if (!$values) {
-            $values = [NULL];
-        }
-        foreach ($values as $k => & $v) {
-            $v = sql_prepare($v);
-        }
-
-        $this->addWhereFieldAsString('`'. $table .'`.`'. $field .'` IN ("'. implode('", "', $values) .'")');
-
-        return $this;
-    }
-
-    /**
-     * Filter collection by skipping value
-     * @param $field
-     * @param string $value
-     * @param string $table
-     * @return $this
-     */
-    public function addWhereFieldIsNot($field, $value, $table = '')
-    {
-        if (!$table) {
-            $table = $this->getDbTableName();
-        }
-
-        $this->addWhereFieldAsString('`'. $table .'`.`'. $field .'` != "' . sql_prepare($value)  .'"');
-
-        return $this;
+        return $this->join_tables;
     }
 
     /**
@@ -1164,6 +1295,8 @@ FROM `'. $this->getDbTableName() .'`
         return $this;
     }
 
+    // Reset auto_increment to 1
+
     /**
      * Filter collection by value inclusive
      * @param $fields - value or array of values, WHERE sentence uses OR between values in one array
@@ -1209,6 +1342,10 @@ FROM `'. $this->getDbTableName() .'`
         return $this;
     }
 
+
+
+    /* STATIC ALIASES */
+
     /**
      * Filter collection by value exclusive
      * @param $field
@@ -1229,65 +1366,6 @@ FROM `'. $this->getDbTableName() .'`
         return $this;
     }
 
-    public function addWhereFieldAsString($sql) {
-        $this->sql_where_fields[] = [
-            'table' => false,
-            'field' => false,
-            'value' => $sql,
-            'type' => 'string'
-        ];
-
-        return $this;
-    }
-
-    protected function getGroupBySql()
-    {
-        $res = [];
-        foreach ($this->group_by_fields as $group) {
-            $res[] = '`' . $group['table'] . '`.`' . $group['field'] .'`';
-        }
-        if ($res) {
-            return ' GROUP BY ' . implode(', ', $res);
-        }
-
-        return '';
-    }
-
-    protected function getGroupByField()
-    {
-        return $this->group_by_fields;
-    }
-
-    /**
-     * @return bool table exists
-     */
-    private function ensureDbTableExists() {
-        $table = $this->getDbTableName();
-        // May be empty
-        if ($table == 'm_s') {
-            return true;
-        }
-
-        $schema = new TableStructure();
-        $schema->setTableName($this->getDbTableName());
-        $schema->setTableStructure($this->getTableStructure());
-
-        if (!SQL::tableExists($table)) {
-            // Create table;
-            $schema->createTableIfNotExists();
-        }
-
-        // Update structure using auto-created migrations
-//        $schema->ensureDbTableStructureIsFresh(); // This changes a lot of required items, do not use in future
-
-        return true;
-    }
-
-    protected function getTableStructure() {
-        return $this->table_structure;
-    }
-
-    // Reset auto_increment to 1
     public function alterTableResetAutoIncrement()
     {
         $schema = new TableStructure();
@@ -1297,63 +1375,15 @@ FROM `'. $this->getDbTableName() .'`
         return $this;
     }
 
-
-
-    /* STATIC ALIASES */
-
     /**
-     * Return one Entity by array of criteria
-     * @param array $criteria select AND
-     * @param array $exclude selecr NOT
-     * @return Entity
+     * @param mixed $data
+     * @param int $serialize
+     * @param int $clean
      */
-    public static function findOneEntityByCriteria(array $criteria = [], array $exclude = []) {
-        $class = static::class;
+    protected function debug($data, $serialize = 0, $clean = 1)
+    {
+        if (!$this->debug) return;
 
-        /** @var EntityRepository $obj_collection */
-        $obj_collection = new $class();
-        $obj_collection->setLimit(1);
-
-        foreach ($criteria as $k => $v) {
-            $obj_collection->addSimpleWhereField($k, $v);
-        }
-
-        foreach ($exclude as $k => $v) {
-            $obj_collection->addWhereFieldIsNot($k, $v);
-        }
-
-        return $obj_collection->getFirstObjectFromCollection();
-    }
-
-    /**
-     * Return array of Entity by array of criteria
-     * @param array $criteria select AND
-     * @param array $exclude selecr NOT
-     * @return array
-     */
-    public static function findAllEntitiesByCriteria(array $criteria = [], array $exclude = []) {
-        $class = static::class;
-
-        /** @var EntityRepository $obj_collection */
-        $obj_collection = new $class();
-
-        foreach ($criteria as $k => $v) {
-            $obj_collection->addSimpleWhereField($k, $v);
-        }
-
-        foreach ($exclude as $k => $v) {
-            $obj_collection->addWhereFieldIsNot($k, $v);
-        }
-
-        return $obj_collection->getAsArrayOfObjects();
-    }
-
-    /**
-     * Create one Entity by id
-     * @param int $id
-     * @return Entity
-     */
-    public static function findOneEntityById($id) {
-        return self::findOneEntityByCriteria(['id' => $id]);
+        dump($data, $serialize, $clean);
     }
 }
