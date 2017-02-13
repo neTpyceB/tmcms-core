@@ -6,6 +6,7 @@ use TMCms\Cache\Cacher;
 use TMCms\Config\Settings;
 use TMCms\DB\QueryAnalyzer;
 use TMCms\Files\Finder;
+use TMCms\Log\App;
 use TMCms\Log\FrontendLogger;
 use TMCms\Routing\MVC;
 use TMCms\Routing\Router;
@@ -57,15 +58,9 @@ class Frontend
         $this->init();
 
         $this->parse();
-    }
 
-    public function __destruct()
-    {
-        // Save all previous DB queries to analyzer if enabled (for debug and benchmarks)
-        if (Settings::get('analyze_db_queries')) {
-            QueryAnalyzer::getInstance()
-                ->store();
-        }
+        // Flush application log
+        App::flushLog();
     }
 
     private function init()
@@ -382,6 +377,15 @@ class Frontend
         }
 
         return trim(ob_get_clean());
+    }
+
+    public function __destruct()
+    {
+        // Save all previous DB queries to analyzer if enabled (for debug and benchmarks)
+        if (Settings::get('analyze_db_queries')) {
+            QueryAnalyzer::getInstance()
+                ->store();
+        }
     }
 
     /**
