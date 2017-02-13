@@ -686,7 +686,7 @@ var PopupModal = function (options) {
 
         modalWindow.css({
             "display": "block",
-            "position": "absolute",
+            "position": "fixed",
             "left": "50%",
             "top": "50%",
             "z-index": 64000 + ((activePopups.size() + 1) * 1500),
@@ -742,7 +742,7 @@ var popup_modal = {
 
         // Append HTML for for modals
         $('body').append('<div id="modal-popup" style="display: block; position: fixed; top: 0px; right: 0px; bottom: 0px; left: 0px; opacity: 0.5; z-index: 10000; cursor: pointer; background-color: rgb(0, 0, 0);" onclick="popup_modal.close()"></div>');
-        $('body').append('<div id="modal-popup_inner" style="overflow: auto; left: 50%; position: absolute; top: 50%; z-index: 10001; opacity: 1; height: '+ height +'px; width: '+ width +'px; margin-top: -'+ (height / 2) +'px; margin-left: -'+ (width / 2) +'px; background: #fff; display: block;"><div class="content" style="height: auto; width: auto;"></div></div>');
+        $('body').append('<div id="modal-popup_inner" style="overflow: auto; left: 50%; position: fixed; top: 50%; z-index: 10001; opacity: 1; height: '+ height +'px; width: '+ width +'px; margin-top: -'+ (height / 2) +'px; margin-left: -'+ (width / 2) +'px; background: #fff; display: block;"><div class="content" style="height: auto; width: auto;"></div></div>');
         $('#modal-popup_inner').load(url + '&ajax', function() {
             popup_modal.hide_loading();
         });
