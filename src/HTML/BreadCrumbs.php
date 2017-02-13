@@ -20,6 +20,7 @@ class BreadCrumbs
     private $actions = [];
     private $notes = [];
     private $alerts = [];
+    private $pills = [];
     private $first_action_button = false;
 
     /**
@@ -91,6 +92,18 @@ class BreadCrumbs
                 </li>
             <?php endforeach; ?>
         </ul>
+        <?php if ($this->pills): ?>
+        <ul class="nav nav-pills">
+        <?php foreach ($this->pills as $text => $content): ?>
+            <li class="<?= $content['active'] ? 'active' : '' ?>">
+                <a href="<?= $content['href'] ?>">
+                    <?= $text ?>
+                </a>
+            </li>
+        <?php endforeach ?>
+        </ul>
+        <?php endif; ?>
+
         <?php if ($this->notes): ?>
             <div class="note note-success">
                 <?php foreach ($this->notes as $text): ?>
@@ -164,6 +177,16 @@ class BreadCrumbs
      */
     public function addAlerts($text) {
         $this->alerts[] = $text;
+
+        return $this;
+    }
+
+    /**
+     * @param $text
+     * @return $this
+     */
+    public function addPills($text, $href, $active = false) {
+        $this->pills[$text] =  ['href'=>$href, 'active'=>$active];
 
         return $this;
     }
