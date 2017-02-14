@@ -2,16 +2,15 @@
 
 namespace TMCms\Admin;
 
-use Composer\Config;
 use TMCms\Admin\Entity\UsersSessionEntity;
 use TMCms\Admin\Entity\UsersSessionEntityRepository;
 use TMCms\Admin\Structure\Entity\StructurePagePermissionRepository;
+use TMCms\Admin\Users\Entity\AdminUser;
 use TMCms\Admin\Users\Entity\AdminUserGroup;
+use TMCms\Admin\Users\Entity\AdminUserGroupRepository;
+use TMCms\Admin\Users\Entity\AdminUserRepository;
 use TMCms\Admin\Users\Entity\GroupAccess;
 use TMCms\Admin\Users\Entity\GroupAccessRepository;
-use TMCms\Admin\Users\Entity\AdminUserGroupRepository;
-use TMCms\Admin\Users\Entity\AdminUser;
-use TMCms\Admin\Users\Entity\AdminUserRepository;
 use TMCms\Config\Configuration;
 use TMCms\Log\App;
 use TMCms\Routing\Languages;
@@ -43,32 +42,6 @@ class Users
     private static $_structure_permissions = [];
     private $_online_status_cached = [];
 
-    /**
-     * Generate unique hash for password or any other string
-     * @param string $string e.g. real password
-     * @param bool $salt supply random string
-     * @param string $algorithm name of selected hashing algorithm (i.e. "md5", "sha256", "haval160,4", etc..)
-     * @return string
-     */
-    public function generateHash($string, $salt = false, $algorithm = 'whirlpool')
-    {
-        $string = trim($string);
-        return hash($algorithm, ($salt ? $salt : self::$salt) . $string);
-    }
-
-    /**
-     * Check that current user is logged-in
-     * @return bool
-     */
-    public function isLogged()
-    {
-        return self::$is_logged || self::$is_logged = (bool)(
-            isset($_SESSION['admin_logged'], $_SESSION['admin_id'], $_SESSION['admin_sid'])
-            && $_SESSION['admin_logged'] && $_SESSION['admin_id']
-            && $this->checkSession($_SESSION['admin_id'], $_SESSION['admin_sid'], true)
-        );
-    }
-
     public function isOnline($user_id) {
         if (isset($this->_online_status_cached[$user_id])) {
             return $this->_online_status_cached[$user_id];
@@ -83,13 +56,23 @@ class Users
     }
 
     /**
-     * Generate used session id using visitor data
-     * @param int $user_id
+     * After that user is logged-in
+     * @param AdminUser $user
      * @return string session id
      */
-    private function generateUserSid($user_id)
+    public function setUserLoggedIn($user)
     {
-        return md5($user_id . VISITOR_HASH . NOW);
+        $_SESSION['admin_logged'] = true;
+        $_SESSION['admin_id'] = $user->getId();
+        $_SESSION['admin_login'] = $user->getLogin();
+        $_SESSION['admin_sid'] = Users::getInstance()->startSession($user->getId());
+        if (!defined('USER_ID')) {
+            define('USER_ID', $user->getId());
+        }
+
+        App::add('User "' . $user->getLogin() . '" logged in.');
+
+        return $_SESSION['admin_sid'];
     }
 
     /**
@@ -119,56 +102,31 @@ class Users
     }
 
     /**
-     * After that user is logged-in
-     * @param AdminUser $user
-     * @return string session id
+     * Delete outdated sessions for users that are no longer logged-in
+     * @return bool sessions are deleted
      */
-    public function setUserLoggedIn($user)
+    private function deleteOldSessions()
     {
-        $_SESSION['admin_logged'] = true;
-        $_SESSION['admin_id'] = $user->getId();
-        $_SESSION['admin_login'] = $user->getLogin();
-        $_SESSION['admin_sid'] = Users::getInstance()->startSession($user->getId());
-        if (!defined('USER_ID')) {
-            define('USER_ID', $user->getId());
+        // 2% chance of kicking idle sessions
+        if (mt_rand(0, 49)) {
+            return false;
         }
 
-        App::add('User "' . $user->getLogin() . '" logged in.');
+        $sessions = new UsersSessionEntityRepository();
+        $sessions->setOnlyOutdated();
+        $sessions->deleteObjectCollection();
+
+        return true;
     }
 
     /**
-     * Check whether user is logged-in
+     * Generate used session id using visitor data
      * @param int $user_id
-     * @param string $user_sid session
-     * @param bool $touch prolong session
-     * @return bool
+     * @return string session id
      */
-    private function checkSession($user_id, $user_sid, $touch = false)
+    private function generateUserSid($user_id)
     {
-        $user_id = (int)$user_id;
-        if (!defined('USER_ID')) {
-            define('USER_ID', $user_id);
-        }
-
-        // Prolong session
-        if ($touch) {
-            $sessions = new UsersSessionEntityRepository();
-            $sessions->setWhereSid($user_sid);
-            /**
-             * @var UsersSessionEntity $session
-             */
-            $session = $sessions->getFirstObjectFromCollection();
-            if ($session) {
-                $session->setTs(NOW);
-                $session->save();
-            }
-        }
-
-        // Check session for current user exists
-        $sessions = new UsersSessionEntityRepository();
-        $sessions->setWhereUserId($user_id);
-        $sessions->setWhereSid($user_sid);
-        return $sessions->hasAnyObjectInCollection();
+        return md5($user_id . VISITOR_HASH . NOW);
     }
 
     /**
@@ -186,24 +144,6 @@ class Users
         $sessions = new UsersSessionEntityRepository();
         $sessions->setWhereUserId($user_id);
         $sessions->setWhereSid($_SESSION['admin_sid']);
-        $sessions->deleteObjectCollection();
-
-        return true;
-    }
-
-    /**
-     * Delete outdated sessions for users that are no longer logged-in
-     * @return bool sessions are deleted
-     */
-    private function deleteOldSessions()
-    {
-        // 2% chance of kicking idle sessions
-        if (mt_rand(0, 49)) {
-            return false;
-        }
-
-        $sessions = new UsersSessionEntityRepository();
-        $sessions->setOnlyOutdated();
         $sessions->deleteObjectCollection();
 
         return true;
@@ -262,30 +202,6 @@ class Users
         }
 
         return isset(self::$cached_user_data[$id][$key]) ? self::$cached_user_data[$id][$key] : NULL;
-    }
-
-    /**
-     * Get Group's data by key
-     * @param string $key
-     * @param int $id
-     * @return string
-     */
-    public function getGroupData($key, $id = 0)
-    {
-        // Get Group id
-        if (!$id) {
-            $id = $this->getUserData('group_id');
-        } else {
-            $id = abs((int)$id);
-        }
-
-        // Check or init cache
-        if (!isset(self::$cached_group_data[$id])) {
-            $group = new AdminUserGroup($id);
-            self::$cached_group_data[$id] = $group->getAsArray();
-        }
-
-        return isset(self::$cached_group_data[$id][$key]) ? self::$cached_group_data[$id][$key] : NULL;
     }
 
     /**
@@ -348,6 +264,78 @@ class Users
 
         // Check access for exact admin panel page and action
         return isset(self::$access[$p][$do]);
+    }
+
+    /**
+     * Check that current user is logged-in
+     * @return bool
+     */
+    public function isLogged()
+    {
+        return self::$is_logged || self::$is_logged = (bool)(
+                isset($_SESSION['admin_logged'], $_SESSION['admin_id'], $_SESSION['admin_sid'])
+                && $_SESSION['admin_logged'] && $_SESSION['admin_id']
+                && $this->checkSession($_SESSION['admin_id'], $_SESSION['admin_sid'], true)
+            );
+    }
+
+    /**
+     * Check whether user is logged-in
+     * @param int $user_id
+     * @param string $user_sid session
+     * @param bool $touch prolong session
+     * @return bool
+     */
+    private function checkSession($user_id, $user_sid, $touch = false)
+    {
+        $user_id = (int)$user_id;
+        if (!defined('USER_ID')) {
+            define('USER_ID', $user_id);
+        }
+
+        // Prolong session
+        if ($touch) {
+            $sessions = new UsersSessionEntityRepository();
+            $sessions->setWhereSid($user_sid);
+            /**
+             * @var UsersSessionEntity $session
+             */
+            $session = $sessions->getFirstObjectFromCollection();
+            if ($session) {
+                $session->setTs(NOW);
+                $session->save();
+            }
+        }
+
+        // Check session for current user exists
+        $sessions = new UsersSessionEntityRepository();
+        $sessions->setWhereUserId($user_id);
+        $sessions->setWhereSid($user_sid);
+        return $sessions->hasAnyObjectInCollection();
+    }
+
+    /**
+     * Get Group's data by key
+     * @param string $key
+     * @param int $id
+     * @return string
+     */
+    public function getGroupData($key, $id = 0)
+    {
+        // Get Group id
+        if (!$id) {
+            $id = $this->getUserData('group_id');
+        } else {
+            $id = abs((int)$id);
+        }
+
+        // Check or init cache
+        if (!isset(self::$cached_group_data[$id])) {
+            $group = new AdminUserGroup($id);
+            self::$cached_group_data[$id] = $group->getAsArray();
+        }
+
+        return isset(self::$cached_group_data[$id][$key]) ? self::$cached_group_data[$id][$key] : NULL;
     }
 
     /**
@@ -533,5 +521,18 @@ class Users
 			Please log in and change password.
 			<br>';
         }
+    }
+
+    /**
+     * Generate unique hash for password or any other string
+     * @param string $string e.g. real password
+     * @param bool $salt supply random string
+     * @param string $algorithm name of selected hashing algorithm (i.e. "md5", "sha256", "haval160,4", etc..)
+     * @return string
+     */
+    public function generateHash($string, $salt = false, $algorithm = 'whirlpool')
+    {
+        $string = trim($string);
+        return hash($algorithm, ($salt ? $salt : self::$salt) . $string);
     }
 }
