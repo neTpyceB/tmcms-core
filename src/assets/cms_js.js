@@ -333,6 +333,7 @@ function checkHiddenInvalid(self){
     $('input,select,textarea', form).each(function(){
         if($(this).is(':hidden') && $(this).is(':invalid')){
             console.log($(this).attr('name'),'is invalid');
+            is_valid = false;
             if($(this).parents('.tab-pane').length) {
                 tab_id = $(this).parents('.tab-pane').attr('id');
                 if(typeof invalid_tabs[tab_id] == 'undefined') {
@@ -348,8 +349,20 @@ function checkHiddenInvalid(self){
         }else{
             $(this).removeClass('error');
         }
-
     })
+    if(!is_valid){
+        Metronic.alert({
+            container: '', // alerts parent container(by default placed after the page breadcrumbs)
+            place: 'append', // append or prepent in container
+            type: 'danger',  // alert's type
+            message: 'Some data is invalid. Check not active tabs',  // alert's message
+            close: true, // make alert closable
+            reset: true, // close all previouse alerts first
+            focus: true, // auto scroll to the alert after shown
+            closeInSeconds: 0, // auto close after defined seconds
+            icon: 'warning' // put icon before the message
+        });
+    }
 
 }
 
