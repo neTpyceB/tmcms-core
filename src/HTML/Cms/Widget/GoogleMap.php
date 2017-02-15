@@ -24,7 +24,10 @@ class GoogleMap extends Widget {
 
     public function __toString() {
         ob_start();
-        ?><input data-popup-url="?p=components&do=google_map&selector=<?= $this->owner->id() ?>&nomenu&cache=<?= NOW ?>" type="button" value="Google Map" data-popup-result-destination="<?= $this->owner->id() ?>" class="btn btn-info"><?php
+        ?><input
+        data-popup-url="?p=components&do=google_map&selector=<?= $this->owner->getId() ?>&nomenu&cache=<?= NOW ?>"
+        type="button" value="Google Map" data-popup-result-destination="<?= $this->owner->getId() ?>"
+        class="btn btn-info"><?php
         return ob_get_clean();
     }
 }

@@ -26,7 +26,7 @@ class CmsInputTags extends CmsInputText {
             $this->setValue($value);
         }
 
-        $this->setClass('form-control');
+        $this->addCssClass('form-control');
 
         $this->setAttribute('type', 'text');
 

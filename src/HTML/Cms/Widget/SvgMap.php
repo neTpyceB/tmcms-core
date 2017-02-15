@@ -27,13 +27,13 @@ class SvgMap extends Widget {
     public function __toString() {
         ob_start();
         ?><input
-            type="button"
-            class="btn btn-info"
-            value="<?= __('SVG Map') ?>"
-            data-popup-url="?p=components&do=svg_map&nomenu&selector=<?= $this->owner->id() ?>&svg_image_path=<?= $this->svg_image_path ?>&cache=<?= NOW ?>"
-            data-popup-width="700"
-            data-popup-height="720"
-            data-popup-result-destination="#<?= $this->owner->id() ?>"><?php
+        type="button"
+        class="btn btn-info"
+        value="<?= __('SVG Map') ?>"
+        data-popup-url="?p=components&do=svg_map&nomenu&selector=<?= $this->owner->getId() ?>&svg_image_path=<?= $this->svg_image_path ?>&cache=<?= NOW ?>"
+        data-popup-width="700"
+        data-popup-height="720"
+        data-popup-result-destination="#<?= $this->owner->getId() ?>"><?php
         return ob_get_clean();
     }
 

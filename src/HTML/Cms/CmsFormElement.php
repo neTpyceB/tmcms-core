@@ -41,13 +41,4 @@ class CmsFormElement extends FormElement
     {
         return implode(' ', $this->rowAttributes);
     }
-
-    /**
-     * Get title's vertical alignment
-     * @return string
-     */
-    public function getlabelValign()
-    {
-        return $this->element->labelValign();
-    }
 }

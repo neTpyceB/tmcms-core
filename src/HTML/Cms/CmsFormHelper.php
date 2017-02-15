@@ -168,13 +168,13 @@ class CmsFormHelper {
                     }
 
                     if (isset($field['format'])) {
-                        $cms_field->setFormat($field['format']);
+                        $cms_field->setDateFormat($field['format']);
                     }
                 } elseif ($field['type'] == 'password') {
                     $cms_field = CmsInputPassword::getInstance($key);
                 } elseif ($field['type'] == 'row') {
                     if (isset($field['value'])) {
-                        $cms_field = CmsRow::getInstance($key)->value($field['value']);
+                        $cms_field = CmsRow::getInstance($key)->setValue($field['value']);
                     }
                 } elseif ($field['type'] == 'random') {
                     $cms_field = CmsInputTextRandom::getInstance($key);
@@ -224,7 +224,7 @@ class CmsFormHelper {
                         $cms_field->setChecked($field['checked']);
                     }
                     if (isset($field['value'])) {
-                        $cms_field->value($field['value']);
+                        $cms_field->setValue($field['value']);
                     }
                     if (isset($field['selected'])) {
                         $cms_field->setSelected($field['selected']);
@@ -233,10 +233,10 @@ class CmsFormHelper {
                         $cms_field->multiple(true);
                     }
                     if (isset($field['multilng'])) {
-                        $cms_field->enableMultiLng();
+                        $cms_field->enableTranslation();
                     }
                     if (isset($field['translation'])) {
-                        $cms_field->enableMultiLng();
+                        $cms_field->enableTranslation();
                     }
                     if (isset($field['required'])) {
                         $cms_field->validateRequired();
@@ -274,7 +274,7 @@ class CmsFormHelper {
                         $cms_field->html($field['html']);
                     }
                     if (isset($field['rows'])) {
-                        $cms_field->rows($field['rows']);
+                        $cms_field->setRowCount($field['rows']);
                     }
                     if (isset($field['backup'])) {
                         $cms_field->backup($field['backup']);
@@ -419,6 +419,20 @@ class CmsFormHelper {
         return $form;
     }
 
+    private static function normalizeFields($fields)
+    {
+        $tmp = [];
+        foreach ($fields as $k => $v) {
+            if (!is_array($v)) {
+                $tmp[$v] = [];
+            } else {
+                $tmp[$k] = $v;
+            }
+        }
+
+        return $tmp;
+    }
+
     private static function combineParamsFromDB($table, array $order_keys)
     {
         // Fields from DB
@@ -459,19 +473,5 @@ class CmsFormHelper {
         }
 
         return $params;
-    }
-
-    private static function normalizeFields($fields)
-    {
-        $tmp = [];
-        foreach ($fields as $k => $v) {
-            if (!is_array($v)) {
-                $tmp[$v] = [];
-            } else {
-                $tmp[$k] = $v;
-            }
-        }
-
-        return $tmp;
     }
 }
