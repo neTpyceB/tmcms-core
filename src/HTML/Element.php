@@ -270,6 +270,25 @@ abstract class Element
     }
 
     /**
+     * @param string $script
+     * @return $this
+     */
+    public function setOnkeyup($script)
+    {
+        $this->setAttribute('onkeyup', $script);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOnkeyup()
+    {
+        return $this->getAttribute('onkeyup');
+    }
+
+    /**
      * @param string $id
      * @return $this
      */
