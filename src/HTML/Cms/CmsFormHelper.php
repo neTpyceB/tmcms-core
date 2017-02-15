@@ -277,7 +277,7 @@ class CmsFormHelper {
                         $cms_field->setRowCount($field['rows']);
                     }
                     if (isset($field['backup'])) {
-                        $cms_field->backup($field['backup']);
+                        $cms_field->setBackup($field['backup']);
                     }
                     if (isset($field['hint'])) {
                         $cms_field->setHintText($field['hint']);
