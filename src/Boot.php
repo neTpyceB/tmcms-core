@@ -428,8 +428,10 @@ function go($go, array $additional_params = [], $skip_auto_redirect = false)
     if ($additional_params) {
         if (stripos($go, '?') === false) {
             $go .= '?';
+        } else {
+            $go .= '&';
         }
-        $go .= '&' . http_build_query($additional_params);
+        $go .= http_build_query($additional_params);
     }
 
     if (ob_get_contents()) ob_clean();
