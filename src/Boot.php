@@ -144,6 +144,11 @@ if (empty($_SESSION['__session_name_validated'])) {
     $_SESSION['__session_name_validated'] = 1;
 }
 
+// Http auth for PHP-CGI mode
+if (isset($_SERVER['HTTP_AUTHORIZATION']) && !isset($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW'])) {
+    list($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']) = explode(':', base64_decode(substr($_SERVER['HTTP_AUTHORIZATION'], 6)));
+}
+
 // Ini with required keys
 if (!isset($_SERVER['SERVER_ADDR'])) {
     $_SERVER['SERVER_ADDR'] = '127.0.0.1';
@@ -423,8 +428,10 @@ function go($go, array $additional_params = [], $skip_auto_redirect = false)
     if ($additional_params) {
         if (stripos($go, '?') === false) {
             $go .= '?';
+        } else {
+            $go .= '&';
         }
-        $go .= '&' . http_build_query($additional_params);
+        $go .= http_build_query($additional_params);
     }
 
     if (ob_get_contents()) ob_clean();

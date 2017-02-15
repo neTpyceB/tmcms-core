@@ -13,5 +13,5 @@ use TMCms\Orm\Entity;
  * @method string getFull();
  */
 class LanguageEntity extends Entity {
-
+    protected $db_table = 'cms_languages';
 }

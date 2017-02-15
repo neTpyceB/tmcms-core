@@ -3,10 +3,10 @@
 namespace TMCms\Templates;
 
 use TMCms\Admin\Structure\Entity\PageComponent;
-use TMCms\Admin\Structure\Entity\PageComponentRepository;
+use TMCms\Admin\Structure\Entity\PageComponentCustomEntityRepository;
 use TMCms\Admin\Structure\Entity\PageComponentHistory;
 use TMCms\Admin\Structure\Entity\PageComponentHistoryRepository;
-use TMCms\Admin\Structure\Entity\PageComponentCustomEntityRepository;
+use TMCms\Admin\Structure\Entity\PageComponentRepository;
 use TMCms\Cache\Cacher;
 use TMCms\Config\Settings;
 use TMCms\Routing\Controller;
@@ -184,7 +184,7 @@ class Components
             // Make all custom components have all fields
             $custom_components_in_controller = self::getControllerCustomComponents($class);
             foreach ($custom_components_in_database as $custom) {
-                //
+                // Set unavailable fields as empty
                 foreach (self::$_components[$class][$class . '_' . $custom['tab']] as $order => $data) {
                     if (count(self::$_components[$class][$class . '_' . $custom['tab']][$order]) != count($custom_components_in_controller[$class . '_' . $custom['tab']])) {
                         foreach ($custom_components_in_controller[$class . '_' . $custom['tab']] as $field_key => $field_value) {
@@ -197,11 +197,36 @@ class Components
 
             }
 
+            // Set any empty value to all non-existing components to avoid error in front
+            foreach ($custom_components_in_controller as $custom_key => $custom_fields) {
+                list($class, $custom_tab) = explode('_', $custom_key, 2);
+                if (!isset(self::$_components[$class][$class . '_' . $custom_tab])) {
+                    self::$_components[$class][$class . '_' . $custom_tab] = []; // Set empty array to iterate from
+                }
+            }
+
             // Save to cache
             if (Settings::isCacheEnabled()) {
                 Cacher::getInstance()->getDefaultCacher()->set($cache_key, self::$_components[$class]);
             }
         }
+    }
+
+    private static function getControllerCustomComponents($class)
+    {
+        $controller_name = ucfirst($class) . 'Controller';
+        /** @var Controller $controller_name */
+
+        $custom_components = [];
+        foreach ($controller_name::getComponents() as $key => $component) {
+            if (!isset($component['type']) || $component['type'] != 'custom') {
+                continue;
+            }
+
+            $custom_components[$class . '_' . $key] = $component['fields'];
+        }
+
+        return $custom_components;
     }
 
     /**
@@ -246,6 +271,7 @@ class Components
 
         return $res;
     }
+
     public static function getComponentsByPageId($page_id)
     {
         $page_id = (int)$page_id;
@@ -287,22 +313,5 @@ class Components
 
 
         return $res;
-    }
-
-    private static function getControllerCustomComponents($class)
-    {
-        $controller_name = ucfirst($class) . 'Controller';
-        /** @var Controller $controller_name */
-
-        $custom_components = [];
-        foreach ($controller_name::getComponents() as $key => $component) {
-            if (!isset($component['type']) || $component['type'] != 'custom') {
-                continue;
-            }
-
-            $custom_components[$class . '_' . $key] = $component['fields'];
-        }
-
-        return $custom_components;
     }
 }
