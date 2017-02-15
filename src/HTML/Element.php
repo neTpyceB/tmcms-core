@@ -273,6 +273,25 @@ abstract class Element
      * @param string $script
      * @return $this
      */
+    public function setOnchange($script)
+    {
+        $this->setAttribute('onchange', $script);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOnchange()
+    {
+        return $this->getAttribute('onchange');
+    }
+
+    /**
+     * @param string $script
+     * @return $this
+     */
     public function setOnkeyup($script)
     {
         $this->setAttribute('onkeyup', $script);
