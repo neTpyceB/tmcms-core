@@ -201,6 +201,7 @@ class Entity {
             $this->changed_fields_for_update[$key] = true;
         }
 
+        // check null for newly created fields
         if (in_array($key, $this->translation_fields) && !(ctype_digit($value) || is_null($value))) {
             // Saving Translation ID
             $this->translation_data[$key] = $value;
