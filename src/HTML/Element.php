@@ -34,7 +34,7 @@ abstract class Element
     protected $date_time_picker_enabled = false;
     protected $field_required = false;
     protected $backup = true;
-    protected $value = '';
+    protected $provider = [];
     private $validator_attributes = []; // For CSS and JS checks
     private $validator_checks = []; // For backend checks
 
@@ -179,7 +179,7 @@ abstract class Element
      */
     public function getValue()
     {
-        return $this->value;
+        return $this->getAttribute('value');
     }
 
     /**
@@ -188,7 +188,7 @@ abstract class Element
      */
     public function setValue($value)
     {
-        $this->value = $value;
+        $this->setAttribute('value', $value);
 
         return $this;
     }
