@@ -184,11 +184,6 @@ if (!isset($_SERVER['REMOTE_ADDR']) || !preg_match('/^[0-9]{1,3}\.[0-9]{1,3}\.[0
 // Check for legal URL
 define('SELF', isset($_SERVER['REDIRECT_URL']) ? $_SERVER['REDIRECT_URL'] : $_SERVER['REQUEST_URI']);
 
-// Website base url with protocol
-$protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] ? 'https' : 'http';
-define('BASE_URL', $protocol .'://'. $_SERVER['HTTP_HOST']);
-define('CFG_PROTOCOL', $protocol);
-
 // Deny incorrect urls
 if (strlen(SELF) > 2000 || strpos(SELF, 'eval(') !== false || stripos(SELF, 'CONCAT') !== false || stripos(SELF, 'UNION+SELECT') !== false || stripos(SELF, 'base64') !== false) {
     header("HTTP/1.1 414 Request-URI Too Long");
@@ -227,6 +222,11 @@ define('SERVER_IP', $_SERVER['SERVER_ADDR']);
 define('NOW', $_SERVER['REQUEST_TIME']);
 define('VISITOR_HASH', md5(IP . ':' . USER_AGENT));
 define('REQUEST_METHOD', isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : 'GET');
+
+// Website base url with protocol
+$protocol = 'http' . isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] ? 's' : '';
+define('BASE_URL', $protocol . '://' . HOST);
+define('CFG_PROTOCOL', $protocol);
 
 // This may be already defined in boot file specially for project
 if (!defined('CFG_DOMAIN')) {
