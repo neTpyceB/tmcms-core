@@ -834,7 +834,7 @@ var cms_notifications = {
         }
 
         var notification = new Notification(title, {
-            icon: '/vendor/devp-eu/tmcms-core/src/assets/images/logo_square.png',
+            icon: typeof(cms_data.notification_icon) == "undefined" ? '/vendor/devp-eu/tmcms-core/src/assets/images/logo_square.png' : cms_data.notification_icon,
             body: text
         });
 
