@@ -11,7 +11,8 @@ use TMCms\Strings\Converter;
 use TMCms\Strings\SimpleCrypto;
 use TMCms\Strings\Translations;
 
-class Entity {
+class Entity
+{
     private static $_cache_key_prefix = 'orm_entity_'; // Should be overwritten in extended class
     private static $encryption_key; // Should be overwritten in extended class
     public $debug = false;
@@ -27,7 +28,8 @@ class Entity {
     private $encode_special_chars_for_html = false;
     private $field_callbacks = []; // Key used to encrypt and decrypt db data
 
-    public function __construct($id = 0, $load_from_db = true) {
+    public function __construct($id = 0, $load_from_db = true)
+    {
         $this->data['id'] = NULL;
 
         if ($id) {
@@ -202,7 +204,7 @@ class Entity {
         }
 
         // check null for newly created fields
-        if (in_array($key, $this->translation_fields) && !(ctype_digit($value) || is_null($value))) {
+        if (in_array($key, $this->translation_fields) && !(ctype_digit((string)$value) || is_null($value))) {
             // Saving Translation ID
             $this->translation_data[$key] = $value;
         } else {
@@ -327,10 +329,10 @@ class Entity {
 
         if (isset($this->data[$field]) || isset($this->translation_data[$field])) {
             if (in_array($field, $this->translation_fields)) {
-                if (isset($this->translation_data[$field])){
-                    if(is_array($this->translation_data[$field]) && isset($this->translation_data[$field][LNG])) {
+                if (isset($this->translation_data[$field])) {
+                    if (is_array($this->translation_data[$field]) && isset($this->translation_data[$field][LNG])) {
                         return $this->translation_data[$field][LNG];
-                    }else{
+                    } else {
                         return $this->translation_data[$field];
                     }
                 } elseif (isset($this->data[$field])) {
@@ -397,7 +399,8 @@ class Entity {
         return '';
     }
 
-    public function deleteObject() {
+    public function deleteObject()
+    {
         $this->beforeDelete();
 
         SQL::delete($this->getDbTableName(), $this->getId());
@@ -435,7 +438,8 @@ class Entity {
 
     }
 
-    public function save() {
+    public function save()
+    {
         $this->deleteObjectDataFromCache();
 
         $this->beforeSave();
@@ -563,7 +567,7 @@ class Entity {
         foreach ($fields as $v) {
             // Translation
             if (in_array($v, $this->translation_fields) && isset($this->translation_data[$v]) && is_array($this->translation_data[$v])) {
-                if (isset($this->translation_data[$v]['id']) ) {
+                if (isset($this->translation_data[$v]['id'])) {
                     unset($this->translation_data[$v]['id']); // Save new Translation
                 }
                 $translation_saved_ids[] = $data[$v] = Translations::save($this->translation_data[$v], $this);
@@ -617,11 +621,13 @@ class Entity {
 
     }
 
-    public function isFieldChangedForUpdate($field) {
+    public function isFieldChangedForUpdate($field)
+    {
         return isset($this->changed_fields_for_update[$field]);
     }
 
-    public function getChangedDataFields() {
+    public function getChangedDataFields()
+    {
         return array_keys($this->changed_fields_for_update);
     }
 
@@ -631,7 +637,8 @@ class Entity {
      * @param $args
      * @return string
      */
-    public function __call($name, $args) {
+    public function __call($name, $args)
+    {
         $prefix = substr($name, 0, 3);
 
         if ($prefix == 'get' || $prefix == 'set') {
@@ -642,23 +649,26 @@ class Entity {
 
             return $this->{$method_to_call}(strtolower($param), ($args ? $args[0] : ''));
         } else {
-            dump('Method "'. $name .'" unknown');
+            dump('Method "' . $name . '" unknown');
         }
     }
 
-    public function enableUpdateOnDuplicate() {
+    public function enableUpdateOnDuplicate()
+    {
         $this->update_on_duplicate = true;
 
         return $this;
     }
 
-    public function enableSpecialCharEncodingForHtml() {
+    public function enableSpecialCharEncodingForHtml()
+    {
         $this->encode_special_chars_for_html = true;
 
         return $this;
     }
 
-    public function addCustomCallbackForFields(callable $callback) {
+    public function addCustomCallbackForFields(callable $callback)
+    {
         $this->field_callbacks[] = $callback;
 
         return $this;
@@ -674,7 +684,8 @@ class Entity {
         $this->insert_delayed = true;
     }
 
-    public function setDbTableName($db_table) {
+    public function setDbTableName($db_table)
+    {
         $this->db_table = $db_table;
 
         return $this;
@@ -685,17 +696,20 @@ class Entity {
      * @param string $field_name
      * @return $this
      */
-    public function addTranslationFieldForAutoSelects($field_name) {
+    public function addTranslationFieldForAutoSelects($field_name)
+    {
         $this->translation_fields[] = $field_name;
 
         return $this;
     }
 
-    public function getTranslationFields() {
+    public function getTranslationFields()
+    {
         return $this->translation_fields;
     }
 
-    public function addFieldForDecryption($field_name) {
+    public function addFieldForDecryption($field_name)
+    {
         $this->encrypted_fields[] = $field_name;
 
         $key = $this->getEncryptionCheckSumKey();
