@@ -272,7 +272,7 @@ class CmsFormHelper {
                         $cms_field->enableSlugGenerationUidFromField($key, $to);
                     }
                     if (isset($field['readonly']) && $field['readonly']) {
-                        $cms_field->readonly(true);
+                        $cms_field->enableReadOnly();
                     }
                     if (isset($field['html'])) {
                         $cms_field->html($field['html']);
