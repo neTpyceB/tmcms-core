@@ -224,7 +224,7 @@ define('VISITOR_HASH', md5(IP . ':' . USER_AGENT));
 define('REQUEST_METHOD', isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : 'GET');
 
 // Website base url with protocol
-$protocol = 'http' . isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] ? 's' : '';
+$protocol = 'http' . (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] ? 's' : '');
 define('BASE_URL', $protocol . '://' . HOST);
 define('CFG_PROTOCOL', $protocol);
 
