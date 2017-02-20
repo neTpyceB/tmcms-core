@@ -327,8 +327,12 @@ class Entity {
 
         if (isset($this->data[$field]) || isset($this->translation_data[$field])) {
             if (in_array($field, $this->translation_fields)) {
-                if (isset($this->translation_data[$field][LNG])) {
-                    return $this->translation_data[$field][LNG];
+                if (isset($this->translation_data[$field])){
+                    if(is_array($this->translation_data[$field]) && isset($this->translation_data[$field][LNG])) {
+                        return $this->translation_data[$field][LNG];
+                    }else{
+                        return $this->translation_data[$field];
+                    }
                 } elseif (isset($this->data[$field])) {
                     return Translations::get($this->data[$field], LNG);
                 }
