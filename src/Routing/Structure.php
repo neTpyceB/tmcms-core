@@ -159,7 +159,7 @@ class Structure
             }
         }
 
-        return self::$_labelCache[$full_label];
+        return isset(self::$_labelCache[$full_label]) ? self::$_labelCache[$full_label] : 0;
     }
 
     /**
