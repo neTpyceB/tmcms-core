@@ -146,7 +146,10 @@ if (empty($_SESSION['__session_name_validated'])) {
 
 // Http auth for PHP-CGI mode
 if (isset($_SERVER['HTTP_AUTHORIZATION']) && !isset($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW'])) {
-    list($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']) = explode(':', base64_decode(substr($_SERVER['HTTP_AUTHORIZATION'], 6)));
+    $tmp = explode(':', base64_decode(substr($_SERVER['HTTP_AUTHORIZATION'], 6)));
+    if (isset($tmp[1])) {
+        list($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']) = explode(':', base64_decode(substr($_SERVER['HTTP_AUTHORIZATION'], 6)));
+    }
 }
 
 // Ini with required keys
@@ -180,11 +183,6 @@ if (!isset($_SERVER['REMOTE_ADDR']) || !preg_match('/^[0-9]{1,3}\.[0-9]{1,3}\.[0
 
 // Check for legal URL
 define('SELF', isset($_SERVER['REDIRECT_URL']) ? $_SERVER['REDIRECT_URL'] : $_SERVER['REQUEST_URI']);
-
-// Website base url with protocol
-$protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] ? 'https' : 'http';
-define('BASE_URL', $protocol .'://'. $_SERVER['HTTP_HOST']);
-define('CFG_PROTOCOL', $protocol);
 
 // Deny incorrect urls
 if (strlen(SELF) > 2000 || strpos(SELF, 'eval(') !== false || stripos(SELF, 'CONCAT') !== false || stripos(SELF, 'UNION+SELECT') !== false || stripos(SELF, 'base64') !== false) {
@@ -224,6 +222,11 @@ define('SERVER_IP', $_SERVER['SERVER_ADDR']);
 define('NOW', $_SERVER['REQUEST_TIME']);
 define('VISITOR_HASH', md5(IP . ':' . USER_AGENT));
 define('REQUEST_METHOD', isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : 'GET');
+
+// Website base url with protocol
+$protocol = 'http' . (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] ? 's' : '');
+define('BASE_URL', $protocol . '://' . HOST);
+define('CFG_PROTOCOL', $protocol);
 
 // This may be already defined in boot file specially for project
 if (!defined('CFG_DOMAIN')) {

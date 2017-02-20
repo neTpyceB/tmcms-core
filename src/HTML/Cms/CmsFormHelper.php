@@ -74,6 +74,10 @@ class CmsFormHelper {
             $params['action'] = urldecode('?' . http_build_query($tmp));
         }
 
+        if (isset($params['full'])) {
+            $form->setFullViewEnabled($params['full']);
+        }
+
         if (isset($params['action'])) {
             $form->setAction($params['action']);
         }
