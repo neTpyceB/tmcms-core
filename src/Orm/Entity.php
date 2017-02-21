@@ -204,7 +204,7 @@ class Entity
         }
 
         // check null for newly created fields
-        if (in_array($key, $this->translation_fields) && !(ctype_digit((string)$value) || is_null($value))) {
+        if (in_array($key, $this->translation_fields) && (is_array($value) || (!ctype_digit((string)$value) && !is_null($value)))) {
             // Saving Translation ID
             $this->translation_data[$key] = $value;
         } else {
