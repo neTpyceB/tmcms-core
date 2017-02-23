@@ -1,5 +1,6 @@
 <?php
 use TMCms\Cache\Cacher;
+
 if (!isset($_GET['uid']) || strlen($_GET['uid']) !== 32) return;
 $data = Cacher::getInstance()->getDefaultCacher()->get('debug_panel'. $_GET['uid']);
 if (!$data) return;

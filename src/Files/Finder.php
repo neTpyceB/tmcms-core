@@ -15,13 +15,13 @@ class Finder {
 	use singletonInstanceTrait;
 
 	const TYPE_ASSETS = 'assets';
-	const TYPE_AJAX = 'ajax';
+    const TYPE_API = 'api';
 	const TYPE_PLUGINS = 'plugins';
 	const TYPE_SERVICES = 'services';
 	const TYPE_TRANSLATIONS = 'translations';
 
 	private $assets_search_folders = [DIR_CMS_SCRIPTS_URL];
-	private $ajax_search_folders = [DIR_FRONT_AJAX_URL];
+    private $api_search_folders = [DIR_FRONT_API_URL];
 	private $plugin_search_folders = [DIR_FRONT_PLUGINS_URL];
 	private $services_search_folders = [DIR_FRONT_SERVICES_URL];
 	private $translations_search_folders = [];
@@ -33,9 +33,9 @@ class Finder {
         return $this;
 	}
 
-	public function addAjaxSearchPath($path)
+    public function addApiSearchPath($path)
 	{
-		$this->ajax_search_folders[] = $path;
+        $this->api_search_folders[] = $path;
 
         return $this;
 	}
@@ -128,8 +128,8 @@ class Finder {
 			case self::TYPE_ASSETS:
 				$search_array = $this->assets_search_folders;
 				break;
-			case self::TYPE_AJAX:
-				$search_array = $this->ajax_search_folders;
+            case self::TYPE_API:
+                $search_array = $this->api_search_folders;
 				break;
 			case self::TYPE_PLUGINS:
 				$search_array = $this->plugin_search_folders;

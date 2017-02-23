@@ -2,7 +2,7 @@
 
 use TMCms\Admin\Structure\Entity\PageClickmap;
 use TMCms\Admin\Structure\Entity\PageClickmapRepository;
-use \TMCms\Strings\Converter;
+use TMCms\Strings\Converter;
 
 if (!$_POST || !isset($_POST['x'], $_POST['y'], $_POST['l'])) exit;
 

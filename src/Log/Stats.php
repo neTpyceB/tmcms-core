@@ -102,7 +102,7 @@ class Stats
         ?>
         <script>
             $.ajax({
-                url: '/-/<?= CFG_AJAX_ROUTE ?>/debug_panel?uid=<?=$uid?>',
+                url: '/-/<?= CFG_API_ROUTE ?>/debug_panel?uid=<?=$uid?>',
                 success: function (data) {
                     $('body').append(data);
                 }

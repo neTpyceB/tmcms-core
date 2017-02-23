@@ -42,8 +42,8 @@ define('DIR_CMS_TRANSLATIONS', substr(__DIR__, $root_path_length - 1) . '/assets
 define('DIR_FRONT', DIR_BASE . 'project/');
 
 // Ajax and API handlers
-define('DIR_FRONT_AJAX', DIR_FRONT . 'ajax/');
-define('DIR_FRONT_AJAX_URL', '/' . substr(DIR_FRONT_AJAX, $root_path_length));
+define('DIR_FRONT_API', DIR_FRONT . 'api/');
+define('DIR_FRONT_API_URL', '/' . substr(DIR_FRONT_API, $root_path_length));
 
 // Logs
 define('DIR_FRONT_LOGS', DIR_FRONT . 'logs/');
@@ -254,8 +254,8 @@ if (!defined('PHP_OS')) {
 if (!defined('CFG_DB_SERVER')) {
     define('CFG_DB_SERVER', 'localhost');
 }
-if (!defined('CFG_AJAX_ROUTE')) {
-    define('CFG_AJAX_ROUTE', 'ajax');
+if (!defined('CFG_API_ROUTE')) {
+    define('CFG_API_ROUTE', 'api');
 }
 // Default git branch from which CMS is updated
 if (!defined('CFG_GIT_BRANCH')) {
@@ -269,7 +269,7 @@ define('CMS_DEVELOPERS', 'Vadims Petrusevs, neTpyceB, Bogdans Laidiņš, Armands
 define('CMS_OWNER_COMPANY', 'SIA DEVP');
 define('CMS_SUPPORT_EMAIL', 'info@devp.eu'); // Support e-mail for errors, etc.
 define('CMS_SITE', 'http://devp.eu/');
-define('IS_AJAX_REQUEST', (int)isset($_REQUEST['ajax']) || stripos(SELF, '_ajax') === 0 || stripos(SELF, '/'. CFG_AJAX_ROUTE .'/') !== false || (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest'));
+define('IS_AJAX_REQUEST', (int)isset($_REQUEST['ajax']) || stripos(SELF, '_ajax') === 0 || stripos(SELF, '/' . CFG_API_ROUTE . '/') !== false || (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest'));
 
 // Dates
 define('Y', date('Y'));
@@ -458,7 +458,7 @@ $length_of_include_path = $root_path_length - 1;
 Finder::getInstance()
     ->addAssetsSearchPath(substr(__DIR__, $length_of_include_path) . '/assets/')
     ->addAssetsSearchPath(DIR_CMS_SCRIPTS)
-    ->addAjaxSearchPath(substr(__DIR__, $length_of_include_path) . '/assets/ajax/')
+    ->addApiSearchPath(substr(__DIR__, $length_of_include_path) . '/assets/ajax/')
     ->addPluginsSearchPath(substr(__DIR__, $length_of_include_path) . '/assets/cms_plugins/')
     ->addServicesSearchPath(substr(__DIR__, $length_of_include_path) . '/assets/services/')
     ->addTranslationsSearchPath(substr(__DIR__, $length_of_include_path) . '/assets/translations/')

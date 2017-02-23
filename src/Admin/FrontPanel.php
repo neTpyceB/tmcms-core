@@ -19,7 +19,7 @@ class FrontPanel
         ?>
         <script>
             $.ajax({
-                url: '/-/<?= CFG_AJAX_ROUTE ?>/admin_front_panel/',
+                url: '/-/<?= CFG_API_ROUTE ?>/admin_front_panel/',
                 success: function (data) {
                     $('body').append(data);
                 }

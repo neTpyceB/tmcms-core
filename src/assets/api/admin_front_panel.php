@@ -1,5 +1,4 @@
 <?php
-use TMCms\Admin\Menu;
 use TMCms\Admin\Users;
 use TMCms\Config\Settings;
 
