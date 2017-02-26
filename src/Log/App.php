@@ -84,11 +84,12 @@ class App
             $data = [
                 'data' => [
                     'domain' => CFG_DOMAIN,
-                    'ts' => NOW
+                    'cms_address' => DIR_CMS_URL,
+                    'ts' => NOW,
                 ],
                 'logs' => [
                     'app_log' => $data_log,
-                    'usage' => $data_usage
+                    'usage' => $data_usage,
                 ]
             ];
 
