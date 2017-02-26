@@ -4,6 +4,7 @@ namespace TMCms\Admin;
 
 use TMCms\Admin\Users\Entity\UsersMessageEntity;
 use TMCms\Admin\Users\Entity\UsersMessageEntityRepository;
+use TMCms\HTML\BreadCrumbs;
 use TMCms\Traits\singletonOnlyInstanceTrait;
 
 /**
@@ -15,6 +16,8 @@ use TMCms\Traits\singletonOnlyInstanceTrait;
  */
 class Messages
 {
+    const ALERT_SESSION_KEY = 'cms_alerts';
+
     use singletonOnlyInstanceTrait;
 
     /**
@@ -108,5 +111,43 @@ class Messages
     public static function sendBlackAlert($text, $to_user_id = USER_ID, $from_user_id = 0)
     {
         return self::sendMessage($text, $to_user_id, $from_user_id, 3);
+    }
+
+    public static function sendFlashAlert($message)
+    {
+        if (!isset($_SESSION[self::ALERT_SESSION_KEY])) {
+            $_SESSION[self::ALERT_SESSION_KEY] = '';
+        }
+
+        // Get existing messages
+        $messages = @json_decode($_SESSION[self::ALERT_SESSION_KEY]);
+
+        // Add new to the list
+        $messages[] = $message;
+
+        // Encode to make it string
+        $_SESSION[self::ALERT_SESSION_KEY] = json_encode($messages);
+    }
+
+    public static function flushSessionAlerts()
+    {
+
+        if (!isset($_SESSION[self::ALERT_SESSION_KEY]) || !$_SESSION[self::ALERT_SESSION_KEY]) {
+            return;
+        }
+
+        // Get existing messages
+        $messages = @json_decode($_SESSION[self::ALERT_SESSION_KEY]);
+        if (!$messages || !is_array($messages)) {
+            return;
+        }
+
+        // Add to alerts
+        foreach ($messages as $message) {
+            BreadCrumbs::getInstance()->addAlerts($message);
+        }
+
+        // Reset messages
+        $_SESSION[self::ALERT_SESSION_KEY] = '';
     }
 }

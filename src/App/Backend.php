@@ -5,6 +5,7 @@ namespace TMCms\App;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use TMCms\Admin\Menu;
+use TMCms\Admin\Messages;
 use TMCms\Admin\Updater;
 use TMCms\Admin\Users;
 use TMCms\Admin\Users\Entity\UserLog;
@@ -95,7 +96,11 @@ class Backend
         // Flush application log
         App::flushLog();
 
+        // Autoload files from modules
         $this->runAutoloadFiles();
+
+        // Session alerts
+        Messages::flushSessionAlerts();
 
         $this->generateContent();
     }
@@ -523,6 +528,8 @@ class Backend
     public function __toString()
     {
         ob_start();
+
+        $breadcrumbs = BreadCrumbs::getInstance();
 
         $user_logged_in = Users::getInstance()->isLogged();
 
