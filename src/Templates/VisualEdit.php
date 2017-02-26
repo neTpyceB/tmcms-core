@@ -18,12 +18,18 @@ class VisualEdit
 
     private static $enabled = false;
 
+    /**
+     * @return bool
+     */
+    public static function isEnabled()
+    {
+        return self::$enabled;
+    }
+
     public function init()
     {
-        if ((isset($_GET['cms_visual_edit']) || isset($_SESSION['visual_edit'])) && Users::getInstance()->isLogged() && Settings::get('enable_visual_edit')) {
+        if (Users::getInstance()->isLogged() && Settings::get('enable_visual_edit')) {
             self::$enabled = true;
-
-            $_SESSION['visual_edit'] = true;
         }
     }
 
@@ -31,9 +37,10 @@ class VisualEdit
      * @param string $controller
      * @param string $key
      * @param string $data
+     * @param string $type
      * @return string
      */
-    public function wrapAroundComponents($controller, $key, $data)
+    public function wrapAroundComponents($controller, $key, $data, $type = 'component')
     {
         ob_start();
 
@@ -42,9 +49,8 @@ class VisualEdit
                  style="position: relative" class="cms_visual_editable"
                  onclick="cms_visual_edit.edit(this)"
                  data-page_id="<?= PAGE_ID ?>"
-                 data-component="<?= $this->_make_component_field($controller, $key); ?>">
-        <?= $data ?>
-        </cms_tag><?php
+                 data-type="<?= $type ?>"
+                 data-component="<?= $this->_make_component_field($controller, $key); ?>"><?= trim($data) ?></cms_tag><?php
 
         return ob_get_clean();
     }
@@ -56,14 +62,10 @@ class VisualEdit
      */
     private function _make_component_field($controller, $key)
     {
-        return str_replace('controller', '', strtolower($controller)) . '_' . $key;
-    }
+        if (!$controller) {
+            return $key;
+        }
 
-    /**
-     * @return bool
-     */
-    public static function isEnabled()
-    {
-        return self::$enabled;
+        return str_replace('controller', '', strtolower($controller)) . '_' . $key;
     }
 }

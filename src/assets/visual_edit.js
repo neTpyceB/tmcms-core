@@ -30,11 +30,12 @@ cms_visual_edit = {
 
 		$.ajax({
 			type: "POST",
-			url: '/en/ajax/visual_edit_save/',
+			url: '/-/api/visual_edit_save/',
 			data: {
 				content : $obj.html(),
 				component : $obj.data("component"),
-				page_id : $obj.data("page_id")
+				page_id: $obj.data("page_id"),
+				type: $obj.data("type")
 			},
 			dataType: 'json',
 			complete: function (data) {

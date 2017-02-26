@@ -439,7 +439,7 @@ class Structure
 
         // Border to show editable placeholder
         if ($q !== false && VisualEdit::getInstance()->isEnabled()) {
-            $q = VisualEdit::getInstance()->wrapAroundComponents('CmsWordsController', $temp, $q);
+            $q = VisualEdit::getInstance()->wrapAroundComponents('', $temp, $q, 'word');
         }
 
         // Nothing found - show default text

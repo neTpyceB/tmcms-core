@@ -118,15 +118,15 @@ class Finder {
 		}
 
 		// If file from external composer vendor - should copy to public dir
-        if (MODE === 'site' && stripos($found_path, '/vendor/') === 0) {
-			$copy_from = DIR_BASE . ltrim($found_path, '/');
-			$copy_to = DIR_ASSETS . ltrim($real_file_path, '/');
-			if (file_exists($copy_from) && !file_exists($copy_to)) {
-				FileSystem::mkDir(pathinfo($copy_to, PATHINFO_DIRNAME));
-				copy($copy_from, $copy_to);
-			}
-			$found_path = DIR_ASSETS_URL . ltrim($real_file_path, '/');
-		}
+//        if (MODE === 'site' && stripos($found_path, '/vendor/') === 0) {
+//			$copy_from = DIR_BASE . ltrim($found_path, '/');
+//			$copy_to = DIR_ASSETS . ltrim($real_file_path, '/');
+//			if (file_exists($copy_from) && !file_exists($copy_to)) {
+//				FileSystem::mkDir(pathinfo($copy_to, PATHINFO_DIRNAME));
+//				copy($copy_from, $copy_to);
+//			}
+//			$found_path = DIR_ASSETS_URL . ltrim($real_file_path, '/');
+//		}
 
         // Add cache stamp for frontend assets
 		if (!$external && $type == self::TYPE_ASSETS && $found_path) {

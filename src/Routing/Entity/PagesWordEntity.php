@@ -11,8 +11,9 @@ use TMCms\Orm\Entity;
  * @method string getName()
  *
  * @method string getWord()
- * @method setName(string $name)
- * @method setWord(string $word)
+ *
+ * @method $this setName(string $name)
+ * @method $this setWord(string $word)
  */
 class PagesWordEntity extends Entity
 {

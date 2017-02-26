@@ -458,7 +458,7 @@ $length_of_include_path = $root_path_length - 1;
 Finder::getInstance()
     ->addAssetsSearchPath(substr(__DIR__, $length_of_include_path) . '/assets/')
     ->addAssetsSearchPath(DIR_CMS_SCRIPTS)
-    ->addApiSearchPath(substr(__DIR__, $length_of_include_path) . '/assets/ajax/')
+    ->addApiSearchPath(substr(__DIR__, $length_of_include_path) . '/assets/api/')
     ->addPluginsSearchPath(substr(__DIR__, $length_of_include_path) . '/assets/cms_plugins/')
     ->addServicesSearchPath(substr(__DIR__, $length_of_include_path) . '/assets/services/')
     ->addTranslationsSearchPath(substr(__DIR__, $length_of_include_path) . '/assets/translations/')
