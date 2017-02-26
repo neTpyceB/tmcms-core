@@ -101,6 +101,10 @@ class CmsFormHelper {
             $form->enableAjax();
         }
 
+        if (isset($params['ajax_callback']) && $params['ajax_callback']) {
+            $form->setAjaxCallbackFunction($params['ajax_callback']);
+        }
+
         if (isset($params['cancel']) && $params['cancel']) {
             if (is_bool($params['cancel'])) {
                 $params['cancel'] = __('Cancel');
