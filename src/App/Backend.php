@@ -102,6 +102,11 @@ class Backend
         // Session alerts
         Messages::flushSessionAlerts();
 
+        // Save latest POST content and it can be used later
+        if ($_POST) {
+            $_SESSION['saved_post'] = json_encode($_POST);
+        }
+
         $this->generateContent();
     }
 
