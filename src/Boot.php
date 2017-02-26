@@ -2,6 +2,7 @@
 
 use TMCms\Admin\AdminTranslations;
 use TMCms\DB\SQL;
+use TMCms\Files\FileSystem;
 use TMCms\Files\Finder;
 use TMCms\Log\Errors;
 use TMCms\Routing\Structure;
@@ -473,6 +474,7 @@ unset($root_path_length, $length_of_include_path);
  */
 function runAutoloadFiles()
 {
+    FileSystem::mkDir(DIR_MODULES);
     foreach (scandir(DIR_MODULES) as $module_dir) {
         // Skip hidden
         if ($module_dir[0] == '.') {
