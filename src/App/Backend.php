@@ -95,7 +95,425 @@ class Backend
         // Flush application log
         App::flushLog();
 
+        $this->runAutoloadFiles();
+
         $this->generateContent();
+    }
+
+    private function parseUrl()
+    {
+        // Some pages do not have menu header nor items
+        $this->no_menu = isset($_GET['nomenu']);
+
+        /* Get P and P_DO - these are module and action shortcuts */
+        if (!isset($_GET['p'])) {
+            $_GET['p'] = 'home';
+        }
+        if (!isset($_GET['do'])) {
+            $_GET['do'] = '_default';
+        }
+
+        // Render log=in form if if user is not auth-ed
+        if (!Users::getInstance()->isLogged()) {
+            $_GET['p'] = 'guest';
+            $this->no_menu = true;
+        }
+
+        if (!defined('P')) {
+            define('P', $_GET['p']);
+        }
+        if (!defined('P_DO')) {
+            define('P_DO', $_GET['do']);
+        }
+
+        // Parse URL
+        $path = [];
+        if ((!$url = parse_url(SELF)) || !isset($url['path'])) {
+            die('URL can not be parsed');
+        }
+
+        // Generate real path
+        foreach (explode('/', $url['path']) as $pa) {
+            if ($pa) {
+                $path[] = $pa;
+            }
+        }
+
+        // For non-rewrite hostings remove last file name
+        if (end($path) === 'index.php') {
+            array_pop($path);
+        }
+
+        if ($this->no_menu) {
+            Menu::getInstance()->disableMenu();
+        }
+
+        // Log CMS usage
+        Usage::getInstance()->add(P, P_DO);
+
+        // Rewite $_GET in case constans defined not from params
+        $_GET['p'] = P;
+        $_GET['do'] = P_DO;
+
+        $this->p = P;
+        $this->p_do = P_DO;
+    }
+
+    private function sendHeaders()
+    {
+        // Do not send twice
+        if (headers_sent()) {
+            return;
+        }
+
+        // Set headers to disable cache
+        header('Expires: Wed, 01 Jul 2005 08:50:08 GMT');
+        header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
+        header('Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0');
+        if (!isset($_SERVER['HTTP_X_FLASH_VERSION'])) {
+            header('Pragma: no-cache');
+        } // HTTP/1.0
+        header('Content-Type: text/html; charset=utf-8');
+        if (strpos(USER_AGENT, 'MSIE') !== false) {
+            header('Imagetoolbar: no');
+        }
+    }
+
+    /**
+     * Data for HTML <head> generation
+     */
+    private function prepareHead()
+    {
+        $config = Configuration::getInstance();
+        // Favicon url
+        $favicon = !empty($config->get('cms')['favicon']) ? $config->get('cms')['favicon'] : DIR_CMS_IMAGES_URL . 'logo_square.png';
+
+        // Prepare page HTML for head
+        PageHead::getInstance()
+            // Cms attributes
+            ->addHtmlTagAttributes('lang="en" class="no-js"')
+            ->setTitle((P_DO !== '_default' ? Converter::symb2Ttl(P_DO) : 'Main') . ' / ' . Converter::symb2Ttl(P) . ' / ' . $config->get('site')['name'] . ' / ' . CMS_NAME . ' v. ' . CMS_VERSION)
+            ->setFavicon($favicon)
+            ->addMeta('name=' . CMS_NAME . ' - ' . $config->get('site')['name'] . '; action-uri=http://' . CFG_DOMAIN . '/cms/; icon-uri=http://' . DIR_CMS_IMAGES_URL . 'logo_square.png', 'msapplication-task')
+            ->addMeta('width=device-width, initial-scale=1', 'viewport')
+            ->addMeta('IE=edge', '', 'X-UA-Compatible')
+            ->addClassToBody('page-header-fixed')
+            ->addClassToBody('page-sidebar-fixed')
+            ->addClassToBody('page-quick-sidebar-over-content')
+            // Global styles
+            ->addCssUrl('cms/fonts/open-sans.css')
+            ->addCssUrl('cms/plugins/font-awesome/font-awesome.css')
+            ->addCssUrl('cms/plugins/simple-line-icons/simple-line-icons.css')
+            ->addCssUrl('cms/plugins/bootstrap/css/bootstrap.css')
+            ->addCssUrl('cms/plugins/uniform/css/uniform.default.css')
+            ->addCssUrl('cms/plugins/bootstrap-switch/css/bootstrap-switch.css')
+            ->addCssUrl('cms/plugins/pace/pace-theme-minimal.css')
+            ->addCssUrl('cms/plugins/select2/select2.css')
+            // Theme styles
+            ->addCssUrl('cms/css/components.css')
+            ->addCssUrl('cms/css/plugins.css')
+            ->addCssUrl('cms/layout/css/layout.css')
+//            ->addCssUrl('cms/layout/css/themes/default.css') // TODO can switch in Settings
+            ->addCssUrl('cms/layout/css/themes/darkblue.css')// TODO can switch in Settings
+            ->addCssUrl('cms/layout/css/custom.css')
+            ->addCssUrl('plugins/toastr/toastr.min.css')
+            ->addJsUrl('cms/jquery-1.11.0.min.js')
+            // Cms overwrites
+            ->addCssUrl('cms/cms_css.css')
+//            ->addCssUrl('css/font-awesome.css') // TODO remove all old files that are not in assets/cms/ folder
+//            ->addCssUrl('css/metronic/simple-line-icons.css')
+//            ->addCssUrl('bootstrap/css/bootstrap.min.css')
+//            ->addCssUrl('css/metronic/components.css')
+//            ->addCssUrl('css/metronic/layout.css')
+//            ->addCssUrl('css/metronic/darkblue.css')
+//            ->addCssUrl('css/themify-icons.css')
+//            ->addCssUrl('css/animate.min.css')
+//            ->addCssUrl('css/skins/palette.css')
+//            ->addCssUrl('css/fonts/font.css')
+//            ->addCssUrl('css/main.css')
+//            ->addJsUrl('plugins/modernizr.js')
+//            ->addCssUrl('css.css')
+//                ->addCssUrl('print_css.css', 'print')
+//                ->addJsUrl(DIR_CMS_SCRIPTS_URL . 'jquery-2.1.0.min.js')
+            ->addJsUrl(DIR_CMS_SCRIPTS_URL . 'jquery.form.min.js')// Ajaxify forms
+//                ->addJsUrl('js/jquery.bpopup.min.js')// Popup modals
+            ->addJs('var cms_data = {context_menu_items: {}};')// Required for global data
+            ->addJs('cms_data.cfg_domain="' . CFG_DOMAIN . '"')// Required for notifications
+            ->addJs('cms_data.site_name="' . $config->get('site')['name'] . '"') // Required for notifications
+        ;
+        $cnf_notif = Configuration::getInstance()->get('notification');
+        if (isset($cnf_notif['icon'])) {
+            PageHead::getInstance()
+                ->addJs('cms_data.notification_icon = "' . Configuration::getInstance()->get('notification')['icon'] . '"');
+        }
+        PageHead::getInstance()
+            ->addJsUrl('cms_js.js')
+//                ->addJsUrl(DIR_CMS_SCRIPTS_URL . 'scripts.js')
+            ->addJsUrl('plupload/plupload.full.min.js');
+
+        // Script for sending JS errors
+        if (CFG_MAIL_ERRORS && Settings::isProductionState() && !Settings::get('do_not_send_js_errors')) {
+            PageHead::getInstance()
+                ->addJsUrl('send_error.js')
+                ->addJs('register_js_error.ini(\'' . DIR_CMS_URL . '\');');
+        }
+
+        PageTail::getInstance()
+            // Global scripts
+            ->addJsUrl('cms/jquery-migrate-1.2.1.min.js')
+            ->addJsUrl('cms/plugins/jquery-ui/jquery-ui-1.10.3.custom.min.js')
+            ->addJsUrl('cms/plugins/bootstrap/js/bootstrap.min.js')// This must be after jquery-ui.custom.js
+            ->addJsUrl('cms/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js')
+            ->addJsUrl('cms/plugins/jquery-slimscroll/jquery.slimscroll.min.js')
+            ->addJsUrl('cms/jquery.blockui.min.js')
+            ->addJsUrl('cms/jquery.cokie.min.js')
+            ->addJsUrl('cms/plugins/uniform/jquery.uniform.min.js')
+            ->addJsUrl('cms/plugins/bootstrap-switch/js/bootstrap-switch.min.js')
+            ->addCssUrl('cms/plugins/jquery-contextmenu/jquery.contextMenu.css')
+            ->addJsUrl('cms/plugins/jquery-contextmenu/jquery.contextMenu.js')
+            // Pages
+            ->addJsUrl('cms/plugins/jquery-validation/js/jquery.validate.min.js')
+            ->addJsUrl('cms/plugins/backstretch/jquery.backstretch.min.js')
+            ->addJsUrl('cms/plugins/select2/select2.min.js')
+            // Final scripts
+            ->addJsUrl('cms/metronic.js')
+            ->addJsUrl('cms/layout/scripts/layout.js')
+            ->addJsUrl('cms/layout/scripts/quick-sidebar.js')
+            ->addJsUrl('cms/plugins/pace/pace.js')
+//                ->addCssURL('plugins/chosen/chosen.min.css') // Beautify selects
+//                ->addJsURL('context_menu/menu.js') // Context menu
+//                ->addJsUrl('bootstrap/js/bootstrap.js')
+//                ->addJsUrl('plugins/jquery.slimscroll.min.js')
+//                ->addJsUrl('plugins/jquery.easing.min.js') // Animations
+//                ->addJsUrl('plugins/appear/jquery.appear.js')
+//                ->addJsUrl('plugins/jquery.placeholder.js')
+//                ->addJsUrl('plugins/fastclick.js')
+//                ->addJsUrl('js/offscreen.js')
+//                ->addJsUrl('js/main.js')
+//                ->addJsUrl('js/buttons.js')
+            ->addJsUrl('plugins/toastr/toastr.min.js')// Notifications
+//                ->addJsUrl('js/notifications.js')
+//                ->addJsUrl('plugins/chosen/chosen.jquery.min.js')
+//                ->addJsUrl('plugins/chosen/chosen.order.jquery.js')
+//                ->addJsURL('ckeditor/ckeditor.js') // Wysiwyg
+            ->addJsUrl('plugins/parsley.js')// Input validation
+            ->addJsUrl('cms/respond.min.js')
+            ->addJsUrl('cms/excanvas.min.js')
+            ->addJs('$(function() {
+               $(".chosen").select2();
+               Metronic.init();
+               Layout.init();
+               QuickSidebar.init();
+            });');
+
+        // Search for custom css
+        $custom_css_url = DIR_ASSETS_URL . 'cms.css';
+        if (file_exists(DIR_BASE . $custom_css_url)) {
+            PageHead::getInstance()->addCssUrl($custom_css_url);
+        } else {
+            PageHead::getInstance()->addCustomString('<!--Create file "' . $custom_css_url . '" if you wish to use custom css file-->');
+        }
+
+        // Set head for page
+        Page::setHead(PageHead::getInstance());
+    }
+
+    private function parseMenu()
+    {
+        $menu = Menu::getInstance();
+
+        $all_menu_items = [
+            'system',
+            'home' => [
+                'icon' => 'home',
+            ],
+            'structure' => [
+                'icon' => 'layers',
+            ],
+            'users' => [
+                'icon' => 'user',
+            ],
+            'tools' => [
+                'icon' => 'wrench',
+            ],
+//            'modules',
+        ];
+
+        // Combine items
+        $custom_items = [];
+        if (file_exists(DIR_FRONT . 'menu.php')) {
+            $custom_items = include_once DIR_FRONT . 'menu.php';
+        }
+        $all_menu_items = array_merge($custom_items, $all_menu_items);
+
+        // For every main menu item search for module and submenu
+        foreach ($all_menu_items as $main_menu_key => $main_menu_data) {
+            $menu_class = 'TMCms\Admin\\' . Converter::to_camel_case($main_menu_key) . '\\Cms' . Converter::to_camel_case($main_menu_key);
+            if (!class_exists($menu_class)) {
+                $menu_class = 'TMCms\Modules\\' . Converter::to_camel_case($main_menu_key) . '\\Cms' . Converter::to_camel_case($main_menu_key);
+            }
+            if (class_exists($menu_class)) {
+                $reflection = new \ReflectionClass($menu_class);
+                $filename = $reflection->getFileName();
+                $folder = dirname($filename);
+                $module_menu_file = $folder . '/menu.php';
+                if (file_exists($module_menu_file)) {
+                    $module_menu_data = include_once $module_menu_file;
+                    $all_menu_items[$main_menu_key] = array_merge($all_menu_items[$main_menu_key], $module_menu_data);
+                }
+            }
+        }
+
+        // Add menu items
+        foreach ($all_menu_items as $key => $item) {
+            // Separator
+            if (!is_array($item)) {
+                $menu->addMenuSeparator($item);
+            } else {
+                // Add menu item if have access to page
+                if ($key && Users::getInstance()->checkAccess($key, '_default')) {
+                    $menu->addMenuItem($key, $item);
+                }
+            }
+        }
+
+        // Add translations if have project-related files
+        Finder::getInstance()->addTranslationsSearchPath(DIR_FRONT . 'translations/');
+    }
+
+    /**
+     * Run every autoload file from every module
+     */
+    private function runAutoloadFiles()
+    {
+        foreach (scandir(DIR_MODULES) as $module_dir) {
+            // Skip hidden
+            if ($module_dir[0] == '.') {
+                continue;
+            }
+
+            $autoload_file = DIR_MODULES . $module_dir . '/autoload.php';
+
+            if (is_file($autoload_file)) {
+                require_once $autoload_file;
+            }
+        }
+    }
+
+    private function generateContent()
+    {
+        ob_start();
+
+        // Requesting P page
+        $method = false;
+
+        $call_object = false;
+        // Find in classes under Vendor - Modules
+        $real_class = Converter::to_camel_case(P);
+        $class = '\TMCms\Modules\\' . $real_class . '\Cms' . $real_class;
+        if (!class_exists($class)) {
+            // Not vendor module - check main CMS admin object
+            $class = '\TMCms\Admin\\' . $real_class . '\Cms' . $real_class;
+            $call_object = true;
+            if (!class_exists($class)) {
+                // Search for exclusive module CMS pages created in Project folder for this individual site
+                $file_path = DIR_MODULES . strtolower($real_class) . '/' . 'Cms' . $real_class . '.php';
+                if (file_exists($file_path)) {
+                    require_once $file_path;
+
+                    // Check for module itself
+                    $file_path = DIR_MODULES . strtolower($real_class) . '/' . 'Module' . $real_class . '.php';
+                    if (file_exists($file_path)) {
+                        require_once $file_path;
+                    }
+                    // Require all objects class files
+                    $objects_path = DIR_MODULES . strtolower($real_class) . '/Entity/';
+                    if (file_exists($objects_path)) {
+                        foreach (array_diff(scandir($objects_path), ['.', '..']) as $object_file) {
+                            require_once $objects_path . $object_file;
+                        }
+                    }
+
+                    // CmsClass
+                    $real_class = Converter::to_camel_case(P);
+                    $class = '\TMCms\Modules\\' . $real_class . '\Cms' . $real_class;
+                }
+            }
+        }
+
+        // Try autoload PSR-0 or PSR-4
+        if (!class_exists($class)) {
+            $class = 'TMCms\Modules\\' . $real_class . '\Cms' . $real_class;
+        }
+
+        // Try to find the right directory of requested class
+        if (!class_exists($class)) {
+            $class_name = 'Cms' . $real_class;
+
+            $directory_iterator = new RecursiveDirectoryIterator(DIR_MODULES);
+            $iterator = new RecursiveIteratorIterator($directory_iterator);
+
+            foreach ($iterator as $file) {
+                if ($file->getFilename() == $class_name . '.php') {
+                    $module_path = $file->getPathInfo()->getPathName();
+                    $module_name = $file->getPathInfo()->getFilename();
+
+                    $module_directory_iterator = new RecursiveDirectoryIterator($module_path);
+                    $module_iterator = new RecursiveIteratorIterator($module_directory_iterator);
+
+                    foreach ($module_iterator as $module_file) {
+                        $module_file_directory = $module_file->getPathInfo()->getFilename();
+                        $module_file_name = $module_file->getFileName();
+
+                        if (!in_array($module_file_name, ['.', '..']) and in_array($module_file_directory, [$module_name, 'Entity'])) {
+                            require_once $module_file->getPathName();
+                        }
+                    }
+
+                    $class = implode('\\', ['\TMCms', 'Modules', $module_name, $class_name]);
+
+                    break;
+                }
+            }
+        }
+
+        // Still no class
+        if (!class_exists($class)) {
+            dump('Requested class "' . $class . '" not found');
+        }
+
+        // Check existence of requested method
+        if (class_exists($class)) {
+            $call_object = true;
+
+            // Check requested method exists or set default
+            if (method_exists($class, P_DO)) {
+                $method = P_DO;
+            } else {
+                $method = '_default';
+            }
+
+            // Final check we have anything to run
+            if (!method_exists($class, $method)) {
+                dump('Method "' . $method . '" not found in class "' . $class . '"');
+            }
+        }
+
+        // Check user's permission
+        if (!Users::getInstance()->checkAccess(P, $method)) {
+            error('You do not have permissions to access this page ("' . P . ' - ' . $method . '")');
+            die;
+        }
+
+        // Call required method
+        if ($call_object) {
+            $obj = new $class;
+            $obj->{$method}();
+        } else {
+            call_user_func([$class, $method]);
+        }
+
+        $this->content = ob_get_clean();
     }
 
     /**
@@ -810,406 +1228,5 @@ class Backend
         ob_clean();
 
         return Page::getHTML();
-    }
-
-    private function parseUrl()
-    {
-        // Some pages do not have menu header nor items
-        $this->no_menu = isset($_GET['nomenu']);
-
-        /* Get P and P_DO - these are module and action shortcuts */
-        if (!isset($_GET['p'])) {
-            $_GET['p'] = 'home';
-        }
-        if (!isset($_GET['do'])) {
-            $_GET['do'] = '_default';
-        }
-
-        // Render log=in form if if user is not auth-ed
-        if (!Users::getInstance()->isLogged()) {
-            $_GET['p'] = 'guest';
-            $this->no_menu = true;
-        }
-
-        if (!defined('P')) {
-            define('P', $_GET['p']);
-        }
-        if (!defined('P_DO')) {
-            define('P_DO', $_GET['do']);
-        }
-
-        // Parse URL
-        $path = [];
-        if ((!$url = parse_url(SELF)) || !isset($url['path'])) {
-            die('URL can not be parsed');
-        }
-
-        // Generate real path
-        foreach (explode('/', $url['path']) as $pa) {
-            if ($pa) {
-                $path[] = $pa;
-            }
-        }
-
-        // For non-rewrite hostings remove last file name
-        if (end($path) === 'index.php') {
-            array_pop($path);
-        }
-
-        if ($this->no_menu) {
-            Menu::getInstance()->disableMenu();
-        }
-
-        // Log CMS usage
-        Usage::getInstance()->add(P, P_DO);
-
-        // Rewite $_GET in case constans defined not from params
-        $_GET['p'] = P;
-        $_GET['do'] = P_DO;
-
-        $this->p = P;
-        $this->p_do = P_DO;
-    }
-
-    private function sendHeaders()
-    {
-        // Do not send twice
-        if (headers_sent()) {
-            return;
-        }
-
-        // Set headers to disable cache
-        header('Expires: Wed, 01 Jul 2005 08:50:08 GMT');
-        header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
-        header('Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0');
-        if (!isset($_SERVER['HTTP_X_FLASH_VERSION'])) {
-            header('Pragma: no-cache');
-        } // HTTP/1.0
-        header('Content-Type: text/html; charset=utf-8');
-        if (strpos(USER_AGENT, 'MSIE') !== false) {
-            header('Imagetoolbar: no');
-        }
-    }
-
-    /**
-     * Data for HTML <head> generation
-     */
-    private function prepareHead()
-    {
-        $config = Configuration::getInstance();
-        // Favicon url
-        $favicon = !empty($config->get('cms')['favicon']) ? $config->get('cms')['favicon'] : DIR_CMS_IMAGES_URL . 'logo_square.png';
-
-        // Prepare page HTML for head
-        PageHead::getInstance()
-            // Cms attributes
-            ->addHtmlTagAttributes('lang="en" class="no-js"')
-            ->setTitle((P_DO !== '_default' ? Converter::symb2Ttl(P_DO) : 'Main') . ' / ' . Converter::symb2Ttl(P) . ' / ' . $config->get('site')['name'] . ' / ' . CMS_NAME . ' v. ' . CMS_VERSION)
-            ->setFavicon($favicon)
-            ->addMeta('name=' . CMS_NAME . ' - ' . $config->get('site')['name'] . '; action-uri=http://' . CFG_DOMAIN . '/cms/; icon-uri=http://' . DIR_CMS_IMAGES_URL . 'logo_square.png', 'msapplication-task')
-            ->addMeta('width=device-width, initial-scale=1', 'viewport')
-            ->addMeta('IE=edge', '', 'X-UA-Compatible')
-            ->addClassToBody('page-header-fixed')
-            ->addClassToBody('page-sidebar-fixed')
-            ->addClassToBody('page-quick-sidebar-over-content')
-            // Global styles
-            ->addCssUrl('cms/fonts/open-sans.css')
-            ->addCssUrl('cms/plugins/font-awesome/font-awesome.css')
-            ->addCssUrl('cms/plugins/simple-line-icons/simple-line-icons.css')
-            ->addCssUrl('cms/plugins/bootstrap/css/bootstrap.css')
-            ->addCssUrl('cms/plugins/uniform/css/uniform.default.css')
-            ->addCssUrl('cms/plugins/bootstrap-switch/css/bootstrap-switch.css')
-            ->addCssUrl('cms/plugins/pace/pace-theme-minimal.css')
-            ->addCssUrl('cms/plugins/select2/select2.css')
-            // Theme styles
-            ->addCssUrl('cms/css/components.css')
-            ->addCssUrl('cms/css/plugins.css')
-            ->addCssUrl('cms/layout/css/layout.css')
-//            ->addCssUrl('cms/layout/css/themes/default.css') // TODO can switch in Settings
-            ->addCssUrl('cms/layout/css/themes/darkblue.css') // TODO can switch in Settings
-            ->addCssUrl('cms/layout/css/custom.css')
-            ->addCssUrl('plugins/toastr/toastr.min.css')
-            ->addJsUrl('cms/jquery-1.11.0.min.js')
-            // Cms overwrites
-            ->addCssUrl('cms/cms_css.css')
-
-//            ->addCssUrl('css/font-awesome.css') // TODO remove all old files that are not in assets/cms/ folder
-//            ->addCssUrl('css/metronic/simple-line-icons.css')
-//            ->addCssUrl('bootstrap/css/bootstrap.min.css')
-//            ->addCssUrl('css/metronic/components.css')
-//            ->addCssUrl('css/metronic/layout.css')
-//            ->addCssUrl('css/metronic/darkblue.css')
-//            ->addCssUrl('css/themify-icons.css')
-//            ->addCssUrl('css/animate.min.css')
-//            ->addCssUrl('css/skins/palette.css')
-//            ->addCssUrl('css/fonts/font.css')
-//            ->addCssUrl('css/main.css')
-//            ->addJsUrl('plugins/modernizr.js')
-//            ->addCssUrl('css.css')
-//                ->addCssUrl('print_css.css', 'print')
-//                ->addJsUrl(DIR_CMS_SCRIPTS_URL . 'jquery-2.1.0.min.js')
-            ->addJsUrl(DIR_CMS_SCRIPTS_URL . 'jquery.form.min.js')// Ajaxify forms
-//                ->addJsUrl('js/jquery.bpopup.min.js')// Popup modals
-            ->addJs('var cms_data = {context_menu_items: {}};') // Required for global data
-            ->addJs('cms_data.cfg_domain="' . CFG_DOMAIN . '"') // Required for notifications
-            ->addJs('cms_data.site_name="' . $config->get('site')['name'] . '"') // Required for notifications
-                ;
-        $cnf_notif = Configuration::getInstance()->get('notification');
-        if(isset($cnf_notif['icon'])) {
-            PageHead::getInstance()
-                ->addJs('cms_data.notification_icon = "'.Configuration::getInstance()->get('notification')['icon'].'"');
-        }
-        PageHead::getInstance()
-            ->addJsUrl('cms_js.js')
-//                ->addJsUrl(DIR_CMS_SCRIPTS_URL . 'scripts.js')
-            ->addJsUrl('plupload/plupload.full.min.js')
-        ;
-
-        // Script for sending JS errors
-        if (CFG_MAIL_ERRORS && Settings::isProductionState() && !Settings::get('do_not_send_js_errors')) {
-            PageHead::getInstance()
-                    ->addJsUrl('send_error.js')
-                    ->addJs('register_js_error.ini(\'' . DIR_CMS_URL . '\');')
-            ;
-        }
-
-        PageTail::getInstance()
-            // Global scripts
-            ->addJsUrl('cms/jquery-migrate-1.2.1.min.js')
-            ->addJsUrl('cms/plugins/jquery-ui/jquery-ui-1.10.3.custom.min.js')
-            ->addJsUrl('cms/plugins/bootstrap/js/bootstrap.min.js') // This must be after jquery-ui.custom.js
-            ->addJsUrl('cms/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js')
-            ->addJsUrl('cms/plugins/jquery-slimscroll/jquery.slimscroll.min.js')
-            ->addJsUrl('cms/jquery.blockui.min.js')
-            ->addJsUrl('cms/jquery.cokie.min.js')
-            ->addJsUrl('cms/plugins/uniform/jquery.uniform.min.js')
-            ->addJsUrl('cms/plugins/bootstrap-switch/js/bootstrap-switch.min.js')
-            ->addCssUrl('cms/plugins/jquery-contextmenu/jquery.contextMenu.css')
-            ->addJsUrl('cms/plugins/jquery-contextmenu/jquery.contextMenu.js')
-            // Pages
-            ->addJsUrl('cms/plugins/jquery-validation/js/jquery.validate.min.js')
-            ->addJsUrl('cms/plugins/backstretch/jquery.backstretch.min.js')
-            ->addJsUrl('cms/plugins/select2/select2.min.js')
-            // Final scripts
-            ->addJsUrl('cms/metronic.js')
-            ->addJsUrl('cms/layout/scripts/layout.js')
-            ->addJsUrl('cms/layout/scripts/quick-sidebar.js')
-            ->addJsUrl('cms/plugins/pace/pace.js')
-//                ->addCssURL('plugins/chosen/chosen.min.css') // Beautify selects
-//                ->addJsURL('context_menu/menu.js') // Context menu
-//                ->addJsUrl('bootstrap/js/bootstrap.js')
-//                ->addJsUrl('plugins/jquery.slimscroll.min.js')
-//                ->addJsUrl('plugins/jquery.easing.min.js') // Animations
-//                ->addJsUrl('plugins/appear/jquery.appear.js')
-//                ->addJsUrl('plugins/jquery.placeholder.js')
-//                ->addJsUrl('plugins/fastclick.js')
-//                ->addJsUrl('js/offscreen.js')
-//                ->addJsUrl('js/main.js')
-//                ->addJsUrl('js/buttons.js')
-            ->addJsUrl('plugins/toastr/toastr.min.js') // Notifications
-//                ->addJsUrl('js/notifications.js')
-//                ->addJsUrl('plugins/chosen/chosen.jquery.min.js')
-//                ->addJsUrl('plugins/chosen/chosen.order.jquery.js')
-//                ->addJsURL('ckeditor/ckeditor.js') // Wysiwyg
-            ->addJsUrl('plugins/parsley.js') // Input validation
-            ->addJsUrl('cms/respond.min.js')
-            ->addJsUrl('cms/excanvas.min.js')
-            ->addJs('$(function() {
-               $(".chosen").select2();
-               Metronic.init();
-               Layout.init();
-               QuickSidebar.init();
-            });')
-        ;
-
-        // Search for custom css
-        $custom_css_url = DIR_ASSETS_URL . 'cms.css';
-        if (file_exists(DIR_BASE . $custom_css_url)) {
-            PageHead::getInstance()->addCssUrl($custom_css_url);
-        } else {
-            PageHead::getInstance()->addCustomString('<!--Create file "'. $custom_css_url .'" if you wish to use custom css file-->');
-        }
-
-        // Set head for page
-        Page::setHead(PageHead::getInstance());
-    }
-
-    private function parseMenu()
-    {
-        $menu = Menu::getInstance();
-
-        $all_menu_items = [
-            'system',
-            'home' => [
-                'icon' => 'home',
-            ],
-            'structure' => [
-                'icon' => 'layers',
-            ],
-            'users' => [
-                'icon' => 'user',
-            ],
-            'tools' => [
-                'icon' => 'wrench',
-            ],
-//            'modules',
-        ];
-
-        // Combine items
-        $custom_items = [];
-        if (file_exists(DIR_FRONT . 'menu.php')) {
-            $custom_items = include_once DIR_FRONT . 'menu.php';
-        }
-        $all_menu_items = array_merge($custom_items, $all_menu_items);
-
-        // For every main menu item search for module and submenu
-        foreach ($all_menu_items as $main_menu_key => $main_menu_data) {
-            $menu_class = 'TMCms\Admin\\'. Converter::to_camel_case($main_menu_key) .'\\Cms' . Converter::to_camel_case($main_menu_key);
-            if (!class_exists($menu_class)) {
-                $menu_class = 'TMCms\Modules\\'. Converter::to_camel_case($main_menu_key) .'\\Cms' . Converter::to_camel_case($main_menu_key);
-            }
-            if (class_exists($menu_class)) {
-                $reflection = new \ReflectionClass($menu_class);
-                $filename = $reflection->getFileName();
-                $folder = dirname($filename);
-                $module_menu_file = $folder . '/menu.php';
-                if (file_exists($module_menu_file)) {
-                    $module_menu_data = include_once $module_menu_file;
-                    $all_menu_items[$main_menu_key] = array_merge($all_menu_items[$main_menu_key], $module_menu_data);
-                }
-            }
-        }
-
-        // Add menu items
-        foreach ($all_menu_items as $key => $item) {
-            // Separator
-            if (!is_array($item)) {
-                $menu->addMenuSeparator($item);
-            } else {
-                // Add menu item if have access to page
-                if ($key && Users::getInstance()->checkAccess($key, '_default')) {
-                    $menu->addMenuItem($key, $item);
-                }
-            }
-        }
-
-        // Add translations if have project-related files
-        Finder::getInstance()->addTranslationsSearchPath(DIR_FRONT . 'translations/');
-    }
-
-    private function generateContent()
-    {
-        ob_start();
-
-        // Requesting P page
-        $method = false;
-
-        $call_object = false;
-        // Find in classes under Vendor - Modules
-        $real_class = Converter::to_camel_case(P);
-        $class = '\TMCms\Modules\\' . $real_class . '\Cms' . $real_class;
-        if (!class_exists($class)) {
-            // Not vendor module - check main CMS admin object
-            $class = '\TMCms\Admin\\' . $real_class . '\Cms' . $real_class;
-            $call_object = true;
-            if (!class_exists($class)) {
-                // Search for exclusive module CMS pages created in Project folder for this individual site
-                $file_path = DIR_MODULES . strtolower($real_class) . '/' . 'Cms' . $real_class . '.php';
-                if (file_exists($file_path)) {
-                    require_once $file_path;
-
-                    // Check for module itself
-                    $file_path = DIR_MODULES . strtolower($real_class) . '/' . 'Module' . $real_class . '.php';
-                    if (file_exists($file_path)) {
-                        require_once $file_path;
-                    }
-                    // Require all objects class files
-                    $objects_path = DIR_MODULES . strtolower($real_class) . '/Entity/';
-                    if (file_exists($objects_path)) {
-                        foreach (array_diff(scandir($objects_path), ['.', '..']) as $object_file) {
-                            require_once $objects_path . $object_file;
-                        }
-                    }
-
-                    // CmsClass
-                    $real_class = Converter::to_camel_case(P);
-                    $class = '\TMCms\Modules\\' . $real_class . '\Cms' . $real_class;
-                }
-            }
-        }
-
-        // Try autoload PSR-0 or PSR-4
-        if (!class_exists($class)) {
-            $class = 'TMCms\Modules\\' . $real_class . '\Cms' . $real_class;
-        }
-
-        // Try to find the right directory of requested class
-        if (!class_exists($class)) {
-            $class_name = 'Cms' . $real_class;
-
-            $directory_iterator = new RecursiveDirectoryIterator(DIR_MODULES);
-            $iterator = new RecursiveIteratorIterator($directory_iterator);
-
-            foreach ($iterator as $file) {
-                if ($file->getFilename() == $class_name . '.php') {
-                    $module_path = $file->getPathInfo()->getPathName();
-                    $module_name = $file->getPathInfo()->getFilename();
-
-                    $module_directory_iterator = new RecursiveDirectoryIterator($module_path);
-                    $module_iterator = new RecursiveIteratorIterator($module_directory_iterator);
-
-                    foreach ($module_iterator as $module_file) {
-                        $module_file_directory = $module_file->getPathInfo()->getFilename();
-                        $module_file_name = $module_file->getFileName();
-
-                        if (!in_array($module_file_name, ['.', '..']) and in_array($module_file_directory, [$module_name, 'Entity'])) {
-                            require_once $module_file->getPathName();
-                        }
-                    }
-
-                    $class = implode('\\', ['\TMCms', 'Modules', $module_name, $class_name]);
-
-                    break;
-                }
-            }
-        }
-
-        // Still no class
-        if (!class_exists($class)) {
-            dump('Requested class "' . $class . '" not found');
-        }
-
-        // Check existence of requested method
-        if (class_exists($class)) {
-            $call_object = true;
-
-            // Check requested method exists or set default
-            if (method_exists($class, P_DO)) {
-                $method = P_DO;
-            } else {
-                $method = '_default';
-            }
-
-            // Final check we have anything to run
-            if (!method_exists($class, $method)) {
-                dump('Method "' . $method . '" not found in class "' . $class . '"');
-            }
-        }
-
-        // Check user's permission
-        if (!Users::getInstance()->checkAccess(P, $method)) {
-            error('You do not have permissions to access this page ("' . P . ' - ' . $method . '")');
-            die;
-        }
-
-        // Call required method
-        if ($call_object) {
-            $obj = new $class;
-            $obj->{$method}();
-        } else {
-            call_user_func([$class, $method]);
-        }
-
-        $this->content = ob_get_clean();
     }
 }

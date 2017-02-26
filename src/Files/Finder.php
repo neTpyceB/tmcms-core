@@ -3,6 +3,7 @@
 namespace TMCms\Files;
 
 use TMCms\Config\Settings;
+use TMCms\Orm\Entity;
 use TMCms\Traits\singletonInstanceTrait;
 
 defined('INC') or exit;
@@ -20,11 +21,13 @@ class Finder {
 	const TYPE_SERVICES = 'services';
 	const TYPE_TRANSLATIONS = 'translations';
 
-	private $assets_search_folders = [DIR_CMS_SCRIPTS_URL];
+    private $assets_search_folders = [DIR_CMS_SCRIPTS_URL];
     private $api_search_folders = [DIR_FRONT_API_URL];
 	private $plugin_search_folders = [DIR_FRONT_PLUGINS_URL];
 	private $services_search_folders = [DIR_FRONT_SERVICES_URL];
 	private $translations_search_folders = [];
+
+    private $entities_with_sitemap_links = [];
 
 	public function addAssetsSearchPath($path)
 	{
@@ -54,12 +57,32 @@ class Finder {
         return $this;
 	}
 
+    /**
+     * @param string $path
+     * @return $this
+     */
 	public function addTranslationsSearchPath($path)
 	{
 		$this->translations_search_folders[] = $path;
 
         return $this;
 	}
+
+    /**
+     * @param Entity $entity
+     * @return $this
+     */
+    public function addEntityWithSitemapLinks(Entity $entity)
+    {
+        $this->entities_with_sitemap_links[] = $entity;
+
+        return $this;
+    }
+
+    public function getEntitiesWithSitemapLinks()
+    {
+        return $this->entities_with_sitemap_links;
+    }
 
 	public function searchForRealPath($real_file_path, $type = self::TYPE_ASSETS) {
 		$search_array = $this->getPathFolders($type);
@@ -93,9 +116,9 @@ class Finder {
 				}
 			}
 		}
-/*
+
 		// If file from external composer vendor - should copy to public dir
-		if (stripos($found_path, '/vendor/') === 0) {
+        if (MODE === 'site' && stripos($found_path, '/vendor/') === 0) {
 			$copy_from = DIR_BASE . ltrim($found_path, '/');
 			$copy_to = DIR_ASSETS . ltrim($real_file_path, '/');
 			if (file_exists($copy_from) && !file_exists($copy_to)) {
@@ -104,8 +127,8 @@ class Finder {
 			}
 			$found_path = DIR_ASSETS_URL . ltrim($real_file_path, '/');
 		}
-*/
-		// Add cache stamp for frontend assets
+
+        // Add cache stamp for frontend assets
 		if (!$external && $type == self::TYPE_ASSETS && $found_path) {
 			$found_path .= '?' . Settings::get('last_assets_invalidate_time');
 		}

@@ -762,6 +762,15 @@ class Entity
     }
 
     /**
+     * Must be implemented in extended classes
+     * @return string
+     */
+    public function getLinkForSitemap(): string
+    {
+        die('Method "getLinkForSitemap" must be implemented in extended class "' . get_class($this) . '"');
+    }
+
+    /**
      * @param mixed $data
      */
     protected function debug($data)
