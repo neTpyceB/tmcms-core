@@ -17,7 +17,9 @@ $root_path_length = strlen(DIR_BASE);
 define('DIR_BASE_URL', '/' . substr(DIR_BASE, $root_path_length)); // Can be used to run App from under folder
 
 // Backend url
-define('DIR_CMS', DIR_BASE . 'cms/');
+if (!defined('DIR_CMS')) {
+    define('DIR_CMS', DIR_BASE . 'cms');
+}
 define('DIR_CMS_URL', '/' . substr(DIR_CMS, $root_path_length));
 
 // File cache
