@@ -465,3 +465,22 @@ Finder::getInstance()
 ;
 
 unset($root_path_length, $length_of_include_path);
+
+/**
+ * Run every autoload file from every module
+ */
+function runAutoloadFiles()
+{
+    foreach (scandir(DIR_MODULES) as $module_dir) {
+        // Skip hidden
+        if ($module_dir[0] == '.') {
+            continue;
+        }
+
+        $autoload_file = DIR_MODULES . $module_dir . '/autoload.php';
+
+        if (is_file($autoload_file)) {
+            require_once $autoload_file;
+        }
+    }
+}

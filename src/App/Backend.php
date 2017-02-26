@@ -15,7 +15,6 @@ use TMCms\Files\Finder;
 use TMCms\HTML\BreadCrumbs;use TMCms\Services\ServiceManager;
 use TMCms\Log\App;
 use TMCms\Log\Usage;
-use TMCms\Network\Mailer;
 use TMCms\Strings\Converter;
 use TMCms\Templates\Page;
 use TMCms\Templates\PageBody;
@@ -97,7 +96,7 @@ class Backend
         App::flushLog();
 
         // Autoload files from modules
-        $this->runAutoloadFiles();
+        runAutoloadFiles();
 
         // Session alerts
         Messages::flushSessionAlerts();
@@ -391,25 +390,6 @@ class Backend
         Finder::getInstance()->addTranslationsSearchPath(DIR_FRONT . 'translations/');
     }
 
-    /**
-     * Run every autoload file from every module
-     */
-    private function runAutoloadFiles()
-    {
-        foreach (scandir(DIR_MODULES) as $module_dir) {
-            // Skip hidden
-            if ($module_dir[0] == '.') {
-                continue;
-            }
-
-            $autoload_file = DIR_MODULES . $module_dir . '/autoload.php';
-
-            if (is_file($autoload_file)) {
-                require_once $autoload_file;
-            }
-        }
-    }
-
     private function generateContent()
     {
         ob_start();
@@ -533,8 +513,6 @@ class Backend
     public function __toString()
     {
         ob_start();
-
-        $breadcrumbs = BreadCrumbs::getInstance();
 
         $user_logged_in = Users::getInstance()->isLogged();
 

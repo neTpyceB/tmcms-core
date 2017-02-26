@@ -57,6 +57,9 @@ class Frontend
     {
         $this->init();
 
+        // Autoload files from modules
+        runAutoloadFiles();
+
         $this->parse();
 
         // Flush application log
