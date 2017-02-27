@@ -692,10 +692,28 @@ FROM `' . $this->getDbTableName() . '`
             $key_field = 'id';
         }
 
-        $data = q_assoc($this->getSelectSql());
-        $pairs = [];
-        foreach($data as $row){
-            $pairs[$row[$key_field]] = $row[$value_field];
+        $ent = $this->getFirstObjectFromCollection();
+        $key_method = 'get' . ucfirst($key_field);
+        $value_method = 'get' . ucfirst($value_field);
+        if(($key_method!='getId' && method_exists($ent, $key_method)) || method_exists($ent, $value_method)){
+            $this->collectObjects();
+
+            $pairs = [];
+            foreach ($this->getAsArrayOfObjects() as $v) {
+                /** @var Entity $v */
+                $v->loadDataFromDB();
+
+                $key_method = 'get' . ucfirst($key_field);
+                $value_method = 'get' . ucfirst($value_field);
+                $pairs[$v->{$key_method}()] = $v->{$value_method}();
+            }
+        }else{
+            $this->addSimpleSelectFields([$key_field, $value_field]);
+            $data = q_assoc($this->getSelectSql());
+            $pairs = [];
+            foreach($data as $row){
+                $pairs[$row[$key_field]] = $row[$value_field];
+            }
         }
         return $pairs;
     }
