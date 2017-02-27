@@ -270,8 +270,12 @@ define('CMS_VERSION', '16.12');
 define('CMS_NAME', 'The Modern CMS');
 define('CMS_DEVELOPERS', 'Vadims Petrusevs, neTpyceB, Bogdans Laidiņš, Armands Grundmanis');
 define('CMS_OWNER_COMPANY', 'SIA DEVP');
-define('CMS_SUPPORT_EMAIL', 'info@devp.eu'); // Support e-mail for errors, etc.
-define('CMS_SITE', 'http://devp.eu/');
+if (!defined('CMS_SUPPORT_EMAIL')) {
+    define('CMS_SUPPORT_EMAIL', 'info@devp.eu'); // Support e-mail for errors, etc.
+}
+if (!defined('CMS_SITE')) {
+    define('CMS_SITE', 'http://devp.eu/');
+}
 define('IS_AJAX_REQUEST', (int)isset($_REQUEST['ajax']) || stripos(SELF, '_ajax') === 0 || stripos(SELF, '/' . CFG_API_ROUTE . '/') !== false || (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest'));
 
 // Dates
