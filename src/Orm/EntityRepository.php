@@ -692,18 +692,11 @@ FROM `' . $this->getDbTableName() . '`
             $key_field = 'id';
         }
 
-        $this->collectObjects();
-
+        $data = q_assoc($this->getSelectSql());
         $pairs = [];
-        foreach ($this->getAsArrayOfObjects() as $v) {
-            /** @var Entity $v */
-            $v->loadDataFromDB();
-
-            $key_method = 'get' . ucfirst($key_field);
-            $value_method = 'get' . ucfirst($value_field);
-            $pairs[$v->{$key_method}()] = $v->{$value_method}();
+        foreach($data as $row){
+            $pairs[$row[$key_field]] = $row[$value_field];
         }
-
         return $pairs;
     }
 
