@@ -10,7 +10,7 @@ $(function() {
             $(this).bind('mousedown.clickmap', function(evt) {
                 var lastCoords = $(this).data('lastCoords');
                 if (lastCoords.pageX != evt.pageX && lastCoords.pageY != evt.pageY) {
-                    $.post('/-/ajax/clickmap_register/', {
+                    $.post('/-/api/clickmap_register/', {
                         x: evt.pageX,
                         y: evt.pageY,
                         l: cms_page_id

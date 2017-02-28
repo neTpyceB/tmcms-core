@@ -258,7 +258,7 @@ class Router
             if (isset($path[4])) {
                 $ajax_rest_id = $path[4];
             }
-            define('AJAX_ID', $ajax_rest_id);
+            define('API_ID', $ajax_rest_id);
 
             require_once DIR_BASE . $api_file;
 

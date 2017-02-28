@@ -45,7 +45,7 @@ var register_js_error = {
         setTimeout(
             function() {
                 if (document.body) {
-                    document.body.appendChild(document.createElement("script")).src = '/-/ajax/send_js_error/?msg=' + encodeURIComponent(msg) + '&url=' + encodeURIComponent(url) + '&line=' + encodeURIComponent(line) + '&stack=' + encodeURIComponent(register_js_error.normalize());
+                    document.body.appendChild(document.createElement("script")).src = '/-/api/send_js_error/?msg=' + encodeURIComponent(msg) + '&url=' + encodeURIComponent(url) + '&line=' + encodeURIComponent(line) + '&stack=' + encodeURIComponent(register_js_error.normalize());
                 }
             },
             999
