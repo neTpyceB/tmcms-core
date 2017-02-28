@@ -7,6 +7,8 @@ use TMCms\Cache\Cacher;
 use TMCms\Config\Configuration;
 use TMCms\Config\Settings;
 use TMCms\DB\SQL;
+use TMCms\Routing\Languages;
+use TMCms\Routing\Structure;
 use TMCms\Strings\Converter;
 use TMCms\Strings\SimpleCrypto;
 use TMCms\Strings\Translations;
@@ -505,7 +507,7 @@ class Entity
 
                 // Translation field
                 if (in_array($v, $this->translation_fields) && isset($this->translation_data[$v]) && is_array($this->translation_data[$v])) {
-                    $data[$v] = Translations::update($this->translation_data[$v], $this->data[$v], $this);
+                    $data[$v] = Translations::update($this->translation_data[$v], $this->data[$v]);
                 } else {
                     // Usual field
                     if ($this->getField($v) !== NULL) {
@@ -566,11 +568,24 @@ class Entity
         // Set data values for every available field
         foreach ($fields as $v) {
             // Translation
-            if (in_array($v, $this->translation_fields) && isset($this->translation_data[$v]) && is_array($this->translation_data[$v])) {
-                if (isset($this->translation_data[$v]['id'])) {
-                    unset($this->translation_data[$v]['id']); // Save new Translation
+            if (in_array($v, $this->translation_fields) && isset($this->translation_data[$v])) {
+
+                // If provided text only - need to save new and set array
+                if (!is_array($this->translation_data[$v])) {
+                    $languages = Languages::getPairs();
+                    $tmp = [];
+                    foreach ($languages as $short => $long) {
+                        $tmp[$short] = $this->translation_data[$v];
+                    }
+                    $this->translation_data[$v] = $tmp;
                 }
-                $translation_saved_ids[] = $data[$v] = Translations::save($this->translation_data[$v], $this);
+
+                // Save new Translation
+                if (isset($this->translation_data[$v]['id'])) {
+                    unset($this->translation_data[$v]['id']);
+                }
+
+                $translation_saved_ids[] = $data[$v] = Translations::save($this->translation_data[$v]);
 
                 $this->setField($v, $data[$v]);
             } else {
