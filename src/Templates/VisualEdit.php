@@ -42,6 +42,11 @@ class VisualEdit
      */
     public function wrapAroundComponents($controller, $key, $data, $type = 'component')
     {
+        // Only editable strings
+        if (!is_scalar($data)) {
+            return $data;
+        }
+
         ob_start();
 
         ?>
