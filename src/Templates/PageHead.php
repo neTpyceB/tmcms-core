@@ -336,7 +336,6 @@ class PageHead
             <?php if (!Settings::get('do_not_expose_generator')): ?>
                 <meta name="generator" content="<?= CMS_NAME ?>, <?= CMS_SITE ?>">
             <?php endif; ?>
-            <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
             <meta charset="utf-8">
             <title><?= htmlspecialchars($this->title, ENT_QUOTES) ?></title><?php
             // META
