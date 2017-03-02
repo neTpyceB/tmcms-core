@@ -186,7 +186,13 @@ class Components
             foreach ($custom_components_in_database as $custom) {
                 // Set unavailable fields as empty
                 foreach (self::$_components[$class][$class . '_' . $custom['tab']] as $order => $data) {
-                    if (count(self::$_components[$class][$class . '_' . $custom['tab']][$order]) != count($custom_components_in_controller[$class . '_' . $custom['tab']])) {
+                    if (isset($custom_components_in_controller[$class . '_' . $custom['tab']])
+                        && isset(self::$_components[$class][$class . '_' . $custom['tab']][$order])
+                        && (
+                            count(self::$_components[$class][$class . '_' . $custom['tab']][$order])
+                            !=
+                            count($custom_components_in_controller[$class . '_' . $custom['tab']]))
+                    ) {
                         foreach ($custom_components_in_controller[$class . '_' . $custom['tab']] as $field_key => $field_value) {
                             if (!isset(self::$_components[$class][$class . '_' . $custom['tab']][$order][$field_key])) {
                                 self::$_components[$class][$class . '_' . $custom['tab']][$order][$field_key] = ''; // Set empty field
