@@ -20,6 +20,9 @@ class FrontPanel
         <script>
             $.ajax({
                 url: '/-/<?= CFG_API_ROUTE ?>/admin_front_panel/',
+                data: {
+                    page_id: '<?= PAGE_ID ?>'
+                },
                 success: function (data) {
                     $('body').append(data);
                 }

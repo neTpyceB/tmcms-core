@@ -117,22 +117,6 @@ class MVC
     }
 
     /**
-     * @return PageHead
-     */
-    public function getComponentName()
-    {
-        return $this->component_name;
-    }
-
-    /**
-     * @param string $component_name
-     */
-    public function setComponentName($component_name)
-    {
-        $this->component_name = $component_name;
-    }
-
-    /**
      * Get data from controller
      */
     public function outputController()
@@ -168,6 +152,11 @@ class MVC
         if (is_file($method_file)) {
             require_once $method_file;
         }
+        // Require file with data in sub folder
+        $method_file = DIR_FRONT_CONTROLLERS . $this->getComponentName() . '/' . $method . '.php';
+        if (is_file($method_file)) {
+            require_once $method_file;
+        }
 
         // Execute controller method
         $data = self::$controllers[$this->controller]->$method($this->getModifiers());
@@ -176,6 +165,41 @@ class MVC
         if ($data) {
             $this->data = $this->data + $data;
         }
+    }
+
+    /**
+     * @return PageHead
+     */
+    public function getComponentName()
+    {
+        return $this->component_name;
+    }
+
+    /**
+     * @param string $component_name
+     */
+    public function setComponentName($component_name)
+    {
+        $this->component_name = $component_name;
+    }
+
+    /**
+     * @return array
+     */
+    public function getModifiers()
+    {
+        return $this->modifiers;
+    }
+
+    /**
+     * @param array $modifiers
+     * @return $this
+     */
+    public function setModifiers($modifiers)
+    {
+        $this->modifiers = $modifiers;
+
+        return $this;
     }
 
     /**
@@ -214,6 +238,11 @@ class MVC
         if (is_file($method_file)) {
             require_once $method_file;
         }
+        // Require file with data in sub folder
+        $method_file = DIR_FRONT_VIEWS . $this->getComponentName() . '/' . $method . '.php';
+        if (is_file($method_file)) {
+            require_once $method_file;
+        }
 
         // Execute view method
         self::$views[$this->view]->$method($this->data);
@@ -243,24 +272,5 @@ class MVC
     public function getData()
     {
         return $this->data;
-    }
-
-    /**
-     * @param array $modifiers
-     * @return $this
-     */
-    public function setModifiers($modifiers)
-    {
-        $this->modifiers = $modifiers;
-
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getModifiers()
-    {
-        return $this->modifiers;
     }
 }
