@@ -245,7 +245,15 @@ class MVC
         }
 
         // Execute view method
-        self::$views[$this->view]->$method($this->data);
+        $this->getCurrentViewObject()->$method($this->data);
+    }
+
+    /**
+     * @return View
+     */
+    public function getCurrentViewObject()
+    {
+        return self::$views[$this->view];
     }
 
     /**
