@@ -352,6 +352,19 @@ class SQL
     }
 
     /**
+     * Return one dimensional array with one column, for example IDs list
+     * @param $q
+     * @param int $column
+     * @param bool|true $protect
+     * @return array
+     */
+    public static function q_column($q, $column = 0, $protect = true){
+        $qh = self::getInstance()->sql_query($q, $protect);
+        $res = $qh->fetchAll(PDO::FETCH_COLUMN, $column);
+        return $res;
+    }
+
+    /**
      * Return pointer to iterate array, same as in q_assoc
      * This function consumes much less memory that q_assoc, because uses yield iterator
      * @param string $q

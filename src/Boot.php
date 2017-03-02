@@ -371,6 +371,11 @@ function q_value($q)
     return SQL::q_value($q);
 }
 
+function q_column($q, $column=0, $protected=true)
+{
+    return SQL::q_column($q, $column, $protected);
+}
+
 /**
  * @param mixed $data
  * @param bool $serialize
