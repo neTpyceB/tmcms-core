@@ -267,6 +267,11 @@ class CmsTableHelper {
                             break;
                     }
 
+                    // Autosubmit
+                    if (isset($filter_data['auto_submit']) && $filter_data['auto_submit']) {
+                        $filter->enableAutoSubmit();
+                    }
+
                     // Options for selects
                     if (isset($filter_data['options'])) {
                         $filter->setOptions($filter_data['options']);
