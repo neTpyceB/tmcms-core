@@ -31,20 +31,48 @@ class SQL
     private $pdo_db;
 
     /**
-     * Should be non-static because we can have more than one connection
-     * Stop current connection
+     * @param string $tbl
+     * @param bool $use_cache
+     * @return bool
      */
-    public function disconnect()
+    public static function tableExists($tbl, $use_cache = true)
     {
-        $this->pdo_db = NULL;
+        return in_array($tbl, self::getTables(NULL, $use_cache));
     }
 
     /**
-     * @return PDO
+     * Show tables in database
+     * @param string $db - database name
+     * @param bool $use_cache
+     * @return array - list of non-temporary tables, by pairs key/value
      */
-    public function getConnectionHandler()
+    public static function getTables($db = NULL, $use_cache = true)
     {
-        return $this->pdo_db;
+        if (!$db) {
+            $db = Configuration::getInstance()->get('db')['name'];
+            if (!$db) {
+                return [];
+            }
+        }
+
+        if (Settings::isCacheEnabled()) {
+            $cache_key = 'db_table_list_all';
+            $cacher = Cacher::getInstance()->getDefaultCacher();
+
+            if (!isset(self::$_table_list[$db])) {
+                self::$_table_list[$db] = $cacher->get($cache_key);
+            }
+        }
+
+        if (!isset(self::$_table_list[$db]) || !$use_cache) {
+            self::$_table_list[$db] = self::getInstance()->q_pairs('SHOW TABLES FROM `' . $db . '`');
+        }
+
+        if (Settings::isCacheEnabled()) {
+            $cacher->set($cache_key, self::$_table_list[$db], 86400);
+        }
+
+        return self::$_table_list[$db];
     }
 
     /**
@@ -221,51 +249,6 @@ class SQL
     }
 
     /**
-     * @param string $tbl
-     * @param bool $use_cache
-     * @return bool
-     */
-    public static function tableExists($tbl, $use_cache = true)
-    {
-        return in_array($tbl, self::getTables(NULL, $use_cache));
-    }
-
-    /**
-     * Show tables in database
-     * @param string $db - database name
-     * @param bool $use_cache
-     * @return array - list of non-temporary tables, by pairs key/value
-     */
-    public static function getTables($db = NULL, $use_cache = true)
-    {
-        if (!$db) {
-            $db = Configuration::getInstance()->get('db')['name'];
-            if (!$db) {
-                return [];
-            }
-        }
-
-        if (Settings::isCacheEnabled()) {
-            $cache_key = 'db_table_list_all';
-            $cacher = Cacher::getInstance()->getDefaultCacher();
-
-            if (!isset(self::$_table_list[$db])) {
-                self::$_table_list[$db] = $cacher->get($cache_key);
-            }
-        }
-
-        if (!isset(self::$_table_list[$db]) || !$use_cache) {
-            self::$_table_list[$db] = self::getInstance()->q_pairs('SHOW TABLES FROM `' . $db . '`');
-        }
-
-        if (Settings::isCacheEnabled()) {
-            $cacher->set($cache_key, self::$_table_list[$db], 86400);
-        }
-
-        return self::$_table_list[$db];
-    }
-
-    /**
      * @param string $name
      * @return bool
      */
@@ -296,33 +279,6 @@ class SQL
     }
 
     /**
-     * retrieve value from associative array
-     * @param string $str
-     * @param bool $used_in_like
-     * @return string
-     */
-    public static function sql_prepare($str, $used_in_like = false)
-    {
-        if (!self::getInstance()->pdo_db) {
-            self::getInstance()->connect();
-        }
-
-        if (is_array($str)) {
-            foreach ($str as &$v) {
-                $v = self::sql_prepare($v);
-            }
-        } else {
-            $str = substr(self::getInstance()->pdo_db->quote(trim($str)), 1, -1);
-
-            if ($used_in_like) {
-                $str = str_replace(['_', '%'], ['\_', '\%'], $str);
-            }
-        }
-
-        return $str;
-    }
-
-    /**
      * Check entry exists in DB
      * @param string $tbl
      * @param string $where
@@ -331,24 +287,6 @@ class SQL
     public static function q_check($tbl, $where = '')
     {
         return (bool)self::getInstance()->sql_query('SELECT NULL FROM `' . $tbl . '`' . ($where ? ' WHERE ' . $where : '') . ' LIMIT 1')->rowCount();
-    }
-
-    /**
-     * Return assoc array of all entries, e.g. [['id' => 10, 'name' => 'Jhon'], ['id' => 22, 'name' => 'Doe'], ...]
-     * @param string $q
-     * @param bool $protect
-     * @return array
-     */
-    public static function q_assoc($q, $protect = true)
-    {
-        $res = [];
-        $qh = self::getInstance()->sql_query($q, $protect);
-
-        while ($res[] = $qh->fetch(PDO::FETCH_ASSOC)) ;
-
-        array_pop($res);
-
-        return $res;
     }
 
     /**
@@ -362,22 +300,6 @@ class SQL
         $qh = self::getInstance()->sql_query($q, $protect);
         $res = $qh->fetchAll(PDO::FETCH_COLUMN, $column);
         return $res;
-    }
-
-    /**
-     * Return pointer to iterate array, same as in q_assoc
-     * This function consumes much less memory that q_assoc, because uses yield iterator
-     * @param string $q
-     * @param bool $protect
-     * @return \Iterator
-     */
-    public static function q_assoc_iterator($q, $protect = true)
-    {
-        $qh = self::getInstance()->sql_query($q, $protect);
-
-        while ($record = $qh->fetch(PDO::FETCH_ASSOC)) {
-            yield $record;
-        }
     }
 
     /**
@@ -440,6 +362,22 @@ class SQL
         }
 
         return self::$_cached_tbl_fields = self::q_assoc_id("SHOW FIELDS FROM `$tbl`");
+    }
+
+    /**
+     * @param string $q query
+     * @return array
+     */
+    public static function q_assoc_id($q)
+    {
+        $res = [];
+        $qh = is_string($q) ? self::getInstance()->sql_query($q) : $q;
+
+        while ($q = $qh->fetch(PDO::FETCH_ASSOC)) {
+            $res[current($q)] = $q;
+        }
+
+        return $res;
     }
 
     /**
@@ -514,12 +452,50 @@ class SQL
     }
 
     /**
+     * retrieve value from associative array
+     * @param string $str
+     * @param bool $used_in_like
+     * @return string
+     */
+    public static function sql_prepare($str, $used_in_like = false)
+    {
+        if (!self::getInstance()->pdo_db) {
+            self::getInstance()->connect();
+        }
+
+        if (is_array($str)) {
+            foreach ($str as &$v) {
+                $v = self::sql_prepare($v);
+            }
+        } else {
+            $str = substr(self::getInstance()->pdo_db->quote(trim($str)), 1, -1);
+
+            if ($used_in_like) {
+                $str = str_replace(['_', '%'], ['\_', '\%'], $str);
+            }
+        }
+
+        return $str;
+    }
+
+    /**
      * @param string $tbl
      * @return mixed
      */
     public static function getTableInfo($tbl)
     {
         return self::q_assoc_row('SHOW TABLE STATUS LIKE "' . $tbl . '"');
+    }
+
+    /**
+     * @param string $q
+     * @return array
+     */
+    public static function q_assoc_row($q)
+    {
+        $qh = is_string($q) ? self::getInstance()->sql_query($q) : $q;
+
+        return $qh->fetch(PDO::FETCH_ASSOC);
     }
 
     /**
@@ -565,22 +541,6 @@ class SQL
     }
 
     /**
-     * @param string $q query
-     * @return array
-     */
-    public static function q_assoc_id($q)
-    {
-        $res = [];
-        $qh = is_string($q) ? self::getInstance()->sql_query($q) : $q;
-
-        while ($q = $qh->fetch(PDO::FETCH_ASSOC)) {
-            $res[current($q)] = $q;
-        }
-
-        return $res;
-    }
-
-    /**
      * Check if query uses all possible db table indexes
      * @param string $sql
      * @return bool
@@ -609,18 +569,6 @@ class SQL
     public static function setTableComment($tbl, $comment = '')
     {
         self::getInstance()->sql_query('ALTER TABLE `' . $tbl . '` COMMENT = "' . self::sql_prepare($comment) . '"');
-    }
-
-    /**
-     * @return string
-     */
-    public function getServerInfo()
-    {
-        if (!$this->pdo_db) {
-            $this->connect();
-        }
-
-        return $this->pdo_db->getAttribute(PDO::ATTR_SERVER_VERSION);
     }
 
     /**
@@ -737,15 +685,6 @@ class SQL
         return self::getInstance()->sql_query('DELETE FROM `' . $tbl . '` WHERE `' . $id_col . '` IN ("' . implode('", "', $id) . '")')->rowCount();
     }
 
-    /**
-     * @param string $table
-     * @return array
-     */
-    public static function getTableColumns($table)
-    {
-        return self::q_assoc('SHOW COLUMNS FROM `' . self::sql_prepare($table) . '`');
-    }
-
     public static function getColumnsComments($table, $column = '')
     {
         return self::q_assoc_iterator('SELECT
@@ -756,6 +695,22 @@ WHERE TABLE_SCHEMA = "' . Configuration::getInstance()->get('db')['name'] . '"
 AND TABLE_NAME = "' . self::sql_prepare($table) . '"
 ' . ($column ? 'AND COLUMN_NAME = "' . self::sql_prepare($column) . '"' : '') . ''
         );
+    }
+
+    /**
+     * Return pointer to iterate array, same as in q_assoc
+     * This function consumes much less memory that q_assoc, because uses yield iterator
+     * @param string $q
+     * @param bool $protect
+     * @return \Iterator
+     */
+    public static function q_assoc_iterator($q, $protect = true)
+    {
+        $qh = self::getInstance()->sql_query($q, $protect);
+
+        while ($record = $qh->fetch(PDO::FETCH_ASSOC)) {
+            yield $record;
+        }
     }
 
     /**
@@ -788,6 +743,33 @@ AND TABLE_NAME = "' . self::sql_prepare($table) . '"
         }
 
         return self::getInstance()->sql_query($sql)->rowCount();
+    }
+
+    /**
+     * @param string $table
+     * @return array
+     */
+    public static function getTableColumns($table)
+    {
+        return self::q_assoc('SHOW COLUMNS FROM `' . self::sql_prepare($table) . '`');
+    }
+
+    /**
+     * Return assoc array of all entries, e.g. [['id' => 10, 'name' => 'Jhon'], ['id' => 22, 'name' => 'Doe'], ...]
+     * @param string $q
+     * @param bool $protect
+     * @return array
+     */
+    public static function q_assoc($q, $protect = true)
+    {
+        $res = [];
+        $qh = self::getInstance()->sql_query($q, $protect);
+
+        while ($res[] = $qh->fetch(PDO::FETCH_ASSOC)) ;
+
+        array_pop($res);
+
+        return $res;
     }
 
     /**
@@ -826,15 +808,15 @@ AND TABLE_NAME = "' . self::sql_prepare($table) . '"
 
     /**
      * get next item by order. If $catFld and $catValue are set - get next item by order in selected category
-     * @param string $tbl - table name
-     * @param string $fld - order field name ('order' by default)
-     * @param string $catFld - category field name ('' by default)
-     * @param int $catValue - category id ('' by default)
+     * @param string $table - table name
+     * @param string $field - order field name ('order' by default)
+     * @param string $category_field_name - category field name ('' by default)
+     * @param int $category_id - category id ('' by default)
      * @return string order value
      */
-    public static function getNextOrder($tbl, $fld = 'order', $catFld = '', $catValue = 0)
+    public static function getNextOrder($table, $field = 'order', $category_field_name = '', $category_id = 0)
     {
-        return (int)self::q_value('SELECT `' . $fld . '` FROM `' . $tbl . '`' . ($catFld ? ' WHERE `' . $catFld . '` = "' . self::sql_prepare($catValue) . '"' : '') . ' ORDER BY `' . $fld . '` DESC LIMIT 1') + 1;
+        return (int)self::q_value('SELECT `' . $field . '` FROM `' . $table . '`' . ($category_field_name ? ' WHERE `' . $category_field_name . '` = "' . self::sql_prepare($category_id) . '"' : '') . ' ORDER BY `' . $field . '` DESC LIMIT 1') + 1;
     }
 
     /**
@@ -1000,6 +982,14 @@ AND TABLE_NAME = "' . self::sql_prepare($table) . '"
     }
 
     /**
+     * Check whether now in transaction
+     */
+    public static function isTransactionActive()
+    {
+        return self::getInstance()->pdo_db && self::getInstance()->pdo_db->inTransaction();
+    }
+
+    /**
      * Accept,confirm and close DB Trandaction
      */
     public static function confirmTransaction()
@@ -1015,14 +1005,6 @@ AND TABLE_NAME = "' . self::sql_prepare($table) . '"
     public static function cancelTransaction()
     {
         self::getInstance()->pdo_db->rollBack();
-    }
-
-    /**
-     * Check whether now in transaction
-     */
-    public static function isTransactionActive()
-    {
-        return self::getInstance()->pdo_db && self::getInstance()->pdo_db->inTransaction();
     }
 
     /**
@@ -1047,14 +1029,32 @@ AND TABLE_NAME = "' . self::sql_prepare($table) . '"
     }
 
     /**
-     * @param string $q
-     * @return array
+     * Should be non-static because we can have more than one connection
+     * Stop current connection
      */
-    public static function q_assoc_row($q)
+    public function disconnect()
     {
-        $qh = is_string($q) ? self::getInstance()->sql_query($q) : $q;
+        $this->pdo_db = NULL;
+    }
 
-        return $qh->fetch(PDO::FETCH_ASSOC);
+    /**
+     * @return PDO
+     */
+    public function getConnectionHandler()
+    {
+        return $this->pdo_db;
+    }
+
+    /**
+     * @return string
+     */
+    public function getServerInfo()
+    {
+        if (!$this->pdo_db) {
+            $this->connect();
+        }
+
+        return $this->pdo_db->getAttribute(PDO::ATTR_SERVER_VERSION);
     }
 
     /**
