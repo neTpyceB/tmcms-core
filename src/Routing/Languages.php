@@ -151,6 +151,15 @@ class Languages
             }
         }
 
+        $skip_get_path = false;
+        if ($object) {
+            $object_slug = $object->getSlugUrl($lng);
+            if ($object_slug) {
+                $res .= $object_slug . '/';
+            }
+            $skip_get_path = true;
+        }
+
         // $_GET in path
         $so = count($_GET);
         $path_gets = [];
@@ -164,7 +173,8 @@ class Languages
             }
 
             if (isset($_GET[$i])) {
-                $path_gets[] = $_GET[$i];
+                if(!$skip_get_path)
+                    $path_gets[] = $_GET[$i];
                 unset($param_get[$i]);
             } else {
                 $skip = true;
@@ -174,14 +184,6 @@ class Languages
         // If have transparent get
         if ($path_gets) {
             $res .= implode('/', $path_gets) . '/';
-        }
-
-        // Add path as transparent get params if object have own method for it
-        if ($object) {
-            $object_slug = $object->getSlugUrl();
-            if ($object_slug) {
-                $res .= $object_slug . '/';
-            }
         }
 
         // If have usual get params

@@ -394,9 +394,10 @@ class Entity
 
     /**
      * This method sometimes is required for language selector
+     * @param $lng
      * @return string
      */
-    public function getSlugUrl()
+    public function getSlugUrl($lng)
     {
         return '';
     }
