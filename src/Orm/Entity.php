@@ -397,7 +397,7 @@ class Entity
      * @param $lng
      * @return string
      */
-    public function getSlugUrl($lng)
+    public function getSlugUrl($lng = LNG)
     {
         return '';
     }
