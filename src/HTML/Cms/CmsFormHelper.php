@@ -205,6 +205,7 @@ class CmsFormHelper {
                 } elseif ($field['type'] == 'hidden') {
                     $cms_field = CmsInputHidden::getInstance($key);
                 } elseif ($field['type'] == 'file') {
+                    $form->setEnctypeMultipartFormData();
                     $cms_field = CmsInputFile::getInstance($key);
                 } elseif ($field['type'] == 'color') {
                     $cms_field = CmsInputColor::getInstance($key);
