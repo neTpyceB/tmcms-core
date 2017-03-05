@@ -60,7 +60,7 @@ class Backend
 
             // Output
             $out = $updater->getResult();
-            $text = json_encode($out, JSON_FORCE_OBJECT);
+            $text = json_encode($out, JSON_OBJECT_AS_ARRAY);
 
             echo $text;
 
