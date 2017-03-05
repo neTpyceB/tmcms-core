@@ -266,7 +266,7 @@ if (!defined('CFG_GIT_BRANCH')) {
 }
 
 /* CMS */
-define('CMS_VERSION', '16.12');
+define('CMS_VERSION', '17.03');
 define('CMS_NAME', 'The Modern CMS');
 define('CMS_DEVELOPERS', 'Vadims Petrusevs, neTpyceB, Bogdans Laidiņš, Armands Grundmanis');
 define('CMS_OWNER_COMPANY', 'SIA DEVP');

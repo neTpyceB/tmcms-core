@@ -880,4 +880,15 @@ class Structure
             ->setOrderColumn('order')
             ->getAsArray($pid);
     }
+
+    /**
+     * @param int $id
+     * @return PageEntity
+     */
+    public static function getParentPage($id = PAGE_ID)
+    {
+        $page = new PageEntity($id);
+
+        return new PageEntity($page->getPid());
+    }
 }
