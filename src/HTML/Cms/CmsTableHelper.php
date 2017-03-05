@@ -203,6 +203,9 @@ class CmsTableHelper {
             if (isset($column_param['href'])) {
                 $column->setHref($column_param['href']);
             }
+            if (isset($column_param['href_new_window'])) {
+                $column->href_new_window($column_param['href_new_window']);
+            }
 
             // Paired array
             if (isset($column_param['pairs'])) {
