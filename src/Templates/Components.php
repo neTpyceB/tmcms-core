@@ -206,7 +206,7 @@ class Components
             // Set any empty value to all non-existing components to avoid error in front
             foreach ($custom_components_in_controller as $custom_key => $custom_fields) {
                 list($class, $custom_tab) = explode('_', $custom_key, 2);
-                if (!isset(self::$_components[$class][$class . '_' . $custom_tab])) {
+                if (!isset(self::$_components[$class][$class . '_' . $custom_tab]) || !is_array(self::$_components[$class][$class . '_' . $custom_tab])) {
                     self::$_components[$class][$class . '_' . $custom_tab] = []; // Set empty array to iterate from
                 }
             }
@@ -230,6 +230,21 @@ class Components
             }
 
             $custom_components[$class . '_' . $key] = $component['fields'];
+        }
+
+        // Custom method names
+        foreach (get_class_methods($controller_name) as $component_method) {
+            $controller_method = 'getComponents_' . $component_method;
+
+            if (method_exists($controller_name, $controller_method)) {
+                foreach ($controller_name::$controller_method() as $key => $component) {
+                    if (!isset($component['type']) || $component['type'] != 'custom') {
+                        continue;
+                    }
+
+                    $custom_components[$class . '_' . $key] = $component['fields'];
+                }
+            }
         }
 
         return $custom_components;
