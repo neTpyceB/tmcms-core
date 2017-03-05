@@ -49,7 +49,7 @@ class Updater
         }
 
         // To use this command owner of folder and git repository must be the same as web user
-        exec('git reset --hard origin/' . $branch . ' 2>&1; git pull -vvv origin ' . $branch . ' 2>&1', $out);
+        exec('git reset --hard origin/' . $branch . ' 2>&1; git pull -v origin ' . $branch . ' 2>&1', $out);
         if ($out) {
             $this->result_message[] = $out;
         }
@@ -77,7 +77,7 @@ class Updater
     {
         chdir(DIR_BASE);
 
-        exec('COMPOSER_HOME="' . substr(DIR_BASE, 0, -1) . '" php composer.phar -vvv update --profile 2>&1', $out);
+        exec('COMPOSER_HOME="' . substr(DIR_BASE, 0, -1) . '" php composer.phar -v update 2>&1', $out);
         if ($out) {
             $this->result_message[] = $out;
         }
