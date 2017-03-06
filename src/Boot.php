@@ -399,7 +399,8 @@ function error($str)
  * @param bool|mixed $lng
  * @param array $replaces
  * @param string $default
- * @return mixed|string|void
+ * @param bool $no_cache
+ * @return string
  */
 function w($k, $lng = LNG, $replaces = [], $default = '', $no_cache = false)
 {

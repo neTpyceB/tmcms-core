@@ -375,7 +375,7 @@ class Structure
 
         $temp = $k . '_' . $lng;
 
-        if (!$no_cache && isset(self::$_words_cache[$temp])) {
+        if (!$no_cache && isset(self::$_words_cache[$temp]) && !$replaces) { // Do not cache if have replaces or forced
             return self::$_words_cache[$temp];
         }
 
