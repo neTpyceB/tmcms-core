@@ -313,11 +313,18 @@ if (!$image->save(DIR_CACHE . 'images/' . QUERY, $ext, 90) && !Settings::isProdu
 }
 
 // Run file optimizers
-$path_for_exec = str_replace(['&', '=', ' ', '(', ')'], ['\&', '\=', '\ ', '\(', '\)'], QUERY);
-if ($ext == 'jpg') {
-    exec('jpegoptim --strip-all '. DIR_CACHE . 'images/' . $path_for_exec . '  2>&1');
-} elseif ($ext == 'png') {
-    exec('optipng '. DIR_CACHE . 'images/' . $path_for_exec . '  2>&1');
+$tinypng = Configuration::getInstance()->get('tinypng');
+if(class_exists('\Tinify\Tinify') && !empty($tinypng) && !empty($tinypng['key'])){
+    \Tinify\setKey($tinypng['key']);
+    $source = \Tinify\fromFile(DIR_CACHE . 'images/' . QUERY);
+    $source->toFile(DIR_CACHE . 'images/' . QUERY);
+}else {
+    $path_for_exec = str_replace(['&', '=', ' ', '(', ')'], ['\&', '\=', '\ ', '\(', '\)'], QUERY);
+    if ($ext == 'jpg') {
+        exec('jpegoptim --strip-all ' . DIR_CACHE . 'images/' . $path_for_exec . '  2>&1');
+    } elseif ($ext == 'png') {
+        exec('optipng ' . DIR_CACHE . 'images/' . $path_for_exec . '  2>&1');
+    }
 }
 
 go('/' . QUERY);
