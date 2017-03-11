@@ -124,7 +124,7 @@ class CmsFormHelper {
                 } elseif (isset($field['name'])) {
                     $name = $field['name'];
                 } else {
-                    $name = Converter::symb2Ttl($key);
+                    $name = Converter::symb2Ttl(rtrim($key, '_id'));
                 }
 
                 //
