@@ -73,6 +73,11 @@ class CmsTableHelper {
             $table->setHeadingTitle($params['title']);
         }
 
+        // Turn off pagination
+        if (isset($params['pager']) && !$params['pager']) {
+            $table->disablePager();
+        }
+
         foreach ($params['columns'] as $column_key => $column_param) {
             if (!is_array($column_param)) {
                 $column_key = $column_param;
@@ -169,6 +174,11 @@ class CmsTableHelper {
             // Is multi-translatable data in column
             if (isset($column_param['translation']) && $column_param['translation']) {
                 $column->enableTranslationColumn();
+            }
+
+            // HTML in column value
+            if (isset($column_param['html']) && $column_param['html']) {
+                $column->allowHtml();
             }
 
             // Is orderable

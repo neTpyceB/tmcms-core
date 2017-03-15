@@ -313,7 +313,8 @@ class Backend
                Metronic.init();
                Layout.init();
                QuickSidebar.init();
-            });');
+            });')
+            ->addCssUrl('print_css.css', 'print');
 
         // Search for custom css
         $custom_css_url = DIR_ASSETS_URL . 'cms.css';

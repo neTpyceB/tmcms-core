@@ -80,9 +80,14 @@ class Components
 
                 $elements_data = $controller_class::getComponents();
 
-                $class_method = get_class_methods($controller_class);
+                $class_methods = get_class_methods($controller_class);
 
-                foreach ($class_method as $component_method) {
+                foreach ($class_methods as $component_method) {
+                    // Skip those methods that are not called for template
+                    if (!isset($components_array[$component_class]) || !in_array($component_method, $components_array[$component_class])) {
+                        continue;
+                    }
+
                     $controller_method = 'getComponents_' . $component_method;
 
                     if (method_exists($controller_class, $controller_method)) {

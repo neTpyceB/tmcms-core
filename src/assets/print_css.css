@@ -1,3 +1,3 @@
-.breadcrumb, #filter_link, [data-column_key="delete"] {
+.page-breadcrumb, .portlet-title, [data-column_key="delete"] {
   display: none;
 }
