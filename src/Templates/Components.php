@@ -226,7 +226,7 @@ class Components
     private static function getControllerCustomComponents($class)
     {
         $controller_name = ucfirst($class) . 'Controller';
-        if(!class_exists($controller_name)){
+        if (!class_exists($controller_name)) {
             $file = DIR_FRONT_CONTROLLERS . $class . '.php';
             if (is_file($file)) {
                 require_once $file;
@@ -330,7 +330,7 @@ class Components
 
         if ($page) {
 
-            foreach($page as $k => $v):
+            foreach ($page as $k => $v):
                 /** @var PageComponent $v */
                 $page_arr[$v->getComponent()] = $v->getData();
             endforeach;
@@ -347,7 +347,8 @@ class Components
         return $res;
     }
 
-    public static function getCustomComponentsByPageId($page_id){
+    public static function getCustomComponentsByPageId($page_id)
+    {
         // Get Custom components
         $customs = new PageComponentCustomEntityRepository();
         $customs->setWherePageId($page_id);
@@ -361,7 +362,7 @@ class Components
         }
 
         // Make all custom components have all fields
-        foreach($res as $class=>&$r){
+        foreach ($res as $class => $component) {
             $custom_components_in_controller = self::getControllerCustomComponents($class);
             foreach ($custom_components_in_database as $custom) {
                 $class = $custom['component'];
