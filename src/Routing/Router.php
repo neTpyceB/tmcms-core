@@ -279,6 +279,8 @@ class Router
         $tmp = $path_pairs = [];
         $q['id'] = 0;
         $count_of_parts_in_path = count($path);
+
+        // We can have existing page match even under the transparent get params
         $is_transparent = false;
 
         for ($i = 0; $i < $count_of_parts_in_path; $i++) {
@@ -300,9 +302,9 @@ class Router
                 if ($page) {
                     $q = $page->getAsArray();
                 } else {
-                    if($is_transparent) {
+                    if ($is_transparent) {
                         break;
-                    }else {
+                    } else {
                         $q = NULL;
                     }
                 }
