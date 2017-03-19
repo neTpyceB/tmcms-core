@@ -226,6 +226,12 @@ class Components
     private static function getControllerCustomComponents($class)
     {
         $controller_name = ucfirst($class) . 'Controller';
+        if (!class_exists($controller_name)) {
+            $file = DIR_FRONT_CONTROLLERS . $class . '.php';
+            if (is_file($file)) {
+                require_once $file;
+            }
+        }
         /** @var Controller $controller_name */
 
         $custom_components = [];
@@ -324,7 +330,7 @@ class Components
 
         if ($page) {
 
-            foreach($page as $k => $v):
+            foreach ($page as $k => $v):
                 /** @var PageComponent $v */
                 $page_arr[$v->getComponent()] = $v->getData();
             endforeach;
@@ -339,5 +345,54 @@ class Components
 
 
         return $res;
+    }
+
+    public static function getCustomComponentsByPageId($page_id)
+    {
+        // Get Custom components
+        $customs = new PageComponentCustomEntityRepository();
+        $customs->setWherePageId($page_id);
+        $customs->addOrderByField('order');
+
+        $custom_components_in_database = $customs->getAsArrayOfObjectData(true);
+        $res = [];
+        foreach ($custom_components_in_database as $custom) {
+            $class = $custom['component'];
+            $res[$class][$class . '_' . $custom['tab']][$custom['order']][$custom['name']] = $custom['value'];
+        }
+
+        // Make all custom components have all fields
+        foreach ($res as $class => $component) {
+            $custom_components_in_controller = self::getControllerCustomComponents($class);
+            foreach ($custom_components_in_database as $custom) {
+                $class = $custom['component'];
+                // Set unavailable fields as empty
+                foreach ($res[$custom['component']][$custom['component'] . '_' . $custom['tab']] as $order => $data) {
+                    if (isset($custom_components_in_controller[$custom['component'] . '_' . $custom['tab']])
+                        && isset($res[$custom['component']][$class . '_' . $custom['tab']][$order])
+                        && (
+                            count($res[$class][$class . '_' . $custom['tab']][$order])
+                            !=
+                            count($custom_components_in_controller[$class . '_' . $custom['tab']]))
+                    ) {
+                        foreach ($custom_components_in_controller[$class . '_' . $custom['tab']] as $field_key => $field_value) {
+                            if (!isset($res[$class][$class . '_' . $custom['tab']][$order][$field_key])) {
+                                $res[$class][$class . '_' . $custom['tab']][$order][$field_key] = ''; // Set empty field
+                            }
+                        }
+                    }
+                }
+            }
+            // Set any empty value to all non-existing components to avoid error in front
+            foreach ($custom_components_in_controller as $custom_key => $custom_fields) {
+                list($class, $custom_tab) = explode('_', $custom_key, 2);
+                if (!isset($res[$class][$class . '_' . $custom_tab]) || !is_array($res[$class][$class . '_' . $custom_tab])) {
+                    $res[$class][$class . '_' . $custom_tab] = []; // Set empty array to iterate from
+                }
+            }
+        }
+
+        return $res;
+
     }
 }

@@ -718,6 +718,38 @@ FROM `' . $this->getDbTableName() . '`
         return $pairs;
     }
 
+    public function addSimpleSelectFields(array $fields, $table = false)
+    {
+        if (!$table) {
+            $table = $this->getDbTableName();
+        }
+
+        foreach ($fields as $k => $field) {
+            // Translation field
+            if (in_array($field, $this->getTranslationFields())) {
+                ++$this->translation_join_count;
+                $this->addJoinTable(['cms_translations', $this->getTranslationTableJoinAlias() . $this->translation_join_count], 'id', $field, 'LEFT', $table);
+
+                $this->sql_select_fields[] = [
+                    'table' => $this->getTranslationTableJoinAlias() . $this->translation_join_count . '',
+                    'field' => LNG,
+                    'as' => $field,
+                    'type' => 'translation'
+                ];
+            } else {
+                // Simple field
+                $this->sql_select_fields[] = [
+                    'table' => $table,
+                    'field' => $field,
+                    'as' => false,
+                    'type' => 'simple'
+                ];
+            }
+        }
+
+        return $this;
+    }
+
     public function getSumOfOneField($field) {
         $sum = 0;
 
@@ -939,37 +971,6 @@ FROM `' . $this->getDbTableName() . '`
 
     public function clearCollectionCache() {
         $this->last_used_sql = '';
-
-        return $this;
-    }
-
-    public function addSimpleSelectFields(array $fields, $table = false) {
-        if (!$table) {
-            $table = $this->getDbTableName();
-        }
-
-        foreach ($fields as $k => $field) {
-            // Translation field
-            if (in_array($field, $this->getTranslationFields())) {
-                ++$this->translation_join_count;
-                $this->addJoinTable(['cms_translations', $this->getTranslationTableJoinAlias() . $this->translation_join_count], 'id', $field, 'LEFT', $table);
-
-                $this->sql_select_fields[] = [
-                    'table' => $this->getTranslationTableJoinAlias() . $this->translation_join_count . '',
-                    'field' => LNG,
-                    'as' => $field,
-                    'type' => 'translation'
-                ];
-            } else {
-                // Simple field
-                $this->sql_select_fields[] = [
-                    'table' => $table,
-                    'field' => $field,
-                    'as' => false,
-                    'type' => 'simple'
-                ];
-            }
-        }
 
         return $this;
     }
@@ -1318,7 +1319,7 @@ FROM `' . $this->getDbTableName() . '`
 
         $value = sql_prepare($value);
 
-        $this->addWhereFieldAsString('`'. $table .'`.`'. $field .'` >= "'. $value .'"');
+        $this->addWhereFieldAsString('`' . $table . '`.`' . $field . '` >= "' . sql_prepare($value) . '"');
 
         return $this;
     }

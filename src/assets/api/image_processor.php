@@ -315,9 +315,22 @@ if (!$image->save(DIR_CACHE . 'images/' . QUERY, $ext, 90) && !Settings::isProdu
 // Run file optimizers
 $tinypng = Configuration::getInstance()->get('tinypng');
 if(class_exists('\Tinify\Tinify') && !empty($tinypng) && !empty($tinypng['key'])){
-    \Tinify\setKey($tinypng['key']);
-    $source = \Tinify\fromFile(DIR_CACHE . 'images/' . QUERY);
-    $source->toFile(DIR_CACHE . 'images/' . QUERY);
+    try {
+        \Tinify\setKey($tinypng['key']);
+        $source = \Tinify\fromFile(DIR_CACHE . 'images/' . QUERY);
+        $source->toFile(DIR_CACHE . 'images/' . QUERY);
+    } catch(\Tinify\AccountException $e) {
+        // print("The error message is: " + $e.getMessage());
+        // Verify your API key and account limit.
+    } catch(\Tinify\ClientException $e) {
+        // Check your source image and request options.
+    } catch(\Tinify\ServerException $e) {
+        // Temporary issue with the Tinify API.
+    } catch(\Tinify\ConnectionException $e) {
+        // A network connection error occurred.
+    } catch(Exception $e) {
+        // Something else went wrong, unrelated to the Tinify API.
+    }
 }else {
     $path_for_exec = str_replace(['&', '=', ' ', '(', ')'], ['\&', '\=', '\ ', '\(', '\)'], QUERY);
     if ($ext == 'jpg') {

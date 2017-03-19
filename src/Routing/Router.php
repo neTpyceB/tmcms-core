@@ -280,6 +280,9 @@ class Router
         $q['id'] = 0;
         $count_of_parts_in_path = count($path);
 
+        // We can have existing page match even under the transparent get params
+        $is_transparent = false;
+
         for ($i = 0; $i < $count_of_parts_in_path; $i++) {
             $cache_key = 'cms_router_' . md5($i . $path[$i] . '_' . $q['id']);
             $cached_q = NULL;
@@ -299,7 +302,11 @@ class Router
                 if ($page) {
                     $q = $page->getAsArray();
                 } else {
-                    $q = NULL;
+                    if ($is_transparent) {
+                        break;
+                    } else {
+                        $q = NULL;
+                    }
                 }
             } else {
                 $q = $cached_q;
@@ -345,8 +352,9 @@ class Router
                 $path_pairs[] = $q['location']; // $q['location'] == $path[$i];
 
                 // If other params in URL are just params but not pages in tree
+                $is_transparent = false;
                 if ($q['transparent_get']) {
-                    break;
+                    $is_transparent = true;
                 }
             }
         }
