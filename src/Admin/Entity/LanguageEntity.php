@@ -7,10 +7,11 @@ use TMCms\Orm\Entity;
  * Class LanguageEntity
  * @package TMCms\Admin\Entity
  *
- * @method setShort(string);
- * @method string getShort();
- * @method setFull(string);
  * @method string getFull();
+ * @method string getShort();
+ *
+ * @method $this setFull(string $full_name);
+ * @method $this setShort(string $short_name);
  */
 class LanguageEntity extends Entity {
     protected $db_table = 'cms_languages';
