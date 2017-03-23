@@ -237,9 +237,14 @@ class CmsTableHelper {
                 $params['filters'][$column_key] = [];
             }
 
-            // Show auto-sum after colimn
+            // Show auto-sum after column
             if (isset($column_param['auto_sum'])) {
                 $column->enableAutoTotalInColumn();
+            }
+
+            // Align for text in column
+            if (isset($column_param['align']) && $column_param['align'] == 'right') {
+                $column->enableRightAlign();
             }
 
             if ($column) {
