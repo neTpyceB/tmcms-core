@@ -10,18 +10,6 @@ class TableStructure {
     private $table_name = '';
     private $table_structure = [];
 
-    public function setTableName($name)
-    {
-        $this->table_name = $name;
-
-        return $this;
-    }
-
-    public function getTableName()
-    {
-        return $this->table_name;
-    }
-
     public function setTableStructure(array $structure)
     {
         $this->table_structure = $structure;
@@ -102,6 +90,18 @@ class TableStructure {
         $sql .= ' DEFAULT CHARSET=utf8 ';
 
         return $sql;
+    }
+
+    public function getTableName()
+    {
+        return $this->table_name;
+    }
+
+    public function setTableName($name)
+    {
+        $this->table_name = $name;
+
+        return $this;
     }
 
     private function getFieldCreate($field)
@@ -205,6 +205,11 @@ class TableStructure {
                 }
 
                 $res = '`'. $field['name'] .'` enum("'. implode('","', $field['options']) .'") NULL '. (isset($field['default_value']) ? ' DEFAULT "' . $field['default_value'] . '"' : '') .'';
+                break;
+
+            case 'json':
+
+                $res = '`' . $field['name'] . '` JSON NULL ' . (isset($field['default_value']) ? ' DEFAULT "' . $field['default_value'] . '"' : '') . '';
                 break;
 
             default:
