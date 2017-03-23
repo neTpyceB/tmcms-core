@@ -237,6 +237,11 @@ class CmsTableHelper {
                 $params['filters'][$column_key] = [];
             }
 
+            // Show auto-sum after colimn
+            if (isset($column_param['auto_sum'])) {
+                $column->enableAutoTotalInColumn();
+            }
+
             if ($column) {
                 $table->addColumn($column);
             }
