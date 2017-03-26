@@ -410,7 +410,7 @@ class Router
             }
 
             // Rewrite internal path ro real page in CMS - may be not the same as URL
-            $internal_path = Structure::getPathById($q['id'], false);
+            $internal_path = Structure::getPathById($q['id'], false, true);
         }
 
         define('PATH_INTERNAL', $internal_path);

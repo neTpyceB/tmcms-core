@@ -51,9 +51,10 @@ class Structure
      * Return path of page based on ID
      * @param int $page_id
      * @param bool $with_domain
+     * @param bool $disallow_cut_language_part in case you need to keep /xx/ language part even if it is enabled in Settings
      * @return string
      */
-    public static function getPathById($page_id, $with_domain = true)
+    public static function getPathById($page_id, $with_domain = true, $disallow_cut_language_part = false)
     {
         // Page id must be integer
         if (!ctype_digit((string)$page_id)) {
@@ -98,8 +99,8 @@ class Structure
         // Add slash to open page from absolute path
         $path = '/' . $path;
 
-        // Remove first language part from path
-        if (Settings::get('skip_lng_in_generated_links')) {
+        // Remove first language part from path if it is allowed and enabled
+        if (!$disallow_cut_language_part && Settings::get('skip_lng_in_generated_links')) {
             // Cut "/xx" part
             $path = substr($path, 3);
         }
