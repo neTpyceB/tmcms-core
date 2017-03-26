@@ -3,6 +3,7 @@
 namespace TMCms\HTML\Cms;
 
 use TMCms\DB\SQL;
+use TMCms\HTML\Cms\Column\ColumnInput;
 use TMCms\HTML\Cms\Element\CmsCheckbox;
 use TMCms\HTML\Cms\Element\CmsCheckboxList;
 use TMCms\HTML\Cms\Element\CmsHtml;
@@ -215,6 +216,66 @@ class CmsFormHelper {
                     $cms_field = CmsInputColor::getInstance($key);
                 } elseif ($field['type'] == 'html') {
                     $cms_field = CmsHtml::getInstance($key);
+                } elseif ($field['type'] == 'input_table') {
+                    // Special case for own table with inputs
+                    $cms_field = CmsHtml::getInstance($field['title']);
+
+                    $input_table = CmsTable::getInstance($key);
+                    if (isset($params['data'][$key], $params['data'][$key])) {
+                        $input_table->addDataArray($params['data'][$key]);
+                    }
+
+                    // Attach fields to table
+                    foreach ($field['fields'] as $input_field_key => $input_field_data) {
+                        $input_field = ColumnInput::getInstance($input_field_key);
+
+                        // Select field
+                        if (!isset($input_field_data['type']) && isset($input_field_data['options'])) {
+                            $input_field_data['type'] = 'select';
+                        }
+
+                        // Usual text
+                        if (!isset($input_field_data['type'])) {
+                            $input_field_data['type'] = 'text';
+                        }
+
+                        // Empty options if field is select
+                        if ($input_field_data['type'] == 'select' && !isset($input_field_data['options'])) {
+                            $input_field_data['options'] = [];
+                        }
+
+                        switch ($input_field_data['type']) {
+                            case 'text':
+                                $input_field->setTypeText();
+                                break;
+
+                            case 'select':
+                                $input_field->setTypeSelect();
+                                $input_field->setOptions($input_field_data['options']);
+                                $input_field->onchange(' '); // No auto-submit
+                                break;
+                        }
+
+                        // Any script attached
+                        if (isset($input_field_data['js_onchange'])) {
+                            $input_field->onchange($input_field_data['js_onchange']);
+                        }
+
+                        $input_table->addColumn($input_field);
+                    }
+
+                    // Column to relete row
+                    if (isset($field['delete']) && $field['delete']) {
+                        $input_table->addColumn(ColumnInput::getInstance('delete')->setTypeDelete());
+                    }
+
+                    // Link to add new row
+                    if (isset($field['add']) && $field['add']) {
+                        $input_table->showAddRow(true);
+                    }
+
+                    $cms_field->setValue($input_table);
+
                 } else {
                     dump('Field type "'. $field['type'] .'" not found');
                 }
