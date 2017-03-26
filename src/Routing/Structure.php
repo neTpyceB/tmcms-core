@@ -98,6 +98,12 @@ class Structure
         // Add slash to open page from absolute path
         $path = '/' . $path;
 
+        // Remove first language part from path
+        if (Settings::get('skip_lng_in_generated_links')) {
+            // Cut "/xx" part
+            $path = substr($path, 3);
+        }
+
         // Add domain in links only if required
         if ($with_domain) {
             $path = BASE_URL . $path;
