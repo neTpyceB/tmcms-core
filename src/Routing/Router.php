@@ -241,7 +241,9 @@ class Router
             // Search file in library...
             $api_file = Finder::getInstance()->searchForRealPath($api_request . '.php', Finder::TYPE_API);
             if (!is_file(DIR_BASE . $api_file)) {
-                if (Settings::isProductionState()) return;
+                if (Settings::isProductionState()) {
+                    return;
+                }
                 dump('Requested ajax action does not exist. Searched for "' . $api_file . '"');
             };
 

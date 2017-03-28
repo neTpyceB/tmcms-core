@@ -157,67 +157,42 @@ class Frontend
                 ->addJS('register_js_error.ini(\'' . DIR_CMS_URL . '\');');
         }
 
+        $cacher = Cacher::getInstance()->getDefaultCacher();
+
         /* Start replacing template vars with appropriate component content */
 
-        if (Settings::isCacheEnabled()) {
-            if (Settings::isFrontendLogEnabled()) {
-                FrontendLogger::getInstance()->log('Loading cached replaceable elements');
-            }
-            $cached_replaces = Cacher::getInstance()
-                ->getDefaultCacher()
-                ->get('template_elements_' . PATH_INTERNAL_MD5);
-        } else {
-            $cached_replaces = [];
-        }
-
-        // We need iteration to call all components called in components
         $template_base_name = pathinfo(Router::getInstance()->getPageData()['template_file'], PATHINFO_FILENAME);
         $no_more_elements = false;
+
+        // We need this while because views can have other templates included
         while (!$no_more_elements) {
-            // Component replaces in templates from template ...
-            if (!Settings::isProductionState() || !$cached_replaces || !isset($cached_replaces['elements'], $cached_replaces['replaces'])) {
-                // Find which components are used in template
-                $res = Components::parseForComponents($this->html);
+            // We need iteration to call all components called in components
+            $res = Components::parseForComponents($this->html);
 
-                $so = count($res[0]);
-                $elements = [];
+            $so = count($res[0]);
+            $elements = [];
 
-                // Get elements for every component
-                for ($i = 0; $i < $so; ++$i) {
-                    if ($res[1][$i] == 'index') {
-                        $res[1][$i] = $template_base_name;
-                    }
-
-                    $file = $res[1][$i]; // File with elements
-                    $class = $file; // Class in file with elements
-                    $method = $res[3][$i] ? $res[3][$i] : $res[2][$i]; // Method with element in class
-                    // If method is not defined - call index
-                    if (!$method) {
-                        $method = 'index';
-                    }
-
-                    // Component may have modifier params in template that are farther pushed in elements
-                    $modifiers = [];
-                    if ($res[4][$i]) {
-                        $modifiers = explode('|', $res[4][$i]);
-                    }
-
-                    $elements[] = ['file' => $file, 'class' => $class, 'method' => $method, 'modifiers' => $modifiers];
+            // Get elements for every component
+            for ($i = 0; $i < $so; ++$i) {
+                if ($res[1][$i] == 'index') {
+                    $res[1][$i] = $template_base_name;
                 }
 
-                // Save in cache to prevent future parsing of the same template
-                if (Settings::isCacheEnabled()) {
-                    Cacher::getInstance()
-                        ->getDefaultCacher()
-                        ->set('template_elements_' . PATH_INTERNAL_MD5, [
-                            'elements' => $elements,
-                            'replaces' => $res
-                        ]);
+                $file = $res[1][$i]; // File with elements
+                $class = $file; // Class in file with elements
+                $method = $res[3][$i] ? $res[3][$i] : $res[2][$i]; // Method with element in class
+                // If method is not defined - call index
+                if (!$method) {
+                    $method = 'index';
                 }
-            } else {
-                // ... or set from cache
-                $elements = $cached_replaces['elements'];
-                $res = $cached_replaces['replaces'];
+
+                // Component may have modifier params in template that are farther pushed in elements
+                $modifiers = [];
+                if ($res[4][$i]) {
+                    $modifiers = explode('|', $res[4][$i]);
+                }
+
+                $elements[] = ['file' => $file, 'class' => $class, 'method' => $method, 'modifiers' => $modifiers];
             }
 
             // No more elements found in HTML
