@@ -443,7 +443,7 @@ class Router
             $q = NULL;
             $pages = new PageEntityRepository();
 
-            $pages->addSimpleSelectFields(['id', 'pid', 'string_label', 'location', 'title', 'keywords', 'description', 'redirect_url', 'html_file']);
+            $pages->addSimpleSelectFields(['id', 'pid', 'string_label', 'location', 'title', 'browser_title', 'keywords', 'description', 'redirect_url', 'html_file']);
             $pages->setWhereId(Structure::getIdByPath($internal_path));
             $pages->setWhereActive(true);
 

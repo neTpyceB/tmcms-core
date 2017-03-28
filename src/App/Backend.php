@@ -201,7 +201,7 @@ class Backend
         PageHead::getInstance()
             // Cms attributes
             ->addHtmlTagAttributes('lang="en" class="no-js"')
-            ->setTitle((P_DO !== '_default' ? Converter::symb2Ttl(P_DO) : 'Main') . ' / ' . Converter::symb2Ttl(P) . ' / ' . $config->get('site')['name'] . ' / ' . CMS_NAME . ' v. ' . CMS_VERSION)
+            ->setBrowserTitle((P_DO !== '_default' ? Converter::symb2Ttl(P_DO) : 'Main') . ' / ' . Converter::symb2Ttl(P) . ' / ' . $config->get('site')['name'] . ' / ' . CMS_NAME . ' v. ' . CMS_VERSION)
             ->setFavicon($favicon)
             ->addMeta('name=' . CMS_NAME . ' - ' . $config->get('site')['name'] . '; action-uri=http://' . CFG_DOMAIN . '/cms/; icon-uri=http://' . DIR_CMS_IMAGES_URL . 'logo_square.png', 'msapplication-task')
             ->addMeta('width=device-width, initial-scale=1', 'viewport')

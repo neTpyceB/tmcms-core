@@ -139,9 +139,13 @@ class Frontend
         /* Start composing HTML page */
 
         // Prepend <head>
+        $page_title = $this->router_instance->getPageData()['browser_title'];
+        if (!$page_title) {
+            $page_title = $this->router_instance->getPageData()['title'];
+        }
         Page::setHead(
             PageHead::getInstance()
-                ->setTitle($this->router_instance->getPageData()['title'])
+                ->setBrowserTitle($page_title)
                 ->setMetaKeywords($this->router_instance->getPageData()['keywords'])
                 ->setMetaDescription($this->router_instance->getPageData()['description'])
         );

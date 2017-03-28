@@ -163,7 +163,7 @@ class PageHead
      * @param $title
      * @return $this$this
      */
-    public function setTitle($title)
+    public function setBrowserTitle($title)
     {
         $this->title = strip_tags($title);
         return $this;
