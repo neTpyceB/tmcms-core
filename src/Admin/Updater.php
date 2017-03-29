@@ -77,7 +77,7 @@ class Updater
     {
         chdir(DIR_BASE);
 
-        exec('COMPOSER_HOME="' . substr(DIR_BASE, 0, -1) . '" php composer.phar -v update 2>&1', $out);
+        exec('COMPOSER_HOME="' . substr(DIR_BASE, 0, -1) . '" composer -v update 2>&1', $out);
         if ($out) {
             $this->result_message[] = $out;
         }
