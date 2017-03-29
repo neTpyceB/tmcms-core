@@ -2,6 +2,8 @@
 
 namespace TMCms\Traits;
 
+use Exception;
+
 defined('INC') or exit;
 
 /**
@@ -24,6 +26,15 @@ trait singletonInstanceTrait
         if (!self::$instance) {
             self::$instance = new self;
         }
+
         return self::$instance;
+    }
+
+    /**
+     * @throws Exception to prevent cloning object.
+     */
+    public function __clone()
+    {
+        throw new Exception('You cannot clone singleton object');
     }
 }

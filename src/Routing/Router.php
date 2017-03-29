@@ -241,7 +241,9 @@ class Router
             // Search file in library...
             $api_file = Finder::getInstance()->searchForRealPath($api_request . '.php', Finder::TYPE_API);
             if (!is_file(DIR_BASE . $api_file)) {
-                if (Settings::isProductionState()) return;
+                if (Settings::isProductionState()) {
+                    return;
+                }
                 dump('Requested ajax action does not exist. Searched for "' . $api_file . '"');
             };
 
@@ -443,7 +445,7 @@ class Router
             $q = NULL;
             $pages = new PageEntityRepository();
 
-            $pages->addSimpleSelectFields(['id', 'pid', 'string_label', 'location', 'title', 'keywords', 'description', 'redirect_url', 'html_file']);
+            $pages->addSimpleSelectFields(['id', 'pid', 'string_label', 'location', 'title', 'browser_title', 'keywords', 'description', 'redirect_url', 'html_file']);
             $pages->setWhereId(Structure::getIdByPath($internal_path));
             $pages->setWhereActive(true);
 

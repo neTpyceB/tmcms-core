@@ -533,6 +533,8 @@ class Users
     public function generateHash($string, $salt = false, $algorithm = 'whirlpool')
     {
         $string = trim($string);
+
+        // TODO change to password_hash and password_verify in future versions
         return hash($algorithm, ($salt ? $salt : self::$salt) . $string);
     }
 }
