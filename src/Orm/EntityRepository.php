@@ -1083,7 +1083,7 @@ FROM `' . $this->getDbTableName() . '`
             }
 
         } else {
-            dump('Method "'. $name .'" unknown');
+            dump('Method "' . $name . '" unknown in class "' . get_class($this) . '"');
         }
 
         return $this;
