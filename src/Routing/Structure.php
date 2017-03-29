@@ -204,6 +204,11 @@ class Structure
             return '/' . LNG . '/404/';
         }
 
+        // Go to main page
+        if (Settings::get('error_404_go_to_main')) {
+            go('/' . LNG . '/');
+        }
+
         // Try to go to exact 404 page
         if (Settings::get('error_404_page') && Structure::pageExists(Structure::getIdByPath(Settings::get('error_404_page')))) {
             go(Settings::get('error_404_page'));
