@@ -419,7 +419,7 @@ class Router
         define('PATH_INTERNAL_MD5', md5($internal_path));
 
         // Build GET parameters from excess params
-        for($i=count($path_pairs);$i<count($path);$i++){
+        for($i=count($path_pairs);$i<$count_of_parts_in_path;$i++){
             $_GET[] = $path[$i];
         }
 
