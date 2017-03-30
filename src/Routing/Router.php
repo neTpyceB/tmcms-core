@@ -63,6 +63,8 @@ class Router
             array_pop($path);
         }
 
+        $_path_original = $path;
+
         define('PATH_SO', count($path));
         define('PATH_ORIGINAL', ($path ? '/' . implode('/', $path) : '') . '/');
 
@@ -359,6 +361,14 @@ class Router
                     $is_transparent = true;
                 }
             }
+        }
+
+        // Check if we have language part in link and whether we need to skip it
+        if (Settings::get('skip_lng_redirect_to_same_page') && isset($_path_original[0]) && LNG == $_path_original[0]) {
+            $path_to_cut = $_path_original;
+            array_shift($path_to_cut);
+            $path_to_cut = ($path_to_cut ? '/' . implode('/', $path_to_cut) : '') . '/';
+            go($path_to_cut);
         }
 
         $this->path = $tmp; // Save path
