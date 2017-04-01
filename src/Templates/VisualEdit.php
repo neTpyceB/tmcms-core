@@ -21,7 +21,7 @@ class VisualEdit
     /**
      * @return bool
      */
-    public static function isEnabled()
+    public function isEnabled()
     {
         return self::$enabled;
     }

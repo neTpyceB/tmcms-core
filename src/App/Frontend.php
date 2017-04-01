@@ -154,10 +154,8 @@ class Frontend
         if (CFG_MAIL_ERRORS && Settings::isProductionState() && !Settings::get('do_not_send_js_errors')) {
             PageHead::getInstance()
                 ->addJsUrl('send_error.js')
-                ->addJS('register_js_error.ini(\'' . DIR_CMS_URL . '\');');
+                ->addJs('register_js_error.ini(\'' . DIR_CMS_URL . '\');');
         }
-
-        $cacher = Cacher::getInstance()->getDefaultCacher();
 
         /* Start replacing template vars with appropriate component content */
 
@@ -210,7 +208,6 @@ class Frontend
 
     /**
      * Read template content - file that is set for current requested page
-     * @return string
      */
     private function readTemplateContent()
     {
@@ -251,22 +248,33 @@ class Frontend
     {
         $template_extension = pathinfo($this->router_instance->getPageData()['file'], PATHINFO_EXTENSION);
 
+        // Render twig file. e.g. file.twig
         if ($template_extension == 'twig') {
             if (Settings::isFrontendLogEnabled()) {
                 FrontendLogger::getInstance()->log('Processing twig template');
             }
             $templater = new ExternalTemplater('twig');
             $this->html = $templater->processHtml($this->html, $this->router_instance->getPageData());
+
+            return;
         }
 
-        // Add any other template engines here - modify $this->html
+        // Check blade files, e.g. file.blade.php
+        if (stripos($this->router_instance->getPageData()['file'], '.blade.php') !== false) {
+            if (Settings::isFrontendLogEnabled()) {
+                FrontendLogger::getInstance()->log('Processing blade template');
+            }
+            $templater = new ExternalTemplater('blade');
+            $this->html = $templater->processHtml($this->html, $this->router_instance->getPageData());
+
+            return;
+        }
     }
 
     /**
      * Replaces component parts with it's real data set in admin panel
      * @param array $elements
      * @param array $res
-     * @return string
      */
     private function replaceElements($elements, $res)
     {
@@ -279,7 +287,7 @@ class Frontend
         $this->mvc_instance = new MVC();
 
         // Change elements to its' real data
-        while (list($k, $v) = each($elements)) {
+        while ((list($k, $v) = each($elements))) {
 
             // Skip disabled
             if (in_array($v['class'], $disabled_components)) {
@@ -293,7 +301,7 @@ class Frontend
         // Replace data with its' component variables in template
         if ($replaces) {
             reset($replaces);
-            while (list($k, $v) = each($replaces)) {
+            while ((list($k, $v) = each($replaces))) {
                 $this->html = str_replace($k, $v, $this->html);
             }
         }
