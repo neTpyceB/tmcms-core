@@ -20,30 +20,17 @@ class MemcachedCache implements ICache
     private static $memcached = null;
 
     /**
-     * @return MemcachedCache
-     */
-    public static function getInstance()
-    {
-        if (!self::$memcached) {
-            self::$instance = new self;
-            self::$memcached = new Memcached();
-            self::$memcached->addServer(self::HOST, self::PORT);
-
-        }
-        return self::$instance;
-    }
-
-    public function disconnect() {
-        self::$memcached = NULL;
-        self::$instance = NULL;
-    }
-
-    /**
      * @return bool
      */
     public static function itWorks()
     {
         return class_exists('Memcached');
+    }
+
+    public function disconnect()
+    {
+        self::$memcached = NULL;
+        self::$instance = NULL;
     }
 
     /**
@@ -78,6 +65,21 @@ class MemcachedCache implements ICache
             $res = $this->add($key, $value, $ttl);
         }
         return $res;
+    }
+
+    /**
+     * @return MemcachedCache
+     */
+    public static function getInstance()
+    {
+        if (!self::$instance) {
+            self::$instance = new self;
+            self::$memcached = new Memcached();
+            self::$memcached->addServer(self::HOST, self::PORT);
+
+        }
+
+        return self::$instance;
     }
 
     /**

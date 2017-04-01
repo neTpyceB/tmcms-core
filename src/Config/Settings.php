@@ -5,6 +5,7 @@ namespace TMCms\Config;
 use TMCms\Cache\Cacher;
 use TMCms\Cache\MemcacheCache;
 use TMCms\Cache\MemcachedCache;
+use TMCms\Cache\RedisCache;
 use TMCms\Config\Entity\SettingEntity;
 use TMCms\Config\Entity\SettingEntityRepository;
 use TMCms\DB\SQL;
@@ -132,6 +133,8 @@ class Settings
             $cacher->setDefaultCacher('MemcachedCache');
         } elseif (MemcacheCache::itWorks()) { // Distributed cache old version
             $cacher->setDefaultCacher('MemcacheCache');
+        } elseif (RedisCache::itWorks()) { // No-sql database
+            $cacher->setDefaultCacher('RedisCache');
         }
     }
 
