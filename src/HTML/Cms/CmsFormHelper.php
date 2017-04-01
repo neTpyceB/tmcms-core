@@ -244,6 +244,11 @@ class CmsFormHelper {
                             $input_field_data['options'] = [];
                         }
 
+                        // Empty options if field is select
+                        if (isset($input_field_data['title'])) {
+                            $input_field->setTitle($input_field_data['title']);
+                        }
+
                         switch ($input_field_data['type']) {
                             case 'text':
                                 $input_field->setTypeText();
