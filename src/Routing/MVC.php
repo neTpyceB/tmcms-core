@@ -118,12 +118,14 @@ class MVC
 
     /**
      * Get data from controller
+     *
+     * @return $this
      */
     public function outputController()
     {
         // Do nothing
         if (!$this->controller) {
-            return;
+            return $this;
         }
 
         /**
@@ -165,6 +167,8 @@ class MVC
         if ($data) {
             $this->data = $this->data + $data;
         }
+
+        return $this;
     }
 
     /**
@@ -204,12 +208,14 @@ class MVC
 
     /**
      * Gets HTML code from view, passing all data generated within controller
+     *
+     * @return string
      */
     public function outputView()
     {
         // Can have Components without views
         if (!$this->view) {
-            return;
+            return '';
         }
 
         /**

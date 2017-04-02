@@ -5,6 +5,7 @@ use TMCms\DB\SQL;
 use TMCms\Files\FileSystem;
 use TMCms\Files\Finder;
 use TMCms\Log\Errors;
+use TMCms\Routing\MVC;
 use TMCms\Routing\Structure;
 use TMCms\Templates\Components;
 
@@ -425,6 +426,22 @@ function c($component, $class = false)
 function __($key)
 {
     return AdminTranslations::getInstance()->getActualValueByKey($key);
+}
+
+function render($class, $method = 'index')
+{
+    $mvc = new MVC();
+    $mvc->setMethod($method);
+
+    $controller_class = ucfirst($class) . 'Controller';
+    require_once DIR_FRONT_CONTROLLERS . $class . '.php';
+    $mvc->setController($controller_class);
+
+    $view_class = ucfirst($class) . 'View';
+    require_once DIR_FRONT_VIEWS . $class . '.php';
+    $mvc->setView($view_class);
+
+    return $mvc->outputController()->outputView();
 }
 
 /**
