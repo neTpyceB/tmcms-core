@@ -306,7 +306,7 @@ class Router
                 if ($page) {
                     $q = $page->getAsArray();
                 } else {
-                    if ($is_transparent) {
+                    if ($is_transparent || Settings::get('error_404_convert_transparent_get')) {
                         break;
                     } else {
                         $q = NULL;
