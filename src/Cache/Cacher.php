@@ -2,6 +2,7 @@
 
 namespace TMCms\Cache;
 
+use TMCms\Cache\Interfaces\ICache;
 use TMCms\Log\Usage;
 use TMCms\Traits\singletonInstanceTrait;
 

@@ -476,8 +476,13 @@ Finder::getInstance()
     ->addServicesSearchPath(substr(__DIR__, $length_of_include_path) . '/assets/services/')
     ->addTranslationsSearchPath(substr(__DIR__, $length_of_include_path) . '/assets/translations/')
 ;
-
 unset($root_path_length, $length_of_include_path);
+
+// Check middleware is required to register
+$middleware_runner_path = DIR_FRONT . 'middleware.php';
+if (file_exists($middleware_runner_path)) {
+    require_once $middleware_runner_path;
+}
 
 /**
  * Run every autoload file from every module

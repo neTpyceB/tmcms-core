@@ -8,6 +8,7 @@ use TMCms\DB\QueryAnalyzer;
 use TMCms\Files\Finder;
 use TMCms\Log\App;
 use TMCms\Log\FrontendLogger;
+use TMCms\Routing\Middleware;
 use TMCms\Routing\MVC;
 use TMCms\Routing\Router;
 use TMCms\Routing\Structure;
@@ -55,6 +56,9 @@ class Frontend
 
     private function __construct()
     {
+        // Run all actions registered before main app run
+        Middleware::getInstance()->runHandlersFromType('before_frontend_init');
+
         $this->init();
 
         // Autoload files from modules
@@ -153,7 +157,7 @@ class Frontend
         // Script for sending JS errors if not disabled. System sends JS error to support email
         if (CFG_MAIL_ERRORS && Settings::isProductionState() && !Settings::get('do_not_send_js_errors')) {
             PageHead::getInstance()
-                ->addJsUrl('send_error.js')
+                ->addJsUrl('send_error.min.js')
                 ->addJs('register_js_error.ini(\'' . DIR_CMS_URL . '\');');
         }
 
@@ -394,18 +398,18 @@ class Frontend
             // Show map on page
             if (isset($_GET['cms_view_clickmap'])) {
                 // Load script to show clickmap container
-                PageTail::getInstance()->addJsUrl('clickmap_frontend.js');
+                PageTail::getInstance()->addJsUrl('clickmap_frontend.min.js');
                 PageHead::getInstance()->addJs('cms_page_id = ' . PAGE_ID);
             } else {
                 // Just saving clicks - request scripts for registering clicks
-                PageTail::getInstance()->addJsUrl('clickmap_register.js');
+                PageTail::getInstance()->addJsUrl('clickmap_register.min.js');
                 PageHead::getInstance()->addJs('cms_page_id = ' . PAGE_ID);
             }
         }
 
         // Require js for Visual editor
         if (VisualEdit::getInstance()->isEnabled()) {
-            PageHead::getInstance()->addJsUrl('visual_edit.js');
+            PageHead::getInstance()->addJsUrl('visual_edit.min.js');
             PageHead::getInstance()->addJs('cms_page_id = "' . PAGE_ID . '"');
         }
 

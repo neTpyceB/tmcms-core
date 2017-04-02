@@ -3,6 +3,7 @@
 namespace TMCms\Cache;
 
 use Memcache;
+use TMCms\Cache\Interfaces\ICache;
 use TMCms\Traits\singletonInstanceTrait;
 
 /**
@@ -20,30 +21,17 @@ class MemcacheCache implements ICache
     private static $Memcache = null;
 
     /**
-     * @return MemcacheCache
-     */
-    public static function getInstance()
-    {
-        if (!self::$instance) {
-            self::$instance = new self;
-            self::$Memcache = new Memcache();
-            self::$Memcache->addServer(self::HOST, self::PORT);
-        }
-
-        return self::$instance;
-    }
-
-    public function disconnect() {
-        self::$Memcache = NULL;
-        self::$instance = NULL;
-    }
-
-    /**
      * @return bool
      */
     public static function itWorks()
     {
         return class_exists('Memcache');
+    }
+
+    public function disconnect()
+    {
+        self::$Memcache = NULL;
+        self::$instance = NULL;
     }
 
     /**
@@ -71,6 +59,20 @@ class MemcacheCache implements ICache
         $res = self::$Memcache->set(CFG_DOMAIN . $key, $value, MEMCACHE_COMPRESSED, $ttl);
 
         return $res;
+    }
+
+    /**
+     * @return MemcacheCache
+     */
+    public static function getInstance()
+    {
+        if (!self::$instance) {
+            self::$instance = new self;
+            self::$Memcache = new Memcache();
+            self::$Memcache->addServer(self::HOST, self::PORT);
+        }
+
+        return self::$instance;
     }
 
     /**

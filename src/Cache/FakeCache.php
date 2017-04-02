@@ -2,6 +2,7 @@
 
 namespace TMCms\Cache;
 
+use TMCms\Cache\Interfaces\ICache;
 use TMCms\Traits\singletonInstanceTrait;
 
 /**
@@ -13,9 +14,17 @@ class FakeCache implements ICache
     use singletonInstanceTrait;
 
     /**
+     * @return bool
+     */
+    public static function itWorks()
+    {
+        return true;
+    }
+
+    /**
      * @param string $key
-     * @param mixed $value
-     * @param int $ttl
+     * @param mixed  $value
+     * @param int    $ttl
      * @return mixed $value
      */
     public function set($key, $value, $ttl = 2592000)
@@ -54,14 +63,6 @@ class FakeCache implements ICache
      * @return bool
      */
     public function deleteAll()
-    {
-        return true;
-    }
-
-    /**
-     * @return bool
-     */
-    public static function itWorks()
     {
         return true;
     }

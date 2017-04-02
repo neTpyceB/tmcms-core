@@ -1,6 +1,9 @@
 <?php
+/**
+ * Updated by neTpyceB [devp.eu] at 2017.4.2
+ */
 
-namespace TMCms\Cache;
+namespace TMCms\Cache\Interfaces;
 
 /**
  * Interface ICache

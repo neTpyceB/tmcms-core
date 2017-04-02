@@ -242,7 +242,6 @@ class Backend
 //            ->addCssUrl('css/main.css')
 //            ->addJsUrl('plugins/modernizr.js')
 //            ->addCssUrl('css.css')
-//                ->addCssUrl('print_css.css', 'print')
 //                ->addJsUrl(DIR_CMS_SCRIPTS_URL . 'jquery-2.1.0.min.js')
             ->addJsUrl(DIR_CMS_SCRIPTS_URL . 'jquery.form.min.js')// Ajaxify forms
 //                ->addJsUrl('js/jquery.bpopup.min.js')// Popup modals
@@ -263,7 +262,7 @@ class Backend
         // Script for sending JS errors
         if (CFG_MAIL_ERRORS && Settings::isProductionState() && !Settings::get('do_not_send_js_errors')) {
             PageHead::getInstance()
-                ->addJsUrl('send_error.js')
+                ->addJsUrl('send_error.min.js')
                 ->addJs('register_js_error.ini(\'' . DIR_CMS_URL . '\');');
         }
 
@@ -314,7 +313,7 @@ class Backend
                Layout.init();
                QuickSidebar.init();
             });')
-            ->addCssUrl('print_css.css', 'print');
+            ->addCssUrl('print_css.min.css', 'print');
 
         // Search for custom css
         $custom_css_url = DIR_ASSETS_URL . 'cms.css';

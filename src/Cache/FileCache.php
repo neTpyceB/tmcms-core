@@ -2,6 +2,7 @@
 
 namespace TMCms\Cache;
 
+use TMCms\Cache\Interfaces\ICache;
 use TMCms\Files\FileSystem;
 use TMCms\Traits\singletonInstanceTrait;
 
@@ -27,8 +28,8 @@ class FileCache implements ICache
 
     /**
      * @param string $key
-     * @param mixed $value
-     * @param int $ttl
+     * @param mixed  $value
+     * @param int    $ttl
      * @return bool
      */
     public function set($key, $value, $ttl = 2592000)
@@ -62,6 +63,7 @@ class FileCache implements ICache
         if (!FileSystem::checkFileName($key)) {
             return NULL;
         }
+
         return DIR_CACHE . $this->getInnerPath($key);
     }
 
@@ -75,6 +77,7 @@ class FileCache implements ICache
             self::$name_hashes[$name] = md5($name);
         }
         $hash = self::$name_hashes[$name];
+
         return $hash[0] . '/' . $hash[1] . '/' . $hash[2] . '/';
     }
 
@@ -139,6 +142,7 @@ class FileCache implements ICache
         if (filemtime($file) < NOW) {
             // File is old
             $this->delete($key);
+
             return false;
         }
 

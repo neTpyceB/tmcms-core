@@ -7,6 +7,7 @@ declare(strict_types=1);
 namespace TMCms\Cache;
 
 use Redis;
+use TMCms\Cache\Interfaces\ICache;
 use TMCms\Traits\singletonInstanceTrait;
 
 /**

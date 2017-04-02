@@ -3,6 +3,7 @@
 namespace TMCms\Cache;
 
 use Memcached;
+use TMCms\Cache\Interfaces\ICache;
 use TMCms\Traits\singletonInstanceTrait;
 
 /**

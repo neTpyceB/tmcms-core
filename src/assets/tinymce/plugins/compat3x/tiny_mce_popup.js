@@ -44,7 +44,7 @@ var tinyMCEPopup = {
 			if (settings.popup_css) {
 				settings.popup_css = self.editor.documentBaseURI.toAbsolute(settings.popup_css);
 			} else {
-				settings.popup_css = self.editor.baseURI.toAbsolute("plugins/compat3x/css/dialog.css");
+                settings.popup_css = self.editor.baseURI.toAbsolute("plugins/compat3x/css/dialog.min.css");
 			}
 		}
 
