@@ -21,21 +21,38 @@ class Middleware
         'before_frontend_init' => [],
     ];
 
-    public function runHandlersFromType($type)
+    /**
+     * @param string $type
+     *
+     * @return Middleware
+     */
+    public function runHandlersFromType(string $type): Middleware
     {
         foreach ($this->handlers[$type] as $ware_data) {
             // Call every registered function with supplied params
             $obj = new $ware_data['class'];
             $obj->{$ware_data['method']}($this, ...$ware_data['params']);
         }
+
+        return $this;
     }
 
-    public function registerHandler($type, $class, $method = 'run', $params = [])
+    /**
+     * @param string $type
+     * @param string $class
+     * @param string $method
+     * @param array  $params
+     *
+     * @return Middleware
+     */
+    public function registerHandler(string $type, string $class, string $method = 'run', array $params = []): Middleware
     {
         $this->handlers[$type][] = [
             'class'  => $class,
             'method' => $method,
             'params' => $params,
         ];
+
+        return $this;
     }
 }
