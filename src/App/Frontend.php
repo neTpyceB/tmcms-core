@@ -285,7 +285,10 @@ class Frontend
         $replaces = [];
 
         // Some components may be disabled for current page
-        $disabled_components = Settings::get('disablable_components') ? Structure::getDisabled() : [];
+        $disabled_components = Structure::getDisabledComponents();
+        $cached_components = Structure::getCachedComponents();
+
+        $cacher = Cacher::getInstance()->getDefaultCacher();
 
         // May be another MVC class that implements required features
         $this->mvc_instance = new MVC();
@@ -293,9 +296,21 @@ class Frontend
         // Change elements to its' real data
         while ((list($k, $v) = each($elements))) {
 
-            // Skip disabled
             if (in_array($v['class'], $disabled_components)) {
+                // Skip disabled
                 $replaces[$res[0][$k]] = '';
+            } elseif (in_array($v['class'], $cached_components)) {
+                // Get from hard cache
+                $cache_key = PAGE_ID . '_' . md5(PAGE_ID . '_' . $k . '_' . $v['class']);
+                $cached_value = $cacher->get($cache_key);
+                if ($cached_value) {
+                    $replaces[$res[0][$k]] = $cached_value;
+                } else {
+                    // Replace if not found in cache
+                    $replaces[$res[0][$k]] = $this->callReplace($v);
+                    // Save in cache
+                    $cacher->set($cache_key, $replaces[$res[0][$k]]);
+                }
             } else {
                 // Usual replace
                 $replaces[$res[0][$k]] = $this->callReplace($v);

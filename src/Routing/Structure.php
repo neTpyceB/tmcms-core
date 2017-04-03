@@ -18,6 +18,7 @@ use TMCms\DB\TableTree;
 use TMCms\Files\FileSystem;
 use TMCms\Log\FrontendLogger;
 use TMCms\Network\PageCrawler;
+use TMCms\Routing\Entity\PageComponentsCachedEntityRepository;
 use TMCms\Routing\Entity\PageComponentsDisabledEntityRepository;
 use TMCms\Routing\Entity\PagesWordEntity;
 use TMCms\Routing\Entity\PagesWordEntityRepository;
@@ -785,7 +786,7 @@ class Structure
      * @param bool $id
      * @return array
      */
-    public static function getDisabled($id = false)
+    public static function getDisabledComponents($id = false)
     {
         if (!$id) {
             $id = PAGE_ID;
@@ -902,5 +903,40 @@ class Structure
         $page = new PageEntity($id);
 
         return new PageEntity($page->getPid());
+    }
+
+    /**
+     * @param int $page_id
+     *
+     * @return array
+     */
+    public static function getCachedComponents($page_id = 0)
+    {
+        if (!$page_id) {
+            $page_id = PAGE_ID;
+        }
+
+        // Try cache
+        $cache_key = 'cached_components_' . $page_id;
+        $res = NULL; // Use null to prevent db queries
+        if (Settings::isCacheEnabled()) {
+            $res = Cacher::getInstance()->getDefaultCacher()->get($cache_key);
+        }
+
+        // Get from db
+        if ($res === NULL) {
+            $cached_components = new PageComponentsCachedEntityRepository();
+            $cached_components->setWherePageId($page_id);
+
+            $res = $cached_components->getPairs('class');
+
+            // Save in cache
+            if (Settings::isCacheEnabled()) {
+                Cacher::getInstance()->getDefaultCacher()
+                    ->set($cache_key, $res);
+            }
+        }
+
+        return $res;
     }
 }
