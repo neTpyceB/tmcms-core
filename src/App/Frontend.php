@@ -8,7 +8,7 @@ use TMCms\DB\QueryAnalyzer;
 use TMCms\Files\Finder;
 use TMCms\Log\App;
 use TMCms\Log\FrontendLogger;
-use TMCms\Routing\Middleware;
+use TMCms\Middleware\MiddlewareHandler;
 use TMCms\Routing\MVC;
 use TMCms\Routing\Router;
 use TMCms\Routing\Structure;
@@ -57,7 +57,7 @@ class Frontend
     private function __construct()
     {
         // Run all actions registered before main app run
-        Middleware::getInstance()->runHandlersFromType('before_frontend_init');
+        MiddlewareHandler::getInstance()->runHandlersFromType('before_frontend_init');
 
         $this->init();
 

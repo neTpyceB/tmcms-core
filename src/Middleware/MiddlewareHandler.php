@@ -4,7 +4,7 @@ declare(strict_types=1);
  * Updated by neTpyceB [devp.eu] at 2017.4.2
  */
 
-namespace TMCms\Routing;
+namespace TMCms\Middleware;
 
 use TMCms\Traits\singletonOnlyInstanceTrait;
 
@@ -13,7 +13,7 @@ defined('INC') or exit;
 /**
  * Class MVC
  */
-class Middleware
+class MiddlewareHandler
 {
     use singletonOnlyInstanceTrait;
 
@@ -24,14 +24,14 @@ class Middleware
     /**
      * @param string $type
      *
-     * @return Middleware
+     * @return MiddlewareHandler
      */
-    public function runHandlersFromType(string $type): Middleware
+    public function runHandlersFromType(string $type): MiddlewareHandler
     {
         foreach ($this->handlers[$type] as $ware_data) {
             // Call every registered function with supplied params
             $obj = new $ware_data['class'];
-            $obj->{$ware_data['method']}($this, ...$ware_data['params']);
+            $obj->{$ware_data['method']}($ware_data['params']);
         }
 
         return $this;
@@ -43,9 +43,9 @@ class Middleware
      * @param string $method
      * @param array  $params
      *
-     * @return Middleware
+     * @return MiddlewareHandler
      */
-    public function registerHandler(string $type, string $class, string $method = 'run', array $params = []): Middleware
+    public function registerHandler(string $type, string $class, string $method = 'run', array $params = []): MiddlewareHandler
     {
         $this->handlers[$type][] = [
             'class'  => $class,

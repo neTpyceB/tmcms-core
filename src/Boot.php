@@ -1,6 +1,7 @@
 <?php
 
 use TMCms\Admin\AdminTranslations;
+use TMCms\Config\Settings;
 use TMCms\DB\SQL;
 use TMCms\Files\FileSystem;
 use TMCms\Files\Finder;
@@ -198,8 +199,8 @@ if (strlen(SELF) > 2000 || strpos(SELF, 'eval(') !== false || stripos(SELF, 'CON
 
 // Disabling magic quotes in case we have old server software
 if (function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc()) {
-    $process = array(&$_GET, &$_POST, &$_COOKIE, &$_REQUEST);
-    while (list($key, $val) = each($process)) {
+    $process = [&$_GET, &$_POST, &$_COOKIE, &$_REQUEST];
+    while ((list($key, $val) = each($process))) {
         foreach ($val as $k => $v) {
             unset($process[$key][$k]);
             if (is_array($v)) {
@@ -282,7 +283,7 @@ define('IS_AJAX_REQUEST', (int)isset($_REQUEST['ajax']) || stripos(SELF, '_ajax'
 // Dates
 define('Y', date('Y'));
 
-/* Helper functions */
+//=== Helper functions
 
 /**
  * @param string $str
@@ -467,7 +468,9 @@ function go($go, array $additional_params = [], $skip_auto_redirect = false)
         $go .= http_build_query($additional_params);
     }
 
-    if (ob_get_contents()) ob_clean();
+    if (ob_get_contents()) {
+        ob_clean();
+    }
     if (!isset($_GET['ajax'])) {
         @header('Location: ' . $go, true, 301);
     }
@@ -483,6 +486,9 @@ function back(array $additional_params = [])
     go(REF, $additional_params);
 }
 
+// Init Settings
+Settings::getInstance()->init();
+
 // Add assets and all other search folders for CMS
 $length_of_include_path = $root_path_length - 1;
 Finder::getInstance()
@@ -495,7 +501,11 @@ Finder::getInstance()
 ;
 unset($root_path_length, $length_of_include_path);
 
-// Check middleware is required to register
+//=== Check middleware is required to register
+// Backend middleware
+require_once __DIR__ . '/assets/middleware.php';
+
+// Frontend middleware
 $middleware_runner_path = DIR_FRONT . 'middleware.php';
 if (file_exists($middleware_runner_path)) {
     require_once $middleware_runner_path;
