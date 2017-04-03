@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+//declare(strict_types=1);
 /**
  * Updated by neTpyceB [devp.eu] at 2017.4.1
  */
@@ -7,6 +7,7 @@ declare(strict_types=1);
 namespace TMCms\Cache;
 
 use Redis;
+use RedisException;
 use TMCms\Cache\Interfaces\ICache;
 use TMCms\Traits\singletonInstanceTrait;
 
@@ -27,13 +28,17 @@ class RedisCache implements ICache
     /**
      * @return bool
      */
-    public static function itWorks(): bool
+    public static function itWorks()
     {
         if (class_exists('Redis')) {
             self::getInstance();
 
-            if ('PONG' == self::$redis->ping()) {
-                return true;
+            try {
+                if ('PONG' == self::$redis->ping()) {
+                    return true;
+                }
+            }catch(RedisException $e){
+
             }
         };
 
@@ -43,7 +48,7 @@ class RedisCache implements ICache
     /**
      * @return RedisCache
      */
-    public static function getInstance(): self
+    public static function getInstance()
     {
         if (!self::$instance) {
             self::$instance = new self;
@@ -65,7 +70,7 @@ class RedisCache implements ICache
     /**
      * @param string $key
      */
-    public function delete($key): void
+    public function delete($key)
     {
         self::$redis->delete(CFG_DOMAIN . $key);
     }
@@ -75,7 +80,7 @@ class RedisCache implements ICache
      *
      * @return string|NULL
      */
-    public function get($key): ?string
+    public function get($key)
     {
         if (!self::$instance) {
             self::getInstance();
@@ -92,7 +97,7 @@ class RedisCache implements ICache
     /**
      * @return bool true
      */
-    public function deleteAll(): bool
+    public function deleteAll()
     {
         return self::$redis->flushAll();
     }
@@ -103,7 +108,7 @@ class RedisCache implements ICache
      *
      * @return int the new value
      */
-    public function increment($key, $value = 1): int
+    public function increment($key, $value = 1)
     {
         if ($this->exists($key)) {
             return self::$redis->incrBy($key, $value);
@@ -119,7 +124,7 @@ class RedisCache implements ICache
      *
      * @return bool
      */
-    public function exists($key): bool
+    public function exists($key)
     {
         return self::$redis->exists($key);
     }
@@ -133,7 +138,7 @@ class RedisCache implements ICache
      *
      * @return bool
      */
-    public function set($key, $value, $ttl = 2592000): bool
+    public function set($key, $value, $ttl = 2592000)
     {
         if (!self::$instance) {
             self::getInstance();
@@ -148,7 +153,7 @@ class RedisCache implements ICache
      *
      * @return int the new value
      */
-    public function decrement($key, $value = 1): int
+    public function decrement($key, $value = 1)
     {
         if ($this->exists($key)) {
             return self::$redis->decrBy($key, $value);

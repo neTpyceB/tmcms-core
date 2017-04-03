@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+//declare(strict_types=1);
 /**
  * Updated by neTpyceB [devp.eu] at 2017.4.3
  */

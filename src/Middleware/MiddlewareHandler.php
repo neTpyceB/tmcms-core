@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+//declare(strict_types=1);
 /**
  * Updated by neTpyceB [devp.eu] at 2017.4.2
  */
@@ -26,7 +26,7 @@ class MiddlewareHandler
      *
      * @return MiddlewareHandler
      */
-    public function runHandlersFromType(string $type): MiddlewareHandler
+    public function runHandlersFromType(string $type)//: MiddlewareHandler
     {
         foreach ($this->handlers[$type] as $ware_data) {
             // Call every registered function with supplied params
@@ -45,7 +45,7 @@ class MiddlewareHandler
      *
      * @return MiddlewareHandler
      */
-    public function registerHandler(string $type, string $class, string $method = 'run', array $params = []): MiddlewareHandler
+    public function registerHandler($type, $class, $method = 'run', array $params = [])//: MiddlewareHandler
     {
         $this->handlers[$type][] = [
             'class'  => $class,
