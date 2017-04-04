@@ -248,7 +248,9 @@ class Backend
             ->addJs('var cms_data = {context_menu_items: {}};')// Required for global data
             ->addJs('cms_data.cfg_domain="' . CFG_DOMAIN . '"')// Required for notifications
             ->addJs('cms_data.site_name="' . $config->get('site')['name'] . '"') // Required for notifications
+            ->addJs('cms_data.is_authorized=' . (defined('USER_ID') && USER_ID ? 'true' : 'false')) // Required for notifications
         ;
+
         $cnf_notif = Configuration::getInstance()->get('notification');
         if (isset($cnf_notif['icon'])) {
             PageHead::getInstance()

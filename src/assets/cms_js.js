@@ -854,6 +854,11 @@ var cms_notifications = {
 
 
 $(function () {
+    // Only if logged-in
+    if (!cms_data.is_authorized) {
+        return;
+    }
+
     // Init notifications for browser
     cms_notifications.init();
 
