@@ -254,7 +254,16 @@ define('REF_SE_KEYWORD_MIN_MATCH', 70); // Minimum match to search query from se
 
 // PHP_OS can be already set by environment
 if (!defined('PHP_OS')) {
-    define('PHP_OS', "Linux");
+    $os = strtoupper(PHP_OS);
+    if (substr($os, 0, 3) === 'WIN') {
+        $os = 'Windows';
+    } elseif ($os === 'LINUX' || $os === 'FREEBSD' || $os === 'DARWIN') {
+        $os = 'Linux';
+    } else {
+        $os = 'Other';
+    }
+    define('PHP_OS', $os);
+    unset($os);
 }
 if (!defined('CFG_DB_SERVER')) {
     define('CFG_DB_SERVER', 'localhost');
