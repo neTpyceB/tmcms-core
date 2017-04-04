@@ -29,5 +29,7 @@ class ProcessQueue
     {
         $process = new Process($function_code);
         $process->runProcess();
+
+        return $process->getPid();
     }
 }
