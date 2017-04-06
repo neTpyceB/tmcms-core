@@ -448,7 +448,7 @@ class Frontend
 
                     // Now can replace
                     $domain0 = array_pop($domain1);
-                    $s = '<script>rewem2nortex("' . preg_replace('/\sclass=\"(.+)\"/', '\1', str_replace('"', '\'', $matches[3][$k])) . '","' . $s . '","' . implode('.', $domain1) . '","' . $domain0 . '"';
+                    $s = '<script>rewem2nortex("' . preg_replace('/\sclass=\'(.+)\'/', '\1', str_replace('"', '\'', $matches[3][$k])) . '","' . $s . '","' . implode('.', $domain1) . '","' . $domain0 . '"';
                     if ($matches[2][$k] !== $matches[4][$k]) {
                         $s .= ',"' . trim(str_replace(['@', '.'], ['"+"@"+"', '"+"."+"'], preg_replace('`\<([a-z])`', '<"+"\\1', str_replace('"', '\"', str_replace("\n", '', $matches[4][$k]))))) . '"';
                     }
