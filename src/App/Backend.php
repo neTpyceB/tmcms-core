@@ -251,10 +251,13 @@ class Backend
                 ->addJs('cms_data.notification_icon = "' . Configuration::getInstance()->get('notification')['icon'] . '"');
         }
 
-        $page_head
-            ->addJsUrl('cms_js.js')
-//                ->addJsUrl(DIR_CMS_SCRIPTS_URL . 'scripts.js')
-            ->addJsUrl('plupload/plupload.full.min.js');
+        // Main scripts
+        $page_head->addJsUrl('cms_js.js');
+
+        if ($is_authorized) {
+            // Filemanager uploader
+            $page_head->addJsUrl('plupload/plupload.full.min.js');
+        }
 
         // Script for sending JS errors
         if (CFG_MAIL_ERRORS && Settings::isProductionState() && !Settings::get('do_not_send_js_errors')) {
@@ -263,28 +266,47 @@ class Backend
                 ->addJs('register_js_error.ini(\'' . DIR_CMS_URL . '\');');
         }
 
-        PageTail::getInstance()
-            // Global scripts
-            ->addJsUrl('cms/jquery-migrate-1.2.1.min.js')
-            ->addJsUrl('cms/plugins/jquery-ui/jquery-ui-1.10.3.custom.min.js')
+        $page_tail = PageTail::getInstance();
+
+        // Global scripts
+        if ($is_authorized) {
+            $page_tail
+                // Pages
+                ->addCssUrl('cms/plugins/jquery-contextmenu/jquery.contextMenu.css')
+                ->addCssUrl('print_css.min.css', 'print')
+                ->addJsUrl('cms/jquery-migrate-1.2.1.min.js')
+                ->addJsUrl('cms/plugins/jquery-ui/jquery-ui-1.10.3.custom.min.js')
+                ->addJsUrl('cms/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js')
+                ->addJsUrl('cms/plugins/jquery-slimscroll/jquery.slimscroll.min.js')
+                ->addJsUrl('cms/jquery.blockui.min.js')
+                ->addJsUrl('cms/jquery.cokie.min.js')
+                ->addJsUrl('cms/plugins/uniform/jquery.uniform.min.js')
+                ->addJsUrl('cms/plugins/bootstrap-switch/js/bootstrap-switch.min.js')
+                ->addJsUrl('cms/plugins/jquery-contextmenu/jquery.contextMenu.js')
+                // Pages
+                ->addJsUrl('cms/layout/scripts/quick-sidebar.js')
+                ->addJsUrl('cms/plugins/pace/pace.js')
+                ->addJsUrl('plugins/toastr/toastr.min.js')// Notifications
+                ->addJsUrl('plugins/parsley.js')// Input validation
+                ->addJsUrl('cms/respond.min.js')
+                ->addJsUrl('cms/excanvas.min.js')
+                // Init all
+                ->addJs('$(function() {
+               $(".chosen").select2();
+               QuickSidebar.init();
+            });');
+        }
+
+
+        $page_tail
             ->addJsUrl('cms/plugins/bootstrap/js/bootstrap.min.js')// This must be after jquery-ui.custom.js
-            ->addJsUrl('cms/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js')
-            ->addJsUrl('cms/plugins/jquery-slimscroll/jquery.slimscroll.min.js')
-            ->addJsUrl('cms/jquery.blockui.min.js')
-            ->addJsUrl('cms/jquery.cokie.min.js')
-            ->addJsUrl('cms/plugins/uniform/jquery.uniform.min.js')
-            ->addJsUrl('cms/plugins/bootstrap-switch/js/bootstrap-switch.min.js')
-            ->addCssUrl('cms/plugins/jquery-contextmenu/jquery.contextMenu.css')
-            ->addJsUrl('cms/plugins/jquery-contextmenu/jquery.contextMenu.js')
-            // Pages
             ->addJsUrl('cms/plugins/jquery-validation/js/jquery.validate.min.js')
             ->addJsUrl('cms/plugins/backstretch/jquery.backstretch.min.js')
             ->addJsUrl('cms/plugins/select2/select2.min.js')
-            // Final scripts
+            // Pages
             ->addJsUrl('cms/metronic.js')
             ->addJsUrl('cms/layout/scripts/layout.js')
-            ->addJsUrl('cms/layout/scripts/quick-sidebar.js')
-            ->addJsUrl('cms/plugins/pace/pace.js')
+            // Final scripts
 //                ->addCssURL('plugins/chosen/chosen.min.css') // Beautify selects
 //                ->addJsURL('context_menu/menu.js') // Context menu
 //                ->addJsUrl('bootstrap/js/bootstrap.js')
@@ -296,21 +318,15 @@ class Backend
 //                ->addJsUrl('js/offscreen.js')
 //                ->addJsUrl('js/main.js')
 //                ->addJsUrl('js/buttons.js')
-            ->addJsUrl('plugins/toastr/toastr.min.js')// Notifications
 //                ->addJsUrl('js/notifications.js')
 //                ->addJsUrl('plugins/chosen/chosen.jquery.min.js')
 //                ->addJsUrl('plugins/chosen/chosen.order.jquery.js')
 //                ->addJsURL('ckeditor/ckeditor.js') // Wysiwyg
-            ->addJsUrl('plugins/parsley.js')// Input validation
-            ->addJsUrl('cms/respond.min.js')
-            ->addJsUrl('cms/excanvas.min.js')
+            // Init all
             ->addJs('$(function() {
-               $(".chosen").select2();
                Metronic.init();
                Layout.init();
-               QuickSidebar.init();
-            });')
-            ->addCssUrl('print_css.min.css', 'print');
+            });');
 
         // Search for custom css
         $custom_css_url = DIR_ASSETS_URL . 'cms.css';
