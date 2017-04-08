@@ -509,12 +509,21 @@ class Backend
             die;
         }
 
-        // Call required method
-        if ($call_object) {
-            $obj = new $class;
-            $obj->{$method}();
+        $is_admin_native_file = stripos($class, '\\TMCms\\Admin\\') === 0;
+
+        // Check for existence of custom method file for native admin files
+        $custom_method_file = DIR_MODULES . P . '/Pages/' . $method . '.php';
+        if (file_exists($custom_method_file) && $is_admin_native_file) {
+            // Call custom file
+            require_once $custom_method_file;
         } else {
-            call_user_func([$class, $method]);
+            // Call required method from existing class
+            if ($call_object) {
+                $obj = new $class;
+                $obj->{$method}();
+            } else {
+                call_user_func([$class, $method]);
+            }
         }
 
         $this->content = ob_get_clean();
