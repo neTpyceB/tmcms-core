@@ -854,6 +854,19 @@ var cms_notifications = {
 
 
 $(function () {
+    // For all - check serviceWorker is available
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function () {
+            navigator.serviceWorker.register('/vendor/devp-eu/tmcms-core/src/assets/js/sw.js').then(function (registration) {
+                // Registration was successful
+                console.log('ServiceWorker registration successful with scope: ', registration.scope);
+            }).catch(function (err) {
+                // registration failed :(
+                console.log('ServiceWorker registration failed: ', err);
+            });
+        });
+    }
+
     // Only if logged-in
     if (!cms_data.is_authorized) {
         return;
