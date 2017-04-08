@@ -326,7 +326,8 @@ class Backend
             ->addJs('$(function() {
                Metronic.init();
                Layout.init();
-            });');
+            });')
+            ->addCustomString('<link rel="manifest" href="/vendor/devp-eu/tmcms-core/src/assets/manifest.json">');
 
         // Search for custom css
         $custom_css_url = DIR_ASSETS_URL . 'cms.css';

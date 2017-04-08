@@ -1,0 +1,25 @@
+{
+  "short_name": "TMCms Log-in page",
+  "name": "TMCms Log-in page",
+  "icons": [
+    {
+      "src": "/vendor/devp-eu/tmcms-core/src/assets/images/logo_square.png",
+      "type": "image/png",
+      "sizes": "48x48"
+    },
+    {
+      "src": "/vendor/devp-eu/tmcms-core/src/assets/images/logo_square.png",
+      "type": "image/png",
+      "sizes": "96x96"
+    },
+    {
+      "src": "/vendor/devp-eu/tmcms-core/src/assets/images/logo_square.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    }
+  ],
+  "start_url": "/cms/",
+  "background_color": "#2b3643",
+  "display": "standalone",
+  "theme_color": "#364150"
+}
