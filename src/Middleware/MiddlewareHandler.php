@@ -26,7 +26,7 @@ class MiddlewareHandler
      *
      * @return MiddlewareHandler
      */
-    public function runHandlersFromType(string $type)//: MiddlewareHandler
+    public function runHandlersFromType($type)//: MiddlewareHandler
     {
         foreach ($this->handlers[$type] as $ware_data) {
             // Call every registered function with supplied params
