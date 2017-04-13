@@ -58,17 +58,21 @@ class Components
 
         foreach ($components_array as $component_class => $component_methods) {
             if ($component_class == 'plugin') {
-                $elements[$component_class . '_' . $component_class] = [
-                    'type' => 'plugin',
-                    'file' => $component_class,
-                    'class' => $component_class,
-                    'elements' => [
-                        'select_plugin' => [
-                            'type' => 'select',
-                            'options' => ['' => ''] + Plugin::getInstance()->getPluginFilePairs()
-                        ]
-                    ]
-                ];
+
+                foreach ($component_methods as $component_method) {
+
+                    $elements[$component_class . '_' . $component_method] = [
+                        'type'     => 'plugin',
+                        'file'     => $component_class,
+                        'class'    => $component_class . '_' . $component_method,
+                        'elements' => [
+                            'select_plugin' => [
+                                'type'    => 'select',
+                                'options' => ['' => ''] + Plugin::getInstance()->getPluginFilePairs(),
+                            ],
+                        ],
+                    ];
+                }
             } else {
                 require_once DIR_FRONT_CONTROLLERS . $component_class . '.php';
 

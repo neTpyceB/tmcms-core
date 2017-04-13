@@ -197,8 +197,12 @@ class Backend
         // Favicon url
         $favicon = !empty($config->get('cms')['favicon']) ? $config->get('cms')['favicon'] : DIR_CMS_IMAGES_URL . 'logo_square.png';
 
+        $is_authorized = Users::getInstance()->isLogged();
+
+        $page_head = PageHead::getInstance();
+
         // Prepare page HTML for head
-        PageHead::getInstance()
+        $page_head
             // Cms attributes
             ->addHtmlTagAttributes('lang="en" class="no-js"')
             ->setBrowserTitle((P_DO !== '_default' ? Converter::symb2Ttl(P_DO) : 'Main') . ' / ' . Converter::symb2Ttl(P) . ' / ' . $config->get('site')['name'] . ' / ' . CMS_NAME . ' v. ' . CMS_VERSION)
@@ -211,83 +215,98 @@ class Backend
             ->addClassToBody('page-quick-sidebar-over-content')
             // Global styles
             ->addCssUrl('cms/fonts/open-sans.css')
-            ->addCssUrl('cms/plugins/font-awesome/font-awesome.css')
             ->addCssUrl('cms/plugins/simple-line-icons/simple-line-icons.css')
             ->addCssUrl('cms/plugins/bootstrap/css/bootstrap.css')
-            ->addCssUrl('cms/plugins/uniform/css/uniform.default.css')
-            ->addCssUrl('cms/plugins/bootstrap-switch/css/bootstrap-switch.css')
-            ->addCssUrl('cms/plugins/pace/pace-theme-minimal.css')
-            ->addCssUrl('cms/plugins/select2/select2.css')
             // Theme styles
             ->addCssUrl('cms/css/components.css')
-            ->addCssUrl('cms/css/plugins.css')
-            ->addCssUrl('cms/layout/css/layout.css')
 //            ->addCssUrl('cms/layout/css/themes/default.css') // TODO can switch in Settings
             ->addCssUrl('cms/layout/css/themes/darkblue.css')// TODO can switch in Settings
-            ->addCssUrl('cms/layout/css/custom.css')
-            ->addCssUrl('plugins/toastr/toastr.min.css')
             ->addJsUrl('cms/jquery-1.11.0.min.js')
             // Cms overwrites
             ->addCssUrl('cms/cms_css.css')
-//            ->addCssUrl('css/font-awesome.css') // TODO remove all old files that are not in assets/cms/ folder
-//            ->addCssUrl('css/metronic/simple-line-icons.css')
-//            ->addCssUrl('bootstrap/css/bootstrap.min.css')
-//            ->addCssUrl('css/metronic/components.css')
-//            ->addCssUrl('css/metronic/layout.css')
-//            ->addCssUrl('css/metronic/darkblue.css')
-//            ->addCssUrl('css/themify-icons.css')
-//            ->addCssUrl('css/animate.min.css')
-//            ->addCssUrl('css/skins/palette.css')
-//            ->addCssUrl('css/fonts/font.css')
-//            ->addCssUrl('css/main.css')
-//            ->addJsUrl('plugins/modernizr.js')
-//            ->addCssUrl('css.css')
-//                ->addJsUrl(DIR_CMS_SCRIPTS_URL . 'jquery-2.1.0.min.js')
-            ->addJsUrl(DIR_CMS_SCRIPTS_URL . 'jquery.form.min.js')// Ajaxify forms
-//                ->addJsUrl('js/jquery.bpopup.min.js')// Popup modals
             ->addJs('var cms_data = {context_menu_items: {}};')// Required for global data
             ->addJs('cms_data.cfg_domain="' . CFG_DOMAIN . '"')// Required for notifications
             ->addJs('cms_data.site_name="' . $config->get('site')['name'] . '"') // Required for notifications
+            ->addJs('cms_data.is_authorized=' . ($is_authorized ? 'true' : 'false')) // Required for notifications
         ;
-        $cnf_notif = Configuration::getInstance()->get('notification');
-        if (isset($cnf_notif['icon'])) {
-            PageHead::getInstance()
+
+        if ($is_authorized) {
+            $page_head
+                ->addCssUrl('cms/plugins/font-awesome/font-awesome.css')
+                ->addCssUrl('cms/plugins/uniform/css/uniform.default.css')
+                ->addCssUrl('cms/plugins/bootstrap-switch/css/bootstrap-switch.css')
+                ->addCssUrl('cms/plugins/pace/pace-theme-minimal.css')
+                ->addCssUrl('cms/plugins/select2/select2.css')
+                ->addCssUrl('cms/css/plugins.css')
+                ->addCssUrl('cms/layout/css/layout.css')
+                ->addCssUrl('cms/layout/css/custom.css')
+                ->addCssUrl('plugins/toastr/toastr.min.css')
+                ->addJsUrl(DIR_CMS_SCRIPTS_URL . 'jquery.form.min.js')// Ajaxify forms
+            ;
+        }
+
+        $config_notification = Configuration::getInstance()->get('notification');
+        if (isset($config_notification['icon'])) {
+            $page_head
                 ->addJs('cms_data.notification_icon = "' . Configuration::getInstance()->get('notification')['icon'] . '"');
         }
-        PageHead::getInstance()
-            ->addJsUrl('cms_js.js')
-//                ->addJsUrl(DIR_CMS_SCRIPTS_URL . 'scripts.js')
-            ->addJsUrl('plupload/plupload.full.min.js');
+
+        // Main scripts
+        $page_head->addJsUrl('cms_js.js');
+
+        if ($is_authorized) {
+            // Filemanager uploader
+            $page_head->addJsUrl('plupload/plupload.full.min.js');
+        }
 
         // Script for sending JS errors
         if (CFG_MAIL_ERRORS && Settings::isProductionState() && !Settings::get('do_not_send_js_errors')) {
-            PageHead::getInstance()
+            $page_head
                 ->addJsUrl('send_error.min.js')
                 ->addJs('register_js_error.ini(\'' . DIR_CMS_URL . '\');');
         }
 
-        PageTail::getInstance()
-            // Global scripts
-            ->addJsUrl('cms/jquery-migrate-1.2.1.min.js')
-            ->addJsUrl('cms/plugins/jquery-ui/jquery-ui-1.10.3.custom.min.js')
+        $page_tail = PageTail::getInstance();
+
+        // Global scripts
+        if ($is_authorized) {
+            $page_tail
+                // Pages
+                ->addCssUrl('cms/plugins/jquery-contextmenu/jquery.contextMenu.css')
+                ->addCssUrl('print_css.min.css', 'print')
+                ->addJsUrl('cms/jquery-migrate-1.2.1.min.js')
+                ->addJsUrl('cms/plugins/jquery-ui/jquery-ui-1.10.3.custom.min.js')
+                ->addJsUrl('cms/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js')
+                ->addJsUrl('cms/plugins/jquery-slimscroll/jquery.slimscroll.min.js')
+                ->addJsUrl('cms/jquery.blockui.min.js')
+                ->addJsUrl('cms/jquery.cokie.min.js')
+                ->addJsUrl('cms/plugins/uniform/jquery.uniform.min.js')
+                ->addJsUrl('cms/plugins/bootstrap-switch/js/bootstrap-switch.min.js')
+                ->addJsUrl('cms/plugins/jquery-contextmenu/jquery.contextMenu.js')
+                // Pages
+                ->addJsUrl('cms/layout/scripts/quick-sidebar.js')
+                ->addJsUrl('cms/plugins/pace/pace.js')
+                ->addJsUrl('plugins/toastr/toastr.min.js')// Notifications
+                ->addJsUrl('plugins/parsley.js')// Input validation
+                ->addJsUrl('cms/respond.min.js')
+                ->addJsUrl('cms/excanvas.min.js')
+                // Init all
+                ->addJs('$(function() {
+               $(".chosen").select2();
+               QuickSidebar.init();
+            });');
+        }
+
+
+        $page_tail
             ->addJsUrl('cms/plugins/bootstrap/js/bootstrap.min.js')// This must be after jquery-ui.custom.js
-            ->addJsUrl('cms/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js')
-            ->addJsUrl('cms/plugins/jquery-slimscroll/jquery.slimscroll.min.js')
-            ->addJsUrl('cms/jquery.blockui.min.js')
-            ->addJsUrl('cms/jquery.cokie.min.js')
-            ->addJsUrl('cms/plugins/uniform/jquery.uniform.min.js')
-            ->addJsUrl('cms/plugins/bootstrap-switch/js/bootstrap-switch.min.js')
-            ->addCssUrl('cms/plugins/jquery-contextmenu/jquery.contextMenu.css')
-            ->addJsUrl('cms/plugins/jquery-contextmenu/jquery.contextMenu.js')
-            // Pages
             ->addJsUrl('cms/plugins/jquery-validation/js/jquery.validate.min.js')
             ->addJsUrl('cms/plugins/backstretch/jquery.backstretch.min.js')
             ->addJsUrl('cms/plugins/select2/select2.min.js')
-            // Final scripts
+            // Pages
             ->addJsUrl('cms/metronic.js')
             ->addJsUrl('cms/layout/scripts/layout.js')
-            ->addJsUrl('cms/layout/scripts/quick-sidebar.js')
-            ->addJsUrl('cms/plugins/pace/pace.js')
+            // Final scripts
 //                ->addCssURL('plugins/chosen/chosen.min.css') // Beautify selects
 //                ->addJsURL('context_menu/menu.js') // Context menu
 //                ->addJsUrl('bootstrap/js/bootstrap.js')
@@ -299,32 +318,27 @@ class Backend
 //                ->addJsUrl('js/offscreen.js')
 //                ->addJsUrl('js/main.js')
 //                ->addJsUrl('js/buttons.js')
-            ->addJsUrl('plugins/toastr/toastr.min.js')// Notifications
 //                ->addJsUrl('js/notifications.js')
 //                ->addJsUrl('plugins/chosen/chosen.jquery.min.js')
 //                ->addJsUrl('plugins/chosen/chosen.order.jquery.js')
 //                ->addJsURL('ckeditor/ckeditor.js') // Wysiwyg
-            ->addJsUrl('plugins/parsley.js')// Input validation
-            ->addJsUrl('cms/respond.min.js')
-            ->addJsUrl('cms/excanvas.min.js')
+            // Init all
             ->addJs('$(function() {
-               $(".chosen").select2();
                Metronic.init();
                Layout.init();
-               QuickSidebar.init();
             });')
-            ->addCssUrl('print_css.min.css', 'print');
+            ->addCustomString('<link rel="manifest" href="/vendor/devp-eu/tmcms-core/src/assets/manifest.json">');
 
         // Search for custom css
         $custom_css_url = DIR_ASSETS_URL . 'cms.css';
         if (file_exists(DIR_BASE . $custom_css_url)) {
-            PageHead::getInstance()->addCssUrl($custom_css_url);
+            $page_head->addCssUrl($custom_css_url);
         } else {
-            PageHead::getInstance()->addCustomString('<!--Create file "' . $custom_css_url . '" if you wish to use custom css file-->');
+            $page_head->addCustomString('<!--Create file "' . $custom_css_url . '" if you wish to use custom css file-->');
         }
 
         // Set head for page
-        Page::setHead(PageHead::getInstance());
+        Page::setHead($page_head);
     }
 
     private function parseMenu()
@@ -495,12 +509,21 @@ class Backend
             die;
         }
 
-        // Call required method
-        if ($call_object) {
-            $obj = new $class;
-            $obj->{$method}();
+        $is_admin_native_file = stripos($class, '\\TMCms\\Admin\\') === 0;
+
+        // Check for existence of custom method file for native admin files
+        $custom_method_file = DIR_MODULES . P . '/Pages/' . $method . '.php';
+        if (file_exists($custom_method_file) && $is_admin_native_file) {
+            // Call custom file
+            require_once $custom_method_file;
         } else {
-            call_user_func([$class, $method]);
+            // Call required method from existing class
+            if ($call_object) {
+                $obj = new $class;
+                $obj->{$method}();
+            } else {
+                call_user_func([$class, $method]);
+            }
         }
 
         $this->content = ob_get_clean();
