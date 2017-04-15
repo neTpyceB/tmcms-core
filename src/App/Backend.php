@@ -337,6 +337,14 @@ class Backend
             $page_head->addCustomString('<!--Create file "' . $custom_css_url . '" if you wish to use custom css file-->');
         }
 
+        // Search for custom js
+        $custom_js_url = DIR_ASSETS_URL . 'cms.js';
+        if (file_exists(DIR_BASE . $custom_js_url)) {
+            $page_head->addJsUrl($custom_js_url);
+        } else {
+            $page_head->addCustomString('<!--Create file "' . $custom_js_url . '" if you wish to use custom js file-->');
+        }
+
         // Set head for page
         Page::setHead($page_head);
     }
