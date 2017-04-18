@@ -59,7 +59,8 @@ class Frontend
         // Run all actions registered before main app run
         MiddlewareHandler::getInstance()->runHandlersFromType('before_frontend_init');
 
-        $this->init();
+        // This router may be custom. It must return compatible array
+        $this->router_instance = Router::getInstance();
 
         // Autoload files from modules
         runAutoloadFiles();
@@ -68,40 +69,6 @@ class Frontend
 
         // Flush application log
         App::flushLog();
-    }
-
-    private function init()
-    {
-        // Check if allowed to open site in case of IP-restricted access
-        $ips = Settings::get('allowed_ips');
-        if ($ips) {
-
-            // IPs are separated by newline
-            $ips = explode("\n", $ips);
-            // Remove empty lines and odd spaces
-            foreach ($ips as & $v) {
-                $v = trim($v);
-            }
-
-            // If still have IP in range and client is blocked - show error
-            if ($ips && !in_array(IP, $ips)) {
-
-                if (Settings::isFrontendLogEnabled()) {
-                    FrontendLogger::getInstance()->err('IP forbidden');
-                }
-
-                if (!headers_sent()) {
-                    header('HTTP/1.1 403 Forbidden');
-                }
-                die('Error 403. Forbidden');
-            }
-        }
-
-        // This router may be custom. It must return compatible array
-        $router = Router::getInstance();
-
-        // Save page data fo future use
-        $this->router_instance = $router;
     }
 
     private function parse()
