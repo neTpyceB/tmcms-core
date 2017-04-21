@@ -351,7 +351,7 @@ class Menu
      */
     public function getMenuHeaderView()
     {
-        if (!defined('USER_ID') || !USER_ID || !defined('LNG')) {
+        if (!defined('USER_ID') || !USER_ID || !defined('LNG') || isset(Configuration::getInstance()->get('cms')['hide_header']) && Configuration::getInstance()->get('cms')['hide_header']) {
             return '';
         }
 
