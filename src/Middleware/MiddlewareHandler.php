@@ -18,7 +18,8 @@ class MiddlewareHandler
     use singletonOnlyInstanceTrait;
 
     protected $handlers = [
-        'before_frontend_init' => [],
+        'before_frontend_init'  => [],
+        'after_image_processor' => [],
     ];
 
     /**
