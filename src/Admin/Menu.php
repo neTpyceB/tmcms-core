@@ -351,8 +351,16 @@ class Menu
      */
     public function getMenuHeaderView()
     {
-        if (!defined('USER_ID') || !USER_ID || !defined('LNG') || isset(Configuration::getInstance()->get('cms')['hide_header']) && Configuration::getInstance()->get('cms')['hide_header']) {
+        if (!defined('USER_ID') || !USER_ID || !defined('LNG')) {
             return '';
+        }
+
+        // Show non-default CMS headers
+        if (isset(Configuration::getInstance()->get('cms')['custom_header']) && Configuration::getInstance()->get('cms')['custom_header']) {
+            $custom_header_callback_file = DIR_MODULES . 'cms/Admin/Menu/getMenuHeaderView.php';
+            if (file_exists($custom_header_callback_file)) {
+                return include $custom_header_callback_file;
+            }
         }
 
         ob_start();
