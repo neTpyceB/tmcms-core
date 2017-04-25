@@ -4,7 +4,7 @@ namespace TMCms\HTML\Cms\Column;
 
 use TMCms\Config\Configuration;
 use TMCms\HTML\Cms\Column;
-use TMCms\HTML\Cms\TableLinker;
+use TMCms\HTML\Cms\Linker;
 use TMCms\Modules\Images\Entity\ImageEntityRepository;
 use TMCms\Modules\ModuleManager;
 
@@ -50,10 +50,12 @@ class ColumnGallery extends Column {
 	/**
 	 * @param $row
 	 * @param array $row_data
-	 * @param TableLinker $linker
+     * @param Linker $linker
+     *
 	 * @return string
 	 */
-	public function getView($row, $row_data, TableLinker $linker) {
+    public function getView($row, $row_data, Linker $linker)
+    {
 		$images = isset($this->images[$row_data['id']]) ? $this->images[$row_data['id']] : [];
 
 		$value = $this->getCellData($row_data);
@@ -81,7 +83,7 @@ class ColumnGallery extends Column {
 			$value = implode('', $images_html);
 		}
 
-		$linker_array = array('do' => 'images', 'id' => $row_data['id']);
+        $linker_array = ['do' => 'images', 'id' => $row_data['id']];
 		$href = $this->getHref($row_data, $linker, $linker_array);
 
 		$cell_view = $this->getHrefView($value, $href);

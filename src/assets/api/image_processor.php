@@ -4,6 +4,7 @@ use TMCms\Config\Configuration;
 use TMCms\Config\Settings;
 use TMCms\Files\FileSystem;
 use TMCms\Files\Image;
+use TMCms\Middleware\MiddlewareHandler;
 
 if (!preg_match('/\.(?:jpg|png|jpeg|gif)&[a-z0-9&=\_]+$/', QUERY)) {
     return;
@@ -308,17 +309,24 @@ foreach ($actions as $action => $params) {
 FileSystem::mkdir(DIR_CACHE . 'images/' . $path);
 
 // Save end file for web
-if (!$image->save(DIR_CACHE . 'images/' . QUERY, $ext, 90) && !Settings::isProductionState()) {
+$destination_path = DIR_CACHE . 'images/' . QUERY;
+if (!$image->save($destination_path, $ext, 90) && !Settings::isProductionState()) {
     dump('Not enough memory to resize and sharpen image "' . $path . $file . '".');
 }
 
+MiddlewareHandler::getInstance()->runHandlersFromType('after_image_processor', [
+    'src_original' => $src_path,
+    'src_saved'    => $destination_path,
+]);
+
 // Run file optimizers
+// TODO move these optimizers to middleware, and possibly enable in admin panel or check during run
 $tinypng = Configuration::getInstance()->get('tinypng');
 if(class_exists('\Tinify\Tinify') && !empty($tinypng) && !empty($tinypng['key'])){
     try {
         \Tinify\setKey($tinypng['key']);
-        $source = \Tinify\fromFile(DIR_CACHE . 'images/' . QUERY);
-        $source->toFile(DIR_CACHE . 'images/' . QUERY);
+        $source = \Tinify\fromFile($destination_path);
+        $source->toFile($destination_path);
 //    } catch(\Tinify\AccountException $e) {
 //        // print("The error message is: " + $e.getMessage());
 //        // Verify your API key and account limit.

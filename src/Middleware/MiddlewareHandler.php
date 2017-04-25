@@ -18,20 +18,23 @@ class MiddlewareHandler
     use singletonOnlyInstanceTrait;
 
     protected $handlers = [
-        'before_frontend_init' => [],
+        'before_frontend_init'  => [],
+        'after_image_processor' => [],
     ];
 
     /**
      * @param string $type
      *
+     * @param array  $additional_params
+     *
      * @return MiddlewareHandler
      */
-    public function runHandlersFromType($type)//: MiddlewareHandler
+    public function runHandlersFromType($type, $additional_params = [])
     {
         foreach ($this->handlers[$type] as $ware_data) {
             // Call every registered function with supplied params
             $obj = new $ware_data['class'];
-            $obj->{$ware_data['method']}($ware_data['params']);
+            $obj->{$ware_data['method']}(array_merge($additional_params, $ware_data['params']));
         }
 
         return $this;
