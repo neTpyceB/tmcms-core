@@ -355,6 +355,15 @@ class Menu
             return '';
         }
 
+        // Show non-default CMS headers
+        $cfg = Configuration::getInstance()->get('cms');
+        if (isset($cfg['custom_header']) && $cfg['custom_header']) {
+            $custom_header_callback_file = DIR_MODULES . 'cms/Admin/Menu/getMenuHeaderView.php';
+            if (file_exists($custom_header_callback_file)) {
+                return include $custom_header_callback_file;
+            }
+        }
+
         ob_start();
 
         // Notifications from system

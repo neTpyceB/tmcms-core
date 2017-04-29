@@ -715,14 +715,15 @@ AND TABLE_NAME = "' . self::sql_prepare($table) . '"
 
     /**
      * @param string $tbl
-     * @param array $data
-     * @param bool $return_id
-     * @param bool $update_on_duplicate
-     * @param bool $low_priority
-     * @param bool $dalayed
+     * @param array  $data
+     * @param bool   $return_id
+     * @param bool   $update_on_duplicate
+     * @param bool   $low_priority
+     * @param bool   $delayed
+     *
      * @return bool
      */
-    public static function add($tbl, array $data, $return_id = false, $update_on_duplicate = false, $low_priority = false, $dalayed = false)
+    public static function add($tbl, array $data, $return_id = false, $update_on_duplicate = false, $low_priority = false, $delayed = false)
     {
         if (!$data) {
             return false;
@@ -732,7 +733,7 @@ AND TABLE_NAME = "' . self::sql_prepare($table) . '"
             $v = '`' . $k . '` = "' . self::sql_prepare($v) . '"';
         }
 
-        $sql = 'INSERT' . ($low_priority ? ' LOW_PRIORITY' : '') . ($dalayed ? ' DELAYED' : '') . ' INTO `' . $tbl . '` SET ' . implode(', ', $data);
+        $sql = 'INSERT' . ($low_priority ? ' LOW_PRIORITY' : '') . ($delayed ? ' DELAYED' : '') . ' INTO `' . $tbl . '` SET ' . implode(', ', $data);
 
         if ($update_on_duplicate) {
             $sql .= ' ON DUPLICATE KEY UPDATE ' . implode(', ', $data);

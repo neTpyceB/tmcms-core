@@ -400,6 +400,9 @@ class CmsFormHelper {
                             // Visual editor
                             case 'wysiwyg':
                                 $cms_field->enableWysiwyg();
+                                if(!empty($field['wysiwyg_options'])){
+                                    $cms_field->getWidget()->wysiwyg_options = $field['wysiwyg_options'];
+                                }
                                 break;
 
                             // Google map for choosing coordinates

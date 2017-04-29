@@ -187,7 +187,7 @@ if (!isset($_SERVER['REMOTE_ADDR']) || !preg_match('/^[0-9]{1,3}\.[0-9]{1,3}\.[0
 }
 
 // Check for legal URL
-define('SELF', isset($_SERVER['REDIRECT_URL']) ? $_SERVER['REDIRECT_URL'] : $_SERVER['REQUEST_URI']);
+define('SELF', isset($_SERVER['REDIRECT_URL']) ? $_SERVER['REDIRECT_URL']/*.(!empty($_SERVER['REDIRECT_QUERY_STRING']) ? '?'.$_SERVER['REDIRECT_QUERY_STRING'] : '')*/ : $_SERVER['REQUEST_URI']);
 
 // Deny incorrect urls
 if (strlen(SELF) > 2000 || strpos(SELF, 'eval(') !== false || stripos(SELF, 'CONCAT') !== false || stripos(SELF, 'UNION+SELECT') !== false || stripos(SELF, 'base64') !== false) {

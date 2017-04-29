@@ -12,6 +12,7 @@ use TMCms\HTML\Cms\Column\ColumnEdit;
 use TMCms\HTML\Cms\Column\ColumnGallery;
 use TMCms\HTML\Cms\Column\ColumnImg;
 use TMCms\HTML\Cms\Column\ColumnOrder;
+use TMCms\HTML\Cms\Column\ColumnTree;
 use TMCms\HTML\Cms\Column\ColumnView;
 use TMCms\HTML\Cms\Filter\Select;
 use TMCms\HTML\Cms\Filter\Text;
@@ -118,6 +119,19 @@ class CmsTableHelper {
 
                     $column = new ColumnData($column_key);
                     $column->setDataTypeAsEmail();
+
+                    break;
+
+                case 'tree':
+
+                    $table->disablePager();
+
+                    $column = new ColumnTree('id');
+                    $column
+                        ->setShowKey($column_key)
+                        ->allowHtml()
+                        ->enableAjax()
+                        ->setWidth('1%');
 
                     break;
 

@@ -2,6 +2,8 @@
 
 namespace TMCms\Files;
 
+use TMCms\Admin\Filemanager\Entity\FilePropertyEntityRepository;
+
 defined('INC') or exit;
 
 /**
@@ -23,7 +25,7 @@ class FileSystem
     /**
      * Set file permissions
      * @param string $path
-     * @param int $mode
+     * @param int    $mode
      * @return bool
      */
     public static function chmod($path, $mode = NULL)
@@ -80,27 +82,6 @@ class FileSystem
     }
 
     /**
-     * Make folder
-     * @param string $path
-     * @return bool
-     */
-    public static function mkDir($path)
-    {
-        if (file_exists($path)) {
-            return false;
-        }
-
-        $umask = umask();
-        $res = @mkdir($path, CFG_DEFAULT_DIR_PERMISSIONS, true);
-        if ($res === false) {
-            die('Can not create directory "'. $path .'" - no permissions.');
-        }
-        umask($umask);
-
-        return $res;
-    }
-
-    /**
      * Copy folder content to another directory
      * @param string $source
      * @param string $destination
@@ -134,10 +115,33 @@ class FileSystem
     }
 
     /**
+     * Make folder
+     *
+     * @param string $path
+     *
+     * @return bool
+     */
+    public static function mkDir($path)
+    {
+        if (file_exists($path)) {
+            return false;
+        }
+
+        $umask = umask();
+        $res = @mkdir($path, CFG_DEFAULT_DIR_PERMISSIONS, true);
+        if ($res === false) {
+            die('Can not create directory "' . $path . '" - no permissions.');
+        }
+        umask($umask);
+
+        return $res;
+    }
+
+    /**
      * Returns the directory and its content data recursively
      * @param string $path - Path to directory from where to start
-     * @param bool $onlyLevel
-     * @param int $lvl - level
+     * @param bool   $onlyLevel
+     * @param int    $lvl  - level
      * @return array with content
      */
     public static function scanDirs($path, $onlyLevel = false, $lvl = 0)
@@ -161,11 +165,11 @@ class FileSystem
             if (is_dir($path . '/' . $f)) {
                 if (!$onlyLevel) $res[] = [
                     'path_url' => substr($path, $dir_base_length),
-                    'path' => $path,
-                    'name' => $f,
-                    'full' => $path . '/' . $f,
-                    'fs' => 0,
-                    'type' => 'dir'
+                    'path'     => $path,
+                    'name'     => $f,
+                    'full'     => $path . '/' . $f,
+                    'fs'       => 0,
+                    'type'     => 'dir'
                 ];
                 self::scanDirs($path . '/' . $f, $onlyLevel, $lvl + 1);
             } elseif ($onlyLevel) {
@@ -173,11 +177,11 @@ class FileSystem
             } else {
                 $res[] = [
                     'path_url' => substr($path, $dir_base_length),
-                    'path' => $path,
-                    'name' => $f,
-                    'full' => $path . '/' . $f,
-                    'fs' => filesize($path . '/' . $f),
-                    'type' => 'file'
+                    'path'     => $path,
+                    'name'     => $f,
+                    'full'     => $path . '/' . $f,
+                    'fs'       => filesize($path . '/' . $f),
+                    'type'     => 'file'
                 ];
             }
         }
@@ -214,15 +218,15 @@ class FileSystem
 
         /**
          * This can be added to .htaccess to force download .pdf files
-            <Files *.pdf>
-                ForceType application/octet-stream
-                Header set Content-Disposition attachment
-            </Files>
+        <Files *.pdf>
+        ForceType application/octet-stream
+        Header set Content-Disposition attachment
+        </Files>
          *
          * or prevent download
-            <FilesMatch "\.(tex|log|aux)$">
-                Header set Content-Type text/plain
-            </FilesMatch>
+        <FilesMatch "\.(tex|log|aux)$">
+        Header set Content-Type text/plain
+        </FilesMatch>
          */
     }
 
@@ -265,5 +269,18 @@ class FileSystem
      */
     public static function getDataURI($image, $mime = '') {
         return 'data: ' . (function_exists('mime_content_type') ? mime_content_type($image) : $mime) . ';base64,' . base64_encode(file_get_contents($image));
+    }
+
+    /**
+     * @param string $path to file or folder
+     *
+     * @return FilePropertyEntityRepository
+     */
+    public function getFileOrFolderProperties($path)
+    {
+        $properties = new FilePropertyEntityRepository;
+        $properties->setWherePath($path);
+
+        return $properties;
     }
 }

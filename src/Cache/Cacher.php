@@ -46,29 +46,29 @@ class Cacher
         // Save usage for stats
         Usage::getInstance()->add(__CLASS__, __FUNCTION__);
 
-        if (FileCache::itWorks()) {
-            $this->getFileCacher()->deleteAll();
-        }
+        // File cache contains resize images, very resource consumable operations
+        // Do not delete images if FileCache is not default and other caches exist
+        $clear_file_cache = true;
 
         if (MemcachedCache::itWorks()) {
             $this->getMemcachedCacher()->deleteAll();
+            $clear_file_cache = false;
         }
 
         if (MemcacheCache::itWorks()) {
             $this->getMemcacheCacher()->deleteAll();
+            $clear_file_cache = false;
+        }
+
+        if ($clear_file_cache) {
+            if (FileCache::itWorks()) {
+                $this->getFileCacher()->deleteAll();
+            }
         }
 
         if (FakeCache::itWorks()) {
             $this->getFakeCacher()->deleteAll();
         }
-    }
-
-    /**
-     * @return FileCache
-     */
-    public function getFileCacher()
-    {
-        return call_user_func([__NAMESPACE__ . '\FileCache', 'getInstance']);
     }
 
     /**
@@ -85,6 +85,14 @@ class Cacher
     public function getMemcacheCacher()
     {
         return call_user_func([__NAMESPACE__ . '\MemcacheCache', 'getInstance']);
+    }
+
+    /**
+     * @return FileCache
+     */
+    public function getFileCacher()
+    {
+        return call_user_func([__NAMESPACE__ . '\FileCache', 'getInstance']);
     }
 
     /**

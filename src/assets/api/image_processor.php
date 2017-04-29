@@ -4,6 +4,7 @@ use TMCms\Config\Configuration;
 use TMCms\Config\Settings;
 use TMCms\Files\FileSystem;
 use TMCms\Files\Image;
+use TMCms\Middleware\MiddlewareHandler;
 
 if (!preg_match('/\.(?:jpg|png|jpeg|gif)&[a-z0-9&=\_]+$/', QUERY)) {
     return;
@@ -308,29 +309,47 @@ foreach ($actions as $action => $params) {
 FileSystem::mkdir(DIR_CACHE . 'images/' . $path);
 
 // Save end file for web
-if (!$image->save(DIR_CACHE . 'images/' . QUERY, $ext, 90) && !Settings::isProductionState()) {
+$destination_path = DIR_CACHE . 'images/' . QUERY;
+if (!$image->save($destination_path, $ext, 90) && !Settings::isProductionState()) {
     dump('Not enough memory to resize and sharpen image "' . $path . $file . '".');
 }
 
+MiddlewareHandler::getInstance()->runHandlersFromType('after_image_processor', [
+    'src_original' => $src_path,
+    'src_saved'    => $destination_path,
+]);
+
 // Run file optimizers
+// TODO move these optimizers to middleware, and possibly enable in admin panel or check during run
 $tinypng = Configuration::getInstance()->get('tinypng');
 if(class_exists('\Tinify\Tinify') && !empty($tinypng) && !empty($tinypng['key'])){
     try {
         \Tinify\setKey($tinypng['key']);
-        $source = \Tinify\fromFile(DIR_CACHE . 'images/' . QUERY);
-        $source->toFile(DIR_CACHE . 'images/' . QUERY);
-    } catch(\Tinify\AccountException $e) {
-        // print("The error message is: " + $e.getMessage());
-        // Verify your API key and account limit.
-    } catch(\Tinify\ClientException $e) {
-        // Check your source image and request options.
-    } catch(\Tinify\ServerException $e) {
-        // Temporary issue with the Tinify API.
-    } catch(\Tinify\ConnectionException $e) {
-        // A network connection error occurred.
+        $source = \Tinify\fromFile($destination_path);
+        $source->toFile($destination_path);
+//    } catch(\Tinify\AccountException $e) {
+//        // print("The error message is: " + $e.getMessage());
+//        // Verify your API key and account limit.
+//    } catch(\Tinify\ClientException $e) {
+//        // Check your source image and request options.
+//    } catch(\Tinify\ServerException $e) {
+//        // Temporary issue with the Tinify API.
+//    } catch(\Tinify\ConnectionException $e) {
+//        // A network connection error occurred.
     } catch(Exception $e) {
-        // Something else went wrong, unrelated to the Tinify API.
+        // If exception occurs saves to table for future processing
+        \TMCms\Modules\ModuleManager::requireModule('tinify');
+        if(class_exists('\TMCms\Modules\Tinify\Entity\TinifyEntity')) {
+            $tini = \TMCms\Modules\Tinify\Entity\TinifyEntityRepository::getInstance()->setWherePath(QUERY)->getFirstObjectFromCollection();
+            if(!empty($tini)){
+                $tini->loadDataFromArray(['exception'=>get_class($e), 'attempt_date'=>date("Y-m-d H:i:s")])->save();
+            }else {
+                $tini = new \TMCms\Modules\Tinify\Entity\TinifyEntity();
+                $tini->loadDataFromArray(['path' => QUERY, 'exception' => get_class($e)])->save();
+            }
+        }
     }
+
 }else {
     $path_for_exec = str_replace(['&', '=', ' ', '(', ')'], ['\&', '\=', '\ ', '\(', '\)'], QUERY);
     if ($ext == 'jpg') {
