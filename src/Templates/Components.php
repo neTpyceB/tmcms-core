@@ -68,7 +68,7 @@ class Components
                         'elements' => [
                             'select_plugin' => [
                                 'type'    => 'select',
-                                'options' => ['' => ''] + Plugin::getInstance()->getPluginFilePairs(),
+                                'options' => ['' => '---'] + Plugin::getInstance()->getPluginFilePairs(),
                             ],
                         ],
                     ];
