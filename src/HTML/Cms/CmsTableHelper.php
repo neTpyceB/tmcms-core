@@ -5,6 +5,7 @@ namespace TMCms\HTML\Cms;
 use TMCms\DB\SQL;
 use TMCms\HTML\Cms\Column\ColumnAccept;
 use TMCms\HTML\Cms\Column\ColumnActive;
+use TMCms\HTML\Cms\Column\ColumnCheckbox;
 use TMCms\HTML\Cms\Column\ColumnData;
 use TMCms\HTML\Cms\Column\ColumnDelete;
 use TMCms\HTML\Cms\Column\ColumnDone;
@@ -146,6 +147,9 @@ class CmsTableHelper {
                     break;
                 case 'view':
                     $column = ColumnView::getInstance($column_key);
+                    break;
+                case 'checkbox':
+                    $column = ColumnCheckbox::getInstance($column_key);
                     break;
                 case 'active':
                     $column = ColumnActive::getInstance($column_key);
