@@ -356,7 +356,8 @@ class Menu
         }
 
         // Show non-default CMS headers
-        if (isset(Configuration::getInstance()->get('cms')['custom_header']) && Configuration::getInstance()->get('cms')['custom_header']) {
+        $cfg = Configuration::getInstance()->get('cms');
+        if (isset($cfg['custom_header']) && $cfg['custom_header']) {
             $custom_header_callback_file = DIR_MODULES . 'cms/Admin/Menu/getMenuHeaderView.php';
             if (file_exists($custom_header_callback_file)) {
                 return include $custom_header_callback_file;
