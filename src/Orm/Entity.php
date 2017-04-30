@@ -243,7 +243,6 @@ class Entity
             // All sensitive data
                 $config->get('cms')['unique_key']
                 . CMS_NAME
-                . CMS_DEVELOPERS
                 . CMS_OWNER_COMPANY
                 . CMS_SUPPORT_EMAIL
                 . CMS_SITE
