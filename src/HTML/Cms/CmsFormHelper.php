@@ -129,7 +129,11 @@ class CmsFormHelper {
                 } elseif (isset($field['name'])) {
                     $name = $field['name'];
                 } else {
-                    $name = Converter::symb2Ttl($key);
+                    $name = $key;
+                    if (substr($name, -3) == '_id') {
+                        $name = substr($name, 0, -3);
+                    }
+                    $name = Converter::symb2Ttl($name);
                 }
 
                 //
