@@ -219,6 +219,7 @@ class Backend
             ->addCssUrl('cms/plugins/bootstrap/css/bootstrap.css')
             // Theme styles
             ->addCssUrl('cms/css/components.css')
+            ->addCssUrl('cms/plugins/font-awesome/font-awesome.css')
 //            ->addCssUrl('cms/layout/css/themes/default.css') // TODO can switch in Settings
             ->addCssUrl('cms/layout/css/themes/darkblue.css')// TODO can switch in Settings
             ->addJsUrl('cms/jquery-1.11.0.min.js')
@@ -232,7 +233,6 @@ class Backend
 
         if ($is_authorized) {
             $page_head
-                ->addCssUrl('cms/plugins/font-awesome/font-awesome.css')
                 ->addCssUrl('cms/plugins/uniform/css/uniform.default.css')
                 ->addCssUrl('cms/plugins/bootstrap-switch/css/bootstrap-switch.css')
                 ->addCssUrl('cms/plugins/pace/pace-theme-minimal.css')
