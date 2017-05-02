@@ -59,8 +59,8 @@ class CmsTabs
 
         $titles = $contents = [];
         foreach ($this->getTabs() as $k => $tab) {
-            $titles[] = '<li'. ($tab['active'] ? ' class="active"' : '') .'><a href="#'. $tab['title'] .'" data-toggle="tab">'. Converter::symb2Ttl($tab['title']) .'</a></li>';
-            $contents[] = '<div class="tab-pane fade'. ($tab['active'] ? ' active' : '') .' in" id="'. $tab['title'] .'">' . $tab['content'] . '</div>';
+            $titles[] = '<li'. ($tab['active'] ? ' class="active"' : '') .'><a href="#'. Converter::text2htmlAttribute($tab['title']) .'" data-toggle="tab">'. Converter::symb2Ttl($tab['title']) .'</a></li>';
+            $contents[] = '<div class="tab-pane fade'. ($tab['active'] ? ' active' : '') .' in" id="'. Converter::text2htmlAttribute($tab['title']) .'">' . $tab['content'] . '</div>';
         }
         if ($this->caption_title) {
             $titles[] = '<li style="padding-top: 13px; padding-left: 13px; font-weight: 600;" class="text-muted">Translations</li>';
