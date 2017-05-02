@@ -102,7 +102,7 @@ abstract class Element
      */
     public function isDisabled()
     {
-        return !$this->getAttribute('disabled');
+        return $this->getAttribute('disabled');
     }
 
     /**

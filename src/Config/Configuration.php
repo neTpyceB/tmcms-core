@@ -62,7 +62,8 @@ class Configuration
     /**
      * @param string $key
      * @param string $env
-     * @return string
+     *
+     * @return array|string
      */
     public function get($key, $env = NULL)
     {

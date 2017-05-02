@@ -5,6 +5,7 @@ namespace TMCms\HTML\Cms;
 use TMCms\DB\SQL;
 use TMCms\HTML\Cms\Column\ColumnAccept;
 use TMCms\HTML\Cms\Column\ColumnActive;
+use TMCms\HTML\Cms\Column\ColumnCheckbox;
 use TMCms\HTML\Cms\Column\ColumnData;
 use TMCms\HTML\Cms\Column\ColumnDelete;
 use TMCms\HTML\Cms\Column\ColumnDone;
@@ -17,6 +18,7 @@ use TMCms\HTML\Cms\Column\ColumnView;
 use TMCms\HTML\Cms\Filter\Select;
 use TMCms\HTML\Cms\Filter\Text;
 use TMCms\Orm\EntityRepository;
+use TMCms\Strings\Converter;
 
 class CmsTableHelper {
     public static function outputTable(array $params) {
@@ -146,6 +148,9 @@ class CmsTableHelper {
                     break;
                 case 'view':
                     $column = ColumnView::getInstance($column_key);
+                    break;
+                case 'checkbox':
+                    $column = ColumnCheckbox::getInstance($column_key);
                     break;
                 case 'active':
                     $column = ColumnActive::getInstance($column_key);
@@ -280,7 +285,16 @@ class CmsTableHelper {
                 foreach ($params['filters'] as $filter_key => $filter_data) {
                     // Title is obligate
                     if (!isset($filter_data['title'])) {
-                        $filter_data['title'] = ucfirst(__($filter_key));
+                        $name = $filter_key;
+                        if (substr($name, -3) == '_id') {
+                            $name = substr($name, 0, -3);
+                        }
+                        $filter_data['title'] = Converter::symb2Ttl($name);
+                    }
+
+                    // If have options that probably this is select
+                    if (!isset($filter_data['type']) && isset($filter_data['options'])) {
+                        $filter_data['type'] = 'select';
                     }
 
                     // Default type

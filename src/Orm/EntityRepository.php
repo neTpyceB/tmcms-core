@@ -324,6 +324,9 @@ class EntityRepository {
                 $obj = new $class();
 
                 // Prevent auto-query db, skip tables with no id field
+                if (!isset($v['id'])) {
+                    dump('No `id` field present saving  "' . get_class($this) . '"');
+                }
                 $id = $v['id'];
                 unset($v['id']);
 

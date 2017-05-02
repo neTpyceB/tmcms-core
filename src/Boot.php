@@ -277,12 +277,11 @@ if (!defined('CFG_GIT_BRANCH')) {
 }
 
 /* CMS */
-define('CMS_VERSION', '17.03');
+define('CMS_VERSION', '17.04');
 define('CMS_NAME', 'The Modern CMS');
-define('CMS_DEVELOPERS', 'Vadims Petrusevs, neTpyceB, Bogdans Laidiņš, Armands Grundmanis');
 define('CMS_OWNER_COMPANY', 'SIA DEVP');
 if (!defined('CMS_SUPPORT_EMAIL')) {
-    define('CMS_SUPPORT_EMAIL', 'info@devp.eu'); // Support e-mail for errors, etc.
+    define('CMS_SUPPORT_EMAIL', 'support@devp.eu'); // Support e-mail for errors, etc.
 }
 if (!defined('CMS_SITE')) {
     define('CMS_SITE', 'http://devp.eu/');
