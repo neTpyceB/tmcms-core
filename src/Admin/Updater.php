@@ -99,12 +99,13 @@ class Updater
             return 0;
         }
 
+        // Have DB already?
+        new MigrationEntityRepository;
+
         // Check we have DB structure and any migration applied
         $migrated_files = [];
         if (SQL::getTables()) {
-            // Have DB already?
-            $migrations = new MigrationEntityRepository();
-            $migrated_files = $migrations->getPairs('filename', 'filename');
+            $migrated_files = MigrationEntityRepository::getInstance()->getPairs('filename', 'filename');
         }
 
         $existing_files = FileSystem::scanDirs(DIR_MIGRATIONS);
