@@ -81,6 +81,16 @@ class CmsTableHelper {
             $table->disablePager();
         }
 
+        // Set callback function
+        if (isset($params['callback_function'])) {
+            $table->setCallbackFunction($params['callback_function']);
+        }
+
+        // Set callback function
+        if (isset($params['context_menu'])) {
+            $table->addContextMenu($params['context_menu']);
+        }
+
         foreach ($params['columns'] as $column_key => $column_param) {
             if (!is_array($column_param)) {
                 $column_key = $column_param;
@@ -128,12 +138,26 @@ class CmsTableHelper {
 
                     $table->disablePager();
 
-                    $column = new ColumnTree('id');
+                    $tree_show_key = $column_key;
+                    if (isset($column_param['show_key'])) {
+                        $tree_show_key = $column_param['show_key'];
+                    }
+
+                    $tree_main_key = 'id';
+                    if (isset($column_param['key'])) {
+                        $tree_main_key = $column_param['key'];
+                    }
+
+                    $column = new ColumnTree($tree_main_key);
                     $column
-                        ->setShowKey($column_key)
+                        ->setShowKey($tree_show_key)
                         ->allowHtml()
                         ->enableAjax()
                         ->setWidth('1%');
+
+                    if (isset($column_param['title'])) {
+//                        $column->setTitle()
+                    }
 
                     break;
 
@@ -266,12 +290,17 @@ class CmsTableHelper {
                 $column->enableRightAlign();
             }
 
+            // No wrap of content
+            if (isset($column_param['nowrap']) && $column_param['nowrap']) {
+                $column->disableNewlines();
+            }
+
             // Javascript onclick
             if (isset($column_param['onclick'])) {
                 $column->onclick($column_param['onclick']);
             }
 
-            // Javascript onclick
+            // Data attributes
             if (isset($column_param['data_attributes'])) {
                 if (!is_array($column_param['data_attributes'])) {
                     dump('Parameter "data_attribute" must be array');
