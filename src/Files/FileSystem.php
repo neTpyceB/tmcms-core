@@ -272,6 +272,8 @@ class FileSystem
     }
 
     /**
+     * Get file's or folder's properties saved in Filemanager
+     *
      * @param string $path to file or folder
      *
      * @return FilePropertyEntityRepository
@@ -280,6 +282,21 @@ class FileSystem
     {
         $properties = new FilePropertyEntityRepository;
         $properties->setWherePath($path);
+
+        return $properties;
+    }
+
+    /**
+     * Get  ALTs from ile properties
+     * @param string $path to image file
+     *
+     * @return FilePropertyEntityRepository
+     */
+    public function getImageFileAltProperties($path)
+    {
+        $properties = new FilePropertyEntityRepository;
+        $properties->setWherePath($path);
+        $properties->addWhereFieldIsLike('key', 'alt_', false);
 
         return $properties;
     }

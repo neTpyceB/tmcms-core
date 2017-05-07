@@ -295,6 +295,21 @@ class CmsTableHelper {
                 $column->disableNewlines();
             }
 
+            // Javascript onclick
+            if (isset($column_param['onclick'])) {
+                $column->onclick($column_param['onclick']);
+            }
+
+            // Data attributes
+            if (isset($column_param['data_attributes'])) {
+                if (!is_array($column_param['data_attributes'])) {
+                    dump('Parameter "data_attribute" must be array');
+                }
+                foreach ($column_param['data_attributes'] as $data_attribute_key => $data_attribute_value) {
+                    $column->addDataAttribute($data_attribute_key, $data_attribute_value);
+                }
+            }
+
             if ($column) {
                 $table->addColumn($column);
             }
