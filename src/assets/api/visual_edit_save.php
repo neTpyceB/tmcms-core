@@ -1,6 +1,6 @@
 <?php
 
-use TMCms\Admin\Structure\Entity\PageComponent;
+use TMCms\Admin\Structure\Entity\PageComponentEntity;
 use TMCms\Routing\Entity\PagesWordEntity;
 use TMCms\Templates\VisualEdit;
 
@@ -12,7 +12,7 @@ if (!isset($_POST['content'], $_POST['component'], $_POST['page_id'], $_POST['ty
 $_POST['content'] = trim($_POST['content']);
 
 if ($_POST['type'] == 'component') {
-    $component = new PageComponent();
+    $component = new PageComponentEntity();
     $component
         ->setPageId($_POST['page_id'])
         ->setComponent($_POST['component'])
