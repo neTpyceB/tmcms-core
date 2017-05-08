@@ -12,6 +12,7 @@ use TMCms\HTML\Cms\Column\ColumnDone;
 use TMCms\HTML\Cms\Column\ColumnEdit;
 use TMCms\HTML\Cms\Column\ColumnGallery;
 use TMCms\HTML\Cms\Column\ColumnImg;
+use TMCms\HTML\Cms\Column\ColumnInput;
 use TMCms\HTML\Cms\Column\ColumnOrder;
 use TMCms\HTML\Cms\Column\ColumnTree;
 use TMCms\HTML\Cms\Column\ColumnView;
@@ -134,6 +135,22 @@ class CmsTableHelper {
 
                     break;
 
+                case 'input':
+
+                    $column = new ColumnInput($column_key);
+                    // Type os input
+                    if (isset($column_param['input'])) {
+                        switch ($column_param['input']) {
+                            default:
+                            case 'text':
+                                $column->setTypeText();
+                                $column->onchange('alert(1);');
+                                break;
+                        }
+                    }
+
+                    break;
+
                 case 'tree':
 
                     $table->disablePager();
@@ -154,10 +171,6 @@ class CmsTableHelper {
                         ->allowHtml()
                         ->enableAjax()
                         ->setWidth('1%');
-
-                    if (isset($column_param['title'])) {
-//                        $column->setTitle()
-                    }
 
                     break;
 
@@ -298,6 +311,11 @@ class CmsTableHelper {
             // Javascript onclick
             if (isset($column_param['onclick'])) {
                 $column->onclick($column_param['onclick']);
+            }
+
+            // Javascript onchange
+            if (isset($column_param['onchange'])) {
+                $column->onchange($column_param['onchange']);
             }
 
             // Data attributes
