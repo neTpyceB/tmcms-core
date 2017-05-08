@@ -306,8 +306,9 @@ class FileSystem
         $properties = new FilePropertyEntityRepository;
         $properties->setWherePath($path);
         $properties->setWhereKey('alt_' . $lng);
+        /* @var \TMCms\Admin\Filemanager\Entity\FilePropertyEntity $result */
         $result = $properties->getFirstObjectFromCollection();
 
-        return $result ? $properties->getValue() : '';
+        return $result ? $result->getValue() : '';
     }
 }
