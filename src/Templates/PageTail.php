@@ -20,6 +20,7 @@ class PageTail
         $js_sequence = 0,
         $js_urls = [],
         $deferred_scripts = [],
+        $async_scripts = [],
         $js = [],
         $custom_strings = [];
 
@@ -39,15 +40,19 @@ class PageTail
     /**
      * @param string $url
      * @param bool   $defer
+     * @param bool   $async
      *
      * @return $this
      */
-    public function addJsUrl($url, $defer = false)
+    public function addJsUrl($url, $defer = false, $async = false)
     {
         if (!in_array($url, $this->js_urls)) {
             $this->js_urls[++$this->js_sequence] = $url;
             if ($defer) {
                 $this->deferred_scripts[$this->js_sequence] = $this->js_sequence;
+            }
+            if ($async) {
+                $this->async_scripts[$this->js_sequence] = $this->js_sequence;
             }
         }
 
@@ -105,7 +110,7 @@ class PageTail
         // JS files and scripts
         for ($i = 1; $i <= $this->js_sequence; $i++) :
             if (isset($this->js_urls[$i])): $this->js_urls[$i] = Finder::getInstance()->searchForRealPath($this->js_urls[$i]); ?>
-                <script src="<?= $this->js_urls[$i] ?>"<?= isset($this->deferred_scripts[$i]) ? ' defer' : '' ?>></script>
+                <script src="<?= $this->js_urls[$i] ?>"<?= isset($this->deferred_scripts[$i]) ? ' defer' : '' ?><?= isset($this->async_scripts[$i]) ? ' async' : '' ?>></script>
             <?php elseif (isset($this->js[$i])): ?>
                 <script><?= $this->js[$i] ?></script>
             <?php endif;
