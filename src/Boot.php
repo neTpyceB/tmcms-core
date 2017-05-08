@@ -29,6 +29,10 @@ define('DIR_CMS_URL', '/' . substr(DIR_CMS, $root_path_length));
 define('DIR_CACHE', DIR_BASE . 'cache/');
 define('DIR_CACHE_URL', '/' . substr(DIR_CACHE, $root_path_length));
 
+// File cache
+define('DIR_IMAGE_CACHE', DIR_BASE . 'cache_img/');
+define('DIR_IMAGE_CACHE_URL', '/' . substr(DIR_IMAGE_CACHE, $root_path_length));
+
 // Configs
 define('DIR_CONFIGS', DIR_BASE . 'configs/');
 

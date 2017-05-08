@@ -306,10 +306,10 @@ foreach ($actions as $action => $params) {
 }
 
 // Create directory for cached file
-FileSystem::mkdir(DIR_CACHE . 'images/' . $path);
+FileSystem::mkdir(DIR_IMAGE_CACHE . $path);
 
 // Save end file for web
-$destination_path = DIR_CACHE . 'images/' . QUERY;
+$destination_path = DIR_IMAGE_CACHE . QUERY;
 if (!$image->save($destination_path, $ext, 90) && !Settings::isProductionState()) {
     dump('Not enough memory to resize and sharpen image "' . $path . $file . '".');
 }
@@ -353,9 +353,9 @@ if(class_exists('\Tinify\Tinify') && !empty($tinypng) && !empty($tinypng['key'])
 }else {
     $path_for_exec = str_replace(['&', '=', ' ', '(', ')'], ['\&', '\=', '\ ', '\(', '\)'], QUERY);
     if ($ext == 'jpg') {
-        exec('jpegoptim --strip-all ' . DIR_CACHE . 'images/' . $path_for_exec . '  2>&1');
+        exec('jpegoptim --strip-all ' . DIR_IMAGE_CACHE . $path_for_exec . '  2>&1');
     } elseif ($ext == 'png') {
-        exec('optipng ' . DIR_CACHE . 'images/' . $path_for_exec . '  2>&1');
+        exec('optipng ' . DIR_IMAGE_CACHE . $path_for_exec . '  2>&1');
     }
 }
 
