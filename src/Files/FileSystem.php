@@ -300,4 +300,15 @@ class FileSystem
 
         return $properties;
     }
+
+    public function getImageFileAltProperty($path, $lng = LNG)
+    {
+        $properties = new FilePropertyEntityRepository;
+        $properties->setWherePath($path);
+        $properties->setWhereKey('alt_' . $lng);
+        /* @var \TMCms\Admin\Filemanager\Entity\FilePropertyEntity $result */
+        $result = $properties->getFirstObjectFromCollection();
+
+        return $result ? $result->getValue() : '';
+    }
 }
