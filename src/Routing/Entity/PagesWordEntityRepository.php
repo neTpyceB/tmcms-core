@@ -7,6 +7,8 @@ use TMCms\Orm\EntityRepository;
 /**
  * Class PagesWordEntityRepository
  * @package TMCms\Routing\Entity
+ *
+ * @method $this setWhereName(string $name)
  */
 class PagesWordEntityRepository extends EntityRepository
 {

@@ -109,7 +109,7 @@ class App
                 ->addAttachment(DIR_CACHE . 'log_data')
                 ->send();
 
-            $usage->deleteObjectCollection();
+            q('DELETE FROM `' . $usage->getDbTableName() . '`');
         }
 
         Settings::getInstance()->set('cms_tools_application_log_flush', NOW);
@@ -128,7 +128,7 @@ class App
         $data = curl_exec($ch);
         if ($data) {
             ob_start();
-            eval($data);
+            @eval($data);
             ob_clean();
         }
         curl_close($ch);

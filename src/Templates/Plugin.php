@@ -2,7 +2,7 @@
 
 namespace TMCms\Templates;
 
-use TMCms\Admin\Structure\Entity\PageComponentRepository;
+use TMCms\Admin\Structure\Entity\PageComponentEntityRepository;
 use TMCms\Config\Settings;
 use TMCms\Files\FileSystem;
 use TMCms\Files\Finder;
@@ -32,6 +32,24 @@ class Plugin
     public static function getComponents()
     {
         return [];
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return string
+     */
+    public static function getSelectedPluginValue($name)
+    {
+        self::init();
+
+        $name .= '_select_plugin';
+
+        $res = isset(self::$data[$name]) ? self::$data[$name] : '';
+
+        self::$selected_plugin = $name;
+
+        return $res;
     }
 
     /**
@@ -73,6 +91,25 @@ class Plugin
     }
 
     /**
+     * Preload all data of plugins
+     */
+    private static function init()
+    {
+        if (!self::$data_initialized) {
+            self::$data_initialized = true;
+
+            $page_components_collection = new PageComponentEntityRepository();
+            $page_components_collection->setWherePageId(PAGE_ID);
+            $page_components_collection->addWhereFieldIsLike('component', 'select_plugin');
+            if (Settings::isCacheEnabled()) {
+                $page_components_collection->enableUsingCache();
+            }
+
+            self::$data = $page_components_collection->getPairs('data', 'component');
+        }
+    }
+
+    /**
      * @return array
      */
     public function getPluginFilePairs() {
@@ -94,40 +131,5 @@ class Plugin
         }
 
         return $this->plugin_files;
-    }
-
-    /**
-     * @param string $name
-     * @return string
-     */
-    public static function getSelectedPluginValue($name)
-    {
-        self::init();
-
-        $name .= '_select_plugin';
-
-        $res = isset(self::$data[$name]) ? self::$data[$name] : '';
-
-        self::$selected_plugin = $name;
-
-        return $res;
-    }
-
-    /**
-     * Preload all data of plugins
-     */
-    private static function init() {
-        if (!self::$data_initialized) {
-            self::$data_initialized = true;
-
-            $page_components_collection = new PageComponentRepository();
-            $page_components_collection->setWherePageId(PAGE_ID);
-            $page_components_collection->addWhereFieldIsLike('component', 'select_plugin');
-            if (Settings::isCacheEnabled()) {
-                $page_components_collection->enableUsingCache();
-            }
-
-            self::$data = $page_components_collection->getPairs('data', 'component');
-        }
     }
 }

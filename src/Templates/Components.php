@@ -2,11 +2,11 @@
 
 namespace TMCms\Templates;
 
-use TMCms\Admin\Structure\Entity\PageComponent;
+use TMCms\Admin\Structure\Entity\PageComponentEntity;
 use TMCms\Admin\Structure\Entity\PageComponentCustomEntityRepository;
 use TMCms\Admin\Structure\Entity\PageComponentHistory;
 use TMCms\Admin\Structure\Entity\PageComponentHistoryRepository;
-use TMCms\Admin\Structure\Entity\PageComponentRepository;
+use TMCms\Admin\Structure\Entity\PageComponentEntityRepository;
 use TMCms\Cache\Cacher;
 use TMCms\Config\Settings;
 use TMCms\Routing\Controller;
@@ -174,7 +174,7 @@ class Components
                 $components_collection->setWhereVersion(self::$_version);
             } else {
                 // From current version
-                $components_collection = new PageComponentRepository();
+                $components_collection = new PageComponentEntityRepository();
             }
             $components_collection->setWherePageId(PAGE_ID);
             self::$_components[$class] = $components_collection->getPairs('data', 'component');
@@ -291,7 +291,7 @@ class Components
         // Get from DB
         $res = NULL;
         /** @var PageComponentHistory $page */
-        $page = PageComponentRepository::findOneEntityByCriteria([
+        $page = PageComponentEntityRepository::findOneEntityByCriteria([
             'page_id' => $page_id,
             'component' => $component
         ]);
@@ -326,7 +326,7 @@ class Components
         // Get from DB
         $res = [];
         /** @var PageComponentHistory $page */
-        $page = PageComponentRepository::findAllEntitiesByCriteria([
+        $page = PageComponentEntityRepository::findAllEntitiesByCriteria([
             'page_id' => $page_id
         ]);
 
@@ -335,7 +335,7 @@ class Components
         if ($page) {
 
             foreach ($page as $k => $v):
-                /** @var PageComponent $v */
+                /** @var PageComponentEntity $v */
                 $page_arr[$v->getComponent()] = $v->getData();
             endforeach;
 

@@ -25,8 +25,9 @@ class BreadCrumbs
 
     /**
      * @param string $name
-     * @param bool $href
-     * @param bool $target
+     * @param bool   $href
+     * @param bool   $target
+     *
      * @return $this
      */
     public function addCrumb($name, $href = false, $target = false)
@@ -39,7 +40,7 @@ class BreadCrumbs
     /**
      * @return string
      */
-    public function  __toString()
+    public function __toString()
     {
         $so = count($this->links);
 
@@ -50,19 +51,19 @@ class BreadCrumbs
                 <li class="btn-group">
                     <?php if (1 === count($this->actions)): ?>
                         <a class="btn blue" href="<?= array_values($this->actions)[0] ?>"><?= array_keys($this->actions)[0] ?></a>
-                    <?php elseif($this->first_action_button): ?>
+                    <?php elseif ($this->first_action_button): ?>
                         <div class="btn-group">
                             <a href="<?= array_values($this->actions)[0] ?>" class="btn blue"><?= array_keys($this->actions)[0] ?></a>
                             <button type="button" class="btn blue dropdown-toggle" data-toggle="dropdown"><i class="fa fa-angle-down"></i></button>
                             <ul class="dropdown-menu" role="menu">
-                            <?php
-                            $i = 0;
-                            foreach ($this->actions as $title => $link):
-                                if($i++ == 0) continue; ?>
-                                <li>
-                                    <a href="<?= $link ?>"><?= $title ?></a>
-                                </li>
-                            <?php endforeach; ?>
+                                <?php
+                                $i = 0;
+                                foreach ($this->actions as $title => $link):
+                                    if ($i++ == 0) continue; ?>
+                                    <li>
+                                        <a href="<?= $link ?>"><?= $title ?></a>
+                                    </li>
+                                <?php endforeach; ?>
                             </ul>
                         </div>
                     <?php else: ?>
@@ -94,45 +95,45 @@ class BreadCrumbs
         </ul>
         <?php if ($this->pills): ?>
         <ul class="nav nav-pills">
-        <?php foreach ($this->pills as $text => $content): ?>
-            <li class="<?= $content['active'] ? 'active' : '' ?>">
-                <a href="<?= $content['href'] ?>">
-                    <?= $text ?>
-                </a>
-            </li>
-        <?php endforeach ?>
+            <?php foreach ($this->pills as $text => $content): ?>
+                <li class="<?= $content['active'] ? 'active' : '' ?>">
+                    <a href="<?= $content['href'] ?>">
+                        <?= $text ?>
+                    </a>
+                </li>
+            <?php endforeach ?>
         </ul>
-        <?php endif; ?>
+    <?php endif; ?>
 
         <?php if ($this->notes): ?>
-            <div class="note note-success">
-                <?php foreach ($this->notes as $text): ?>
-                    <p><?= $text ?></p>
-                <?php endforeach; ?>
-            </div>
-        <?php endif; ?>
+        <div class="note note-success">
+            <?php foreach ($this->notes as $text): ?>
+                <p><?= $text ?></p>
+            <?php endforeach; ?>
+        </div>
+    <?php endif; ?>
 
         <?php if ($this->alerts): ?>
-            <div class="portlet blue-hoki box">
-                <div class="portlet-title">
-                    <div class="caption">
-                        <i class="fa fa-cogs"></i>
-                        Alerts
-                    </div>
-                    <div class="tools">
-                        <a href="javascript:;" class="collapse"></a>
-                        <a href="javascript:;" class="remove"></a>
-                    </div>
+        <div class="portlet blue-hoki box">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-cogs"></i>
+                    Alerts
                 </div>
-                <div class="portlet-body">
-                    <div class="full-height-content-body">
-                        <?php foreach ($this->alerts as $text): ?>
-                            <p><?= $text ?></p>
-                        <?php endforeach; ?>
-                    </div>
+                <div class="tools">
+                    <a href="javascript:" class="collapse"></a>
+                    <a href="javascript:" class="remove"></a>
                 </div>
             </div>
-        <?php endif; ?>
+            <div class="portlet-body">
+                <div class="full-height-content-body">
+                    <?php foreach ($this->alerts as $text): ?>
+                        <p><?= $text ?></p>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        </div>
+    <?php endif; ?>
 
         <?php
 
@@ -141,6 +142,7 @@ class BreadCrumbs
 
     /**
      * @param bool|true $flag
+     *
      * @return $this
      */
     public function setFirstActonButton($flag = true)
@@ -153,9 +155,11 @@ class BreadCrumbs
     /**
      * @param string $title
      * @param string $link
+     *
      * @return $this
      */
-    public function addAction($title, $link) {
+    public function addAction($title, $link)
+    {
         $this->actions[$title] = $link;
 
         return $this;
@@ -163,9 +167,11 @@ class BreadCrumbs
 
     /**
      * @param string $text
+     *
      * @return $this
      */
-    public function addNotes($text) {
+    public function addNotes($text)
+    {
         $this->notes[] = $text;
 
         return $this;
@@ -173,20 +179,26 @@ class BreadCrumbs
 
     /**
      * @param string $text
+     *
      * @return $this
      */
-    public function addAlerts($text) {
+    public function addAlerts($text)
+    {
         $this->alerts[] = $text;
 
         return $this;
     }
 
     /**
-     * @param $text
+     * @param string $text
+     * @param string $href
+     * @param bool   $active
+     *
      * @return $this
      */
-    public function addPills($text, $href, $active = false) {
-        $this->pills[$text] =  ['href'=>$href, 'active'=>$active];
+    public function addPills($text, $href = '', $active = false)
+    {
+        $this->pills[$text] = ['href' => $href, 'active' => $active];
 
         return $this;
     }

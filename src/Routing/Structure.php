@@ -2,10 +2,10 @@
 
 namespace TMCms\Routing;
 
-use TMCms\Admin\Structure\Entity\PageComponent;
+use TMCms\Admin\Structure\Entity\PageComponentEntity;
 use TMCms\Admin\Structure\Entity\PageComponentHistory;
 use TMCms\Admin\Structure\Entity\PageComponentHistoryRepository;
-use TMCms\Admin\Structure\Entity\PageComponentRepository;
+use TMCms\Admin\Structure\Entity\PageComponentEntityRepository;
 use TMCms\Admin\Structure\Entity\PageRedirectHistoryEntity;
 use TMCms\Admin\Structure\Entity\PageRedirectHistoryEntityRepository;
 use TMCms\Admin\Structure\Entity\PageTemplateEntity;
@@ -641,12 +641,12 @@ class Structure
             $version = 0;
         }
 
-        $original_data_all = new PageComponentRepository();
+        $original_data_all = new PageComponentEntityRepository();
         $original_data_all->setWherePageId($id);
 
         // Save changes
         foreach ($original_data_all->getAsArrayOfObjects() as $original_data) {
-            /** @var PageComponent $original_data */
+            /** @var PageComponentEntity $original_data */
             $new_data = new PageComponentHistory();
             $new_data->loadDataFromArray([
                 'page_id' => $original_data->getPageId(),
