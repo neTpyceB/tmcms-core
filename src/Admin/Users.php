@@ -4,7 +4,7 @@ namespace TMCms\Admin;
 
 use TMCms\Admin\Entity\UsersSessionEntity;
 use TMCms\Admin\Entity\UsersSessionEntityRepository;
-use TMCms\Admin\Structure\Entity\StructurePagePermissionRepository;
+use TMCms\Admin\Structure\Entity\StructurePagePermissionEntityRepository;
 use TMCms\Admin\Users\Entity\AdminUser;
 use TMCms\Admin\Users\Entity\AdminUserGroup;
 use TMCms\Admin\Users\Entity\AdminUserGroupRepository;
@@ -356,7 +356,7 @@ class Users
         // Check and init cache
         if (!self::$_structure_permissions) {
             // Build access tree for every page
-            $structure_pages = new StructurePagePermissionRepository();
+            $structure_pages = new StructurePagePermissionEntityRepository();
             $structure_pages->setWhereGroupId((int)$group_id);
             foreach ($structure_pages->getAsArrayOfObjectData() as $v) {
                 self::$_structure_permissions[$v['id']] = $v;
