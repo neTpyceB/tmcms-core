@@ -311,6 +311,7 @@ class Users
         $sessions = new UsersSessionEntityRepository();
         $sessions->setWhereUserId($user_id);
         $sessions->setWhereSid($user_sid);
+        $sessions->addWhereFieldIsHigherOrEqual('ts', NOW - CFG_SESSION_KEEP_ALIVE_SECONDS);
         return $sessions->hasAnyObjectInCollection();
     }
 
