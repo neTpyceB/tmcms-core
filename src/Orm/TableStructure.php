@@ -181,6 +181,8 @@ class TableStructure {
                 $res = '`'. $field['name'] .'` datetime NOT NULL';
                 break;
 
+            case 'checkbox':
+            case 'active':
             case 'bool':
                 // True or false, 0 | 1
                 $res = '`'. $field['name'] .'` tinyint(1) unsigned NULL DEFAULT "'. (isset($field['default_value']) ? $field['default_value'] : '0') .'"';

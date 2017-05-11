@@ -238,8 +238,11 @@ define('BASE_URL', $protocol . '://' . HOST);
 define('CFG_PROTOCOL', $protocol);
 
 // This may be already defined in boot file specially for project
-if (!defined('CFG_DOMAIN')) {
+if (!defined('CFG_DOMAIN')) { // Host to connect to
     define('CFG_DOMAIN', HOST);
+}
+if (!defined('CFG_SESSION_KEEP_ALIVE_SECONDS')) { // Log-out after that time
+    define('CFG_SESSION_KEEP_ALIVE_SECONDS', 1200); // 20 minutes
 }
 
 date_default_timezone_set('Europe/Riga');
