@@ -20,4 +20,11 @@ class PagesDomainEntityRepository extends EntityRepository
             ],
         ],
     ];
+
+    public function setWhereUrl($url)
+    {
+        $this->addWhereFieldIn('urls', [$url]);
+
+        return $this;
+    }
 }

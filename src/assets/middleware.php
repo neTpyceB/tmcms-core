@@ -8,6 +8,10 @@ use TMCms\Middleware\MiddlewareHandler;
 
 $handler = MiddlewareHandler::getInstance();
 
+// Set possible limitations based on domain url
+require __DIR__ . '/../Middleware/handlers/DomainLimitationsMiddleware.php';
+$handler->registerHandler('before_frontend_init', 'DomainLimitationsMiddleware');
+
 // Limit requests by client IP
 if (Settings::get('allowed_ips')) {
     require __DIR__ . '/../Middleware/handlers/RestrictIpMiddleware.php';
