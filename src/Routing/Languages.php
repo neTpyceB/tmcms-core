@@ -20,6 +20,7 @@ class Languages
      * @var array
      */
     private static $language_pairs; // Do not init as array
+    private static $language_ids_by_short = []; // Do not init as array
 
     /**
      * Check if language exists
@@ -200,11 +201,13 @@ class Languages
      */
     public static function getIdByShort($short)
     {
+        if(isset(self::$language_ids_by_short[$short]))
+            return self::$language_ids_by_short[$short];
         $language_collection = new LanguageEntityRepository();
         $language_collection->setWhereShort($short);
         $language = $language_collection->getFirstObjectFromCollection();
 
-        return $language ? $language->getId() : NULL;
+        return self::$language_ids_by_short[$short] = $language ? $language->getId() : NULL;
     }
 
     /**

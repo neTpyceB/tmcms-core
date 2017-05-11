@@ -364,6 +364,15 @@ class Structure
         exit;
     }
 
+    public static function cacheAllWords($lng){
+        $words = PagesWordEntityRepository::getInstance()->addWhereFieldIsLike('name', "_".$lng, true, false)->getAsArrayOfObjects();
+        /* @var PagesWordEntity $w */
+        foreach($words as $w){
+            if(!isset(self::$_words_cache[$w->getName()]))
+                self::$_words_cache[$w->getName()] = $w->getWord();
+        }
+    }
+
     /**
      * @param string $k key of word
      * @param string $lng selected language
@@ -388,11 +397,21 @@ class Structure
 
         $temp = $k . '_' . $lng;
 
-        if (!$no_cache && isset(self::$_words_cache[$temp]) && !$replaces) { // Do not cache if have replaces or forced
-            return self::$_words_cache[$temp];
+        if (!isset(self::$_words_cache[$temp])) {
+            self::cacheAllWords($lng);
         }
 
-        $cache_key = 'variable_word_' . $temp;
+        if (!empty($replaces)) {
+            $temp_key = $temp . '@@' . serialize($replaces);
+        } else {
+            $temp_key = $temp;
+        }
+
+        if (!$no_cache && isset(self::$_words_cache[$temp_key])) { // Do not cache if forced
+            return self::$_words_cache[$temp_key];
+        }
+
+        $cache_key = 'variable_word_' . $temp_key;
 
         $q = NULL;
 
@@ -400,16 +419,20 @@ class Structure
         if (Settings::isCacheEnabled()) {
             $q = Cacher::getInstance()->getDefaultCacher()->get($cache_key);
             if ($q !== NULL) {
-                return self::$_words_cache[$temp] = $q;
+                return self::$_words_cache[$temp_key] = $q;
             }
         }
 
-        // Get from DB
-        /** @var PagesWordEntity $word_obj */
-        $word_obj = PagesWordEntityRepository::findOneEntityByCriteria([
-            'name' => $temp
-        ]);
-        $q = $word_obj ? $word_obj->getWord() : false;
+        if (!$no_cache && !empty($replaces) && isset(self::$_words_cache[$temp])) {
+            $q = self::$_words_cache[$temp];
+        } else {
+            // Get from DB
+            /** @var PagesWordEntity $word_obj */
+            $word_obj = PagesWordEntityRepository::findOneEntityByCriteria([
+                'name' => $temp
+            ]);
+            $q = $word_obj ? $word_obj->getWord() : false;
+        }
 
         // Add if non exists
         if ($q === false && !Settings::isProductionState()) {
@@ -428,7 +451,7 @@ class Structure
 
         // Found word - save to local cache
         if ($q . '_' . $lng != $temp) {
-            self::$_words_cache[$temp] = $q;
+            self::$_words_cache[$temp_key] = $q;
         } elseif ($default) { // Have default value - should save it in db
             $main_lng = Settings::get('f_default_language');
             $checked_word = $k . '_' . $main_lng;

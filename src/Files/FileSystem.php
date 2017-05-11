@@ -301,7 +301,7 @@ class FileSystem
         return $properties;
     }
 
-    public function getImageFileAltProperty($path, $lng = LNG)
+    public static function getImageFileAltProperty($path, $lng = LNG)
     {
         $properties = new FilePropertyEntityRepository;
         $properties->setWherePath($path);
