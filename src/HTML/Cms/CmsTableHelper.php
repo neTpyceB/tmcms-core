@@ -144,7 +144,17 @@ class CmsTableHelper {
                             default:
                             case 'text':
                                 $column->setTypeText();
-                                $column->onchange('alert(1);');
+                                break;
+                            case 'textarea':
+                                $column->setTypeTextarea();
+                                break;
+                            case 'select':
+                                if (!isset($column_param['options'])) {
+                                    dump('Options must be provided for column input with select type');
+                                }
+
+                                $column->setTypeSelect();
+                                $column->setOptions($column_param['options']);
                                 break;
                         }
                     }
