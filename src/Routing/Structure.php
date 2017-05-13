@@ -407,7 +407,7 @@ class Structure
             $temp_key = $temp;
         }
 
-        if (!$no_cache && isset(self::$_words_cache[$temp_key])) { // Do not cache if forced
+        if (!$no_cache && isset(self::$_words_cache[$temp_key])&&self::$_words_cache[$temp_key]) { // Do not cache if forced
             return self::$_words_cache[$temp_key];
         }
 
