@@ -395,6 +395,12 @@ class CmsTableHelper {
 
                             break;
 
+                        case 'date':
+                            $filter = Text::getInstance($filter_key);
+                            $filter->enableCalendarDatepicker();
+
+                            break;
+
                         default:
                             dump('Unknown filter type "'. $filter_data['type'] .'"');
 
@@ -417,7 +423,7 @@ class CmsTableHelper {
                     }
 
                     // Ignore filter at all
-                    if (isset($filter_data['ignore_all'])) {
+                    if (isset($filter_data['ignore_sql'])) {
                         $filter->enableIgnoreFilterInWhereSql();
                     }
 
