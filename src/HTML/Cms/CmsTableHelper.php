@@ -16,6 +16,7 @@ use TMCms\HTML\Cms\Column\ColumnInput;
 use TMCms\HTML\Cms\Column\ColumnOrder;
 use TMCms\HTML\Cms\Column\ColumnTree;
 use TMCms\HTML\Cms\Column\ColumnView;
+use TMCms\HTML\Cms\Filter\DataList;
 use TMCms\HTML\Cms\Filter\Select;
 use TMCms\HTML\Cms\Filter\Text;
 use TMCms\Orm\EntityRepository;
@@ -380,13 +381,23 @@ class CmsTableHelper {
                     switch ($filter_data['type']) {
                         case 'text':
                             $filter = Text::getInstance($filter_key);
+
                             break;
+
                         case 'select':
                             $filter = Select::getInstance($filter_key);
                             $filter->ignoreValue(-1); // For "empty" value
+
                             break;
+
+                        case 'datalist':
+                            $filter = DataList::getInstance($filter_key);
+
+                            break;
+
                         default:
                             dump('Unknown filter type "'. $filter_data['type'] .'"');
+
                             break;
                     }
 
@@ -403,6 +414,11 @@ class CmsTableHelper {
                     // Ignore values in selects
                     if (isset($filter_data['ignore'])) {
                         $filter->ignoreValue($filter_data['ignore']);
+                    }
+
+                    // Ignore filter at all
+                    if (isset($filter_data['ignore_all'])) {
+                        $filter->enableIgnoreFilterInWhereSql();
                     }
 
                     // Like search
