@@ -27,7 +27,6 @@ class ModuleManager
             if (MODE == 'cms') {
                 $file_path = DIR_MODULES . $module . '/' . 'Cms' . ucfirst($module) . '.php';
                 if (file_exists($file_path)) {
-                    Menu::getInstance()->setMayAddItemsFlag(false);
                     require_once $file_path;
                 }
             }
