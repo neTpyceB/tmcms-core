@@ -2,13 +2,17 @@
 
 namespace TMCms\Orm;
 
+use ArrayIterator;
+use IteratorAggregate;
 use TMCms\Cache\Cacher;
 use TMCms\Config\Settings;
 use TMCms\DB\SQL;
 use TMCms\Files\FileSystem;
 use TMCms\Strings\Converter;
+use Traversable;
 
-class EntityRepository {
+class EntityRepository implements IteratorAggregate
+{
     private static $_cache_key_prefix = 'orm_entity_repository_'; // Should be overwritten in extended class
     protected $db_table = ''; // Should be overwritten in extended class
     protected $translation_fields = []; // Should be overwritten in extended class
@@ -144,7 +148,7 @@ class EntityRepository {
             'table' => false,
             'field' => false,
             'value' => $sql,
-            'type' => 'string'
+            'type'  => 'string'
         ];
 
         return $this;
@@ -199,7 +203,7 @@ class EntityRepository {
                 'table' => $this->getTranslationTableJoinAlias() . $this->translation_join_count . '',
                 'field' => LNG,
                 'value' => $value,
-                'type' => 'simple'
+                'type'  => 'simple'
             ];
 
             return $this;
@@ -210,7 +214,7 @@ class EntityRepository {
             'table' => $table,
             'field' => $field,
             'value' => $value,
-            'type' => 'simple'
+            'type'  => 'simple'
         ];
 
         return $this;
@@ -230,12 +234,12 @@ class EntityRepository {
         }
 
         $this->join_tables[] = [
-            'table' => $table,
-            'alias' => $alias,
-            'left' => $on_left,
-            'right' => $on_right,
+            'table'       => $table,
+            'alias'       => $alias,
+            'left'        => $on_left,
+            'right'       => $on_right,
             'right_table' => $right_table ?: $this->getDbTableName(),
-            'type' => $type
+            'type'        => $type
         ];
 
         return $this;
@@ -303,7 +307,7 @@ class EntityRepository {
             }
         }
 
-            // Use Iterator in DB query
+        // Use Iterator in DB query
         if ($this->use_iterator) {
             $this->collected_objects_data = SQL::q_assoc_iterator($sql, false);
         } else {
@@ -345,7 +349,7 @@ class EntityRepository {
             // Save all collected data to Cache
             $data = [
                 'collected_objects_data' => $this->collected_objects_data,
-                'collected_objects' => $this->collected_objects
+                'collected_objects'      => $this->collected_objects
             ];
             Cacher::getInstance()->getDefaultCacher()->set($this->getCacheKey($sql), $data, $this->cache_ttl);
         }
@@ -454,6 +458,7 @@ FROM `' . $this->getDbTableName() . '`
         foreach ($this->having_fields as $having) {
             $res[] = '`' . $having['field'] . '` ' . $having['value'];
         }
+
         return implode(' AND ', $res);
     }
 
@@ -614,6 +619,7 @@ FROM `' . $this->getDbTableName() . '`
         }
 
         $this->setLimit($limit_tmp);
+
         return NULL;
     }
 
@@ -718,6 +724,7 @@ FROM `' . $this->getDbTableName() . '`
                 $pairs[$row[$key_field]] = $row[$value_field];
             }
         }
+
         return $pairs;
     }
 
@@ -736,16 +743,16 @@ FROM `' . $this->getDbTableName() . '`
                 $this->sql_select_fields[] = [
                     'table' => $this->getTranslationTableJoinAlias() . $this->translation_join_count . '',
                     'field' => LNG,
-                    'as' => $field,
-                    'type' => 'translation'
+                    'as'    => $field,
+                    'type'  => 'translation'
                 ];
             } else {
                 // Simple field
                 $this->sql_select_fields[] = [
                     'table' => $table,
                     'field' => $field,
-                    'as' => false,
-                    'type' => 'simple'
+                    'as'    => false,
+                    'type'  => 'simple'
                 ];
             }
         }
@@ -852,6 +859,7 @@ FROM `' . $this->getDbTableName() . '`
     public function getCountOfMaxPossibleFoundObjectsWithoutFilters()
     {
         $this->setGenerateOutputWithIterator(false);
+
         return (int)q_value($this->getSelectSql(true));
     }
 
@@ -891,7 +899,7 @@ FROM `' . $this->getDbTableName() . '`
 
     /**
      * @param string $field
-     * @param bool $direction_desc
+     * @param bool   $direction_desc
      * @param string $table
      * @param bool $do_not_use_table_in_sql required in some conditions with temp fields
      * @return $this
@@ -910,19 +918,19 @@ FROM `' . $this->getDbTableName() . '`
             $this->addJoinTable(['cms_translations', $this->getTranslationTableJoinAlias() . $this->translation_join_count], 'id', $field, 'LEFT', $table);
 
             $this->order_fields[] = [
-                'table' => false,
-                'field' => '`' . $this->getTranslationTableJoinAlias() . $this->translation_join_count . '`.`' . LNG . '`',
-                'direction' => $direction,
+                'table'                   => false,
+                'field'                   => '`' . $this->getTranslationTableJoinAlias() . $this->translation_join_count . '`.`' . LNG . '`',
+                'direction'               => $direction,
                 'do_not_use_table_in_sql' => true,
-                'type' => 'string'
+                'type'                    => 'string'
             ];
         } else {
             $this->order_fields[] = [
-                'table' => $table,
-                'field' => $field,
-                'direction' => $direction,
+                'table'                   => $table,
+                'field'                   => $field,
+                'direction'               => $direction,
                 'do_not_use_table_in_sql' => $do_not_use_table_in_sql,
-                'type' => 'simple'
+                'type'                    => 'simple'
             ];
         }
 
@@ -931,11 +939,11 @@ FROM `' . $this->getDbTableName() . '`
 
     public function addOrderByFieldAsString($sql) {
         $this->order_fields[] = [
-            'table' => false,
-            'field' => $sql,
-            'direction' => false,
+            'table'                   => false,
+            'field'                   => $sql,
+            'direction'               => false,
             'do_not_use_table_in_sql' => true,
-            'type' => 'string'
+            'type'                    => 'string'
         ];
 
         return $this;
@@ -955,7 +963,7 @@ FROM `' . $this->getDbTableName() . '`
 
         $this->order_fields[] = [
             'table' => $table,
-            'type' => 'string',
+            'type'  => 'string',
             'field' => 'LOCATE ("'. SQL::sql_prepare($searchable_string) .'", `'. $table .'`.`'. $field .'`)'
         ];
 
@@ -990,15 +998,15 @@ FROM `' . $this->getDbTableName() . '`
             $this->sql_select_fields[] = [
                 'table' => $this->getTranslationTableJoinAlias() . $this->translation_join_count . '',
                 'field' => LNG,
-                'as' => $alias,
-                'type' => 'translation'
+                'as'    => $alias,
+                'type'  => 'translation'
             ];
         } else {
             $this->sql_select_fields[] = [
                 'table' => $table,
                 'field' => $field,
-                'as' => $alias,
-                'type' => 'simple'
+                'as'    => $alias,
+                'type'  => 'simple'
             ];
         }
 
@@ -1009,8 +1017,8 @@ FROM `' . $this->getDbTableName() . '`
         $this->sql_select_fields[] = [
             'table' => false,
             'field' => $sql,
-            'as' => false,
-            'type' => 'string'
+            'as'    => false,
+            'type'  => 'string'
         ];
 
         return $this;
@@ -1020,8 +1028,8 @@ FROM `' . $this->getDbTableName() . '`
         $this->sql_select_fields[] = [
             'table' => false,
             'field' => '(SELECT COUNT(*) FROM `'. $repository->getDbTableName() .'` WHERE `'. $repository->getDbTableName() .'`.`'. $count_by_field .'` = `'. $this->getDbTableName() .'`.`id`) AS `'. $field_name .'`',
-            'as' => false,
-            'type' => 'string'
+            'as'    => false,
+            'type'  => 'string'
         ];
 
         return $this;
@@ -1333,8 +1341,8 @@ FROM `' . $this->getDbTableName() . '`
      * Filter collection by value inclusive
      * @param $fields - value or array of values, WHERE sentence uses OR between values in one array
      * @param string $like_value
-     * @param bool $left_any
-     * @param bool $right_any
+     * @param bool   $left_any
+     * @param bool   $right_any
      * @param string $table
      * @return $this
      */
@@ -1408,9 +1416,21 @@ FROM `' . $this->getDbTableName() . '`
     }
 
     /**
+     * Retrieve an external iterator
+     * @link  http://php.net/manual/en/iteratoraggregate.getiterator.php
+     * @return Traversable An instance of an object implementing <b>Iterator</b> or
+     * <b>Traversable</b>
+     * @since 5.0.0
+     */
+    public function getIterator()
+    {
+        return new ArrayIterator($this->getAsArrayOfObjects());
+    }
+
+    /**
      * @param mixed $data
-     * @param int $serialize
-     * @param int $clean
+     * @param int   $serialize
+     * @param int   $clean
      */
     protected function debug($data, $serialize = 0, $clean = 1)
     {
