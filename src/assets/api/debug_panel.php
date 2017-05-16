@@ -23,7 +23,9 @@ ob_start();
 <style>
     #debug_panel td {padding: 2px 6px;}
 </style>
-<div id="debug_panel" style="opacity: 0.9; position: fixed; bottom: 0; left: 0; width: 100%; height: 70px; background: #fff; border-top: 2px solid #000; z-index: 99998; padding: 5px; font-size: 14px; font-family: Arial, sans-serif">
+    <div id="debug_panel"
+         style="opacity: 0.9; position: fixed; bottom: 0; left: 0; width: 100%; height: 100px; background: #fff; border-top: 2px solid #000; z-index: 99998; padding: 5px; font-size: 14px; font-family: Arial, sans-serif">
+        <i class="fa fa-close" style="position: absolute; top: 10px; right: 10px; width: 20px; height: 20px; cursor: pointer" onclick="jQuery('div#debug_panel').hide()"></i>
 	<table style="font-size: 14px; font-family: Arial, sans-serif; width: 100%; border-collapse: collapse">
 		<tr>
 			<th style="padding: 0 20px 0 10px" align="left">Time taken</th>
