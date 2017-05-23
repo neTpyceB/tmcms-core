@@ -12,19 +12,6 @@ class PagesDomainEntityRepository extends EntityRepository
             'name'      => [
                 'type' => 'varchar',
             ],
-            'urls'      => [
-                'type' => 'json',
-            ],
-            'languages' => [
-                'type' => 'json',
-            ],
         ],
     ];
-
-    public function setWhereUrl($url)
-    {
-        $this->addWhereFieldIn('urls', [$url]);
-
-        return $this;
-    }
 }

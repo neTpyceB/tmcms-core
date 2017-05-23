@@ -16,101 +16,14 @@ defined('INC') || exit;
  */
 class Languages
 {
+    /** @var  array If restrictions are set by domain middleware */
+    static $__domain_restricted_languages;
+
     /**
      * @var array
      */
     private static $language_pairs; // Do not init as array
-    private static $language_ids_by_short = []; // Do not init as array
-
-    /**
-     * Check if language exists
-     * @param string $short
-     * @return bool
-     */
-    public static function exists($short)
-    {
-        // Try cache
-        $cache_key = 'language_exists_' . $short;
-        $res = NULL;
-        if (Settings::isCacheEnabled()) {
-            $res = Cacher::getInstance()
-                ->getDefaultCacher()
-                ->get($cache_key)
-            ;
-        }
-
-        // Get from db
-        if ($res === NULL) {
-            $languages = new LanguageEntityRepository();
-            $languages->setWhereShort($short);
-            $res = (bool)$languages->getFirstObjectFromCollection();
-
-            // Save in cache
-            if (Settings::isCacheEnabled()) {
-                Cacher::getInstance()
-                    ->getDefaultCacher()
-                    ->set($cache_key, $res)
-                ;
-            }
-        }
-        return $res;
-    }
-
-    /**
-     * @return array
-     */
-    public static function getPairs()
-    {
-        if (isset(self::$language_pairs)) {
-            return self::$language_pairs;
-        }
-
-        // For frontend
-        if (MODE === 'site') {
-            $pairs = array();
-            if (Settings::isCacheEnabled()) {
-                $pairs = Cacher::getInstance()
-                    ->getDefaultCacher()
-                    ->get('structure_language_pairs')
-                ;
-            }
-            if (!$pairs) {
-                // Get languages which have active main page for them
-                $languages = new LanguageEntityRepository();
-
-                $pages = new PageEntityRepository();
-                $pages->setWherePid(0);
-                $pages->setWhereInMenu(1);
-                $pages->setWhereActive(1);
-                $pages->addOrderByField('order');
-
-                $languages->mergeWithCollection($pages, 'short', 'location');
-
-                if (Settings::isCacheEnabled()) {
-                    $languages->enableUsingCache();
-                }
-
-                self::$language_pairs = $languages->getPairs('full', 'short');
-
-                if (Settings::isCacheEnabled()) {
-                    Cacher::getInstance()
-                        ->getDefaultCacher()
-                        ->set('structure_language_pairs', self::$language_pairs)
-                    ;
-                }
-            } else {
-                self::$language_pairs = $pairs;
-            }
-
-            return self::$language_pairs;
-        }
-
-        // For backend
-        $languages = new LanguageEntityRepository();
-        $languages->addOrderByField('short');
-
-        return self::$language_pairs = $languages->getPairs('full', 'short');
-    }
+    private static $language_ids_by_short; // Do not init as array
 
     /**
      * Gets url of same page for selected language
@@ -196,18 +109,43 @@ class Languages
     }
 
     /**
+     * Check if language exists
+     *
      * @param string $short
-     * @return int
+     *
+     * @return bool
      */
-    public static function getIdByShort($short)
+    public static function exists($short)
     {
-        if(isset(self::$language_ids_by_short[$short]))
-            return self::$language_ids_by_short[$short];
-        $language_collection = new LanguageEntityRepository();
-        $language_collection->setWhereShort($short);
-        $language = $language_collection->getFirstObjectFromCollection();
+        // Check if language is restricted by domain middleware
+        if (self::$__domain_restricted_languages && !isset(self::$__domain_restricted_languages[$short])) {
+            return false;
+        }
 
-        return self::$language_ids_by_short[$short] = $language ? $language->getId() : NULL;
+        // Try cache
+        $cache_key = 'language_exists_' . $short;
+        $res = NULL;
+        if (Settings::isCacheEnabled()) {
+            $res = Cacher::getInstance()
+                ->getDefaultCacher()
+                ->get($cache_key);
+        }
+
+        // Get from db
+        if ($res === NULL) {
+            $languages = new LanguageEntityRepository();
+            $languages->setWhereShort($short);
+            $res = (bool)$languages->getFirstObjectFromCollection();
+
+            // Save in cache
+            if (Settings::isCacheEnabled()) {
+                Cacher::getInstance()
+                    ->getDefaultCacher()
+                    ->set($cache_key, $res);
+            }
+        }
+
+        return $res;
     }
 
     /**
@@ -230,6 +168,21 @@ class Languages
         } while ($data['pid']);
 
         return self::getIdByShort($data['location']);
+    }
+
+    /**
+     * @param string $short
+     * @return int
+     */
+    public static function getIdByShort($short)
+    {
+        if (isset(self::$language_ids_by_short[$short]))
+            return self::$language_ids_by_short[$short];
+        $language_collection = new LanguageEntityRepository();
+        $language_collection->setWhereShort($short);
+        $language = $language_collection->getFirstObjectFromCollection();
+
+        return self::$language_ids_by_short[$short] = $language ? $language->getId() : NULL;
     }
 
     /**
@@ -292,5 +245,64 @@ class Languages
     public static function getTotalCountOfLanguage()
     {
         return count(self::getPairs());
+    }
+
+    /**
+     * @return array
+     */
+    public static function getPairs()
+    {
+        if (isset(self::$language_pairs)) {
+            return self::$language_pairs;
+        }
+
+        // For frontend
+        if (MODE === 'site') {
+            $pairs = [];
+            if (Settings::isCacheEnabled()) {
+                $pairs = Cacher::getInstance()
+                    ->getDefaultCacher()
+                    ->get('structure_language_pairs');
+            }
+            if (!$pairs) {
+                // Get languages which have active main page for them
+                $languages = new LanguageEntityRepository();
+
+                $pages = new PageEntityRepository();
+                $pages->setWherePid(0);
+                $pages->setWhereInMenu(1);
+                $pages->setWhereActive(1);
+                $pages->addOrderByField('order');
+
+                $languages->mergeWithCollection($pages, 'short', 'location');
+
+                // Check if language is restricted by domain middleware
+                if (self::$__domain_restricted_languages) {
+                    $languages->addWhereFieldIn('short', self::$__domain_restricted_languages);
+                }
+
+                if (Settings::isCacheEnabled()) {
+                    $languages->enableUsingCache();
+                }
+
+                self::$language_pairs = $languages->getPairs('full', 'short');
+
+                if (Settings::isCacheEnabled()) {
+                    Cacher::getInstance()
+                        ->getDefaultCacher()
+                        ->set('structure_language_pairs', self::$language_pairs);
+                }
+            } else {
+                self::$language_pairs = $pairs;
+            }
+
+            return self::$language_pairs;
+        }
+
+        // For backend
+        $languages = new LanguageEntityRepository();
+        $languages->addOrderByField('short');
+
+        return self::$language_pairs = $languages->getPairs('full', 'short');
     }
 }
