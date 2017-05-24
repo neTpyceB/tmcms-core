@@ -83,6 +83,11 @@ class CmsTableHelper {
             $table->disablePager();
         }
 
+        // Set pagination
+        if (isset($params['per_page']) && $params['per_page']) {
+            $table->setPerPage($params['per_page']);
+        }
+
         // Set callback function
         if (isset($params['callback_function'])) {
             $table->setCallbackFunction($params['callback_function']);
