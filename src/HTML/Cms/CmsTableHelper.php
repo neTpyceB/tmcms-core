@@ -98,6 +98,11 @@ class CmsTableHelper {
             $table->addContextMenu($params['context_menu']);
         }
 
+        // Set text near pager
+        if (isset($params['pager_prefix_string'])) {
+            $table->setPagerPrefixString($params['pager_prefix_string']);
+        }
+
         foreach ($params['columns'] as $column_key => $column_param) {
             if (!is_array($column_param)) {
                 $column_key = $column_param;
@@ -356,6 +361,11 @@ class CmsTableHelper {
             // Top caption above table
             if (isset($params['caption'])) {
                 $filter_form->setCaption($params['caption']);
+            }
+
+            // Expand by default
+            if (isset($params['filters_expand']) && $params['filters_expand']) {
+                $filter_form->enableExpandedByDefault();
             }
 
             // Render filters
