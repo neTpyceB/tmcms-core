@@ -1,3 +1,7 @@
 .page-breadcrumb, .portlet-title, [data-column_key="delete"] {
   display: none;
 }
+
+.panel-group {
+  display: none;
+}
