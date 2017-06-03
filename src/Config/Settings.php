@@ -65,6 +65,14 @@ class Settings
     }
 
     /**
+     * @return bool
+     */
+    public static function isCmsUserLogEnabled()
+    {
+        return self::get('save_back_access_log');
+    }
+
+    /**
      * @return string
      */
     public static function getCommonEmail()

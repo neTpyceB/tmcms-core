@@ -11,8 +11,14 @@ use TMCms\Admin\Users\Entity\AdminUserGroupRepository;
 use TMCms\Admin\Users\Entity\AdminUserRepository;
 use TMCms\Admin\Users\Entity\GroupAccess;
 use TMCms\Admin\Users\Entity\GroupAccessRepository;
+use TMCms\Admin\Users\Entity\UserLog;
+use TMCms\Admin\Users\Entity\UserLogRepository;
+use TMCms\Admin\Users\Entity\UsersMessageEntityRepository;
 use TMCms\Config\Configuration;
+use TMCms\Config\Settings;
 use TMCms\Log\App;
+use TMCms\Log\Entity\AppLogEntity;
+use TMCms\Log\Entity\AppLogEntityRepository;
 use TMCms\Routing\Languages;
 use TMCms\Traits\singletonOnlyInstanceTrait;
 
@@ -537,5 +543,37 @@ class Users
 
         // TODO change to password_hash and password_verify in future versions
         return hash($algorithm, ($salt ? $salt : self::$salt) . $string);
+    }
+
+    public function checkAndNotifySomeoneUsesSamePage($class = P, $function = P_DO)
+    {
+        if (!defined('USER_ID') || !USER_ID || !Settings::isCmsUserLogEnabled()) {
+            return $this;
+        }
+
+        // Notify everyone with the same page except current user
+        $log_entries = new UserLogRepository();
+        $log_entries->addWhereFieldIsNot('user_id', USER_ID); // Not self
+        $log_entries->setWhereP($class); // Same module
+        $log_entries->setWhereDo($function); // Same page
+        $log_entries->addOrderByField('ts', true); // Only last entry
+        $log_entries->addWhereFieldIsHigherOrEqual('ts', NOW - 600); // Last 10 minutes
+        $log_entries->setLimit(1); // Only one
+
+        $message = 'Someone else is using this page at the moment';
+
+        /** @var UserLog $log_entry */
+        foreach ($log_entries->getAsArrayOfObjects() as $log_entry) {
+            // Remove all previous same messages
+            $messages = new UsersMessageEntityRepository();
+            $messages->setWhereToUserId($log_entry->getUserId());
+            $messages->setWhereMessage($message);
+            $messages->deleteObjectCollection();
+
+            Messages::sendBlackAlert($message, $log_entry->getUserId());
+        }
+
+
+        return $this;
     }
 }

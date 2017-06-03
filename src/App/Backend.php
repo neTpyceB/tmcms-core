@@ -158,9 +158,12 @@ class Backend
         }
 
         // Log CMS usage
-        Usage::getInstance()->add(P, P_DO);
+        Usage::getInstance()->add();
 
-        // Rewite $_GET in case constans defined not from params
+        // Check if someone else is using the same page to prevent double form overwrites
+        Users::getInstance()->checkAndNotifySomeoneUsesSamePage();
+
+        // Rewrite $_GET in case constants defined not from params
         $_GET['p'] = P;
         $_GET['do'] = P_DO;
 
