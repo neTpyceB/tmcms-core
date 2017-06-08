@@ -35,6 +35,7 @@ class EntityRepository implements IteratorAggregate
     private $require_to_count_total_rows = false;
     private $use_cache = false;
     private $cache_ttl = 60;
+    private $lng;
 
     private $join_tables = [];
     private $last_used_sql;
@@ -201,7 +202,7 @@ class EntityRepository implements IteratorAggregate
 
             $this->sql_where_fields[] = [
                 'table' => $this->getTranslationTableJoinAlias() . $this->translation_join_count . '',
-                'field' => LNG,
+                'field' => $this->getLanguage(),
                 'value' => $value,
                 'type'  => 'simple'
             ];
@@ -742,7 +743,7 @@ FROM `' . $this->getDbTableName() . '`
 
                 $this->sql_select_fields[] = [
                     'table' => $this->getTranslationTableJoinAlias() . $this->translation_join_count . '',
-                    'field' => LNG,
+                    'field' => $this->getLanguage(),
                     'as'    => $field,
                     'type'  => 'translation'
                 ];
@@ -919,7 +920,7 @@ FROM `' . $this->getDbTableName() . '`
 
             $this->order_fields[] = [
                 'table'                   => false,
-                'field'                   => '`' . $this->getTranslationTableJoinAlias() . $this->translation_join_count . '`.`' . LNG . '`',
+                'field'                   => '`' . $this->getTranslationTableJoinAlias() . $this->translation_join_count . '`.`' . $this->getLanguage() . '`',
                 'direction'               => $direction,
                 'do_not_use_table_in_sql' => true,
                 'type'                    => 'string'
@@ -997,7 +998,7 @@ FROM `' . $this->getDbTableName() . '`
 
             $this->sql_select_fields[] = [
                 'table' => $this->getTranslationTableJoinAlias() . $this->translation_join_count . '',
-                'field' => LNG,
+                'field' => $this->getLanguage(),
                 'as'    => $alias,
                 'type'  => 'translation'
             ];
@@ -1367,7 +1368,7 @@ FROM `' . $this->getDbTableName() . '`
 
                 // Set real used table an field instead of requested
                 $result_table = $this->getTranslationTableJoinAlias() . $this->translation_join_count;
-                $field = LNG;
+                $field = $this->getLanguage();
             }
 
             $sql[] = '`'. $result_table .'`.`'. $field .'` LIKE "'. ($left_any ? '%' : '') . sql_prepare($like_value, true) . ($right_any ? '%' : '') .'"';
@@ -1425,6 +1426,23 @@ FROM `' . $this->getDbTableName() . '`
     public function getIterator()
     {
         return new ArrayIterator($this->getAsArrayOfObjects());
+    }
+
+
+    /**
+     * @return string
+     */
+    public function getLanguage(){
+        return $this->lng ?: LNG ;
+    }
+
+    /**
+     * @param $lng
+     * @return $this
+     */
+    public function setLanguage($lng){
+        $this->lng = $lng;
+        return $this;
     }
 
     /**

@@ -148,11 +148,7 @@ class Languages
         return $res;
     }
 
-    /**
-     * @param int $page_id
-     * @return string
-     */
-    public static function getIdByPageId($page_id)
+    public static function getShortByPageId($page_id)
     {
         $data['pid'] = (int)$page_id;
 
@@ -167,7 +163,16 @@ class Languages
             }
         } while ($data['pid']);
 
-        return self::getIdByShort($data['location']);
+        return $data['location'];
+    }
+
+    /**
+     * @param int $page_id
+     * @return string
+     */
+    public static function getIdByPageId($page_id)
+    {
+        return self::getIdByShort(self::getShortByPageId($page_id));
     }
 
     /**
