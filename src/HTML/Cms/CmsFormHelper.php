@@ -295,7 +295,7 @@ class CmsFormHelper {
 
                 if ($cms_field) {
                     // Extra params
-                    if (isset($field['options']) && is_array($field['options']) && in_array($field['type'],['select', 'multiselect', ])) {
+                    if (isset($field['options']) && is_array($field['options']) && in_array($field['type'], ['select', 'multiselect', 'datalist'])) {
                         $cms_field->setOptions($field['options']);
                     }
                     if (isset($field['options']) && $field['type'] == 'checkbox_list') {

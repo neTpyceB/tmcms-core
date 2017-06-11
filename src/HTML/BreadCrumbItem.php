@@ -16,7 +16,7 @@ class BreadCrumbItem
      */
     public function  __construct($name, $href, $target)
     {
-        $this->name = $name;
+        $this->name = $name && is_string($name) ? $name : (is_array($name) && isset($name[LNG]) ? $name[LNG] : '');
         $this->href = $href;
         $this->target_blank = $target;
     }

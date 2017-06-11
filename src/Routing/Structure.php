@@ -97,6 +97,10 @@ class Structure
             }
         }
 
+        if (!$path) {
+            return false;
+        }
+
         // Add slash to open page from absolute path
         $path = '/' . $path;
 
@@ -364,15 +368,6 @@ class Structure
         exit;
     }
 
-    public static function cacheAllWords($lng){
-        $words = PagesWordEntityRepository::getInstance()->addWhereFieldIsLike('name', "_".$lng, true, false)->getAsArrayOfObjects();
-        /* @var PagesWordEntity $w */
-        foreach($words as $w){
-            if(!isset(self::$_words_cache[$w->getName()]))
-                self::$_words_cache[$w->getName()] = $w->getWord();
-        }
-    }
-
     /**
      * @param string $k key of word
      * @param string $lng selected language
@@ -484,6 +479,16 @@ class Structure
         }
 
         return $q;
+    }
+
+    public static function cacheAllWords($lng)
+    {
+        $words = PagesWordEntityRepository::getInstance()->addWhereFieldIsLike('name', "_" . $lng, true, false)->getAsArrayOfObjects();
+        /* @var PagesWordEntity $w */
+        foreach ($words as $w) {
+            if (!isset(self::$_words_cache[$w->getName()]))
+                self::$_words_cache[$w->getName()] = $w->getWord();
+        }
     }
 
     /**

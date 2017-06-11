@@ -2,9 +2,12 @@
 
 namespace TMCms\Log;
 
+use TMCms\Admin\Messages;
 use TMCms\Config\Settings;
 use TMCms\Log\Entity\AdminUsageEntity;
 use TMCms\Log\Entity\AdminUsageEntityRepository;
+use TMCms\Log\Entity\AppLogEntity;
+use TMCms\Log\Entity\AppLogEntityRepository;
 
 /**
  * Class Usage
@@ -39,6 +42,8 @@ class Usage
     /**
      * @param string $class
      * @param string $function
+     *
+     * @return $this
      */
     public function add($class = P, $function = P_DO)
     {
@@ -50,6 +55,8 @@ class Usage
         }
 
         $this->usage[$class][$function]++;
+
+        return $this;
     }
 
     /**
@@ -66,7 +73,7 @@ class Usage
             foreach ($class as $function_name => $count) {
                 $usage = AdminUsageEntityRepository::findOneEntityByCriteria([
                     'function_class' => $class_name,
-                    'function_name' => $function_name,
+                    'function_name'  => $function_name,
                 ]);
                 if (!$usage) {
                     $usage = new AdminUsageEntity();

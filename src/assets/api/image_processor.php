@@ -310,7 +310,7 @@ FileSystem::mkdir(DIR_IMAGE_CACHE . $path);
 
 // Save end file for web
 $destination_path = DIR_IMAGE_CACHE . QUERY;
-if (!$image->save($destination_path, $ext, 90) && !Settings::isProductionState()) {
+if (!$image->save($destination_path, $ext, 100) && !Settings::isProductionState()) {
     dump('Not enough memory to resize and sharpen image "' . $path . $file . '".');
 }
 
