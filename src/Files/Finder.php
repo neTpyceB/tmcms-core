@@ -123,7 +123,7 @@ class Finder {
             $copy_to = DIR_ASSETS . ltrim($real_file_path, '/');
             if (file_exists($copy_from) && !file_exists($copy_to)) {
                 FileSystem::mkDir(pathinfo($copy_to, PATHINFO_DIRNAME));
-                copy($copy_from, $copy_to);
+                symlink($copy_from, $copy_to);
             }
             $found_path = DIR_ASSETS_URL . ltrim($real_file_path, '/');
         }
