@@ -495,6 +495,18 @@ class CmsFormHelper {
                         if (isset($field['validate']['email']) || in_array('email', $field['validate'], true)) {
                             $cms_field->validateEmail();
                         }
+                        if (isset($field['validate']['min']) || in_array('min', $field['validate'], true)) {
+                            $cms_field->validateMin($field['validate']['min']);
+                        }
+                        if (isset($field['validate']['max']) || in_array('max', $field['validate'], true)) {
+                            $cms_field->validateMax($field['validate']['max']);
+                        }
+                        if (isset($field['validate']['minlength']) || in_array('minlength', $field['validate'], true)) {
+                            $cms_field->validateMinLength($field['validate']['minlength']);
+                        }
+                        if (isset($field['validate']['maxlength']) || in_array('maxlength', $field['validate'], true)) {
+                            $cms_field->validateMaxLength($field['validate']['maxlength']);
+                        }
                     }
 
                     $form->addField($name, $cms_field);
