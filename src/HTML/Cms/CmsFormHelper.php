@@ -416,7 +416,11 @@ class CmsFormHelper {
 
                             // Structure pages
                             case 'pages':
-                                $cms_field->setWidget(new SitemapPages());
+                                $sitemap = new SitemapPages();
+                                if(!empty($field['sitemap_options'])){
+                                    $sitemap->options = $field['sitemap_options'];
+                                }
+                                $cms_field->setWidget($sitemap);
                                 break;
 
                             // SVG image handling for choosing polygon section
