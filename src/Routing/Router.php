@@ -263,6 +263,7 @@ class Router
                 $ajax_rest_id = $path[4];
             }
             define('API_ID', $ajax_rest_id);
+            define('PAGE_ID', NULL);
 
             require_once DIR_BASE . $api_file;
 
