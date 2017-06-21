@@ -668,7 +668,7 @@ var PopupModal = function (options) {
                     var destinationObjects = $(value + instance.options.result_destination);
 
                     if (destinationObjects.length != 0) {
-                        destinationObjects.val(result);
+                        destinationObjects.val(result).change();
                         return false;
                     }
                 });

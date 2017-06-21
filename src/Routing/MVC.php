@@ -149,6 +149,9 @@ class MVC
             dump('Method "'. $method .'" in class "'. $this->controller .'" not found.');
         }
 
+        // Execute controller method
+        $data = self::$controllers[$this->controller]->$method($this->getModifiers());
+
         // Require file with data
         $method_file = DIR_FRONT_CONTROLLERS . $this->getComponentName() . '.' . $method . '.php';
         if (is_file($method_file)) {
@@ -160,31 +163,12 @@ class MVC
             require_once $method_file;
         }
 
-        // Execute controller method
-        $data = self::$controllers[$this->controller]->$method($this->getModifiers());
-
         // Merge returned data
         if ($data) {
-            $this->data = $this->data + $data;
+            $this->data += $data;
         }
 
         return $this;
-    }
-
-    /**
-     * @return PageHead
-     */
-    public function getComponentName()
-    {
-        return $this->component_name;
-    }
-
-    /**
-     * @param string $component_name
-     */
-    public function setComponentName($component_name)
-    {
-        $this->component_name = $component_name;
     }
 
     /**
@@ -204,6 +188,22 @@ class MVC
         $this->modifiers = $modifiers;
 
         return $this;
+    }
+
+    /**
+     * @return PageHead
+     */
+    public function getComponentName()
+    {
+        return $this->component_name;
+    }
+
+    /**
+     * @param string $component_name
+     */
+    public function setComponentName($component_name)
+    {
+        $this->component_name = $component_name;
     }
 
     /**
@@ -239,6 +239,9 @@ class MVC
             dump('Method "'. $method .'" in class "'. $this->view .'" not found.');
         }
 
+        // Execute view method
+        $this->getCurrentViewObject()->$method($this->data);
+
         // Require file with data
         $method_file = DIR_FRONT_VIEWS . $this->getComponentName() . '.' . $method . '.php';
         if (is_file($method_file)) {
@@ -249,9 +252,6 @@ class MVC
         if (is_file($method_file)) {
             require_once $method_file;
         }
-
-        // Execute view method
-        $this->getCurrentViewObject()->$method($this->data);
     }
 
     /**

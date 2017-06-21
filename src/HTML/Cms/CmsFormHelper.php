@@ -416,7 +416,11 @@ class CmsFormHelper {
 
                             // Structure pages
                             case 'pages':
-                                $cms_field->setWidget(new SitemapPages());
+                                $sitemap = new SitemapPages();
+                                if(!empty($field['sitemap_options'])){
+                                    $sitemap->options = $field['sitemap_options'];
+                                }
+                                $cms_field->setWidget($sitemap);
                                 break;
 
                             // SVG image handling for choosing polygon section
@@ -477,23 +481,35 @@ class CmsFormHelper {
 
                     // Validators
                     if (isset($field['validate'])) {
-                        if (isset($field['validate']['required']) || in_array('required', $field['validate'])) {
+                        if (isset($field['validate']['required']) || in_array('required', $field['validate'], true)) {
                             $cms_field->validateRequired();
                         }
-                        if (isset($field['validate']['is_digit']) || in_array('is_digit', $field['validate'])) {
+                        if (isset($field['validate']['is_digit']) || in_array('is_digit', $field['validate'], true)) {
                             $cms_field->validateDigits();
                         }
-                        if (isset($field['validate']['number']) || in_array('number', $field['validate'])) {
+                        if (isset($field['validate']['number']) || in_array('number', $field['validate'], true)) {
                             $cms_field->validateNumber();
                         }
-                        if (isset($field['validate']['alphanum']) || in_array('alphanum', $field['validate'])) {
+                        if (isset($field['validate']['alphanum']) || in_array('alphanum', $field['validate'], true)) {
                             $cms_field->validateAlphaNumeric();
                         }
-                        if (isset($field['validate']['url']) || in_array('url', $field['validate'])) {
+                        if (isset($field['validate']['url']) || in_array('url', $field['validate'], true)) {
                             $cms_field->validateUrl();
                         }
-                        if (isset($field['validate']['email']) || in_array('email', $field['validate'])) {
+                        if (isset($field['validate']['email']) || in_array('email', $field['validate'], true)) {
                             $cms_field->validateEmail();
+                        }
+                        if (isset($field['validate']['min']) || in_array('min', $field['validate'], true)) {
+                            $cms_field->validateMin($field['validate']['min']);
+                        }
+                        if (isset($field['validate']['max']) || in_array('max', $field['validate'], true)) {
+                            $cms_field->validateMax($field['validate']['max']);
+                        }
+                        if (isset($field['validate']['minlength']) || in_array('minlength', $field['validate'], true)) {
+                            $cms_field->validateMinLength($field['validate']['minlength']);
+                        }
+                        if (isset($field['validate']['maxlength']) || in_array('maxlength', $field['validate'], true)) {
+                            $cms_field->validateMaxLength($field['validate']['maxlength']);
                         }
                     }
 
