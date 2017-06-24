@@ -3,7 +3,7 @@
 namespace TMCms\Routing;
 
 use TMCms\Admin\Structure\Entity\PageEntityRepository;
-use TMCms\Admin\Structure\Entity\PageQuicklinkEntityRepository;
+use TMCms\Admin\Structure\Entity\PageAliasEntityRepository;
 use TMCms\Admin\Structure\Entity\PageTemplateEntityRepository;
 use TMCms\Cache\Cacher;
 use TMCms\Config\Settings;
@@ -79,8 +79,8 @@ class Router
         if (REF_SE_KEYWORD && CFG_DOMAIN !== REF_DOMAIN) {
             $similarities = [];
 
-            $quick_links = new PageQuicklinkEntityRepository();
-            $quick_links->setWhereSearchword(1);
+            $quick_links = new PageAliasEntityRepository();
+            $quick_links->setWhereIsLanding(1);
 
             foreach ($quick_links->getAsArrayOfObjectData() as $quick_link) {
                 similar_text(REF_SE_KEYWORD, $quick_link['name'], $match);
@@ -103,7 +103,7 @@ class Router
 
                 // Get from db
                 if ($quick_link === NULL) {
-                    $quick_links = new PageQuicklinkEntityRepository();
+                    $quick_links = new PageAliasEntityRepository();
                     $quick_links->setWhereName($quick_link_name);
 
                     $quick_link = $quick_links->getFirstObjectFromCollection();
@@ -126,7 +126,7 @@ class Router
             }
 
             if ($quick_link === NULL) {
-                $quick_links = new PageQuicklinkEntityRepository();
+                $quick_links = new PageAliasEntityRepository();
                 $quick_links->addSimpleSelectFields(['page_id', 'href']);
                 $quick_links->setWhereName($path[0]);
 
