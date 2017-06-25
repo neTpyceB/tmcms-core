@@ -49,8 +49,6 @@ class EntityRepository implements IteratorAggregate
         if ($ids) {
             $this->setIds($ids);
         }
-
-        return $this;
     }
 
     /**
@@ -253,6 +251,14 @@ class EntityRepository implements IteratorAggregate
         }
 
         return $this->translation_join_alias;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLanguage()
+    {
+        return $this->lng ?: LNG;
     }
 
     /**
@@ -1068,24 +1074,34 @@ FROM `' . $this->getDbTableName() . '`
      */
     public function __call($name, $args) {
         // Check which method was called
-        if (substr($name, 0, 8) == 'setWhere') { // setWhere... for filtering
+        if (substr($name, 0, 8) === 'setWhere') { // setWhere... for filtering
 
             $param = substr($name, 8);  // Cut "setWhere"
             $param = Converter::from_camel_case($param);
 
             // Check maybe arg supplied is Entity - than we have to call EntityId
             if (isset($args[0]) && $args[0] instanceof Entity) {
-                $param .= $param . '_id';
+                /** @var Entity $obj */
+                $obj = $args[0];
+                $method_name = 'get' . ucfirst($param);
+                $args[0] = $obj->$method_name();
             }
 
             // Emulate setWhereSomething($k, $v);
             $this->addSimpleWhereField($param, isset($args[0]) ? $args[0] : NULL);
 
-        } elseif (substr($name, 0, 3) == 'set') { // set{Field} for every object in repository
+        } elseif (substr($name, 0, 3) === 'set') { // set{Field} for every object in repository
 
             // Collect objects
             if (!$this->getCollectedObjects()) {
                 $this->collectObjects(false, true);
+            }
+
+            // Check maybe arg supplied is Entity - than we have to call EntityId
+            if (isset($args[0]) && $args[0] instanceof Entity) {
+                /** @var Entity $obj */
+                $obj = $args[0];
+                $args[0] = $obj->$name();
             }
 
             // Set field in every inner object
@@ -1254,6 +1270,7 @@ FROM `' . $this->getDbTableName() . '`
         foreach ($values as $k => & $v) {
             $v = sql_prepare($v);
         }
+        unset($v);
 
         $this->addWhereFieldAsString('`'. $table .'`.`'. $field .'` NOT IN ("'. implode('", "', $values) .'")');
 
@@ -1317,6 +1334,8 @@ FROM `' . $this->getDbTableName() . '`
         return $this;
     }
 
+    // Reset auto_increment to 1
+
     /**
      * @param $field
      * @param string $value
@@ -1336,7 +1355,9 @@ FROM `' . $this->getDbTableName() . '`
         return $this;
     }
 
-    // Reset auto_increment to 1
+
+
+    /* STATIC ALIASES */
 
     /**
      * Filter collection by value inclusive
@@ -1362,7 +1383,7 @@ FROM `' . $this->getDbTableName() . '`
 
         // All fields glued with OR
         foreach ($fields as $field) {
-            if (in_array($field, $this->translation_fields)) {
+            if (in_array($field, $this->translation_fields, true)) {
                 ++$this->translation_join_count;
                 $this->addJoinTable(['cms_translations', $this->getTranslationTableJoinAlias() . $this->translation_join_count], 'id', $field, 'LEFT', $table);
 
@@ -1382,10 +1403,6 @@ FROM `' . $this->getDbTableName() . '`
 
         return $this;
     }
-
-
-
-    /* STATIC ALIASES */
 
     /**
      * Filter collection by value exclusive
@@ -1426,14 +1443,6 @@ FROM `' . $this->getDbTableName() . '`
     public function getIterator()
     {
         return new ArrayIterator($this->getAsArrayOfObjects());
-    }
-
-
-    /**
-     * @return string
-     */
-    public function getLanguage(){
-        return $this->lng ?: LNG ;
     }
 
     /**

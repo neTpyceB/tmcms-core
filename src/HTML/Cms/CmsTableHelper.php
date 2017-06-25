@@ -234,6 +234,11 @@ class CmsTableHelper {
                     break;
             }
 
+            // Help text with question mark
+            if (isset($column_param['hint'])) {
+                $column->help($column_param['hint']);
+            }
+
             // Disable cutting long texts by column
             if (isset($column_param['cut_long_strings'])) {
                 if (!$column_param['cut_long_strings']) {
