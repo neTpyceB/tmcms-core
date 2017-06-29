@@ -4,7 +4,14 @@ namespace TMCms\Services\Entity;
 
 use TMCms\Orm\EntityRepository;
 
-class ServiceRepository extends EntityRepository
+/**
+ * Class ServiceEntitRepository
+ * @package TMCms\Services\Entity
+ *
+ * @method $this setWhereAutoStart(int $flag)
+ * @method $this setWhereRunning(int $flag)
+ */
+class ServiceEntityRepository extends EntityRepository
 {
     protected $db_table = 'cms_services';
     protected $table_structure = [
