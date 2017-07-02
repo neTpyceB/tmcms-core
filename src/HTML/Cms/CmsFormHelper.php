@@ -37,7 +37,11 @@ class CmsFormHelper {
     public static function outputForm($table, array $params = []) {
         // Maybe only one argument
         if (!$params) {
-            $params['db_table'] = $table;
+            $params = $table;
+        }
+
+        if (isset($params['db_table'])) {
+            $table = $params['db_table'];
         }
 
         // Convert data to array
