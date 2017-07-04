@@ -415,7 +415,7 @@ class CmsFormHelper {
 
                             // Google map for choosing coordinates
                             case 'map':
-                                $cms_field->enableGoogleMap();
+                                $cms_field->enableGoogleMap(!empty($field['map_options']) ? $field['map_options'] : []);
                                 break;
 
                             // Structure pages
