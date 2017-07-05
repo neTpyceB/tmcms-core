@@ -53,7 +53,7 @@ class PageHead
      * @param string $attr_string
      * @return $this
      */
-    public function addHtmlTagAttributes($attr_string)
+    public function addHtmlTagAttributes(string $attr_string)
     {
         $this->html_tag_attributes[] = $attr_string;
 
