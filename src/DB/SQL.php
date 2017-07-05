@@ -389,7 +389,7 @@ class SQL
     public static function getRows($tbl, $where = '')
     {
         $res = [];
-        $sql = self::getInstance()->sql_query("SELECT * FROM `$tbl`" . ($where ? ' WHERE ' . $where : NULL));
+        $sql = self::getInstance()->sql_query('SELECT * FROM `$tbl`' . ($where ? ' WHERE ' . $where : ''));
 
         while ($q = $sql->fetch(PDO::FETCH_ASSOC)) {
             $res[] = $q;

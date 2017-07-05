@@ -189,13 +189,29 @@ class Structure
             $page_entity->setWhereOldFullUrl(PATH_ORIGINAL);
             $page_entity->addOrderByField('id', true);
 
-            /** @var PageRedirectHistoryEntity $page_entity */
             $page_entity = $page_entity->getFirstObjectFromCollection();
 
+            /** @var PageRedirectHistoryEntity $page_entity */
             // Redirect
             if ($page_entity) {
                 header('HTTP/1.1 301 Moved Permanently');
                 go($page_entity->getNewFullUrl());
+            }
+            if(QUERY){
+                // Check if page location ever existed
+                /** @var PageRedirectHistoryEntityRepository $page_entity */
+                $page_entity = new PageRedirectHistoryEntityRepository();
+                $page_entity->setWhereOldFullUrl(PATH_ORIGINAL.'?'.QUERY);
+                $page_entity->addOrderByField('id', true);
+
+                $page_entity = $page_entity->getFirstObjectFromCollection();
+
+                /** @var PageRedirectHistoryEntity $page_entity */
+                // Redirect
+                if ($page_entity) {
+                    header('HTTP/1.1 301 Moved Permanently');
+                    go($page_entity->getNewFullUrl());
+                }
             }
         }
 

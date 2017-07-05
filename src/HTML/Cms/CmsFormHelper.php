@@ -37,7 +37,11 @@ class CmsFormHelper {
     public static function outputForm($table, array $params = []) {
         // Maybe only one argument
         if (!$params) {
-            $params['db_table'] = $table;
+            $params = $table;
+        }
+
+        if (isset($params['db_table'])) {
+            $table = $params['db_table'];
         }
 
         // Convert data to array
@@ -411,7 +415,7 @@ class CmsFormHelper {
 
                             // Google map for choosing coordinates
                             case 'map':
-                                $cms_field->enableGoogleMap();
+                                $cms_field->enableGoogleMap(!empty($field['map_options']) ? $field['map_options'] : []);
                                 break;
 
                             // Structure pages
