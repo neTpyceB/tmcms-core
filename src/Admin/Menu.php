@@ -103,7 +103,7 @@ class Menu
                     <?php foreach ($this->_menu as $k => $v): ?>
                         <?php if (!is_array($v)): ?>
                             <li class="heading">
-                                <h3 class="uppercase"><?= $v ?></h3>
+                                <h3 class="uppercase"><?= __($v) ?></h3>
                             </li>
                         <?php else:
                             if (!isset($v['title'])) {
