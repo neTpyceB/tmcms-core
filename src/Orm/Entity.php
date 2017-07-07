@@ -328,7 +328,7 @@ class Entity
         if (isset($this->data[$field]) || isset($this->translation_data[$field])) {
             if (in_array($field, $this->translation_fields)) {
                 if (isset($this->translation_data[$field])) {
-                    if (is_array($this->translation_data[$field]) && isset($this->translation_data[$field][LNG])) {
+                    if (is_array($this->translation_data[$field]) && array_key_exists(LNG, $this->translation_data[$field])) {
                         return $this->translation_data[$field][LNG];
                     }
 
