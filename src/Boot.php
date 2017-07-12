@@ -284,7 +284,7 @@ if (!defined('CFG_GIT_BRANCH')) {
 }
 
 /* CMS */
-define('CMS_VERSION', '17.04');
+define('CMS_VERSION', '17.07');
 define('CMS_NAME', 'The Modern CMS');
 define('CMS_OWNER_COMPANY', 'SIA DEVP');
 if (!defined('CMS_SUPPORT_EMAIL')) {

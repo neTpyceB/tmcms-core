@@ -50,18 +50,21 @@ class BreadCrumbs
             <?php if ($this->actions): ?>
                 <li class="btn-group">
                     <?php if (1 === count($this->actions)): ?>
-                        <a class="btn blue" href="<?= array_values($this->actions)[0] ?>"><?= array_keys($this->actions)[0] ?></a>
+                        <a class="btn blue"<?= isset(array_values($this->actions)[0]['confirm']) && array_values($this->actions)[0]['confirm'] ? ' onclick="return confirm(\'' . __('Are you sure?') . '\')"' : '' ?>
+                           href="<?= array_values($this->actions)[0]['link'] ?>"><?= array_keys($this->actions)[0] ?></a>
                     <?php elseif ($this->first_action_button): ?>
                         <div class="btn-group">
-                            <a href="<?= array_values($this->actions)[0] ?>" class="btn blue"><?= array_keys($this->actions)[0] ?></a>
+                            <a href="<?= array_values($this->actions)[0]['link'] ?>"
+                               class="btn blue"><?= array_keys($this->actions)[0] ?></a>
                             <button type="button" class="btn blue dropdown-toggle" data-toggle="dropdown"><i class="fa fa-angle-down"></i></button>
                             <ul class="dropdown-menu" role="menu">
                                 <?php
                                 $i = 0;
-                                foreach ($this->actions as $title => $link):
+                                foreach ($this->actions as $title => $options):
                                     if ($i++ == 0) continue; ?>
                                     <li>
-                                        <a href="<?= $link ?>"><?= $title ?></a>
+                                        <a<?= isset($options['confirm']) && $options['confirm'] ? ' onclick="return confirm(\'' . __('Are you sure?') . '\')"' : '' ?>
+                                                href="<?= $options['link'] ?>"><?= $title ?></a>
                                     </li>
                                 <?php endforeach; ?>
                             </ul>
@@ -71,9 +74,10 @@ class BreadCrumbs
                             <span>Actions</span><i class="fa fa-angle-down"></i>
                         </button>
                         <ul class="dropdown-menu pull-right" role="menu">
-                            <?php foreach ($this->actions as $title => $link): ?>
+                            <?php foreach ($this->actions as $title => $options): ?>
                                 <li>
-                                    <a href="<?= $link ?>"><?= $title ?></a>
+                                    <a<?= isset($options['confirm']) && $options['confirm'] ? ' onclick="return confirm(\'' . __('Are you sure?') . '\')"' : '' ?>
+                                            href="<?= $options['link'] ?>"><?= $title ?></a>
                                 </li>
                             <?php endforeach; ?>
                         </ul>
@@ -81,12 +85,12 @@ class BreadCrumbs
                 </li>
             <?php endif; ?>
 
-            <?php foreach ($this->links as $k => $link): ?>
+            <?php foreach ($this->links as $k => $options): ?>
                 <li>
                     <?php if (!$k): ?>
                         <i class="fa fa-home"></i>
                     <?php endif; ?>
-                    <?= $link ?>
+                    <?= $options ?>
                     <?php if ($so > ($k + 1)): ?>
                         <i class="fa fa-angle-right"></i>
                     <?php endif; ?>
@@ -155,12 +159,14 @@ class BreadCrumbs
     /**
      * @param string $title
      * @param string $link
+     * @param array  $options
      *
      * @return $this
      */
-    public function addAction($title, $link)
+    public function addAction($title, $link, array $options = [])
     {
-        $this->actions[$title] = $link;
+        $options['link'] = $link;
+        $this->actions[$title] = $options;
 
         return $this;
     }
