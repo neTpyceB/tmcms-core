@@ -2026,7 +2026,7 @@ Page footer
 .page-footer {
   padding: 8px 20px 5px 20px;
   font-size: 12px;
-  height: 33px;
+  height: 34px;
 }
 .page-footer:before, .page-footer:after {
   content: " ";

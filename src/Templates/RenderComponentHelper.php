@@ -242,7 +242,11 @@ class RenderComponentHelper {
                 break;
 
             case 'pages':
-                $field->setWidget(new SitemapPages);
+                $widget = new SitemapPages;
+                if(isset($this->field_value['lng'])) {
+                    $widget->setLanquage($this->field_value['lng']);
+                }
+                $field->setWidget($widget);
                 break;
 
             case 'map':

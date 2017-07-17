@@ -101,7 +101,7 @@ class App
             file_put_contents(DIR_CACHE . 'log_data', gzencode(json_encode($data)));
 
             // Send stats
-            Mailer::getInstance()
+            @Mailer::getInstance()
                 ->setSubject('Application and Usage log from ' . Configuration::getInstance()->get('site')['name'] . ' (till ' . date(CFG_CMS_DATETIME_FORMAT, NOW) . ')')
                 ->setSender(Configuration::getInstance()->get('site')['email'])
                 ->setRecipient(CMS_SUPPORT_EMAIL)

@@ -53,7 +53,7 @@ class PageHead
      * @param string $attr_string
      * @return $this
      */
-    public function addHtmlTagAttributes($attr_string)
+    public function addHtmlTagAttributes(string $attr_string)
     {
         $this->html_tag_attributes[] = $attr_string;
 
@@ -412,9 +412,9 @@ class PageHead
                         a.async = 1;
                         a.src = g;
                         m.parentNode.insertBefore(a, m)
-                    })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+                    })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
 
-                    ga('create', 'UA-<?=$ga?>', '<?=CFG_DOMAIN?>');
+                    ga('create', 'UA-<?=$ga?>', 'auto');
                     ga('send', 'pageview');
 
                 </script>

@@ -498,9 +498,12 @@ abstract class Element
      * Enables google map place picker
      * @return $this
      */
-    public function enableGoogleMap()
+    public function enableGoogleMap($options = [])
     {
-        $this->setWidget(GoogleMap::getInstance());
+        $widget = GoogleMap::getInstance();
+
+        $widget->options = $options;
+        $this->setWidget($widget);
 
         PageHead::getInstance()
             ->addJsUrl('https://maps.googleapis.com/maps/api/js?key=' . Settings::get('google_api_key'));

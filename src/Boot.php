@@ -257,7 +257,7 @@ define('CFG_MIN_PHP_VERSION_REQUIRED', '5.5');
 define('CFG_MAIL_ERRORS', 1); // Send or not errors
 define('CFG_DEFAULT_FILE_PERMISSIONS', 0777);
 define('CFG_DEFAULT_DIR_PERMISSIONS', 0777);
-define('REF_SE_KEYWORD_MIN_MATCH', 70); // Minimum match to search query from search engines to trigger quicklinks
+define('REF_SE_KEYWORD_MIN_MATCH', 70); // Minimum match to search query from search engines to trigger aliases
 
 // PHP_OS can be already set by environment
 if (!defined('PHP_OS')) {

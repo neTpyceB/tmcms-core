@@ -8,7 +8,6 @@ use TMCms\Config\Configuration;
 use TMCms\Config\Settings;
 use TMCms\DB\SQL;
 use TMCms\Routing\Languages;
-use TMCms\Routing\Structure;
 use TMCms\Strings\Converter;
 use TMCms\Strings\SimpleCrypto;
 use TMCms\Strings\Translations;
@@ -37,8 +36,6 @@ class Entity
         if ($id) {
             $this->setId($id, $load_from_db);
         }
-
-        return $this;
     }
 
     /**
@@ -206,7 +203,7 @@ class Entity
         }
 
         // check null for newly created fields
-        if (in_array($key, $this->translation_fields) && (is_array($value) || (!ctype_digit((string)$value) && !is_null($value)))) {
+        if (in_array($key, $this->translation_fields, true) && (is_array($value) || (!ctype_digit((string)$value) && !is_null($value)))) {
             // Saving Translation ID
             $this->translation_data[$key] = $value;
         } else {
@@ -218,7 +215,7 @@ class Entity
 
     protected function decryptValues()
     {
-        $key = $this->getEncryptionCheckSumKey();
+        $key = self::getEncryptionCheckSumKey();
 
         foreach ($this->encrypted_fields as $field_name) {
             if (isset($this->data[$field_name])) {
@@ -315,7 +312,7 @@ class Entity
      */
     public function flipBoolValue($field)
     {
-        $this->setField($field, (int)!$this->getfield($field));
+        $this->setField($field, (int)!$this->getField($field));
 
         return $this;
     }
@@ -331,11 +328,12 @@ class Entity
         if (isset($this->data[$field]) || isset($this->translation_data[$field])) {
             if (in_array($field, $this->translation_fields)) {
                 if (isset($this->translation_data[$field])) {
-                    if (is_array($this->translation_data[$field]) && isset($this->translation_data[$field][LNG])) {
+                    if (is_array($this->translation_data[$field]) && array_key_exists(LNG, $this->translation_data[$field])) {
                         return $this->translation_data[$field][LNG];
-                    } else {
-                        return $this->translation_data[$field];
                     }
+
+                    return $this->translation_data[$field];
+
                 } elseif (isset($this->data[$field])) {
                     return Translations::get($this->data[$field], LNG);
                 }
@@ -423,7 +421,7 @@ class Entity
     }
 
     /**
-     * @return bool loaded or not
+     * @return $this
      */
     public function deleteObjectDataFromCache()
     {
@@ -471,7 +469,7 @@ class Entity
 
     protected function encryptValues()
     {
-        $key = $this->getEncryptionCheckSumKey();
+        $key = self::getEncryptionCheckSumKey();
 
         foreach ($this->encrypted_fields as $field_name) {
             if (isset($this->data[$field_name])) {
@@ -506,7 +504,7 @@ class Entity
             if (isset($this->changed_fields_for_update[$v])) {
 
                 // Translation field
-                if (in_array($v, $this->translation_fields) && isset($this->translation_data[$v]) && is_array($this->translation_data[$v])) {
+                if (in_array($v, $this->translation_fields, true) && isset($this->translation_data[$v]) && is_array($this->translation_data[$v])) {
                     $data[$v] = Translations::update($this->translation_data[$v], $this->data[$v]);
                 } else {
                     // Usual field
@@ -568,7 +566,7 @@ class Entity
         // Set data values for every available field
         foreach ($fields as $v) {
             // Translation
-            if (in_array($v, $this->translation_fields) && isset($this->translation_data[$v])) {
+            if (in_array($v, $this->translation_fields, true) && isset($this->translation_data[$v])) {
 
                 // If provided text only - need to save new and set array
                 if (!is_array($this->translation_data[$v])) {
@@ -656,16 +654,16 @@ class Entity
     {
         $prefix = substr($name, 0, 3);
 
-        if ($prefix == 'get' || $prefix == 'set') {
+        if ($prefix === 'get' || $prefix === 'set') {
             $method_to_call = $prefix . 'Field';
             $param = substr($name, 3); // Cut "set" or "get"
             $param = Converter::from_camel_case($param);
             $param = strtolower($param);
 
             return $this->{$method_to_call}(strtolower($param), ($args ? $args[0] : ''));
-        } else {
-            dump('Method "' . $name . '" unknown');
         }
+
+        dump('Method "' . $name . '" unknown');
     }
 
     public function enableUpdateOnDuplicate()
@@ -727,7 +725,7 @@ class Entity
     {
         $this->encrypted_fields[] = $field_name;
 
-        $key = $this->getEncryptionCheckSumKey();
+        $key = self::getEncryptionCheckSumKey();
 
         // Decrypt field
         if (isset($this->data[$field_name])) {
@@ -762,7 +760,7 @@ class Entity
             $params[$field] = $this->$method();
         }
 
-        $existing_entry = $repo->findOneEntityByCriteria($params);
+        $existing_entry = $repo::findOneEntityByCriteria($params);
 
         if ($existing_entry) {
             $this->setId($existing_entry->getId(), false);
@@ -778,9 +776,12 @@ class Entity
 
     /**
      * Must be implemented in extended classes
+     *
+     * @param string $lng
+     *
      * @return string
      */
-    public function getLinkForSitemap()
+    public function getLinkForSitemap($lng = LNG)
     {
         die('Method "getLinkForSitemap" must be implemented in extended class "' . get_class($this) . '"');
     }

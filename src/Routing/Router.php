@@ -2,8 +2,9 @@
 
 namespace TMCms\Routing;
 
+use TMCms\Admin\Structure\Entity\PageAliasEntity;
 use TMCms\Admin\Structure\Entity\PageEntityRepository;
-use TMCms\Admin\Structure\Entity\PageQuicklinkEntityRepository;
+use TMCms\Admin\Structure\Entity\PageAliasEntityRepository;
 use TMCms\Admin\Structure\Entity\PageTemplateEntityRepository;
 use TMCms\Cache\Cacher;
 use TMCms\Config\Settings;
@@ -73,88 +74,96 @@ class Router
         define('REF_DOMAIN_NAME', REF ? Domains::getName(REF) : '');
         define('REF_SE_KEYWORD', REF ? (REF_DOMAIN === CFG_DOMAIN ? '' : SearchEngines::getSearchWord(REF)) : '');
 
-        /* Quick_links */
-        // In case user came from search engine
-        $quick_link = false;
-        if (REF_SE_KEYWORD && CFG_DOMAIN !== REF_DOMAIN) {
-            $similarities = [];
+        /* Page aliases */
+        if (Settings::get('page_aliases_enabled')) {
+            $page_alias = NULL;
 
-            $quick_links = new PageQuicklinkEntityRepository();
-            $quick_links->setWhereSearchword(1);
+            // If client comes from search engine - check which page is more appropriate for hom
+            if (REF_SE_KEYWORD && CFG_DOMAIN !== REF_DOMAIN) {
+                $similarities = [];
 
-            foreach ($quick_links->getAsArrayOfObjectData() as $quick_link) {
-                similar_text(REF_SE_KEYWORD, $quick_link['name'], $match);
-                if ($match >= REF_SE_KEYWORD_MIN_MATCH && !isset($similarities[$match])) {
-                    $similarities[$match] = $quick_link['name'];
-                }
-            }
+                $page_aliases = new PageAliasEntityRepository();
+                $page_aliases->setWhereIsLanding(1);
 
-            if ($similarities) {
-                ksort($similarities);
-
-                $quick_link_name = sql_prepare(current($similarities));
-
-                // Try cache
-                $cache_key = 'quick_links_' . $quick_link_name;
-                $quick_link = NULL;
-                if (Settings::isCacheEnabled()) {
-                    $quick_link = Cacher::getInstance()->getDefaultCacher()->get($cache_key);
-                }
-
-                // Get from db
-                if ($quick_link === NULL) {
-                    $quick_links = new PageQuicklinkEntityRepository();
-                    $quick_links->setWhereName($quick_link_name);
-
-                    $quick_link = $quick_links->getFirstObjectFromCollection();
-
-                    // Save in cache
-                    if (Settings::isCacheEnabled()) {
-                        Cacher::getInstance()->getDefaultCacher()->set($cache_key, $quick_link);
+                // Sort by similarity
+                foreach ($page_aliases->getAsArrayOfObjectData() as $page_alias) {
+                    similar_text(REF_SE_KEYWORD, $page_alias['name'], $match);
+                    if ($match >= REF_SE_KEYWORD_MIN_MATCH && !isset($similarities[$match])) {
+                        $similarities[$match] = $page_alias['name'];
                     }
                 }
 
+                if ($similarities) {
+                    ksort($similarities);
+
+                    $quick_link_name = current($similarities);
+
+                    // Try cache
+                    $cache_key = 'page_aliases_' . $quick_link_name;
+                    $page_alias = NULL;
+                    if (Settings::isCacheEnabled()) {
+                        $page_alias = Cacher::getInstance()->getDefaultCacher()->get($cache_key);
+                    }
+
+                    // Get from db
+                    if ($page_alias === NULL) {
+                        $page_aliases = new PageAliasEntityRepository();
+                        $page_aliases->setWhereName($quick_link_name);
+
+                        $page_alias = $page_aliases->getFirstObjectFromCollection();
+
+                        // Save in cache
+                        if (Settings::isCacheEnabled()) {
+                            Cacher::getInstance()->getDefaultCacher()->set($cache_key, $page_alias);
+                        }
+                    }
+                }
             }
-        }
-        // In case we have only one key in path
-        if (PATH_SO === 1 && !$quick_link) {
-            $cache_key = 'quick_links_' . $path[0];
-            $quick_link = '';
 
-            if (Settings::isCacheEnabled()) {
-                $quick_link = Cacher::getInstance()->getDefaultCacher()->get($cache_key);
-            }
+            // In case we have only one key in path and have not landing page redirect
+            if (PATH_SO === 1 && !$page_alias) {
+                $cache_key = 'page_aliases_' . $path[0];
+                $page_alias = NULL;
 
-            if ($quick_link === NULL) {
-                $quick_links = new PageQuicklinkEntityRepository();
-                $quick_links->addSimpleSelectFields(['page_id', 'href']);
-                $quick_links->setWhereName($path[0]);
-
-                if (REF_SE_KEYWORD) {
-                    $quick_links->setWhereName(REF_SE_KEYWORD);
+                // Find in cache
+                if (Settings::isCacheEnabled()) {
+                    $page_alias = Cacher::getInstance()->getDefaultCacher()->get($cache_key);
                 }
 
-                $quick_link = $quick_links->getFirstObjectFromCollection();
+                // Find in db
+                if ($page_alias === NULL) {
+                    $page_aliases = new PageAliasEntityRepository();
+                    $page_aliases->addSimpleSelectFields(['page_id', 'href']);
+                    $page_aliases->setWhereName($path[0]);
 
-                if ($quick_link) {
-                    $quick_link = $quick_link->getAsArray();
+                    // If came from search engine
+                    if (REF_SE_KEYWORD) {
+                        $page_aliases->setWhereName(REF_SE_KEYWORD);
+                    }
+
+                    $page_alias = $page_aliases->getFirstObjectFromCollection();
+                }
+
+                // Save alis in cache
+                if (Settings::isCacheEnabled()) {
+                    Cacher::getInstance()->getDefaultCacher()->set($cache_key, (string)$page_alias);
                 }
             }
 
-            if (Settings::isCacheEnabled()) {
-                Cacher::getInstance()->getDefaultCacher()->set($cache_key, (string)$quick_link);
-            }
-        }
+            // If page alias found - redirect
+            /** @var PageAliasEntity $page_alias */
+            if ($page_alias) {
+                // Check by url string or by page id saved in alias
+                if (!Structure::pageExists(Structure::getIdByPath($page_alias->getHref()))) {
+                    $page_alias->setHref(Structure::getPathById($page_alias->getPageId()));
+                }
 
-        // If quick_link found - go for it
-        if ($quick_link) {
-            if (!Structure::pageExists(Structure::getIdByPath($quick_link['href']))) {
-                $quick_link['href'] = Structure::getPathById($quick_link['page_id']);
+                // Redirect only if page exists
+                if ($page_alias->getHref()) {
+                    go($page_alias->getHref());
+                }
             }
 
-            if ($quick_link['href']) {
-                go($quick_link['href']);
-            }
         }
 
         //=== Deal With languages
@@ -263,6 +272,7 @@ class Router
                 $ajax_rest_id = $path[4];
             }
             define('API_ID', $ajax_rest_id);
+            define('PAGE_ID', NULL);
 
             require_once DIR_BASE . $api_file;
 
@@ -429,7 +439,7 @@ class Router
         define('PATH_INTERNAL_MD5', md5($internal_path));
 
         // Build GET parameters from excess params
-        for($i=count($path_pairs);$i<$count_of_parts_in_path;$i++){
+        for($i=count($path_pairs); $i<$count_of_parts_in_path; $i++){
             $_GET[] = $path[$i];
         }
 
