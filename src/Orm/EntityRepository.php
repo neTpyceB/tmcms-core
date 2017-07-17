@@ -54,7 +54,7 @@ class EntityRepository implements IteratorAggregate
     /**
      * @return bool table exists
      */
-    private function ensureDbTableExists()
+    public function ensureDbTableExists()
     {
         $table = $this->getDbTableName();
         // May be empty
