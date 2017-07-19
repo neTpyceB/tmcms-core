@@ -279,6 +279,9 @@ class EntityRepository implements IteratorAggregate
         return $this;
     }
 
+    /**
+     * @return array
+     */
     public function getAsArrayOfObjects()
     {
         $this->collectObjects();
@@ -543,6 +546,9 @@ FROM `' . $this->getDbTableName() . '`
         return $obj_class;
     }
 
+    /**
+     * @return array
+     */
     protected function getCollectedObjects()
     {
         return $this->collected_objects;
