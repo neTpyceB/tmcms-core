@@ -6,6 +6,9 @@ use TMCms\Admin\Structure\Entity\PageAliasEntity;
 use TMCms\Admin\Structure\Entity\PageEntityRepository;
 use TMCms\Admin\Structure\Entity\PageAliasEntityRepository;
 use TMCms\Admin\Structure\Entity\PageTemplateEntityRepository;
+use TMCms\Admin\Tools\Entity\MaxMindGeoIpCountryEntityRepository;
+use TMCms\Admin\Tools\Entity\MaxMindGeoIpRangeEntity;
+use TMCms\Admin\Tools\Entity\MaxMindGeoIpRangeEntityRepository;
 use TMCms\Cache\Cacher;
 use TMCms\Config\Settings;
 use TMCms\Files\FileSystem;
@@ -43,7 +46,7 @@ class Router
     {
         /* Parse URL */
         $parse_url = SELF;
-        if ($parse_url == '/index.php') {
+        if ($parse_url === '/index.php') {
             $parse_url = $_SERVER['REQUEST_URI'];
         }
 
@@ -191,7 +194,7 @@ class Router
             $lng = $_COOKIE['language'];
         }
 
-        // Language from HTP header
+        // Language from HTTP header
         if (!$lng && Settings::get('lng_by_http_header') && isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) && $_SERVER['HTTP_ACCEPT_LANGUAGE']) {
             foreach (explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']) as $v) {
                 if (isset($v[0], $v[1])) {
@@ -202,6 +205,27 @@ class Router
                     }
                 }
             }
+        }
+
+        // Default visitor country is the selected language
+        $visitor_country_code = $lng;
+
+        // Get country by range
+        $ranges = new MaxMindGeoIpRangeEntityRepository();
+        $ranges->enableUsingCache(3600);
+        $ranges->addSimpleSelectFields(['country_code']);
+        $ranges->addWhereFieldIsHigherOrEqual('start', IP_LONG);
+        $ranges->addWhereFieldIsLowerOrEqual('end', IP_LONG);
+        $range = $ranges->getFirstObjectFromCollection();
+        /** @var MaxMindGeoIpRangeEntity $range */
+        if ($range) {
+            $visitor_country_code = $range->getCode();
+        }
+        define('VISITOR_COUNTRY_CODE', strtolower($visitor_country_code));
+
+        // Language by client's IP
+        if (!$lng && VISITOR_COUNTRY_CODE && Settings::get('lng_by_ip') & isset($languages[VISITOR_COUNTRY_CODE])) {
+            $lng = VISITOR_COUNTRY_CODE;
         }
 
         // Language from Settings
@@ -318,9 +342,9 @@ class Router
                 } else {
                     if ($is_transparent || Settings::get('error_404_convert_transparent_get')) {
                         break;
-                    } else {
-                        $q = NULL;
                     }
+
+                    $q = NULL;
                 }
             } else {
                 $q = $cached_q;
@@ -490,12 +514,12 @@ class Router
 
         // Redirect
         if ($q['redirect_url']) {
+            // If have page_id in url
             if (ctype_digit((string)$q['redirect_url'])) {
                 $q['redirect_url'] = Structure::getPathById($q['redirect_url']);
             }
-            if ($q['redirect_url']) {
-                go($q['redirect_url']);
-            }
+
+            go($q['redirect_url']);
         }
 
         $q['template_file'] = DIR_FRONT_TEMPLATES . $q['file']; // Cache page if it is set in page properties or in global Settings

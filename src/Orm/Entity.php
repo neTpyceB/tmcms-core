@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace TMCms\Orm;
 
@@ -8,6 +9,7 @@ use TMCms\Config\Configuration;
 use TMCms\Config\Settings;
 use TMCms\DB\SQL;
 use TMCms\Routing\Languages;
+use TMCms\Routing\Structure;
 use TMCms\Strings\Converter;
 use TMCms\Strings\SimpleCrypto;
 use TMCms\Strings\Translations;
@@ -25,7 +27,7 @@ class Entity
     private $data = [];
     private $translation_data = [];
     private $insert_low_priority = false;
-    private $insert_delayed = false; // Auto use of htmlspecialchar for output
+    private $insert_delayed = false; // Auto use of htmlspecialchars for output
     private $encode_special_chars_for_html = false;
     private $field_callbacks = []; // Key used to encrypt and decrypt db data
 
@@ -116,20 +118,20 @@ class Entity
     /**
      * @return string
      */
-    private function getCacheKey()
+    private function getCacheKey(): string
     {
         return self::$_cache_key_prefix . str_replace('\\', '_', get_class($this)) . '_' . $this->getId();
     }
 
     /**
-     * @return int
+     * @return int|NULL
      */
     public function getId()
     {
-        return isset($this->data['id']) ? $this->data['id'] : NULL;
+        return $this->data['id'] ?? NULL;
     }
 
-    public function getSelectSql()
+    public function getSelectSql(): string
     {
         return 'SELECT * FROM `' . $this->getDbTableName() . '` WHERE `id` = "' . $this->getId() . '"';
     }
@@ -138,7 +140,7 @@ class Entity
      * Return name in class or try to get from class name
      * @return string
      */
-    public function getDbTableName()
+    public function getDbTableName(): string
     {
         // Name set in class
         if ($this->db_table) {
@@ -203,7 +205,7 @@ class Entity
         }
 
         // check null for newly created fields
-        if (in_array($key, $this->translation_fields, true) && (is_array($value) || (!ctype_digit((string)$value) && !is_null($value)))) {
+        if (in_array($key, $this->translation_fields, true) && (is_array($value) || (!ctype_digit((string)$value) && NULL !== $value))) {
             // Saving Translation ID
             $this->translation_data[$key] = $value;
         } else {
@@ -232,7 +234,7 @@ class Entity
         }
     }
 
-    public static function getEncryptionCheckSumKey()
+    public static function getEncryptionCheckSumKey(): int
     {
         if (self::$encryption_key) {
             $config = Configuration::getInstance();
@@ -249,10 +251,11 @@ class Entity
         return self::$encryption_key;
     }
 
-    public static function isFieldEncrypted($text)
+    public static function isFieldEncrypted($text): bool
     {
         $key = SimpleCrypto::PREFIX;
-        return substr($text, 0, strlen($key)) == SimpleCrypto::PREFIX;
+
+        return strpos($text, SimpleCrypto::PREFIX) === strlen($key);
     }
 
     /**
@@ -277,7 +280,7 @@ class Entity
      * @param bool $load_translations
      * @return array
      */
-    public function getAsArray($load_translations = false)
+    public function getAsArray($load_translations = false): array
     {
         $res = $this->data;
 
@@ -290,9 +293,10 @@ class Entity
             $res['translation_data'][$v] = $tmp;
         }
 
-        if ($load_translations && isset($res['translation_data']) && $res['translation_data']) {
+        if ($load_translations && isset($res['translation_data']) && $res['translation_data'] && is_array($res['translation_data'])) {
+            $res['translation_data'] = (array)$res['translation_data'];
             foreach ($res['translation_data'] as $translation_field => $translation_field_data) {
-                $res[$translation_field] = isset($translation_field_data[LNG]) ? $translation_field_data[LNG] : NULL;
+                $res[$translation_field] = $translation_field_data[LNG] ?? NULL;
             }
             unset($res['translation_data']);
         }
@@ -326,7 +330,7 @@ class Entity
         $res = NULL;
 
         if (isset($this->data[$field]) || isset($this->translation_data[$field])) {
-            if (in_array($field, $this->translation_fields)) {
+            if (in_array($field, $this->translation_fields, true)) {
                 if (isset($this->translation_data[$field])) {
                     if (is_array($this->translation_data[$field]) && array_key_exists(LNG, $this->translation_data[$field])) {
                         return $this->translation_data[$field][LNG];
@@ -334,7 +338,9 @@ class Entity
 
                     return $this->translation_data[$field];
 
-                } elseif (isset($this->data[$field])) {
+                }
+
+                if (isset($this->data[$field])) {
                     return Translations::get($this->data[$field], LNG);
                 }
             }
@@ -394,9 +400,10 @@ class Entity
      * @param $lng
      * @return string
      */
-    public function getSlugUrl($lng = LNG)
+    public function getSlugUrl($lng = LNG): string
     {
-        return '';
+        // This is an example, please overwrite it in own Entity
+        return Structure::getPathByLabel('XXX', $lng);
     }
 
     public function deleteObject()
@@ -634,21 +641,24 @@ class Entity
 
     }
 
-    public function isFieldChangedForUpdate($field)
+    public function isFieldChangedForUpdate($field): bool
     {
         return isset($this->changed_fields_for_update[$field]);
     }
 
-    public function getChangedDataFields()
+    public function getChangedDataFields(): array
     {
         return array_keys($this->changed_fields_for_update);
     }
 
     /**
      * Method for catching setField + getField
+     *
      * @param $name
      * @param $args
+     *
      * @return string
+     * @throws \Exception
      */
     public function __call($name, $args)
     {
@@ -663,7 +673,7 @@ class Entity
             return $this->{$method_to_call}(strtolower($param), ($args ? $args[0] : ''));
         }
 
-        dump('Method "' . $name . '" unknown');
+        throw new \RuntimeException('Method "' . $name . '" unknown');
     }
 
     public function enableUpdateOnDuplicate()
@@ -716,7 +726,7 @@ class Entity
         return $this;
     }
 
-    public function getTranslationFields()
+    public function getTranslationFields(): array
     {
         return $this->translation_fields;
     }
@@ -781,9 +791,10 @@ class Entity
      *
      * @return string
      */
-    public function getLinkForSitemap($lng = LNG)
+    public function getLinkForSitemap($lng = LNG): string
     {
-        die('Method "getLinkForSitemap" must be implemented in extended class "' . get_class($this) . '"');
+        // This is an example, please overwrite it in own Entity
+        return Structure::getPathByLabel('XXX', $lng);
     }
 
     /**
