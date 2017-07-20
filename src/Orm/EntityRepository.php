@@ -572,10 +572,12 @@ FROM `' . $this->getDbTableName() . '`
 
     /**
      * Create one Entity by id
+     *
      * @param int $id
-     * @return Entity
+     *
+     * @return Entity|NULL
      */
-    public static function findOneEntityById($id): Entity
+    public static function findOneEntityById($id)
     {
         return self::findOneEntityByCriteria(['id' => $id]);
     }
@@ -586,9 +588,9 @@ FROM `' . $this->getDbTableName() . '`
      * @param array $criteria select AND
      * @param array $exclude  select NOT
      *
-     * @return Entity
+     * @return Entity|NULL
      */
-    public static function findOneEntityByCriteria(array $criteria = [], array $exclude = []): Entity
+    public static function findOneEntityByCriteria(array $criteria = [], array $exclude = [])
     {
         $class = static::class;
 
