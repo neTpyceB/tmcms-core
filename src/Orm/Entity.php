@@ -511,7 +511,7 @@ class Entity
             if (isset($this->changed_fields_for_update[$v])) {
 
                 // Translation field
-                if (in_array($v, $this->translation_fields, true) && isset($this->translation_data[$v]) && is_array($this->translation_data[$v])) {
+                if (in_array($v, $this->translation_fields, true) && isset($this->translation_data[$v], $this->data[$v]) && is_array($this->translation_data[$v])) {
                     $data[$v] = Translations::update($this->translation_data[$v], $this->data[$v]);
                 } else {
                     // Usual field
