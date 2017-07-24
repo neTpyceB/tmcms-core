@@ -75,7 +75,7 @@ class Backend
         $this->parseUrl();
 
         // Save log
-        if (Users::getInstance()->isLogged() && Settings::get('save_back_access_log') && !IS_AJAX_REQUEST) {
+        if (Users::getInstance()->isLogged() && Settings::isCmsUserLogEnabled() && !IS_AJAX_REQUEST) {
             $users_log = new UserLog();
             $users_log->save();
         }
