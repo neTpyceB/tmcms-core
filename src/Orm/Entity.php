@@ -323,17 +323,19 @@ class Entity
 
     /**
      * @param string $field
+     * @param string $lng if field is multilingual
+     *
      * @return mixed
      */
-    public function getField($field)
+    public function getField($field, $lng = LNG)
     {
         $res = NULL;
 
         if (isset($this->data[$field]) || isset($this->translation_data[$field])) {
             if (in_array($field, $this->translation_fields, true)) {
                 if (isset($this->translation_data[$field])) {
-                    if (is_array($this->translation_data[$field]) && array_key_exists(LNG, $this->translation_data[$field])) {
-                        return $this->translation_data[$field][LNG];
+                    if (is_array($this->translation_data[$field]) && array_key_exists($lng, $this->translation_data[$field])) {
+                        return $this->translation_data[$field][$lng];
                     }
 
                     return $this->translation_data[$field];
@@ -341,7 +343,7 @@ class Entity
                 }
 
                 if (isset($this->data[$field])) {
-                    return Translations::get($this->data[$field], LNG);
+                    return Translations::get($this->data[$field], $lng);
                 }
             }
 
@@ -567,22 +569,15 @@ class Entity
         // Clear ID if created from another data
         unset($this->data['id']);
 
-        // For entity cross-save in translations
-        $translation_saved_ids = [];
-
         // Set data values for every available field
         foreach ($fields as $v) {
             // Translation
             if (in_array($v, $this->translation_fields, true) && isset($this->translation_data[$v])) {
-
                 // If provided text only - need to save new and set array
                 if (!is_array($this->translation_data[$v])) {
-                    $languages = Languages::getPairs();
-                    $tmp = [];
-                    foreach ($languages as $short => $long) {
-                        $tmp[$short] = $this->translation_data[$v];
-                    }
-                    $this->translation_data[$v] = $tmp;
+                    $this->translation_data[$v] = [
+                        LNG => $this->translation_data[$v],
+                    ];
                 }
 
                 // Save new Translation
@@ -590,7 +585,9 @@ class Entity
                     unset($this->translation_data[$v]['id']);
                 }
 
-                $translation_saved_ids[] = $data[$v] = Translations::save($this->translation_data[$v]);
+                $data[$v] = Translations::save($this->translation_data[$v]);
+
+//                $this->debug($this);
 
                 $this->setField($v, $data[$v]);
             } else {
@@ -603,14 +600,6 @@ class Entity
 
         // Create entry in database
         $this->data['id'] = SQL::add($this->getDbTableName(), $data, true, $this->update_on_duplicate, $this->insert_low_priority, $this->insert_delayed);
-
-        // Save cross-reference in translations for entities
-        if ($translation_saved_ids) {
-            $translations = new TranslationRepository($translation_saved_ids);
-            $translations->setEntity(Converter::classWithNamespaceToUnqualifiedShort($this));
-            $translations->setEntityId($this->data['id']);
-            $translations->save();
-        }
 
         $this->afterCreate();
 
@@ -670,7 +659,7 @@ class Entity
             $param = Converter::from_camel_case($param);
             $param = strtolower($param);
 
-            return $this->{$method_to_call}(strtolower($param), ($args ? $args[0] : ''));
+            return $this->{$method_to_call}(strtolower($param), ...$args);
         }
 
         throw new \RuntimeException('Method "' . $name . '" unknown');
