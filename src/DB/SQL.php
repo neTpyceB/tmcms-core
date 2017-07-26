@@ -188,8 +188,10 @@ class SQL
 
         while ($i < CFG_DB_MAX_CONNECT_ATTEMPTS && !$connected) {
             try {
-                $this->pdo_db = new PDO('mysql:dbname=' . $db . ';host=' . $host, $user, $pass, [
+                $this->pdo_db = new PDO('mysql:dbname=' . $db . ';charset=utf8mb4;host=' . $host, $user, $pass, [
                     PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES "utf8"',
+                    PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+                    PDO::ATTR_PERSISTENT         => false,
                 ]);
                 $connected = true;
             } catch (Exception $e) {
