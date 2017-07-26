@@ -87,7 +87,7 @@ class TableStructure {
         // Set engine and encoding
         $sql .= ') ENGINE=MyISAM ';
         $sql .= ' AUTO_INCREMENT=1 ';
-        $sql .= ' DEFAULT CHARSET=utf8 ';
+        $sql .= ' DEFAULT CHARSET=utf8mb4 ';
 
         return $sql;
     }
