@@ -327,9 +327,12 @@ class Entity
      *
      * @return mixed
      */
-    public function getField($field, $lng = LNG)
+    public function getField($field, $lng = false)
     {
         $res = NULL;
+
+        if($lng === false && defined ('LNG'))
+            $lng = LNG;
 
         if (isset($this->data[$field]) || isset($this->translation_data[$field])) {
             if (in_array($field, $this->translation_fields, true)) {
