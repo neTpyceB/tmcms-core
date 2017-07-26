@@ -132,6 +132,10 @@ ini_set('session.cookie_httponly', false); // We may need Cookies in JavaScript
 
 // Global encoding
 mb_internal_encoding('UTF-8');
+mb_http_output('UTF-8');
+mb_http_input('UTF-8');
+mb_language('uni');
+mb_regex_encoding('UTF-8');
 
 // Always begin session
 if (session_status() != PHP_SESSION_ACTIVE && !headers_sent()) {
