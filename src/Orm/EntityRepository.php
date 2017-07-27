@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace TMCms\Orm;
 
 use ArrayIterator;
+use Countable;
 use IteratorAggregate;
 use TMCms\Cache\Cacher;
 use TMCms\Config\Settings;
@@ -12,7 +13,7 @@ use TMCms\Files\FileSystem;
 use TMCms\Strings\Converter;
 use Traversable;
 
-class EntityRepository implements IteratorAggregate
+class EntityRepository implements IteratorAggregate, Countable
 {
     private static $_cache_key_prefix = 'orm_entity_repository_'; // Should be overwritten in extended class
     protected $db_table = ''; // Should be overwritten in extended class
@@ -1458,7 +1459,7 @@ FROM `' . $this->getDbTableName() . '`
      * <b>Traversable</b>
      * @since 5.0.0
      */
-    public function getIterator(): \Traversable
+    public function getIterator(): Traversable
     {
         return new ArrayIterator($this->getAsArrayOfObjects());
     }
@@ -1470,6 +1471,20 @@ FROM `' . $this->getDbTableName() . '`
     public function setLanguage($lng){
         $this->lng = $lng;
         return $this;
+    }
+
+    /**
+     * Count elements of an object
+     * @link  http://php.net/manual/en/countable.count.php
+     * @return int The custom count as an integer.
+     * </p>
+     * <p>
+     * The return value is cast to an integer.
+     * @since 5.1.0
+     */
+    public function count(): int
+    {
+        return $this->getCountOfObjectsInCollection();
     }
 
     /**
