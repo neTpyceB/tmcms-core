@@ -1,7 +1,5 @@
 <?php
-/**
- * Updated by neTpyceB [devp.eu] at 2017.4.3
- */
+declare(strict_types=1);
 
 use TMCms\Config\Settings;
 use TMCms\Middleware\MiddlewareHandler;
@@ -23,3 +21,11 @@ if (Settings::get('middleware_throttle_limit')) {
     require __DIR__ . '/../Middleware/handlers/ThrottleMiddleware.php';
     $handler->registerHandler('before_frontend_init', 'ThrottleMiddleware', 'run', ['limit' => Settings::get('middleware_throttle_limit')]);
 }
+
+// Handle URL
+require __DIR__ . '/../Middleware/handlers/ParseUrlMiddleware.php';
+$handler->registerHandler('before_frontend_init', 'ParseUrlMiddleware');
+
+// Handle Languages
+require __DIR__ . '/../Middleware/handlers/LanguagesMiddleware.php';
+$handler->registerHandler('before_frontend_init', 'LanguagesMiddleware');

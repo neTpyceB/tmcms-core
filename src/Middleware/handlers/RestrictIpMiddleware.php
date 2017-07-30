@@ -1,8 +1,4 @@
 <?php
-/**
- * Updated by neTpyceB [devp.eu] at 2017.4.17
- */
-
 declare(strict_types=1);
 
 use TMCms\Config\Settings;
@@ -23,9 +19,10 @@ class RestrictIpMiddleware implements IMiddleware
         foreach ($ips as & $v) {
             $v = trim($v);
         }
+        unset($v);
 
         // If still have IP in range and client is blocked - show error
-        if ($ips && !in_array(IP, $ips)) {
+        if ($ips && !in_array(IP, $ips, true)) {
 
             if (Settings::isFrontendLogEnabled()) {
                 FrontendLogger::getInstance()->err('IP ' . IP . ' forbidden');

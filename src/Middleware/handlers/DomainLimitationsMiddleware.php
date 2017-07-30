@@ -1,6 +1,5 @@
 <?php
-
-//declare(strict_types=1);
+declare(strict_types=1);
 
 use TMCms\Routing\Entity\PagesDomainEntityRepository;
 use TMCms\Routing\Entity\PagesDomainLanguageEntityRepository;

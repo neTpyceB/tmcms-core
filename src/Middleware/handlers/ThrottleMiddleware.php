@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 use TMCms\Routing\Interfaces\IMiddleware;
 
@@ -28,7 +29,7 @@ class ThrottleMiddleware implements IMiddleware
                 $_SESSION[$throttleKey]['setAt'] = NOW;
 
                 if ($_SESSION[$throttleKey]['pass'] > $params['limit']) {
-                    $_SESSION[$throttleKey]['allowed'] = NOW + ($timeout);
+                    $_SESSION[$throttleKey]['allowed'] = NOW + $timeout;
                 }
             }
         } else {
@@ -49,7 +50,7 @@ class ThrottleMiddleware implements IMiddleware
             }
 
             if ($_SESSION[$throttleKey]['pass'] > $params['limit']) {
-                $_SESSION[$throttleKey]['allowed'] = NOW + ($timeout);
+                $_SESSION[$throttleKey]['allowed'] = NOW + $timeout;
             }
         }
 
