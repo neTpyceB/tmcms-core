@@ -132,6 +132,10 @@ ini_set('session.cookie_httponly', false); // We may need Cookies in JavaScript
 
 // Global encoding
 mb_internal_encoding('UTF-8');
+mb_http_output('UTF-8');
+mb_http_input('UTF-8');
+mb_language('uni');
+mb_regex_encoding('UTF-8');
 
 // Always begin session
 if (session_status() != PHP_SESSION_ACTIVE && !headers_sent()) {
@@ -284,7 +288,7 @@ if (!defined('CFG_GIT_BRANCH')) {
 }
 
 /* CMS */
-define('CMS_VERSION', '17.04');
+define('CMS_VERSION', '17.07');
 define('CMS_NAME', 'The Modern CMS');
 define('CMS_OWNER_COMPANY', 'SIA DEVP');
 if (!defined('CMS_SUPPORT_EMAIL')) {

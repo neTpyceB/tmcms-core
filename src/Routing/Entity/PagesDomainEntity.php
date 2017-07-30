@@ -10,7 +10,9 @@ use TMCms\Orm\Entity;
  *
  * @method string getName()
  *
+ * @method $this setLanguages(string $languages)
  * @method $this setName(string $name)
+ * @method $this setUrls(string $urls)
  */
 class PagesDomainEntity extends Entity
 {

@@ -6,10 +6,15 @@ use TMCms\Admin\Structure\Entity\PageAliasEntity;
 use TMCms\Admin\Structure\Entity\PageEntityRepository;
 use TMCms\Admin\Structure\Entity\PageAliasEntityRepository;
 use TMCms\Admin\Structure\Entity\PageTemplateEntityRepository;
+use TMCms\Admin\Tools\Entity\MaxMindGeoIpCountryEntityRepository;
+use TMCms\Admin\Tools\Entity\MaxMindGeoIpRangeEntity;
+use TMCms\Admin\Tools\Entity\MaxMindGeoIpRangeEntityRepository;
 use TMCms\Cache\Cacher;
 use TMCms\Config\Settings;
 use TMCms\Files\FileSystem;
 use TMCms\Files\Finder;
+use TMCms\Network\Domains;
+use TMCms\Network\SearchEngines;
 use TMCms\Traits\singletonOnlyInstanceTrait;
 
 defined('INC') or exit;
@@ -39,7 +44,38 @@ class Router
      */
     private function __construct()
     {
-        $_path_original = $path = PATH_ROUTER;
+        /* Parse URL */
+        $parse_url = SELF;
+        if ($parse_url === '/index.php') {
+            $parse_url = $_SERVER['REQUEST_URI'];
+        }
+
+        $path = [];
+        if ((!$url = parse_url($parse_url)) || !isset($url['path'])) {
+            die('URL can not be parsed');
+        }
+
+        // Remove empty parts
+        foreach (explode('/', $url['path']) as $pa) {
+            if ($pa) {
+                $path[] = $pa;
+            }
+        }
+
+        // For non-rewrite hosting servers
+        if (end($path) === 'index.php') {
+            array_pop($path);
+        }
+
+        $_path_original = $path;
+
+        define('PATH_SO', count($path));
+        define('PATH_ORIGINAL', ($path ? '/' . implode('/', $path) : '') . '/');
+
+        /* In case user came from search engine */
+        define('REF_DOMAIN', REF ? Domains::get(REF) : '');
+        define('REF_DOMAIN_NAME', REF ? Domains::getName(REF) : '');
+        define('REF_SE_KEYWORD', REF ? (REF_DOMAIN === CFG_DOMAIN ? '' : SearchEngines::getSearchWord(REF)) : '');
 
         /* Page aliases */
         if (Settings::get('page_aliases_enabled')) {
@@ -133,6 +169,97 @@ class Router
 
         }
 
+        //=== Deal With languages
+
+        /* Get language */
+        $languages = Languages::getPairs();
+        $lng = false;
+
+        if (!$languages) {
+            die('No any language found in system.');
+        }
+
+        // Language from path
+        if (isset($path[0], $languages[$path[0]])) {
+            $lng = $path[0];
+        }
+
+        // Language from previous visit in browser
+        if (!$lng && Settings::get('lng_by_session') && isset($_SESSION['language'], $languages[$_SESSION['language']])) {
+            $lng = $_SESSION['language'];
+        }
+
+        // Language from cookie
+        if (!$lng && Settings::get('lng_by_cookie') && isset($_COOKIE['language'], $languages[$_COOKIE['language']]) && Languages::exists($_COOKIE['language'])) {
+            $lng = $_COOKIE['language'];
+        }
+
+        // Language from HTTP header
+        if (!$lng && Settings::get('lng_by_http_header') && isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) && $_SERVER['HTTP_ACCEPT_LANGUAGE']) {
+            foreach (explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']) as $v) {
+                if (isset($v[0], $v[1])) {
+                    $lng_k = $v[0] . $v[1];
+                    if (isset($languages[$lng_k])) {
+                        $lng = $lng_k;
+                        break;
+                    }
+                }
+            }
+        }
+
+        // Default visitor country is the selected language
+        $visitor_country_code = $lng;
+
+        // Get country by range
+        $ranges = new MaxMindGeoIpRangeEntityRepository();
+        $ranges->enableUsingCache(3600);
+        $ranges->addSimpleSelectFields(['country_code']);
+        $ranges->addWhereFieldIsHigherOrEqual('start', IP_LONG);
+        $ranges->addWhereFieldIsLowerOrEqual('end', IP_LONG);
+        $range = $ranges->getFirstObjectFromCollection();
+        /** @var MaxMindGeoIpRangeEntity $range */
+        if ($range) {
+            $visitor_country_code = $range->getCode();
+        }
+        define('VISITOR_COUNTRY_CODE', strtolower($visitor_country_code));
+
+        // Language by client's IP
+        if (!$lng && VISITOR_COUNTRY_CODE && Settings::get('lng_by_ip') & isset($languages[VISITOR_COUNTRY_CODE])) {
+            $lng = VISITOR_COUNTRY_CODE;
+        }
+
+        // Language from Settings
+        if (!$lng) {
+            $tmp = Settings::get('f_default_language');
+            if (isset($languages[$tmp])) {
+                $lng = $tmp;
+            }
+        }
+
+        // Language as first from the list
+        if (!$lng && $languages) {
+            $lng = key($languages);
+        }
+
+        // If no language so far
+        if (!$lng || (!$lng = Languages::getLanguageDataByShort($lng))) {
+            die('Can not recognize language');
+        }
+
+        // Set language data
+        define('LNG', $lng['short']);
+
+        // Save in session
+        if (Settings::get('lng_by_session')) {
+            $_SESSION['language'] = LNG;
+        }
+        // Save in cookies
+        if (Settings::get('lng_by_cookie') && !headers_sent()) {
+            setcookie('language', LNG, NOW + 2592000, '/');
+        }
+
+        define('PATH', '/' . implode('/', $path) . ($path ? '/' : ''));
+
         //=== Deal with Structure pages
 
         // API pages
@@ -215,9 +342,9 @@ class Router
                 } else {
                     if ($is_transparent || Settings::get('error_404_convert_transparent_get')) {
                         break;
-                    } else {
-                        $q = NULL;
                     }
+
+                    $q = NULL;
                 }
             } else {
                 $q = $cached_q;
@@ -387,12 +514,12 @@ class Router
 
         // Redirect
         if ($q['redirect_url']) {
+            // If have page_id in url
             if (ctype_digit((string)$q['redirect_url'])) {
                 $q['redirect_url'] = Structure::getPathById($q['redirect_url']);
             }
-            if ($q['redirect_url']) {
-                go($q['redirect_url']);
-            }
+
+            go($q['redirect_url']);
         }
 
         $q['template_file'] = DIR_FRONT_TEMPLATES . $q['file']; // Cache page if it is set in page properties or in global Settings

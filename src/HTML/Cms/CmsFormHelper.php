@@ -252,7 +252,7 @@ class CmsFormHelper {
                             $input_field_data['options'] = [];
                         }
 
-                        // Empty options if field is select
+                        // Set title is present
                         if (isset($input_field_data['title'])) {
                             $input_field->setTitle($input_field_data['title']);
                         }
@@ -281,7 +281,7 @@ class CmsFormHelper {
                         $input_table->addColumn($input_field);
                     }
 
-                    // Column to relete row
+                    // Column to delete row
                     if (isset($field['delete']) && $field['delete']) {
                         $input_table->addColumn(ColumnInput::getInstance('delete')->setTypeDelete());
                     }
@@ -316,6 +316,9 @@ class CmsFormHelper {
                     }
                     if (isset($field['value'])) {
                         $cms_field->setValue($field['value']);
+                    }
+                    if (isset($field['onchange'])) {
+                        $cms_field->setOnchange($field['onchange']);
                     }
                     if (isset($field['selected'])) {
                         $cms_field->setSelected($field['selected']);

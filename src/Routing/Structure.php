@@ -715,7 +715,7 @@ class Structure
         $host = CFG_DOMAIN;
         $protocol = CFG_PROTOCOL . '://';
 
-        // New way
+        // New way - no need to supply all entities to generate URLS to, but page crawler will find all links itself
         $pages = array_keys(PageCrawler::getSiteLinks($protocol . $host, $host, $protocol, [], ['php', 'html'], []));
 
         $xml = '<?xml version="1.0" encoding="UTF-8"?>

@@ -188,8 +188,10 @@ class SQL
 
         while ($i < CFG_DB_MAX_CONNECT_ATTEMPTS && !$connected) {
             try {
-                $this->pdo_db = new PDO('mysql:dbname=' . $db . ';host=' . $host, $user, $pass, [
+                $this->pdo_db = new PDO('mysql:dbname=' . $db . ';charset=utf8mb4;host=' . $host, $user, $pass, [
                     PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES "utf8"',
+                    PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+                    PDO::ATTR_PERSISTENT         => false,
                 ]);
                 $connected = true;
             } catch (Exception $e) {
@@ -389,13 +391,42 @@ class SQL
     public static function getRows($tbl, $where = '')
     {
         $res = [];
-        $sql = self::getInstance()->sql_query('SELECT * FROM `$tbl`' . ($where ? ' WHERE ' . $where : ''));
+        $sql = self::getInstance()->sql_query('SELECT * FROM `' . self::sql_prepare($tbl) . '`' . ($where ? ' WHERE ' . $where : ''));
 
         while ($q = $sql->fetch(PDO::FETCH_ASSOC)) {
             $res[] = $q;
         }
 
         return $res;
+    }
+
+    /**
+     * retrieve value from associative array
+     *
+     * @param string $str
+     * @param bool   $used_in_like
+     *
+     * @return string
+     */
+    public static function sql_prepare($str, $used_in_like = false)
+    {
+        if (!self::getInstance()->pdo_db) {
+            self::getInstance()->connect();
+        }
+
+        if (is_array($str)) {
+            foreach ($str as &$v) {
+                $v = self::sql_prepare($v);
+            }
+        } else {
+            $str = substr(self::getInstance()->pdo_db->quote(trim($str)), 1, -1);
+
+            if ($used_in_like) {
+                $str = str_replace(['_', '%'], ['\_', '\%'], $str);
+            }
+        }
+
+        return $str;
     }
 
     /**
@@ -449,33 +480,6 @@ class SQL
         }
 
         return $implode ? implode($implode, $res) : $res;
-    }
-
-    /**
-     * retrieve value from associative array
-     * @param string $str
-     * @param bool $used_in_like
-     * @return string
-     */
-    public static function sql_prepare($str, $used_in_like = false)
-    {
-        if (!self::getInstance()->pdo_db) {
-            self::getInstance()->connect();
-        }
-
-        if (is_array($str)) {
-            foreach ($str as &$v) {
-                $v = self::sql_prepare($v);
-            }
-        } else {
-            $str = substr(self::getInstance()->pdo_db->quote(trim($str)), 1, -1);
-
-            if ($used_in_like) {
-                $str = str_replace(['_', '%'], ['\_', '\%'], $str);
-            }
-        }
-
-        return $str;
     }
 
     /**

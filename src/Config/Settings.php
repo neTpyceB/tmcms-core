@@ -69,7 +69,7 @@ class Settings
      */
     public static function isCmsUserLogEnabled()
     {
-        return self::get('save_back_access_log');
+        return !self::get('disable_cms_access_log');
     }
 
     /**
