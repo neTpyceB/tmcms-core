@@ -51,7 +51,7 @@ class Frontend
     /**
      * @var bool
      */
-    private $cached_page_html = false;
+    private $cached_page_html = '';
 
 
     private function __construct()
