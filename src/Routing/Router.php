@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace TMCms\Routing;
 
@@ -6,15 +7,10 @@ use TMCms\Admin\Structure\Entity\PageAliasEntity;
 use TMCms\Admin\Structure\Entity\PageEntityRepository;
 use TMCms\Admin\Structure\Entity\PageAliasEntityRepository;
 use TMCms\Admin\Structure\Entity\PageTemplateEntityRepository;
-use TMCms\Admin\Tools\Entity\MaxMindGeoIpCountryEntityRepository;
-use TMCms\Admin\Tools\Entity\MaxMindGeoIpRangeEntity;
-use TMCms\Admin\Tools\Entity\MaxMindGeoIpRangeEntityRepository;
 use TMCms\Cache\Cacher;
 use TMCms\Config\Settings;
 use TMCms\Files\FileSystem;
 use TMCms\Files\Finder;
-use TMCms\Network\Domains;
-use TMCms\Network\SearchEngines;
 use TMCms\Traits\singletonOnlyInstanceTrait;
 
 defined('INC') or exit;
@@ -44,38 +40,7 @@ class Router
      */
     private function __construct()
     {
-        /* Parse URL */
-        $parse_url = SELF;
-        if ($parse_url === '/index.php') {
-            $parse_url = $_SERVER['REQUEST_URI'];
-        }
-
-        $path = [];
-        if ((!$url = parse_url($parse_url)) || !isset($url['path'])) {
-            die('URL can not be parsed');
-        }
-
-        // Remove empty parts
-        foreach (explode('/', $url['path']) as $pa) {
-            if ($pa) {
-                $path[] = $pa;
-            }
-        }
-
-        // For non-rewrite hosting servers
-        if (end($path) === 'index.php') {
-            array_pop($path);
-        }
-
-        $_path_original = $path;
-
-        define('PATH_SO', count($path));
-        define('PATH_ORIGINAL', ($path ? '/' . implode('/', $path) : '') . '/');
-
-        /* In case user came from search engine */
-        define('REF_DOMAIN', REF ? Domains::get(REF) : '');
-        define('REF_DOMAIN_NAME', REF ? Domains::getName(REF) : '');
-        define('REF_SE_KEYWORD', REF ? (REF_DOMAIN === CFG_DOMAIN ? '' : SearchEngines::getSearchWord(REF)) : '');
+        $_path_original = $path = PATH_ROUTER;
 
         /* Page aliases */
         if (Settings::get('page_aliases_enabled')) {
@@ -169,97 +134,6 @@ class Router
 
         }
 
-        //=== Deal With languages
-
-        /* Get language */
-        $languages = Languages::getPairs();
-        $lng = false;
-
-        if (!$languages) {
-            die('No any language found in system.');
-        }
-
-        // Language from path
-        if (isset($path[0], $languages[$path[0]])) {
-            $lng = $path[0];
-        }
-
-        // Language from previous visit in browser
-        if (!$lng && Settings::get('lng_by_session') && isset($_SESSION['language'], $languages[$_SESSION['language']])) {
-            $lng = $_SESSION['language'];
-        }
-
-        // Language from cookie
-        if (!$lng && Settings::get('lng_by_cookie') && isset($_COOKIE['language'], $languages[$_COOKIE['language']]) && Languages::exists($_COOKIE['language'])) {
-            $lng = $_COOKIE['language'];
-        }
-
-        // Language from HTTP header
-        if (!$lng && Settings::get('lng_by_http_header') && isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) && $_SERVER['HTTP_ACCEPT_LANGUAGE']) {
-            foreach (explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']) as $v) {
-                if (isset($v[0], $v[1])) {
-                    $lng_k = $v[0] . $v[1];
-                    if (isset($languages[$lng_k])) {
-                        $lng = $lng_k;
-                        break;
-                    }
-                }
-            }
-        }
-
-        // Default visitor country is the selected language
-        $visitor_country_code = $lng;
-
-        // Get country by range
-        $ranges = new MaxMindGeoIpRangeEntityRepository();
-        $ranges->enableUsingCache(3600);
-        $ranges->addSimpleSelectFields(['country_code']);
-        $ranges->addWhereFieldIsHigherOrEqual('start', IP_LONG);
-        $ranges->addWhereFieldIsLowerOrEqual('end', IP_LONG);
-        $range = $ranges->getFirstObjectFromCollection();
-        /** @var MaxMindGeoIpRangeEntity $range */
-        if ($range) {
-            $visitor_country_code = $range->getCode();
-        }
-        define('VISITOR_COUNTRY_CODE', strtolower($visitor_country_code));
-
-        // Language by client's IP
-        if (!$lng && VISITOR_COUNTRY_CODE && Settings::get('lng_by_ip') & isset($languages[VISITOR_COUNTRY_CODE])) {
-            $lng = VISITOR_COUNTRY_CODE;
-        }
-
-        // Language from Settings
-        if (!$lng) {
-            $tmp = Settings::get('f_default_language');
-            if (isset($languages[$tmp])) {
-                $lng = $tmp;
-            }
-        }
-
-        // Language as first from the list
-        if (!$lng && $languages) {
-            $lng = key($languages);
-        }
-
-        // If no language so far
-        if (!$lng || (!$lng = Languages::getLanguageDataByShort($lng))) {
-            die('Can not recognize language');
-        }
-
-        // Set language data
-        define('LNG', $lng['short']);
-
-        // Save in session
-        if (Settings::get('lng_by_session')) {
-            $_SESSION['language'] = LNG;
-        }
-        // Save in cookies
-        if (Settings::get('lng_by_cookie') && !headers_sent()) {
-            setcookie('language', LNG, NOW + 2592000, '/');
-        }
-
-        define('PATH', '/' . implode('/', $path) . ($path ? '/' : ''));
-
         //=== Deal with Structure pages
 
         // API pages
@@ -280,7 +154,7 @@ class Router
                     return;
                 }
                 dump('Requested ajax action does not exist. Searched for "' . $api_file . '"');
-            };
+            }
 
             define('API_FILE_NAME', $path[2]);
 
@@ -309,7 +183,7 @@ class Router
         }
 
         // Add invisible language part in inner URL if page exists under current language
-        if (isset($path[0]) && $path[0] != LNG/* && Structure::getIdByPath('/'. LNG .'/'. implode('/', $path) . '/')*/) {
+        if (isset($path[0]) && $path[0] !== LNG) {
             array_unshift($path, LNG);
         }
 
@@ -343,7 +217,6 @@ class Router
                     if ($is_transparent || Settings::get('error_404_convert_transparent_get')) {
                         break;
                     }
-
                     $q = NULL;
                 }
             } else {
@@ -398,7 +271,7 @@ class Router
         }
 
         // Check if we have language part in link and whether we need to skip it
-        if (Settings::get('skip_lng_redirect_to_same_page') && isset($_path_original[0]) && LNG == $_path_original[0]) {
+        if (Settings::get('skip_lng_redirect_to_same_page') && isset($_path_original[0]) && LNG === $_path_original[0]) {
             $path_to_cut = $_path_original;
             array_shift($path_to_cut);
             $path_to_cut = ($path_to_cut ? '/' . implode('/', $path_to_cut) : '') . '/';
@@ -433,7 +306,7 @@ class Router
                     $pages->addSimpleSelectFields(['id', 'go_level_down']);
                     $pages->setWherePid($q['id']);
                     $pages->setWhereActive(true);
-                    $pages->addOrderByField('order');
+                    $pages->addOrderByField();
 
                     $page = $pages->getFirstObjectFromCollection();
                     if ($page) {
@@ -514,12 +387,12 @@ class Router
 
         // Redirect
         if ($q['redirect_url']) {
-            // If have page_id in url
             if (ctype_digit((string)$q['redirect_url'])) {
                 $q['redirect_url'] = Structure::getPathById($q['redirect_url']);
             }
-
-            go($q['redirect_url']);
+            if ($q['redirect_url']) {
+                go($q['redirect_url']);
+            }
         }
 
         $q['template_file'] = DIR_FRONT_TEMPLATES . $q['file']; // Cache page if it is set in page properties or in global Settings
@@ -532,7 +405,7 @@ class Router
     /**
      * @return string
      */
-    public function getCurrentPathAsString()
+    public function getCurrentPathAsString(): string
     {
         $res = [];
         foreach ($this->getPath() as $v) {
@@ -545,7 +418,7 @@ class Router
     /**
      * @return array
      */
-    public function getPath()
+    public function getPath(): array
     {
         return $this->path;
     }
@@ -553,7 +426,7 @@ class Router
     /**
      * @return array
      */
-    public function getGetParams()
+    public function getGetParams(): array
     {
         return $this->get;
     }
@@ -561,7 +434,7 @@ class Router
     /**
      * @return array
      */
-    public function getPageData()
+    public function getPageData(): array
     {
         return $this->page;
     }
