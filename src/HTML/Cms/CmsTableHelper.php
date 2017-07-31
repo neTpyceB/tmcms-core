@@ -146,6 +146,13 @@ class CmsTableHelper {
 
                     break;
 
+                case 'iplong':
+
+                    $column = new ColumnData($column_key);
+                    $column->setDataTypeAsIpLong();
+
+                    break;
+
                 case 'input':
 
                     $column = new ColumnInput($column_key);
