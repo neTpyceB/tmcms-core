@@ -426,7 +426,7 @@ class Users
         // If no any Admin group - create new empty group
         if (!$group || !$group->getUndeletable() || !$group->getCanSetPermissions() || !$group->getFullAccess()) {
             if ($group) {
-                $group->is_superadmin = true;
+                $group->is_super_admin = true;
                 $group
                     ->setField('undeletable', 1)
                     ->setField('can_set_permissions', 1)
@@ -444,7 +444,7 @@ class Users
 
                 // Create new Group for Admins
                 $group = new AdminUserGroup();
-                $group->is_superadmin = true;
+                $group->is_super_admin = true;
                 $group->loadDataFromArray(
                     [
                         'undeletable' => 1,
@@ -458,7 +458,7 @@ class Users
 
                 // Create new Group for Managers
                 $group = new AdminUserGroup();
-                $group->is_superadmin = true;
+                $group->is_super_admin = true;
                 $group->loadDataFromArray(
                     [
                         'undeletable' => 0,

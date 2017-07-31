@@ -54,7 +54,8 @@ class CmsTableHelper {
         // Check active column
         if (isset($params['active']) && !isset($params['columns']['active'])) {
             $params['columns']['active'] = [
-                'type' => 'active',
+                'type'  => 'active',
+                'order' => true,
             ];
         }
         // Check edit column
@@ -101,6 +102,16 @@ class CmsTableHelper {
         // Set text near pager
         if (isset($params['pager_prefix_string'])) {
             $table->setPagerPrefixString($params['pager_prefix_string']);
+        }
+
+        // Can save/download to file
+        if (isset($params['save'])) {
+            $table->enableSaveIntoFile();
+        }
+
+        // Can save/download to file
+        if (isset($params['actions'])) {
+            $table->addMultiAction($params['actions']);
         }
 
         foreach ($params['columns'] as $column_key => $column_param) {
