@@ -9,7 +9,7 @@ class LanguagesMiddleware implements IMiddleware
 {
     public function run(array $params = [])
     {
-        $path = explode('/', PATH);
+        $path = PATH_ROUTER;
 
         /* Get language */
         $languages = Languages::getPairs();
