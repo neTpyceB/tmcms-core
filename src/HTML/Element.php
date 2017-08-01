@@ -232,6 +232,16 @@ abstract class Element
     }
 
     /**
+     * @return $this
+     */
+    public function setTypeAsText()
+    {
+        $this->setType('text');
+
+        return $this;
+    }
+
+    /**
      * @param string $type
      * @return $this
      */
