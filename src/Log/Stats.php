@@ -63,6 +63,9 @@ class Stats
 
         $def_c = get_defined_constants(true);
         $def_c = $def_c['user'];
+        $def_c = array_filter($def_c, function ($value) {
+            return is_scalar($value);
+        });
 
         if (isset($def_c['CFG_DB_LOGIN'])) {
             $def_c['CFG_DB_LOGIN'] = '***';
@@ -76,6 +79,7 @@ class Stats
         if (isset($def_c['CFG_DB_SERVER'])) {
             $def_c['CFG_DB_SERVER'] = '***';
         }
+
         foreach ($def_c as $k => $v) {
             $def_c[$k] = $k . '=' . $v;
         }
