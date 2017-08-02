@@ -765,7 +765,7 @@ class Structure
         // GZ compressed file
         $path = DIR_BASE . 'sitemap.gz';
 
-        if (file_exists($path)) {
+        if (!file_exists($path)) {
             $fh = gzopen($path, 'w9');
             flock($fh, LOCK_EX);
             gzwrite($fh, file_get_contents($path));
