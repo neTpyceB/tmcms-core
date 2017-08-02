@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 use TMCms\Admin\AdminTranslations;
 use TMCms\Config\Settings;
@@ -111,24 +112,22 @@ if (!headers_sent()) {
 
 // Prevent script abortion
 ob_implicit_flush(0);
-ignore_user_abort(1);
+ignore_user_abort(true);
 
-ini_set('display_errors', true);
-ini_set('display_startup_errors', true);
-ini_set('register_globals', '0');
-ini_set('magic_quotes_gpc', '0');
+ini_set('display_errors', '1');
+ini_set('display_startup_errors', '1');
 ini_set('allow_url_fopen', '0');
 ini_set('mysql.trace_mode', '0');
 
 // Disable showing PHPSESSID in URL
-if (session_status() != PHP_SESSION_ACTIVE) {
-    ini_set('session.use_trans_sid', false);
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    ini_set('session.use_trans_sid', '0');
 }
-ini_set('session.use_only_cookies', true); // Use Cookies only in headers
+ini_set('session.use_only_cookies', '1'); // Use Cookies only in headers
 ini_set('session.entropy_file', '/dev/urandom');
-ini_set('session.entropy_length', 32);
-ini_set('session.hash_bits_per_character', 6);
-ini_set('session.cookie_httponly', false); // We may need Cookies in JavaScript
+ini_set('session.entropy_length', '32');
+ini_set('session.hash_bits_per_character', '6');
+ini_set('session.cookie_httponly', '0'); // We may need Cookies in JavaScript
 
 // Global encoding
 mb_internal_encoding('UTF-8');
@@ -138,18 +137,18 @@ mb_language('uni');
 mb_regex_encoding('UTF-8');
 
 // Always begin session
-if (session_status() != PHP_SESSION_ACTIVE && !headers_sent()) {
+if (session_status() !== PHP_SESSION_ACTIVE && !headers_sent()) {
     session_start();
 }
 
 // Every time we start Session - give it a unique name for security
 if (empty($_SESSION['__session_name_validated'])) {
     $random_cookie_name = function () {
-        $length = rand(16, 32);
+        $length = random_int(16, 32);
         $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $randomString = '';
         for ($i = 0; $i < $length; $i++) {
-            $randomString .= $characters[rand(0, strlen($characters) - 1)];
+            $randomString .= $characters[random_int(0, strlen($characters) - 1)];
         }
         return $randomString;
     };
@@ -190,43 +189,26 @@ if (!isset($_SERVER['HTTP_USER_AGENT'])) {
 if (!isset($_SERVER['REQUEST_URI'])) {
     $_SERVER['REQUEST_URI'] = '/';
 }
-if (!isset($_SERVER['REMOTE_ADDR']) || !preg_match('/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$/', $_SERVER['REMOTE_ADDR'])) {
+if (!isset($_SERVER['REMOTE_ADDR']) || !preg_match('/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/', $_SERVER['REMOTE_ADDR'])) {
     $_SERVER['REMOTE_ADDR'] = '0.0.0.0';
 }
 
 // Check for legal URL
-define('SELF', isset($_SERVER['REDIRECT_URL']) ? $_SERVER['REDIRECT_URL'] : $_SERVER['REQUEST_URI']);
+define('SELF', $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI']);
 
 // Deny incorrect urls
 if (strlen(SELF) > 2000 || strpos(SELF, 'eval(') !== false || stripos(SELF, 'CONCAT') !== false || stripos(SELF, 'UNION+SELECT') !== false || stripos(SELF, 'base64') !== false) {
-    header("HTTP/1.1 414 Request-URI Too Long");
-    header("Status: 414 Request-URI Too Long");
-    header("Connection: Close");
+    header('HTTP/1.1 414 Request-URI Too Long');
+    header('Status: 414 Request-URI Too Long');
+    header('Connection: Close');
     exit('Wrong URL');
 }
 
-// Disabling magic quotes in case we have old server software
-if (function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc()) {
-    $process = [&$_GET, &$_POST, &$_COOKIE, &$_REQUEST];
-    while ((list($key, $val) = each($process))) {
-        foreach ($val as $k => $v) {
-            unset($process[$key][$k]);
-            if (is_array($v)) {
-                $process[$key][stripslashes($k)] = $v;
-                $process[] = &$process[$key][stripslashes($k)];
-            } else {
-                $process[$key][stripslashes($k)] = stripslashes($v);
-            }
-        }
-    }
-    unset($process, $key, $val, $k, $v);
-}
-
 /* Constants */
-define('IS_CLI', php_sapi_name() === 'cli');
+define('IS_CLI', PHP_SAPI === 'cli');
 define('HOST', mb_strtolower(trim($_SERVER['HTTP_HOST'])));
-define('REF', isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : NULL);
-define('QUERY', isset($_SERVER['REDIRECT_QUERY_STRING']) ? $_SERVER['REDIRECT_QUERY_STRING'] : $_SERVER['QUERY_STRING']);
+define('REF', $_SERVER['HTTP_REFERER'] ?? NULL);
+define('QUERY', $_SERVER['REDIRECT_QUERY_STRING'] ?? $_SERVER['QUERY_STRING']);
 define('SELF_WO_QUERY', rtrim(QUERY ? substr(SELF, 0, -strlen(QUERY) - 1) : SELF, '?'));
 define('IP', $_SERVER['REMOTE_ADDR']);
 define('IP_LONG', sprintf('%u', ip2long(IP)));
@@ -234,7 +216,7 @@ define('USER_AGENT', $_SERVER['HTTP_USER_AGENT']);
 define('SERVER_IP', $_SERVER['SERVER_ADDR']);
 define('NOW', $_SERVER['REQUEST_TIME']);
 define('VISITOR_HASH', md5(IP . ':' . USER_AGENT));
-define('REQUEST_METHOD', isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : 'GET');
+define('REQUEST_METHOD', $_SERVER['REQUEST_METHOD'] ?? 'GET');
 
 // Website base url with protocol
 $protocol = 'http' . (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] ? 's' : '');
@@ -266,7 +248,7 @@ define('REF_SE_KEYWORD_MIN_MATCH', 70); // Minimum match to search query from se
 // PHP_OS can be already set by environment
 if (!defined('PHP_OS')) {
     $os = strtoupper(PHP_OS);
-    if (substr($os, 0, 3) === 'WIN') {
+    if (strpos($os, 'WIN') === 0) {
         $os = 'Windows';
     } elseif ($os === 'LINUX' || $os === 'FREEBSD' || $os === 'DARWIN') {
         $os = 'Linux';
@@ -423,7 +405,7 @@ function error($str)
  * @param bool $no_cache
  * @return string
  */
-function w($k, $lng = LNG, $replaces = [], $default = '', $no_cache = false)
+function w($k, $lng = LNG, array $replaces = [], $default = '', $no_cache = false)
 {
     return Structure::getWord($k, $lng, $replaces, $default, $no_cache);
 }
@@ -476,10 +458,10 @@ function go($go, array $additional_params = [], $skip_auto_redirect = false)
         $go = implode('&', $go);
     }
 
-    $go = $go != '' ? $go : '/';
+    $go = $go !== '' ? $go : '/';
 
     if ($additional_params) {
-        if (stripos($go, '?') === false) {
+        if (strpos($go, '?') === false) {
             $go .= '?';
         } else {
             $go .= '&';
@@ -491,7 +473,7 @@ function go($go, array $additional_params = [], $skip_auto_redirect = false)
         ob_clean();
     }
     if (!isset($_GET['ajax'])) {
-        @header('Location: ' . $go, true, 301);
+        header('Location: ' . $go, true, 301);
     }
     exit;
 }
@@ -536,9 +518,9 @@ if (file_exists($middleware_runner_path)) {
 function runAutoloadFiles()
 {
     FileSystem::mkDir(DIR_MODULES);
-    foreach (scandir(DIR_MODULES) as $module_dir) {
+    foreach (scandir(DIR_MODULES, SCANDIR_SORT_NONE) as $module_dir) {
         // Skip hidden
-        if ($module_dir[0] == '.') {
+        if ($module_dir[0] === '.') {
             continue;
         }
 

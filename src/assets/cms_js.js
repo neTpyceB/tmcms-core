@@ -855,7 +855,7 @@ var cms_notifications = {
 
 $(function () {
     // For all - check serviceWorker is available
-    if ('serviceWorker' in navigator) {
+    if ('serviceWorker' in navigator && location.protocol === 'https') {
         window.addEventListener('load', function () {
             navigator.serviceWorker.register('/vendor/devp-eu/tmcms-core/src/assets/js/sw.js').then(function (registration) {
                 // Registration was successful
