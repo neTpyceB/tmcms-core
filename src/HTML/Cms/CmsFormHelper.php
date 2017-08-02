@@ -265,13 +265,14 @@ class CmsFormHelper {
                             case 'select':
                                 $input_field->setTypeSelect();
                                 $input_field->setOptions($input_field_data['options']);
-                                $input_field->onchange(' '); // No auto-submit
                                 break;
 
                             case 'html':
                                 $input_field->setTypeHtml();
                                 break;
                         }
+
+                        $input_field->onchange(' '); // No auto-submit
 
                         // Any script attached
                         if (isset($input_field_data['js_onchange'])) {
