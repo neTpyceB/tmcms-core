@@ -480,7 +480,7 @@ class Frontend
 
         // HTML optimization in rendered content
         if (Settings::get('optimize_html')) {
-            $html = Optimize::HTML($html);
+            $html = Optimize::Html($html);
         }
 
         // Put in cache
