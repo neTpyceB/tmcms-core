@@ -82,8 +82,8 @@ class Sync
     public function getUpdates($source, $destination, $asString = false)
     {
         // Remove double spaces
-        $source = Converter::spaces2space($source);
-        $destination = Converter::spaces2space($destination);
+        $source = Converter::removeDuplicateSpaces($source);
+        $destination = Converter::removeDuplicateSpaces($destination);
 
         // Cut sql to check if structure is same
         $source_cut = strstr($source, 'AUTO_INCREMENT=', true);

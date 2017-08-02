@@ -361,7 +361,7 @@ abstract class Element
      */
     public function getId()
     {
-        return ($this->id ? $this->id : Converter::text2htmlAttribute($this->getName()));
+        return ($this->id ? $this->id : Converter::nameToHtmlAttribute($this->getName()));
     }
 
     /**
@@ -370,7 +370,7 @@ abstract class Element
      */
     public function setId($id)
     {
-        $this->id = Converter::text2htmlAttribute($id);
+        $this->id = Converter::nameToHtmlAttribute($id);
 
         return $this;
     }

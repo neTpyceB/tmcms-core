@@ -400,7 +400,7 @@ class CmsTableHelper {
                         if (substr($name, -3) == '_id') {
                             $name = substr($name, 0, -3);
                         }
-                        $filter_data['title'] = Converter::symb2Ttl($name);
+                        $filter_data['title'] = Converter::charsToNormalTitle($name);
                     }
 
                     // If have options that probably this is select

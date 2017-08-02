@@ -137,7 +137,7 @@ class CmsFormHelper {
                     if (substr($name, -3) == '_id') {
                         $name = substr($name, 0, -3);
                     }
-                    $name = Converter::symb2Ttl($name);
+                    $name = Converter::charsToNormalTitle($name);
                 }
 
                 //
@@ -581,7 +581,7 @@ class CmsFormHelper {
                 $field['options'] = SQL::getEnumPairs($table, $types[$v]['Field']);
             }
 
-            $field['name'] = Converter::symb2Ttl($v);
+            $field['name'] = Converter::charsToNormalTitle($v);
 
             $params[$v] = $field;
         }

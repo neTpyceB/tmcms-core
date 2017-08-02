@@ -1027,7 +1027,7 @@ AND TABLE_NAME = "' . self::sql_prepare($table) . '"
         $res = [];
 
         foreach ($result as $v) {
-            $res[$v] = Converter::symb2Ttl($v);
+            $res[$v] = Converter::charsToNormalTitle($v);
         }
 
         return $res;
