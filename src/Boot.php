@@ -209,7 +209,7 @@ define('IS_CLI', PHP_SAPI === 'cli');
 define('HOST', mb_strtolower(trim($_SERVER['HTTP_HOST'])));
 define('REF', $_SERVER['HTTP_REFERER'] ?? NULL);
 define('QUERY', $_SERVER['REDIRECT_QUERY_STRING'] ?? $_SERVER['QUERY_STRING']);
-define('SELF_WO_QUERY', rtrim(QUERY ? substr(SELF, 0, -strlen(QUERY) - 1) : SELF, '?'));
+define('SELF_WO_QUERY', rtrim((string)(QUERY ? substr(SELF, 0, -strlen(QUERY) - 1) : SELF), '?'));
 define('IP', $_SERVER['REMOTE_ADDR']);
 define('IP_LONG', sprintf('%u', ip2long(IP)));
 define('USER_AGENT', $_SERVER['HTTP_USER_AGENT']);
