@@ -27,6 +27,7 @@ Errors::notify_devs(
 	."\nLine: ". $line
 );
 
+\TMCms\Log\Entity\ErrorLogEntityRepository::getInstance();
 // Write log if DB available
 if (!SQL::getInstance()->getConnectionHandler()) return;
 q('INSERT INTO `cms_error_log` (
