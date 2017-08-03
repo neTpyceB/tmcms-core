@@ -2,6 +2,7 @@
 
 namespace TMCms\Routing;
 
+use TMCms\Config\Settings;
 use TMCms\Templates\VisualEdit;
 
 defined('INC') or exit;
@@ -39,6 +40,11 @@ class View
         $this->refreshData();
 
         $res = isset($this->data[$key]) ? $this->data[$key] : $this->getUnsetComponent($key);
+
+        // Show placeholder with key if nothing is filled, useful for content managers
+        if (!$res && Settings::get('show_components_placeholders')) {
+            $res = $key;
+        }
 
         // Visual edit
         if ($res !== NULL && VisualEdit::getInstance()->isEnabled()) {
