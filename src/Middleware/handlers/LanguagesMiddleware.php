@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+use TMCms\Admin\Tools\Entity\MaxMindGeoIpRangeEntity;
+use TMCms\Admin\Tools\Entity\MaxMindGeoIpRangeEntityRepository;
 use TMCms\Config\Settings;
 use TMCms\Routing\Interfaces\IMiddleware;
 use TMCms\Routing\Languages;
@@ -53,6 +55,27 @@ class LanguagesMiddleware implements IMiddleware
             if (isset($languages[$tmp])) {
                 $lng = $tmp;
             }
+        }
+
+        // Default visitor country is the selected language
+        $visitor_country_code = $lng;
+
+        // Get country by range
+        $ranges = new MaxMindGeoIpRangeEntityRepository();
+        $ranges->enableUsingCache(3600);
+        $ranges->addSimpleSelectFields(['country_code']);
+        $ranges->addWhereFieldIsHigherOrEqual('start', IP_LONG);
+        $ranges->addWhereFieldIsLowerOrEqual('end', IP_LONG);
+        $range = $ranges->getFirstObjectFromCollection();
+        /** @var MaxMindGeoIpRangeEntity $range */
+        if ($range) {
+            $visitor_country_code = $range->getCode();
+        }
+        define('VISITOR_COUNTRY_CODE', strtolower($visitor_country_code));
+
+        // Language by client's IP
+        if (!$lng && VISITOR_COUNTRY_CODE && Settings::get('lng_by_ip') & isset($languages[VISITOR_COUNTRY_CODE])) {
+            $lng = VISITOR_COUNTRY_CODE;
         }
 
         // Language as first from the list
