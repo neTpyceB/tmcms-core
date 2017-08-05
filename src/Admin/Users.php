@@ -532,17 +532,54 @@ class Users
 
     /**
      * Generate unique hash for password or any other string
-     * @param string $string e.g. real password
-     * @param bool $salt supply random string
+     *
+     * @param string $password  e.g. real password
+     * @param bool   $salt      supply random string
      * @param string $algorithm name of selected hashing algorithm (i.e. "md5", "sha256", "haval160,4", etc..)
+     *
+     * @return string
+     *
+     * @deprecated
+     */
+    public function generateHash($password, $salt = false, $algorithm = 'whirlpool')
+    {
+        $password = trim($password);
+
+        return hash($algorithm, ($salt ? $salt : self::$salt) . $password);
+    }
+
+    /**
+     * Generate unique hash for password or any other string
+     *
+     * @param string $password e.g. real password
+     *
+     * @param string $salt
+     *
      * @return string
      */
-    public function generateHash($string, $salt = false, $algorithm = 'whirlpool')
+    public function generatePasswordHash(string $password, string $salt = ''): string
     {
-        $string = trim($string);
+        $password = ($salt ?: self::$salt) . trim($password);
 
-        // TODO change to password_hash and password_verify in future versions
-        return hash($algorithm, ($salt ? $salt : self::$salt) . $string);
+        $options = [
+            'cost' => 12,
+        ];
+
+        return password_hash($password, PASSWORD_BCRYPT, $options);
+    }
+
+    /**
+     * @param string $password
+     * @param string $hash
+     * @param string $salt
+     *
+     * @return string
+     */
+    public function verifyPasswordHash(string $password, string $hash, string $salt = ''): string
+    {
+        $password = ($salt ?: self::$salt) . trim($password);
+
+        return password_verify($password, $hash);
     }
 
     public function checkAndNotifySomeoneUsesSamePage($class = P, $function = P_DO)
