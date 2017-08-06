@@ -545,6 +545,7 @@ class Users
     {
         $password = trim($password);
 
+        // TODO create new hash algo hash_password() for PHP7 and check by ts_created for all old websites
         return hash($algorithm, ($salt ? $salt : self::$salt) . $password);
     }
 
