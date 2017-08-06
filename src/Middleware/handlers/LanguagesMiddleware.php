@@ -15,7 +15,7 @@ class LanguagesMiddleware implements IMiddleware
 
         /* Get language */
         $languages = Languages::getPairs();
-        $lng = false;
+        $lng = '';
 
         if (!$languages) {
             die('No any language found in system.');
