@@ -47,7 +47,7 @@ class Router
             $page_alias = NULL;
 
             // If client comes from search engine - check which page is more appropriate for hom
-            if (REF_SE_KEYWORD && CFG_DOMAIN !== REF_DOMAIN) {
+            if (REF_SEARCH_ENGINE_KEYWORD && CFG_DOMAIN !== REF_DOMAIN) {
                 $similarities = [];
 
                 $page_aliases = new PageAliasEntityRepository();
@@ -55,7 +55,7 @@ class Router
 
                 // Sort by similarity
                 foreach ($page_aliases->getAsArrayOfObjectData() as $page_alias) {
-                    similar_text(REF_SE_KEYWORD, $page_alias['name'], $match);
+                    similar_text(REF_SEARCH_ENGINE_KEYWORD, $page_alias['name'], $match);
                     if ($match >= REF_SE_KEYWORD_MIN_MATCH && !isset($similarities[$match])) {
                         $similarities[$match] = $page_alias['name'];
                     }
@@ -89,7 +89,7 @@ class Router
             }
 
             // In case we have only one key in path and have not landing page redirect
-            if (PATH_SO === 1 && !$page_alias) {
+            if (PATH_PART_COUNT === 1 && !$page_alias) {
                 $cache_key = 'page_aliases_' . $path[0];
                 $page_alias = NULL;
 
@@ -105,8 +105,8 @@ class Router
                     $page_aliases->setWhereName($path[0]);
 
                     // If came from search engine
-                    if (REF_SE_KEYWORD) {
-                        $page_aliases->setWhereName(REF_SE_KEYWORD);
+                    if (REF_SEARCH_ENGINE_KEYWORD) {
+                        $page_aliases->setWhereName(REF_SEARCH_ENGINE_KEYWORD);
                     }
 
                     $page_alias = $page_aliases->getFirstObjectFromCollection();
