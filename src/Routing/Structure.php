@@ -710,13 +710,15 @@ class Structure
      */
     public static function generateStructureXml()
     {
+        // TODO set run in in background
+
         set_time_limit(1800);
 
         $host = CFG_DOMAIN;
         $protocol = CFG_PROTOCOL . '://';
 
         // New way - no need to supply all entities to generate URLS to, but page crawler will find all links itself
-        $pages = array_keys(PageCrawler::getSiteLinks($protocol . $host, $host, $protocol, [], ['php', 'html'], []));
+        $pages = array_keys(PageCrawler::getSiteLinks($protocol . $host, $host, $protocol));
 
         $xml = '<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';

@@ -20,7 +20,7 @@ class UID
      */
     public static function uid32(): string
     {
-        return md5('&QSsaxwp9fd f_ ' . uniqid(mt_rand(), 1));
+        return md5('&QSsaxwp9fd f_ ' . uniqid((string)mt_rand(), true));
     }
 
     /**
