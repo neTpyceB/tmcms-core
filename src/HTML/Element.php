@@ -411,7 +411,7 @@ abstract class Element
 
         $res = [];
         if (isset($this->id)) {
-            $res[] = 'id="' . htmlspecialchars($this->id, ENT_QUOTES) . '"';
+            $res[] = 'id="' . htmlspecialchars($this->getId(), ENT_QUOTES) . '"';
         }
 
         foreach ($this->attributes as $k => $v) {
