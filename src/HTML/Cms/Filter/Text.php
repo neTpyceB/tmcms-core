@@ -39,7 +39,7 @@ class Text extends CmsInputText implements IFilter
      *
      * @return $this
      */
-    public static function getInstance($name, $value = NULL, $id = NULL)
+    public static function getInstance($name, $value = '', $id = NULL)
     {
         return new self($name, $value, $id);
     }
