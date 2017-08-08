@@ -245,4 +245,12 @@ class CmsInputText extends InputText
 
         return $this;
     }
+
+    /**
+     * @return $this
+     */
+    public function value_array()
+    {
+        return $this->value_array;
+    }
 }
