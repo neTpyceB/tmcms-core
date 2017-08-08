@@ -663,7 +663,7 @@ abstract class Element
      */
     public function enableSlugGenerationUidFromField($from_field, $to_field)
     {
-        UID::text2uidJS(true, [$to_field => $from_field], 255, 1, 1);
+        UID::textToUidJs(true, [$to_field => $from_field], 255, 1, 1);
 
         return $this;
     }

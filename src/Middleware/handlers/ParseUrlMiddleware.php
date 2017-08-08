@@ -17,7 +17,7 @@ class ParseUrlMiddleware implements IMiddleware
 
         $path = [];
         if ((!$url = parse_url($parse_url)) || !isset($url['path'])) {
-            die('URL can not be parsed');
+            throw new RuntimeException('Wrong URL and can not be parsed');
         }
 
         // Remove empty parts
@@ -32,15 +32,13 @@ class ParseUrlMiddleware implements IMiddleware
             array_pop($path);
         }
 
+        define('PATH_PART_COUNT', count($path));
         define('PATH_ROUTER', $path);
-
-        define('PATH_SO', count($path));
         define('PATH_ORIGINAL', ($path ? '/' . implode('/', $path) : '') . '/');
-
-        /* In case user came from search engine */
-        define('REF_DOMAIN', REF ? Domains::get(REF) : '');
-        define('REF_DOMAIN_NAME', REF ? Domains::getName(REF) : '');
-        define('REF_SE_KEYWORD', REF ? (REF_DOMAIN === CFG_DOMAIN ? '' : SearchEngines::getSearchWord(REF)) : '');
         define('PATH', '/' . implode('/', $path) . ($path ? '/' : ''));
+
+        // In case user came from search engine
+        define('REF_DOMAIN', REF ? Domains::getDomainName(REF) : '');
+        define('REF_SEARCH_ENGINE_KEYWORD', REF ? (REF_DOMAIN === CFG_DOMAIN ? '' : SearchEngines::getSearchWord(REF)) : '');
     }
 }
