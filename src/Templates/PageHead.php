@@ -19,7 +19,7 @@ class PageHead
 
     private
         $enabled = true,
-        $ssl = false,
+        $ssl = null,
         $doctype = '<!DOCTYPE HTML>',
         $title = '',
         $description = '',
@@ -291,6 +291,8 @@ class PageHead
      */
     public function getSslState()
     {
+        if(is_null($this->ssl))
+            $this->ssl = !empty($_SERVER['HTTPS']);
         return $this->ssl;
     }
 
@@ -394,8 +396,8 @@ class PageHead
             // Favicon
             if ($this->favicon) :
                 $this->favicon['href'] = ltrim($this->favicon['href'], '/'); ?>
-                <link rel="icon" href="http<?= ($this->ssl ? 's' : '') ?>://<?= CFG_DOMAIN . '/' . $this->favicon['href'] ?>" type="<?= $this->favicon['type'] ?>">
-                <link rel="shortcut icon" href="http<?= ($this->ssl ? 's' : '') ?>://<?= CFG_DOMAIN . '/' . $this->favicon['href'] ?>" type="<?= $this->favicon['type'] ?>">
+                <link rel="icon" href="http<?= ($this->getSslState() ? 's' : '') ?>://<?= CFG_DOMAIN . '/' . $this->favicon['href'] ?>" type="<?= $this->favicon['type'] ?>">
+                <link rel="shortcut icon" href="http<?= ($this->getSslState() ? 's' : '') ?>://<?= CFG_DOMAIN . '/' . $this->favicon['href'] ?>" type="<?= $this->favicon['type'] ?>">
                 <?php
             endif;
 
