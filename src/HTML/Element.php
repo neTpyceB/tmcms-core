@@ -35,6 +35,7 @@ abstract class Element
     protected $field_required = false;
     protected $backup = true;
     protected $provider = [];
+    protected $value_array = [];
     private $validator_attributes = []; // For CSS and JS checks
     private $validator_checks = []; // For backend checks
 
@@ -43,6 +44,7 @@ abstract class Element
      */
     public function __construct()
     {
+
     }
 
     /**
@@ -194,6 +196,26 @@ abstract class Element
     }
 
     /**
+     * @return array
+     */
+    public function getValueArray(): array
+    {
+        return $this->value_array;
+    }
+
+    /**
+     * @param array $value
+     *
+     * @return $this
+     */
+    public function setValueArray(array $value = [])
+    {
+        $this->value_array = $value;
+
+        return $this;
+    }
+
+    /**
      * @param int $maxlength
      * @return $this
      */
@@ -274,7 +296,7 @@ abstract class Element
     /**
      * @return string
      */
-    public function getOnclick()
+    public function getOnClick()
     {
         return $this->getAttribute('onclick');
     }

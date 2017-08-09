@@ -80,7 +80,7 @@ class CmsFormHelper {
         }
 
         if (isset($params['no_tag'])) {
-            $form->outputTagForm(false);
+            $form->disableFormTagOutput();
         }
 
         if (isset($params['full'])) {
@@ -99,7 +99,7 @@ class CmsFormHelper {
         }
 
         if (isset($params['button'])) {
-            $form->setSubmitButton($params['button']);
+            $form->setButtonSubmit($params['button']);
         }
 
         if (isset($params['collapsed'])) {
@@ -118,7 +118,7 @@ class CmsFormHelper {
             if (is_bool($params['cancel'])) {
                 $params['cancel'] = __('Cancel');
             }
-            $form->setCancelButton($params['cancel']);
+            $form->setButtonCancel($params['cancel']);
         }
 
         if (isset($params['fields'])) {
@@ -326,9 +326,6 @@ class CmsFormHelper {
                     }
                     if (isset($field['multiple'])) {
                         $cms_field->multiple(true);
-                    }
-                    if (isset($field['multilng'])) {
-                        $cms_field->enableTranslation();
                     }
                     if (isset($field['translation'])) {
                         $cms_field->enableTranslation();

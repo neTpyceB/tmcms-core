@@ -41,10 +41,10 @@ fieldset legend {
   box-sizing: border-box;
   font-size: 13px; }
 
-.collapsable_fieldset legend {
+.collapsible_fieldset legend {
   cursor: pointer; }
 
-.collapsable_fieldset div {
+.collapsible_fieldset div {
   display: none; }
 
 .highlight, .highlight td {
@@ -194,7 +194,7 @@ fieldset legend {
   background-color: transparent; }
 
 .tabbable-custom > .nav-tabs > li.active > a.error:hover, .tabbable-custom > .nav-tabs > li > a.error {
-  background-color: #f2dede;
+    background-color: #f2dede;
 }
 
 /*# sourceMappingURL=cms_css.css.map */

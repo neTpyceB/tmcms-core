@@ -1,8 +1,10 @@
 <?php
+declare(strict_types=1);
 
 namespace TMCms\Traits;
 
 use Exception;
+use RuntimeException;
 
 defined('INC') or exit;
 
@@ -35,6 +37,6 @@ trait singletonInstanceTrait
      */
     public function __clone()
     {
-        throw new Exception('You cannot clone singleton object');
+        throw new RuntimeException('You cannot clone singleton object');
     }
 }
