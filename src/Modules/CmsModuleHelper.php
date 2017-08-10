@@ -85,7 +85,7 @@ class CmsModuleHelper implements IModule {
 
         echo self::__add_edit_form($entity)
             ->setAction('?p=' . P . '&do=_' . P_DO . '&id=' . $id)
-            ->setSubmitButton(__('Update'));
+            ->setButtonSubmit(__('Update'));
     }
 
     public static function renderEditAction(Entity $entity) {

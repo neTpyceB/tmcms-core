@@ -337,7 +337,8 @@ class UID
                 echo '
                 function uidFromTextEvent_', $id_src, '_', $id_dst, '() {
                     document.getElementById("', $id_dst, '").value = uidFromText(document.getElementById("', $id_src, '").value, ', $max_length, ');
-                }',
+                }
+                ',
                 ($auto_run ? '$(function() {' : ''),
                 ($run_on_page_load ? 'uidFromTextEvent_' . $id_src . '_' . $id_dst . '();' : ''),
                 ($run_on_input_change ? 'document.getElementById("' . $id_src . '").onchange = uidFromTextEvent_' . $id_src . '_' . $id_dst . '; document.getElementById("' . $id_src . '").onkeyup = uidFromTextEvent_' . $id_src . '_' . $id_dst . ';' : ''),
@@ -354,6 +355,8 @@ class UID
      * Echoes js part for uid to text2uid
      *
      * @param bool $wrap
+     *
+     * @return string
      */
     private static function uidFromTextJsFunction($wrap = false)
     {
