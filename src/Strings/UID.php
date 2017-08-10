@@ -33,7 +33,7 @@ class UID
         $converted = base_convert(self::$hex_chars[random_int(0, 15)] . uniqid('', true) . self::$hex_chars[random_int(0, 15)], 16, 10);
         $res = '';
 
-        for ($i = floor(log10($converted) / 1.7923916894983); $i >= 0; --$i) {
+        for ($i = floor(log10((float)$converted) / 1.7923916894983); $i >= 0; --$i) {
             // Random index
             $j = 62 ** $i;
             $a = (int)floor($converted / $j);
