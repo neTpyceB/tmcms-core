@@ -45,7 +45,8 @@ class RenderComponentHelper {
     }
 
     /**
-     * @param string $value
+     * @param mixed $value
+     *
      * @return $this
      */
     public function setFieldData($value)
