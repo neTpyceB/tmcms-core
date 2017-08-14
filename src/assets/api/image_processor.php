@@ -354,7 +354,7 @@ if(class_exists('\Tinify\Tinify') && !empty($tinypng) && !empty($tinypng['key'])
     $path_for_exec = str_replace(['&', '=', ' ', '(', ')'], ['\&', '\=', '\ ', '\(', '\)'], QUERY);
     if ($ext == 'jpg') {
         $sizes = getimagesize(DIR_IMAGE_CACHE . QUERY);
-        $size_proposal = $sizes[0] * $sizes[1] / 3000; // In kb by three
+        $size_proposal = $sizes[0] * $sizes[1] / 6000; // In kb by three
         exec('jpegoptim --size=' . $size_proposal . 'kb --strip-all ' . DIR_IMAGE_CACHE . $path_for_exec . '  2>&1');
     } elseif ($ext == 'png') {
         exec('optipng ' . DIR_IMAGE_CACHE . $path_for_exec . '  2>&1');
