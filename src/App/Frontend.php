@@ -405,7 +405,7 @@ class Frontend
             // Parse content
 
             // Hide e-mails from bots
-            if (strpos($this->html, '@') !== false && preg_match_all('`\<a([^>]+)href\=\"mailto\:([^">]+)\"([^>]*)\>(.+)\<\/a\>`ismU', $this->html, $matches)) {
+            if (Settings::get('enable_anti_email_bot') && strpos($this->html, '@') !== false && preg_match_all('`\<a([^>]+)href\=\"mailto\:([^">]+)\"([^>]*)\>(.+)\<\/a\>`ismU', $this->html, $matches)) {
                 PageHead::getInstance()->addJsUrl('email_rewrite.min.js');
                 $matches[5] = [];
                 // Replace emails in content with script calls
