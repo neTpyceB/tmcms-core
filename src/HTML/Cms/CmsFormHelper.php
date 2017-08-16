@@ -106,6 +106,10 @@ class CmsFormHelper {
             $form->setCollapsed($params['collapsed']);
         }
 
+        if (isset($params['submit_on_top'])) {
+            $form->setShowSubmitOnTop((bool)$params['submit_on_top']);
+        }
+
         if (isset($params['ajax']) && $params['ajax']) {
             $form->enableAjax();
         }
