@@ -429,7 +429,60 @@ class PageHead
 
                 </script>
             <?php endif;
-            unset($ga); ?>
+            unset($ga);
+
+            // Yandex.Metrika
+            if (($ym = Settings::get('yandex_metrika_key'))): ?>
+            <!-- Yandex.Metrika counter -->
+            <script type="text/javascript">
+                (function (d, w, c) {
+                    (w[c] = w[c] || []).push(function() {
+                        try {
+                            w.yaCounter<?= $ym ?> = new Ya.Metrika({id:<?= $ym ?>,
+                                webvisor:false,
+                                clickmap:false,
+                                trackLinks:false,
+                                accurateTrackBounce:false});
+                        } catch(e) { }
+                    });
+
+                    var n = d.getElementsByTagName("script")[0],
+                        s = d.createElement("script"),
+                        f = function () { n.parentNode.insertBefore(s, n); };
+                    s.type = "text/javascript";
+                    s.async = true;
+                    s.src = (d.location.protocol == "https:" ? "https:" : "http:") + "//mc.yandex.ru/metrika/watch.js";
+
+                    if (w.opera == "[object Opera]") {
+                        d.addEventListener("DOMContentLoaded", f, false);
+                    } else { f(); }
+                })(document, window, "yandex_metrika_callbacks");
+            </script>
+            <noscript><div><img src="//mc.yandex.ru/watch/<?= $ym ?>" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+            <!-- /Yandex.Metrika counter -->
+            <?php endif;
+            unset($ym);
+
+            // Facebook Pixel
+            // @todo fbq events ViewContent vietā
+            if (($fp = Settings::get('facebook_pixel_key'))): ?>
+                <!-- Facebook Pixel Code -->
+                <script>
+                    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+                        n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+                        n.push=n;n.loaded=!0;n.version="2.0";n.queue=[];t=b.createElement(e);t.async=!0;
+                        t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+                        document,"script","https://connect.facebook.net/en_US/fbevents.js");
+
+                    fbq("init", "<?= $fp ?>");
+                    fbq("track", "PageView");
+                    fbq("track", "ViewContent");
+                </script>
+                <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=<?= $fp ?>&ev=PageView&noscript=1" /></noscript>
+                <!-- End Facebook Pixel Code -->
+            <?php endif;
+            unset($fp);
+            ?>
         </head>
         <?php
 
