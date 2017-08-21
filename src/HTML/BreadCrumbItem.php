@@ -38,6 +38,10 @@ class BreadCrumbItem
      */
     public function  __toString()
     {
-        return '<a href="' . $this->href . '" ' . ($this->target_blank ? ' target="_blank"' : '') . '>' . $this->name . '</a>';
+        if ($this->href) {
+            return '<a href="' . $this->href . '" ' . ($this->target_blank ? ' target="_blank"' : '') . '>' . $this->name . '</a>';
+        }
+
+        return (string)$this->name;
     }
 }
