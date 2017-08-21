@@ -1071,7 +1071,7 @@ FROM `' . $this->getDbTableName() . '`
 
         $this->collectObjects();
 
-        return $this->total_count_rows;
+        return (int)$this->total_count_rows;
     }
 
     public function setRequireCountRowsWithoutLimits($flag): bool
