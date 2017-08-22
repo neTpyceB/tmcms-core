@@ -68,7 +68,7 @@ try {
     $image->open($src_path);
 } catch (Exception $e) {
     if (!Settings::isProductionState()) {
-        exit('Error. Not enough memory to open image "' . $path . $file . '".');
+        exit('Error. Not enough memory to open image "' . $path . $file . '". Exception: '. $e->getMessage());
     }
     die;
 }
