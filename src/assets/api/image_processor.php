@@ -34,7 +34,7 @@ if (!is_file(DIR_BASE . $src_path)) {
     return;
 }
 
-ini_set('memory_limit', '256M');
+ini_set('memory_limit', '512M');
 
 // Rotate before EXIF data
 if ($ext == 'jpg' || $ext == 'jpeg') {
