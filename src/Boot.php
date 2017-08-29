@@ -381,18 +381,17 @@ function q_column($q, $column=0, $protected=true)
 
 /**
  * @param mixed $data
- * @param bool $serialize
  * @param bool $clean
  */
-function dump($data, $serialize = false, $clean = true)
+function dump($data, $clean = true)
 {
-    Errors::dump($data, $serialize, $clean);
+    Errors::dump($data, $clean);
 }
 
 /**
  * @param string $str
  */
-function error($str)
+function error(string $str)
 {
     Errors::error($str);
 }

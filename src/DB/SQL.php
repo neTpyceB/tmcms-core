@@ -1033,6 +1033,11 @@ AND TABLE_NAME = "' . self::sql_prepare($table) . '"
         return $res;
     }
 
+    public static function getLastError(): array
+    {
+        return self::getInstance()->pdo_db->errorInfo();
+    }
+
     /**
      * Should be non-static because we can have more than one connection
      * Stop current connection
