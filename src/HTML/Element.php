@@ -109,13 +109,14 @@ abstract class Element
 
     /**
      * @param string $k element name
+     *
      * @return string
      */
-    public function getAttribute($k)
+    public function getAttribute($k): string
     {
         $k = strtolower($k);
 
-        return isset($this->attributes[$k]) ? $this->attributes[$k] : '';
+        return $this->attributes[$k] ?? '';
     }
 
     /**
@@ -179,16 +180,17 @@ abstract class Element
     /**
      * @return string
      */
-    public function getValue()
+    public function getValue(): string
     {
         return $this->getAttribute('value');
     }
 
     /**
      * @param string $value
+     *
      * @return $this
      */
-    public function setValue($value)
+    public function setValue(string $value)
     {
         $this->setAttribute('value', $value);
 
@@ -369,9 +371,10 @@ abstract class Element
 
     /**
      * @param string $name
+     *
      * @return $this
      */
-    public function setName($name)
+    public function setName(string $name)
     {
         $this->setAttribute('name', $name);
 
@@ -388,6 +391,7 @@ abstract class Element
 
     /**
      * @param string $id
+     *
      * @return $this
      */
     public function setId($id)
@@ -424,21 +428,25 @@ abstract class Element
 
     /**
      * Return string consisting from all html element attributes
+     *
      * @param array $skip
+     *
      * @return string
      */
-    public function getAttributesString(array $skip = [])
+    public function getAttributesString(array $skip = []): string
     {
         $skip = array_map('strtolower', $skip);
 
         $res = [];
-        if (isset($this->id)) {
+
+        // Id can be set
+        if ($this->id) {
             $res[] = 'id="' . htmlspecialchars($this->getId(), ENT_QUOTES) . '"';
         }
 
         foreach ($this->attributes as $k => $v) {
             // Skip if needed
-            if (in_array($k, $skip)) {
+            if (in_array($k, $skip, true)) {
                 continue;
             }
 
