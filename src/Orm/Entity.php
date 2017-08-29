@@ -124,7 +124,7 @@ class Entity
     }
 
     /**
-     * @return int|NULL
+     * @return string|NULL
      */
     public function getId()
     {
