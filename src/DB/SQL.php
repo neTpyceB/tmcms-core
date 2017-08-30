@@ -216,16 +216,17 @@ class SQL
             // If server down
             if ($fs === false) {
                 if (CFG_MAIL_ERRORS) {
-                    Errors::notify_devs(CFG_DOMAIN . ' DB Server is down or overloaded', 'It seems that DB Server is down or overloaded and does not respond to attempts to establish the connection.', 'admin.notification.file.dbsdown');
+                    Errors::sendErrorToDevelopers(CFG_DOMAIN . ' DB Server is down or overloaded', 'It seems that DB Server is down or overloaded and does not respond to attempts to establish the connection.');
                 }
                 exit('Could not connect to database server.<br><br>Administrator is' . (CFG_MAIL_ERRORS ? '' : ' NOT') . ' notified.');
-            } else { // If server is ok, but connection refused
-                fclose($fs);
-                if (CFG_MAIL_ERRORS) {
-                    Errors::notify_devs(CFG_DOMAIN . ' DB Server is not accessible', 'It seems that login or password is supplied incorrectly in configuration file "config.php"', 'admin.notification.file.dbsaccess');
-                }
-                exit('Could not login to database server.<br><br>Administrator is' . (CFG_MAIL_ERRORS ? '' : ' NOT') . ' notified.');
             }
+
+            // If server is ok, but connection refused
+            fclose($fs);
+            if (CFG_MAIL_ERRORS) {
+                Errors::sendErrorToDevelopers(CFG_DOMAIN . ' DB Server is not accessible', 'It seems that login or password is supplied incorrectly in configuration file "config.php"');
+            }
+            exit('Could not login to database server.<br><br>Administrator is' . (CFG_MAIL_ERRORS ? '' : ' NOT') . ' notified.');
         }
 
         return $this->pdo_db;
@@ -403,8 +404,8 @@ class SQL
     /**
      * retrieve value from associative array
      *
-     * @param string $str
-     * @param bool   $used_in_like
+     * @param mixed $str
+     * @param bool  $used_in_like
      *
      * @return string
      */
@@ -770,7 +771,11 @@ AND TABLE_NAME = "' . self::sql_prepare($table) . '"
         $res = [];
         $qh = self::getInstance()->sql_query($q, $protect);
 
-        while ($res[] = $qh->fetch(PDO::FETCH_ASSOC)) ;
+        /** @noinspection PhpAssignmentInConditionInspection */
+        /** @noinspection PhpStatementHasEmptyBodyInspection */
+        while ($res[] = $qh->fetch(PDO::FETCH_ASSOC)) {
+            // Do nothing
+        }
 
         array_pop($res);
 
