@@ -1,14 +1,19 @@
 <?php
 declare(strict_types=1);
 
-use TMCms\Admin\Tools\Entity\MaxMindGeoIpRangeEntity;
-use TMCms\Admin\Tools\Entity\MaxMindGeoIpRangeEntityRepository;
 use TMCms\Config\Settings;
+use TMCms\Network\MaxMindGeoIP;
 use TMCms\Routing\Interfaces\IMiddleware;
 use TMCms\Routing\Languages;
 
+/**
+ * Class LanguagesMiddleware
+ */
 class LanguagesMiddleware implements IMiddleware
 {
+    /**
+     * @param array $params
+     */
     public function run(array $params = [])
     {
         $path = PATH_ROUTER;
@@ -57,21 +62,10 @@ class LanguagesMiddleware implements IMiddleware
             }
         }
 
-        // Default visitor country is the selected language
-        $visitor_country_code = $lng;
+        // Visitor country is the selected language or found by IP
+        $visitor_country_code = MaxMindGeoIP::getCountryCodeByLongIp();
 
-        // Get country by range
-        $ranges = new MaxMindGeoIpRangeEntityRepository();
-        $ranges->enableUsingCache(3600);
-        $ranges->addSimpleSelectFields(['country_code']);
-        $ranges->addWhereFieldIsHigherOrEqual('start', IP_LONG);
-        $ranges->addWhereFieldIsLowerOrEqual('end', IP_LONG);
-        $range = $ranges->getFirstObjectFromCollection();
-        /** @var MaxMindGeoIpRangeEntity $range */
-        if ($range) {
-            $visitor_country_code = $range->getCode();
-        }
-        define('VISITOR_COUNTRY_CODE', strtolower($visitor_country_code));
+        define('VISITOR_COUNTRY_CODE', $visitor_country_code ? $visitor_country_code : $lng);
 
         // Language by client's IP
         if (!$lng && VISITOR_COUNTRY_CODE && Settings::get('lng_by_ip') & isset($languages[VISITOR_COUNTRY_CODE])) {

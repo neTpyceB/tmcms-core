@@ -147,7 +147,7 @@ class Entity
             return $this->db_table;
         }
 
-        $db_table_from_class = mb_strtolower(Converter::from_camel_case(str_replace(['Entity', 'Repository'], '', Converter::classWithNamespaceToUnqualifiedShort($this)))) . 's';
+        $db_table_from_class = mb_strtolower(Converter::fromCamelCase(str_replace(['Entity', 'Repository'], '', Converter::classWithNamespaceToUnqualifiedShort($this)))) . 's';
 
         // Check DB in system tables
         $this->db_table = 'cms_' . $db_table_from_class;
@@ -659,7 +659,7 @@ class Entity
         if ($prefix === 'get' || $prefix === 'set') {
             $method_to_call = $prefix . 'Field';
             $param = substr($name, 3); // Cut "set" or "get"
-            $param = Converter::from_camel_case($param);
+            $param = Converter::fromCamelCase($param);
             $param = strtolower($param);
 
             return $this->{$method_to_call}(strtolower($param), ...$args);

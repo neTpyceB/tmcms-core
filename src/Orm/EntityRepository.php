@@ -92,7 +92,7 @@ class EntityRepository implements IteratorAggregate, Countable
             return $this->db_table;
         }
 
-        $db_table_from_class = mb_strtolower(Converter::from_camel_case(str_replace(['Entity', 'Repository'], '', Converter::classWithNamespaceToUnqualifiedShort($this)))) . 's';
+        $db_table_from_class = mb_strtolower(Converter::fromCamelCase(str_replace(['Entity', 'Repository'], '', Converter::classWithNamespaceToUnqualifiedShort($this)))) . 's';
 
         // Check DB in system tables
         $this->db_table = 'cms_' . $db_table_from_class;
@@ -1096,7 +1096,7 @@ FROM `' . $this->getDbTableName() . '`
         if (strpos($name, 'setWhere') === 0) { // setWhere... for filtering
 
             $param = substr($name, 8);  // Cut "setWhere"
-            $param = Converter::from_camel_case($param);
+            $param = Converter::fromCamelCase($param);
 
             // Check maybe arg supplied is Entity - than we have to call EntityId
             if (isset($args[0]) && $args[0] instanceof Entity) {
