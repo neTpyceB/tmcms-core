@@ -658,7 +658,7 @@ class Converter
      *
      * @return string
      */
-    public static function classWithNamespaceToUnqualifiedShort(object $object): string
+    public static function classWithNamespaceToUnqualifiedShort($object): string
     {
         $reflection = new \ReflectionClass($object);
 
@@ -670,7 +670,7 @@ class Converter
      *
      * @return string
      */
-    public static function getPathToClassFile(object $object): string
+    public static function getPathToClassFile($object): string
     {
         $reflector = new \ReflectionClass($object);
 

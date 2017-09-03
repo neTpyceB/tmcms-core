@@ -2,6 +2,8 @@
 
 namespace TMCms\Routing;
 
+use function dump;
+use RuntimeException;
 use TMCms\Admin\Structure\Entity\PageComponentEntity;
 use TMCms\Admin\Structure\Entity\PageComponentHistory;
 use TMCms\Admin\Structure\Entity\PageComponentHistoryRepository;
@@ -50,7 +52,7 @@ class Structure
 
     /**
      * Return path of page based on ID
-     * @param int $page_id
+     * @param int  $page_id
      * @param bool $with_domain
      * @param bool $disallow_cut_language_part in case you need to keep /xx/ language part even if it is enabled in Settings
      * @return string
@@ -536,37 +538,16 @@ class Structure
             $data['name'] = $data['word'][LNG];
         }
 
-        // No name at all - show error
-        if ($data['name'] == '') {
-            if (MODE === 'cms') {
-                error('Name required');
-            }
-            return false;
-        }
-
-        $res = [];
+        // Check word for every language
         foreach ($languages as $k => $v) {
-            $res[] = $data['name'] . '_' . $k;
-        }
+            $entity = PagesWordEntityRepository::findOneEntityByCriteria(['name' => $data['name'] . '_' . $k]);
 
-        $collection = new PagesWordEntityRepository();
-        $collection->addWhereFieldIn('name', $res);
-
-        // Use common cache
-        if (Settings::isCacheEnabled()) {
-            $collection->enableUsingCache();
-        }
-
-        // Check for dupe work
-        if ($collection->hasAnyObjectInCollection()) {
-            if (MODE === 'cms') {
-                error('Word with that key already exists');
+            // Found and skip
+            if ($entity) {
+                continue;
             }
-            return false;
-        }
 
-        // Add work for every language
-        foreach ($languages as $k => $v) {
+            // Create one word for that exact language
             $entity = new PagesWordEntity();
             $entity->setName($data['name'] . '_' . $k);
             $entity->setWord($data['word'][$k]);
@@ -625,8 +606,8 @@ class Structure
 
     /**
      * Get sub pages of exact page
-     * @param int $pid
-     * @param bool $only_in_menu
+     * @param int    $pid
+     * @param bool   $only_in_menu
      * @param string $menu_name
      * @return array
      */
@@ -693,12 +674,12 @@ class Structure
             /** @var PageComponentEntity $original_data */
             $new_data = new PageComponentHistory();
             $new_data->loadDataFromArray([
-                'page_id' => $original_data->getPageId(),
+                'page_id'   => $original_data->getPageId(),
                 'component' => $original_data->getComponent(),
-                'data' => $original_data->getData(),
-                'ts' => NOW,
-                'user_id' => USER_ID,
-                'version' => $version + 1
+                'data'      => $original_data->getData(),
+                'ts'        => NOW,
+                'user_id'   => USER_ID,
+                'version'   => $version + 1
             ]);
             $new_data->save();
         }
