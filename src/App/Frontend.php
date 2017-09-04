@@ -200,7 +200,7 @@ class Frontend
         } elseif (is_file($this->router_instance->getPageData()['template_file'])) {
 
             if (Settings::isFrontendLogEnabled()) {
-                FrontendLogger::getInstance()->log('Loading page using ccomponents');
+                FrontendLogger::getInstance()->log('Reading page template');
             }
 
             // Get page content with components

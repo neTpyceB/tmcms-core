@@ -30,7 +30,7 @@ class InputDataList extends InputElement
             }
             $this->setValue($value);
         }
-        $this->setValue($value);
+//        $this->setValue((string)$value);
         $this->setId($id ?? $name);
     }
 

@@ -232,7 +232,7 @@ class Mailer
         $string_to_encode = base64_encode($string_to_encode);
         $string_to_encode = chunk_split($string_to_encode, $length, $spacer);
 
-        $spacer = preg_quote($spacer);
+        $spacer = preg_quote($spacer, '');
 
         $string_to_encode = preg_replace('/' . $spacer . '$/', NULL, $string_to_encode);
         $string_to_encode = $start . $string_to_encode . $end;
