@@ -110,6 +110,9 @@ fieldset legend {
 .cb_hide {
   visibility: hidden; }
 
+.page-sidebar .page-sidebar-menu {
+    padding-bottom: 50px !important;
+}
 .page-sidebar .page-sidebar-menu > li.heading,
 .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.heading {
   padding: 15px 15px 15px 15px; }
