@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace TMCms\Files;
 
@@ -12,7 +13,7 @@ class MimeTypes
     /**
      * @var array
      */
-    private static $ext2mime = array(
+    private static $ext2mime = [
         'ez' => 'application/andrew-inset',
         'atom' => 'application/atom+xml',
         'atomcat' => 'application/atomcat+xml',
@@ -632,33 +633,37 @@ class MimeTypes
         'avi' => 'video/x-msvideo',
         'movie' => 'video/x-sgi-movie',
         'ice' => 'x-conference/x-cooltalk'
-    );
-
-    /**
-     * @param string $ext
-     * @return string
-     */
-    public static function getMimeType($ext)
-    {
-        $types = self::getMimeTypes();
-
-        return isset($types[$ext]) ? $types[$ext] : 'application/octet-stream';
-    }
+    ];
 
     /**
      * @return array
      */
-    public static function getMimeTypes()
+    public static function getMimeTypes(): array
     {
         return self::$ext2mime;
     }
 
     /**
-     * @param string $type
+     * @param string $ext
+     *
      * @return string
      */
-    public static function getExtByMimeType($type)
+    public static function getMimeTypeByExt(string $ext): string
     {
-        return array_search(strtolower($type), self::getMimeTypes());
+        $types = self::getMimeTypes();
+
+        return $types[$ext] ?? 'application/octet-stream';
+    }
+
+    /**
+     * @param string $type
+     *
+     * @return string
+     */
+    public static function getExtByMimeType(string $type): string
+    {
+        $value = array_search(strtolower($type), self::getMimeTypes(), true);
+
+        return $value ?: '';
     }
 }

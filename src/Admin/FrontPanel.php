@@ -2,6 +2,8 @@
 
 namespace TMCms\Admin;
 
+use function defined;
+
 defined('INC') or exit;
 
 /**
@@ -21,7 +23,7 @@ class FrontPanel
             $.ajax({
                 url: '/-/<?= CFG_API_ROUTE ?>/admin_front_panel/',
                 data: {
-                    page_id: '<?= PAGE_ID ?>'
+                    page_id: '<?= defined('PAGE_ID') ? PAGE_ID : '0' ?>'
                 },
                 success: function (data) {
                     $('body').append(data);

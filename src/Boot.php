@@ -219,9 +219,9 @@ define('VISITOR_HASH', md5(IP . ':' . USER_AGENT));
 define('REQUEST_METHOD', $_SERVER['REQUEST_METHOD'] ?? 'GET');
 
 // Website base url with protocol
-$protocol = 'http' . (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] ? 's' : '');
-define('BASE_URL', $protocol . '://' . HOST);
-define('CFG_PROTOCOL', $protocol);
+define('IS_SSL', isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']);
+define('CFG_PROTOCOL', 'http' . (IS_SSL ? 's' : ''));
+define('BASE_URL', CFG_PROTOCOL . '://' . HOST);
 
 // This may be already defined in boot file specially for project
 if (!defined('CFG_DOMAIN')) { // Host to connect to
@@ -381,18 +381,17 @@ function q_column($q, $column=0, $protected=true)
 
 /**
  * @param mixed $data
- * @param bool $serialize
  * @param bool $clean
  */
-function dump($data, $serialize = false, $clean = true)
+function dump($data, $clean = true)
 {
-    Errors::dump($data, $serialize, $clean);
+    Errors::dump($data, $clean);
 }
 
 /**
  * @param string $str
  */
-function error($str)
+function error(string $str)
 {
     Errors::error($str);
 }

@@ -77,6 +77,8 @@ class PageTail
      */
     public function addJs($js)
     {
+        $js = str_ireplace(['<script>', '</script>'], '', $js);
+
         $this->js[++$this->js_sequence] = $js;
 
         return $this;

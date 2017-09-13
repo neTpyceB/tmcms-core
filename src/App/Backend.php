@@ -386,9 +386,9 @@ class Backend
 
         // For every main menu item search for module and submenu
         foreach ($all_menu_items as $main_menu_key => $main_menu_data) {
-            $menu_class = 'TMCms\Admin\\' . Converter::to_camel_case($main_menu_key) . '\\Cms' . Converter::to_camel_case($main_menu_key);
+            $menu_class = 'TMCms\Admin\\' . Converter::toCamelCase($main_menu_key) . '\\Cms' . Converter::toCamelCase($main_menu_key);
             if (!class_exists($menu_class)) {
-                $menu_class = 'TMCms\Modules\\' . Converter::to_camel_case($main_menu_key) . '\\Cms' . Converter::to_camel_case($main_menu_key);
+                $menu_class = 'TMCms\Modules\\' . Converter::toCamelCase($main_menu_key) . '\\Cms' . Converter::toCamelCase($main_menu_key);
             }
             if (class_exists($menu_class)) {
                 $reflection = new \ReflectionClass($menu_class);
@@ -428,7 +428,7 @@ class Backend
 
         $call_object = false;
         // Find in classes under Vendor - Modules
-        $real_class = Converter::to_camel_case(P);
+        $real_class = Converter::toCamelCase(P);
         $class = '\TMCms\Modules\\' . $real_class . '\Cms' . $real_class;
         if (!class_exists($class)) {
             // Not vendor module - check main CMS admin object
@@ -454,7 +454,7 @@ class Backend
                     }
 
                     // CmsClass
-                    $real_class = Converter::to_camel_case(P);
+                    $real_class = Converter::toCamelCase(P);
                     $class = '\TMCms\Modules\\' . $real_class . '\Cms' . $real_class;
                 }
             }

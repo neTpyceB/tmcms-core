@@ -19,7 +19,7 @@ $stack = isset($_GET['stack']) ? $_GET['stack'] : '';
 $url = isset($_GET['url']) ? $_GET['url'] : '';
 $line = isset($_GET['line']) ? $_GET['line'] : '';
 
-Errors::notify_devs(
+Errors::sendErrorToDevelopers(
 	CFG_DOMAIN .' JavaScript error',
 	'Message: '. $msg
 	."\nClicks Stack: ". $stack

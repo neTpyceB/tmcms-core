@@ -43,9 +43,6 @@ class Cacher
      */
     public function clearAllCaches()
     {
-        // Save usage for stats
-        Usage::getInstance()->add(__CLASS__, __FUNCTION__);
-
         // File cache contains resize images, very resource consumable operations
         // Do not delete images if FileCache is not default and other caches exist
         $clear_file_cache = true;

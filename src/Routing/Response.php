@@ -8,19 +8,26 @@ use TMCms\Traits\singletonInstanceTrait;
 
 defined('INC') or exit;
 
+/**
+ * Class Response
+ * @package TMCms\Routing
+ */
 class Response
 {
     use singletonInstanceTrait;
 
-    private $response_code = '200';
+    private $response_code = 200;
     private $response_html = '';
     private $response_finished = false;
 
+    /**
+     * @return string
+     */
     public function __toString(): string
     {
         $this->sendHeaders();
 
-        return (string)$this->response_html;
+        return $this->response_html;
     }
 
     private function sendHeaders()
@@ -29,7 +36,12 @@ class Response
         header($_SERVER['SERVER_PROTOCOL'] . ' ' . $status_string, true, (int)$status_string);
     }
 
-    public function setHtml($html)
+    /**
+     * @param string $html
+     *
+     * @return Response
+     */
+    public function setHtml(string $html): Response
     {
         if ($this->response_finished) {
             return $this;
@@ -41,7 +53,12 @@ class Response
         return $this;
     }
 
-    public function setHttpCode($code)
+    /**
+     * @param int $code
+     *
+     * @return Response
+     */
+    public function setHttpCode(int $code): Response
     {
         if ($this->response_finished) {
             return $this;
@@ -53,7 +70,12 @@ class Response
         return $this;
     }
 
-    public function setFinished($flag)
+    /**
+     * @param bool $flag
+     *
+     * @return Response
+     */
+    public function setFinished(bool $flag): Response
     {
         $this->response_finished = $flag;
 
