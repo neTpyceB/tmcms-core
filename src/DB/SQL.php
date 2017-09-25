@@ -919,8 +919,8 @@ AND TABLE_NAME = "' . self::sql_prepare($table) . '"
      * Change list order in selected category $catID by moving selected item up (default $direction value) or down (any other $direction value)
      * @param int $id1 - row id that should be moved
      * @param string $tbl - table name
-     * @param int $catID - category id
-     * @param string $catFld
+     * @param int | array $catID - category id
+     * @param string | array $catFld
      * @param string $direction - direction ('up' by default or any other)
      * @param string $idFld - id field name ('id' by default)
      * @param string $orderFld - order field name ('order' by default)
@@ -931,7 +931,17 @@ AND TABLE_NAME = "' . self::sql_prepare($table) . '"
         $data = [];
         $ord1 = '';
 
-        $sql = self::getInstance()->sql_query('SELECT `' . $orderFld . '` AS `order`, ' . (strpos($idFld, '`') === false ? '`' . $idFld . '`' : $idFld) . ' AS `id`, `' . $catFld . '` AS `cat` FROM `' . $tbl . '` WHERE `' . $catFld . '` = "' . $catID . '" ORDER BY `' . $orderFld . '`');
+        $cat_cond = [];
+        if(is_array($catID)){
+            foreach($catID as $idx => $c_id){
+                $cat_cond[] = '`' . $catFld[$idx] . '` = "' . $c_id . '"';
+            }
+        }else{
+            $cat_cond[] = '`' . $catFld . '` = "' . $catID . '"';
+        }
+        $cat_cond = implode(' AND ', $cat_cond);
+
+        $sql = self::getInstance()->sql_query('SELECT `' . $orderFld . '` AS `order`, ' . (strpos($idFld, '`') === false ? '`' . $idFld . '`' : $idFld) . ' AS `id` FROM `' . $tbl . '` WHERE ' . $cat_cond . ' ORDER BY `' . $orderFld . '`');
 
         while ($q = $sql->fetch(PDO::FETCH_ASSOC)) {
             if ($q['id'] == $id1) {
@@ -952,7 +962,7 @@ AND TABLE_NAME = "' . self::sql_prepare($table) . '"
         }
 
         if ($res == array_sum($data)) { // Direct Exchange
-            $sql2 = q('SELECT ' . (strpos($idFld, '`') === false ? '`' . $idFld . '`' : $idFld) . ', `' . $orderFld . '` FROM `' . $tbl . '` WHERE `' . $orderFld . '`' . ($direction == 'up' ? '<' : '>') . $ord1 . ' AND `' . $catFld . '` = "' . $catID . '" ORDER BY `'. $orderFld .'`' . ($direction == 'up' ? ' DESC' : null) . ' LIMIT 1');
+            $sql2 = q('SELECT ' . (strpos($idFld, '`') === false ? '`' . $idFld . '`' : $idFld) . ', `' . $orderFld . '` FROM `' . $tbl . '` WHERE `' . $orderFld . '`' . ($direction == 'up' ? '<' : '>') . $ord1 . ' AND ' . $cat_cond . ' ORDER BY `'. $orderFld .'`' . ($direction == 'up' ? ' DESC' : null) . ' LIMIT 1');
             if (!$sql2->columnCount()) {
                 return false;
             }
@@ -966,13 +976,13 @@ AND TABLE_NAME = "' . self::sql_prepare($table) . '"
                 $ord2 = $start_with;
             }
 
-            self::getInstance()->sql_query('UPDATE `' . $tbl . '` SET `' . $orderFld . '` = ' . $ord2 . ' WHERE ' . (strpos($idFld, '`') === false ? '`' . $idFld . '`' : $idFld) . '="' . $id1 . '" AND `' . $catFld . '` = "' . $catID . '" LIMIT 1');
-            self::getInstance()->sql_query('UPDATE `' . $tbl . '` SET `' . $orderFld . '` = ' . $ord1 . ' WHERE ' . (strpos($idFld, '`') === false ? '`' . $idFld . '`' : $idFld) . '="' . $id2 . '" AND `' . $catFld . '` = "' . $catID . '" LIMIT 1');
+            self::getInstance()->sql_query('UPDATE `' . $tbl . '` SET `' . $orderFld . '` = ' . $ord2 . ' WHERE ' . (strpos($idFld, '`') === false ? '`' . $idFld . '`' : $idFld) . '="' . $id1 . '" AND ' . $cat_cond . ' LIMIT 1');
+            self::getInstance()->sql_query('UPDATE `' . $tbl . '` SET `' . $orderFld . '` = ' . $ord1 . ' WHERE ' . (strpos($idFld, '`') === false ? '`' . $idFld . '`' : $idFld) . '="' . $id2 . '" AND ' . $cat_cond . ' LIMIT 1');
         } else { // Exchange and then "Direct Exchange"
             $i = $start_with;
 
             foreach (array_keys($data) as $k) {
-                self::getInstance()->sql_query('UPDATE `' . $tbl . '` SET `' . $orderFld . '` = ' . $i . ' WHERE ' . (strpos($idFld, '`') === false ? '`' . $idFld . '`' : $idFld) . '="' . $k . '" AND `' . $catFld . '` = "' . $catID . '" LIMIT 1');
+                self::getInstance()->sql_query('UPDATE `' . $tbl . '` SET `' . $orderFld . '` = ' . $i . ' WHERE ' . (strpos($idFld, '`') === false ? '`' . $idFld . '`' : $idFld) . '="' . $k . '" AND ' . $cat_cond . ' LIMIT 1');
                 ++$i;
             }
 
