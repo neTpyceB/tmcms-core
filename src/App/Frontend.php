@@ -199,10 +199,6 @@ class Frontend
             // Usual template read for parsing
         } elseif (is_file($this->router_instance->getPageData()['template_file'])) {
 
-            if (Settings::isFrontendLogEnabled()) {
-                FrontendLogger::getInstance()->log('Reading page template');
-            }
-
             // Get page content with components
             $this->html = file_get_contents($this->router_instance->getPageData()['template_file']);
 
