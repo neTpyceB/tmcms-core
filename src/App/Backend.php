@@ -22,6 +22,7 @@ use TMCms\Templates\Page;
 use TMCms\Templates\PageBody;
 use TMCms\Templates\PageHead;
 use TMCms\Templates\PageTail;
+use function ucfirst;
 
 defined('INC') or exit;
 
@@ -489,7 +490,7 @@ class Backend
                         }
                     }
 
-                    $class = implode('\\', ['\TMCms', 'Modules', $module_name, $class_name]);
+                    $class = implode('\\', ['\TMCms', 'Modules', Converter::toCamelCase($module_name), $class_name]);
 
                     break;
                 }

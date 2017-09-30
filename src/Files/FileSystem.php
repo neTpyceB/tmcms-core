@@ -2,6 +2,7 @@
 
 namespace TMCms\Files;
 
+use RuntimeException;
 use TMCms\Admin\Filemanager\Entity\FilePropertyEntityRepository;
 
 defined('INC') or exit;
@@ -130,7 +131,7 @@ class FileSystem
         $umask = umask();
         $res = @mkdir($path, CFG_DEFAULT_DIR_PERMISSIONS, true);
         if ($res === false) {
-            die('Can not create directory "' . $path . '" - no permissions.');
+            throw new RuntimeException('Can not create directory "' . $path . '" - no permissions.');
         }
         umask($umask);
 

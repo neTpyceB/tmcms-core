@@ -26,13 +26,13 @@ class ColumnAccept extends Column
     }
 
     /**
-     * @param array  $row
+     * @param int  $row
      * @param array  $row_data
      * @param Linker $linker
      *
      * @return string
      */
-    public function getView($row, $row_data, Linker $linker)
+    public function getView(int $row, array $row_data, Linker $linker)
     {
         $linker_array = ['do' => '_accept', 'id' => $row_data['id']];
         $value = $this->getCellData($row_data);

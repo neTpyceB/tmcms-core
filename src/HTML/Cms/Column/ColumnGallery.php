@@ -48,13 +48,13 @@ class ColumnGallery extends Column {
 	}
 
 	/**
-	 * @param $row
+	 * @param int $row
 	 * @param array $row_data
      * @param Linker $linker
      *
 	 * @return string
 	 */
-    public function getView($row, $row_data, Linker $linker)
+    public function getView(int $row, array $row_data, Linker $linker)
     {
 		$images = isset($this->images[$row_data['id']]) ? $this->images[$row_data['id']] : [];
 

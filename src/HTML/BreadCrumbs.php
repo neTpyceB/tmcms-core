@@ -2,6 +2,8 @@
 
 namespace TMCms\HTML;
 
+use function is_array;
+use TMCms\HTML\Cms\Linker;
 use TMCms\Traits\singletonInstanceTrait;
 
 defined('INC') or exit;
@@ -158,13 +160,23 @@ class BreadCrumbs
 
     /**
      * @param string $title
-     * @param string $link
+     * @param string|array $link
      * @param array  $options
      *
      * @return $this
      */
     public function addAction($title, $link, array $options = [])
     {
+        if (is_array($link)) {
+            if (!isset($link['p'])) {
+                $link['p'] = P;
+            }
+            if (!isset($link['do'])) {
+                $link['do'] = P_DO;
+            }
+            $link = Linker::makeUrl($link);
+        }
+
         $options['link'] = $link;
         $this->actions[$title] = $options;
 
