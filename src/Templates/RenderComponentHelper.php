@@ -212,19 +212,6 @@ class RenderComponentHelper {
 
                 break;
 
-            case 'calendar':
-                dump('Deprecated, use type=date and format');
-                $widget = new Calendar;
-
-                if (isset($this->field_value['format'])) {
-                    $widget->dateFormat($this->field_value['format']);
-                }
-                if (isset($this->field_value['showtime'])) {
-                    $widget->showTime($this->field_value['showtime']);
-                }
-                $field->setWidget($widget);
-                break;
-
             case 'files':
                 $widget = new FileManager;
 

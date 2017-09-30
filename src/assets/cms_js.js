@@ -947,8 +947,8 @@ $(function () {
         $(this).attr('target', '_blank')
     });
 
-    // Collapsable fieldset
-    $('.collapsable_fieldset legend').click(function() {
+    // Collapsible fieldset
+    $('.collapsible_fieldset legend').click(function() {
         var $el = $(this);
         var $form = $el.parent('fieldset');
         $form.find('div').toggle();
