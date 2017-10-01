@@ -456,7 +456,7 @@ class CmsFormHelper {
 
                                 // Default path for filemanager
                                 if (isset($field['path'])) {
-                                    $file_manager->path($field['path']);
+                                    $file_manager->setPath($field['path']);
                                 }
 
                                 // Allow upload of only these extensions

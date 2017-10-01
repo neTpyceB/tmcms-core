@@ -558,7 +558,7 @@ abstract class Element
      */
     public function enableFilemanager($path = DIR_PUBLIC_URL)
     {
-        $this->setWidget(FileManager::getInstance()->path($path));
+        $this->setWidget(FileManager::getInstance()->setPath($path));
 
         return $this;
     }

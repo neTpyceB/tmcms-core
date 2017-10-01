@@ -218,7 +218,7 @@ class RenderComponentHelper {
                 // Path to opened folder
                 if (isset($this->field_value['path'])) {
                     if (!file_exists(DIR_BASE . $this->field_value['path'])) FileSystem::mkDir(DIR_BASE . $this->field_value['path']);
-                    $widget->path($this->field_value['path']);
+                    $widget->setPath($this->field_value['path']);
                 }
 
                 // Allowed extensions
