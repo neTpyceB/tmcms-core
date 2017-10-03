@@ -2,6 +2,7 @@
 
 namespace TMCms\Orm;
 
+use function array_keys;
 use TMCms\DB\SQL;
 use TMCms\DB\Sync;
 
@@ -202,8 +203,14 @@ class TableStructure {
                 break;
 
             case 'enum':
-                if (!isset($field['options'])) {
-                    dump('Param "options" must be set for field "enum"');
+            case 'array':
+                if (empty($field['options'])) {
+                    dump('Param "options" must be set for field "enum" and have filled elements');
+                }
+
+                // If associative array supplied - we need only keys
+                if (!isset($field['options'][0])) {
+                    $field['options'] = array_keys($field['options']);
                 }
 
                 $res = '`'. $field['name'] .'` enum("'. implode('","', $field['options']) .'") NULL '. (isset($field['default_value']) ? ' DEFAULT "' . $field['default_value'] . '"' : '') .'';
