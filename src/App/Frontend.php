@@ -117,8 +117,8 @@ class Frontend
         Page::setHead(
             PageHead::getInstance()
                 ->setBrowserTitle($page_title)
-                ->setMetaKeywords($this->router_instance->getPageData()['keywords'])
-                ->setMetaDescription($this->router_instance->getPageData()['description'])
+                ->setMetaKeywords((string)$this->router_instance->getPageData()['keywords'])
+                ->setMetaDescription((string)$this->router_instance->getPageData()['description'])
         );
 
         // Script for sending JS errors if not disabled. System sends JS error to support email

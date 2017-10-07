@@ -1,8 +1,10 @@
 <?php
+declare(strict_types=1);
 
 namespace TMCms\HTML;
 
 use TMCms\Config\Settings;
+use TMCms\HTML\Cms\HelperBox;
 use TMCms\HTML\Cms\Widget\FileManager;
 use TMCms\HTML\Cms\Widget\GoogleMap;
 use TMCms\HTML\Cms\Widget\Wysiwyg;
@@ -38,6 +40,8 @@ abstract class Element
     protected $value_array = [];
     private $validator_attributes = []; // For CSS and JS checks
     private $validator_checks = []; // For backend checks
+    private $helperbox_enabled= false;
+    private $helperbox_text = '';
 
     /**
      *
@@ -49,6 +53,7 @@ abstract class Element
 
     /**
      * @param string $hint
+     *
      * @return $this
      */
     public function setHintText($hint)
@@ -78,8 +83,10 @@ abstract class Element
 
     /**
      * Set element attribute that can not be set using other methods
+     *
      * @param string $k attribute name
      * @param string $v attribute value
+     *
      * @return $this
      */
     public function setAttribute($k, $v)
@@ -129,11 +136,48 @@ abstract class Element
 
     /**
      * @param string $text
+     *
      * @return $this
      */
     public function setBackup($text)
     {
         $this->backup = $text;
+
+        return $this;
+    }
+
+    /**
+     * @return string`
+     */
+    public function getHelperbox()
+    {
+        if (!$this->isHelperboxEnabled()) {
+            return '';
+        }
+
+        return (string)(new HelperBox($this->getId(), $this->getMaxlength(), $this->getBackup() && !$this->isDisabled(), $this->getHelperboxText(), $this->getValue()));
+    }
+
+    /**
+     * @return bool
+     */
+    public function getHelperboxText()
+    {
+        return $this->helperbox_text;
+    }
+
+    /**
+     * @param string $text
+     *
+     * @return $this
+     */
+    public function setHelperboxText($text)
+    {
+        // Set text
+        $this->helperbox_text = $text;
+
+        // And enable it is shown
+        $this->enableHelperbox();
 
         return $this;
     }
@@ -159,9 +203,149 @@ abstract class Element
     }
 
     /**
+     * @return string
+     */
+    public function getPlaceholder()
+    {
+        return $this->getAttribute('placeholder');
+    }
+
+    /**
+     * @param string $placeholder
+     *
+     * @return $this
+     */
+    public function setPlaceholder($placeholder)
+    {
+        $this->setAttribute('placeholder', $placeholder);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMin()
+    {
+        return $this->getAttribute('min');
+    }
+
+    /**
+     * @param string $min
+     *
+     * @return $this
+     */
+    public function setMin($min)
+    {
+        $this->setAttribute('min', $min);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMax()
+    {
+        return $this->getAttribute('max');
+    }
+
+    /**
+     * @param string $max
+     *
+     * @return $this
+     */
+    public function setMax($max)
+    {
+        $this->setAttribute('max', $max);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStep()
+    {
+        return $this->getAttribute('step');
+    }
+
+    /**
+     * @param string $step
+     *
+     * @return $this
+     */
+    public function setStep($step)
+    {
+        $this->setAttribute('step', $step);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPattern()
+    {
+        return $this->getAttribute('pattern');
+    }
+
+    /**
+     * @param string $pattern
+     *
+     * @return $this
+     */
+    public function setPattern($pattern)
+    {
+        $this->setAttribute('pattern', $pattern);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRequired()
+    {
+        return $this->getAttribute('required');
+    }
+
+    /**
+     * @param string $required
+     *
+     * @return $this
+     */
+    public function setRequired($required)
+    {
+        $this->setAttribute('required', $required);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAutofocus()
+    {
+        return $this->getAttribute('autofocus');
+    }
+
+    /**
+     * @param string $autofocus
+     *
+     * @return $this
+     */
+    public function setAutofocus($autofocus)
+    {
+        $this->setAttribute('autofocus', $autofocus);
+
+        return $this;
+    }
+
+    /**
      * @return bool
      */
-    public function isTranslationEnabled()
+    public function isTranslationEnabled(): bool
     {
         return $this->translation_enabled;
     }
@@ -178,6 +362,24 @@ abstract class Element
     }
 
     /**
+     * @return bool
+     */
+    public function isHelperboxEnabled(): bool
+    {
+        return $this->helperbox_enabled;
+    }
+
+    /**
+     * @return $this
+     */
+    public function enableHelperbox()
+    {
+        $this->helperbox_enabled = true;
+
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function getValue(): string
@@ -186,11 +388,11 @@ abstract class Element
     }
 
     /**
-     * @param string $value
+     * @param string|array $value
      *
      * @return $this
      */
-    public function setValue(string $value)
+    public function setValue($value)
     {
         $this->setAttribute('value', $value);
 
@@ -219,6 +421,7 @@ abstract class Element
 
     /**
      * @param int $maxlength
+     *
      * @return $this
      */
     public function setMaxlength($maxlength)
@@ -238,6 +441,7 @@ abstract class Element
 
     /**
      * @param string $rows
+     *
      * @return $this
      */
     public function setRowCount($rows)
@@ -267,6 +471,7 @@ abstract class Element
 
     /**
      * @param string $type
+     *
      * @return $this
      */
     public function setType($type)
@@ -286,6 +491,7 @@ abstract class Element
 
     /**
      * @param string $script
+     *
      * @return $this
      */
     public function setOnclick($script)
@@ -305,6 +511,7 @@ abstract class Element
 
     /**
      * @param string $script
+     *
      * @return $this
      */
     public function setOnchange($script)
@@ -324,6 +531,7 @@ abstract class Element
 
     /**
      * @param string $script
+     *
      * @return $this
      */
     public function setOnkeyup($script)
@@ -343,6 +551,7 @@ abstract class Element
 
     /**
      * @param string $id
+     *
      * @return $this
      */
     public function setElementIdAttribute($id)
@@ -352,6 +561,7 @@ abstract class Element
 
     /**
      * @param string $class
+     *
      * @return $this
      */
     public function addCssClass($class)
@@ -419,6 +629,7 @@ abstract class Element
 
     /**
      * @param string $k value name
+     *
      * @return bool
      */
     public function hasAttribute($k)
@@ -491,7 +702,9 @@ abstract class Element
 
     /**
      * Set Widget button near element field
+     *
      * @param Widget $widget
+     *
      * @return $this
      */
     public function setWidget(Widget $widget)
@@ -536,6 +749,9 @@ abstract class Element
 
     /**
      * Enables google map place picker
+     *
+     * @param array $options
+     *
      * @return $this
      */
     public function enableGoogleMap($options = [])
@@ -553,7 +769,9 @@ abstract class Element
 
     /**
      * Enables Filemanager editor for input, e.g. filepicker
+     *
      * @param string $path
+     *
      * @return $this
      */
     public function enableFilemanager($path = DIR_PUBLIC_URL)
@@ -573,6 +791,7 @@ abstract class Element
 
     /**
      * Enables simple datepicker for input
+     *
      * @return $this
      */
     public function enableCalendarDatepicker()
@@ -601,6 +820,7 @@ abstract class Element
 
     /**
      * @param string $format
+     *
      * @return $this
      */
     public function setDateFormat($format)
@@ -612,7 +832,9 @@ abstract class Element
 
     /**
      * Enable Bootstrap DateTimePicker on input
+     *
      * @param array $options
+     *
      * @return $this
      */
     public function enableDateTimePicker($options = [])
@@ -687,8 +909,10 @@ abstract class Element
 
     /**
      * Enable autogeneration of value in field from another field
+     *
      * @param string $from_field
      * @param string $to_field
+     *
      * @return $this
      */
     public function enableSlugGenerationUidFromField($from_field, $to_field)
@@ -721,6 +945,7 @@ abstract class Element
 
     /**
      * Validates that a value is a valid number. HTML5 type="number" is binded with below integer validator.
+     *
      * @return $this
      */
     public function validateNumber()
@@ -760,6 +985,7 @@ abstract class Element
 
     /**
      * Validates that a value is a valid alphanumeric string.
+     *
      * @return $this
      */
     public function validateAlphaNumeric()
@@ -786,7 +1012,9 @@ abstract class Element
 
     /**
      * Validates that the length of a string is at least as long as the given limit.
+     *
      * @param int $length
+     *
      * @return $this
      */
     public function validateMinLength($length)
@@ -800,7 +1028,9 @@ abstract class Element
 
     /**
      * Validates that the length of a string is not larger than the given limit.
+     *
      * @param int $length
+     *
      * @return $this
      */
     public function validateMaxLength($length)
@@ -814,8 +1044,10 @@ abstract class Element
 
     /**
      * Validates that a given string length is between some minimum and maximum value.
+     *
      * @param int $min_length
      * @param int $max_length
+     *
      * @return $this
      */
     public function validateLength($min_length, $max_length)
@@ -830,7 +1062,9 @@ abstract class Element
 
     /**
      * Validates that a given number is greater than or equal to some minimum number.
+     *
      * @param float $amount
+     *
      * @return $this
      */
     public function validateMin($amount)
@@ -844,7 +1078,9 @@ abstract class Element
 
     /**
      * Validates that a given number is less than or equal to some maximum number.
+     *
      * @param float $amount
+     *
      * @return $this
      */
     public function validateMax($amount)
@@ -858,8 +1094,10 @@ abstract class Element
 
     /**
      * Validates that a given number is between some minimum and maximum number.
+     *
      * @param float $min_amount
      * @param float $max_amount
+     *
      * @return $this
      */
     public function validateRange($min_amount, $max_amount)
@@ -874,7 +1112,9 @@ abstract class Element
 
     /**
      * Validates that a value matches a specific regular expression (regex).
+     *
      * @param int $pattern
+     *
      * @return $this
      */
     public function validatePattern($pattern)
@@ -888,7 +1128,9 @@ abstract class Element
 
     /**
      * Validates that a certain minimum number of checkboxes in a group are checked.
+     *
      * @param int $count
+     *
      * @return $this
      */
     public function validateMinCheckboxesChecked($count)
@@ -902,7 +1144,9 @@ abstract class Element
 
     /**
      * Validates that a certain maximum number of checkboxes in a group are checked.
+     *
      * @param int $count
+     *
      * @return $this
      */
     public function validateMaxCheckboxesChecked($count)
@@ -916,8 +1160,10 @@ abstract class Element
 
     /**
      * Validates that the number of checked checkboxes in a group is within a certain range.
+     *
      * @param int $min_count
      * @param int $max_count
+     *
      * @return $this
      */
     public function validateRangeCheckboxesChecked($min_count, $max_count)
@@ -932,7 +1178,9 @@ abstract class Element
 
     /**
      * Validates that the value is identical to another field's value (useful for password confirmation check).
+     *
      * @param string $another_field_id
+     *
      * @return $this
      */
     public function validateEqualToAnotherField($another_field_id)
@@ -962,6 +1210,7 @@ abstract class Element
 
     /**
      * @param array $attributes
+     *
      * @return $this
      */
     public function setValidatorAttributes($attributes)

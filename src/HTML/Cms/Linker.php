@@ -66,11 +66,11 @@ class Linker
 
     /**
      * @param string $key
-     * @param string $value
+     * @param string|array $value
      *
      * @return string
      */
-    private static function makeParam(string $key, string $value): string
+    private static function makeParam(string $key, $value): string
     {
         if (is_array($value)) {
             $tmp = [];

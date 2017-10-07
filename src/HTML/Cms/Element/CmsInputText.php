@@ -36,7 +36,7 @@ class CmsInputText extends InputText
      *
      * @return $this
      */
-    public function setValue(string $value)
+    public function setValue($value)
     {
         if (is_array($value)) {
             $this->setValueArray($value);

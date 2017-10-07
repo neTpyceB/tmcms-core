@@ -46,6 +46,6 @@ class CmsInputTags extends CmsInputText {
      * @return string
      */
     public function __toString() {
-        return '<input '. ($this->isFieldRequired() ? ' required' : '') . $this->getCommonElementValidationAttributes() .' '. $this->getAttributesString() .'>';
+        return '<input '. ($this->isFieldRequired() ? ' required' : '') . $this->getCommonElementValidationAttributes() .' '. $this->getAttributesString() .'>' . $this->getHelperBox();
     }
 }

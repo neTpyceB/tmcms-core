@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace TMCms\Orm;
 
+use function dump;
 use TMCms\Admin\Structure\Entity\TranslationRepository;
 use TMCms\Cache\Cacher;
 use TMCms\Config\Configuration;
@@ -590,8 +591,6 @@ class Entity
 
                 $data[$v] = Translations::save($this->translation_data[$v]);
 
-//                $this->debug($this);
-
                 $this->setField($v, $data[$v]);
             } else {
                 // Usual field
@@ -600,6 +599,7 @@ class Entity
                 }
             }
         }
+
 
         // Create entry in database
         $this->data['id'] = SQL::add($this->getDbTableName(), $data, true, $this->update_on_duplicate, $this->insert_low_priority, $this->insert_delayed);

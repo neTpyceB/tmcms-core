@@ -83,7 +83,9 @@ class LanguagesMiddleware implements IMiddleware
         }
 
         // Set language data
-        define('LNG', $lng['short']);
+        if (!defined('LNG')) {
+            define('LNG', $lng['short']);
+        }
 
         // Save in session
         if (Settings::get('lng_by_session')) {

@@ -232,7 +232,7 @@ class RenderComponentHelper {
             case 'pages':
                 $widget = new SitemapPages;
                 if(isset($this->field_value['lng'])) {
-                    $widget->setLanquage($this->field_value['lng']);
+                    $widget->setLanguage($this->field_value['lng']);
                 }
                 $field->setWidget($widget);
                 break;

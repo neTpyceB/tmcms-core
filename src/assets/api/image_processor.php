@@ -1,10 +1,13 @@
 <?php
+declare(strict_types=1);
 
 use TMCms\Config\Configuration;
 use TMCms\Config\Settings;
 use TMCms\Files\FileSystem;
 use TMCms\Files\Image;
 use TMCms\Middleware\MiddlewareHandler;
+use TMCms\Modules\ModuleManager;
+use TMCms\Orm\Entity;
 
 if (!preg_match('/\.(?:jpg|png|jpeg|gif)&[a-z0-9&=\_]+$/', QUERY)) {
     return;
@@ -40,9 +43,8 @@ ini_set('memory_limit', '512M');
 if ($ext == 'jpg' || $ext == 'jpeg') {
     $exif = @exif_read_data(DIR_BASE . $src_path);
     // file may be not a .jpg and this will raise an error
-    $img = @imageCreateFromJpeg(DIR_BASE . $src_path);
-    if ($img && $exif && isset($exif['Orientation']))
-    {
+    $img = @imagecreatefromjpeg(DIR_BASE . $src_path);
+    if ($img && $exif && isset($exif['Orientation'])) {
         $ort = $exif['Orientation'];
 
         if ($ort == 6 || $ort == 5)
@@ -55,7 +57,7 @@ if ($ext == 'jpg' || $ext == 'jpeg') {
         if ($ort == 5 || $ort == 4 || $ort == 7)
             imageflip($img, IMG_FLIP_HORIZONTAL);
 
-        imageJPEG($img, DIR_BASE . $src_path, 100);
+        imagejpeg($img, DIR_BASE . $src_path, 100);
     }
 }
 
@@ -68,7 +70,7 @@ try {
     $image->open($src_path);
 } catch (Exception $e) {
     if (!Settings::isProductionState()) {
-        exit('Error. Not enough memory to open image "' . $path . $file . '". Exception: '. $e->getMessage());
+        exit('Error. Not enough memory to open image "' . $path . $file . '". Exception: ' . $e->getMessage());
     }
     die;
 }
@@ -93,7 +95,7 @@ $check_size_allowed = function($size) use ($allowed_sizes, $check_for_sizes) {
     $size = trim($size);
     if (!isset($allowed_sizes[$size])) {
         if (!Settings::isProductionState()) {
-            exit('Error. Not allowed image size: '. $size .'. Allowed are '. implode(', ', array_keys($allowed_sizes)));
+            exit('Error. Not allowed image size: ' . $size . '. Allowed are ' . implode(', ', array_keys($allowed_sizes)));
         }
         die;
     }
@@ -123,6 +125,8 @@ foreach ($actions as $action => $params) {
             $ratio = $height / $h;
             $w = $width / $ratio;
 
+            $w = (int)$w;
+            $h = (int)$h;
             $image->resize($w, $h);
 
             break;
@@ -142,6 +146,8 @@ foreach ($actions as $action => $params) {
             $ratio = $width / $w;
             $h = $height / $ratio;
 
+            $w = (int)$w;
+            $h = (int)$h;
             $image->resize($w, $h);
 
             break;
@@ -158,6 +164,9 @@ foreach ($actions as $action => $params) {
             list($w, $h) = explode('x', $params);
             if ($w > $max_w) $w = $max_w;
             if ($h > $max_h) $h = $max_h;
+
+            $w = (int)$w;
+            $h = (int)$h;
             $image->resize($w, $h);
 
             break;
@@ -174,6 +183,9 @@ foreach ($actions as $action => $params) {
             list($w, $h) = explode('x', $params);
             if ($w > $max_w) $w = $max_w;
             if ($h > $max_h) $h = $max_h;
+
+            $w = (int)$w;
+            $h = (int)$h;
             $image->resizeFit($w, $h);
 
             break;
@@ -194,7 +206,7 @@ foreach ($actions as $action => $params) {
 
         case 'interlace':
             $check_size_allowed($params);
-            $image->interlace((int)((bool)$params));
+            $image->interlace((bool)$params);
 
             break;
 
@@ -208,13 +220,13 @@ foreach ($actions as $action => $params) {
                 die;
             }
             $check_size_allowed($params);
-            list($x, $y, $c) = explode('x', $params);
+            list($x, $y, $color) = explode('x', $params);
 
             $image->apply();
 
             $ih = $image->getHandler();
-            $c = imageColorAllocate($ih, hexdec($c[0] . $c[1]), hexdec($c[2] . $c[3]), hexdec($c[4] . $c[5]));
-            imageFilledRectangle($ih, $x, $y, imagesX($ih), imagesY($ih), $c);
+            $color = imagecolorallocate($ih, hexdec($color[0] . $color[1]), hexdec($color[2] . $color[3]), hexdec($color[4] . $color[5]));
+            imagefilledrectangle($ih, $x, $y, imagesx($ih), imagesy($ih), $color);
             unset($ih);
 
             break;
@@ -228,13 +240,13 @@ foreach ($actions as $action => $params) {
                 }
                 die;
             }
-            list($x1, $y1, $x2, $y2, $c) = explode('x', $params);
+            list($x1, $y1, $x2, $y2, $color) = explode('x', $params);
 
             $image->apply();
 
             $ih = $image->getHandler();
-            $c = imageColorAllocate($ih, hexdec($c[0] . $c[1]), hexdec($c[2] . $c[3]), hexdec($c[4] . $c[5]));
-            imageFilledRectangle($ih, $x1, $y1, $x2, $y2, $c);
+            $color = imagecolorallocate($ih, hexdec($color[0] . $color[1]), hexdec($color[2] . $color[3]), hexdec($color[4] . $color[5]));
+            imagefilledrectangle($ih, $x1, $y1, $x2, $y2, $color);
             unset($ih);
 
             break;
@@ -248,9 +260,10 @@ foreach ($actions as $action => $params) {
                 }
                 die;
             }
-            list($r, $c, $aa) = explode('x', $params);
+            list($radius, $color, $aa_level) = explode('x', $params);
 
-            $image->roundedCorners($r, $c, $aa);
+            $radius = (int)$radius;
+            $image->roundedCorners($radius, $color, $aa_level);
 
             break;
 
@@ -263,9 +276,9 @@ foreach ($actions as $action => $params) {
                 }
                 die;
             }
-            list($r, $c) = explode('x', $params);
+            list($radius, $color) = explode('x', $params);
 
-            $image->roundedCorners($r, $c, 0);
+            $image->roundedCorners($radius, $color, 0);
 
             break;
 
@@ -292,13 +305,16 @@ foreach ($actions as $action => $params) {
                 }
                 die;
             }
-            $data = q_assoc_row('SELECT `image`, `image_pos` FROM `cms_img_proc_perms` WHERE `rule` = "&watermark=' . sql_prepare($params) . '" LIMIT 1');
-            if (!$data || !$data['image'] || !$data['image_pos']) {
-                if (!Settings::isProductionState()) {
-                    exit('Error. Incorrect parameters for action "watermark"');
-                }
-                die;
-            }
+
+            // TODO predefine available list of watermark images and positions in admin panel and supply only id
+//            $data = q_assoc_row('SELECT `image`, `image_position` FROM `cms_images_rules` WHERE `rule` = "watermark" LIMIT 1');
+//            if (!$data || !$data['image'] || !$data['image_position']) {
+//                if (!Settings::isProductionState()) {
+//                    dump('Incorrect parameters for action "watermark"');
+//                }
+//                die;
+//            }
+
             $image->watermark($data['image'], $data['image_pos']);
 
             break;
@@ -306,7 +322,7 @@ foreach ($actions as $action => $params) {
 }
 
 // Create directory for cached file
-FileSystem::mkdir(DIR_IMAGE_CACHE . $path);
+FileSystem::mkDir(DIR_IMAGE_CACHE . $path);
 
 // Save end file for web
 $destination_path = DIR_IMAGE_CACHE . QUERY;
@@ -322,35 +338,27 @@ MiddlewareHandler::getInstance()->runHandlersFromType('after_image_processor', [
 // Run file optimizers
 // TODO move these optimizers to middleware, and possibly enable in admin panel or check during run
 $tinypng = Configuration::getInstance()->get('tinypng');
-if(class_exists('\Tinify\Tinify') && !empty($tinypng) && !empty($tinypng['key'])){
+if (class_exists('\Tinify\Tinify') && !empty($tinypng) && !empty($tinypng['key'])) {
     try {
         \Tinify\setKey($tinypng['key']);
         $source = \Tinify\fromFile($destination_path);
         $source->toFile($destination_path);
-//    } catch(\Tinify\AccountException $e) {
-//        // print("The error message is: " + $e.getMessage());
-//        // Verify your API key and account limit.
-//    } catch(\Tinify\ClientException $e) {
-//        // Check your source image and request options.
-//    } catch(\Tinify\ServerException $e) {
-//        // Temporary issue with the Tinify API.
-//    } catch(\Tinify\ConnectionException $e) {
-//        // A network connection error occurred.
-    } catch(Exception $e) {
+    } catch (Exception $e) {
         // If exception occurs saves to table for future processing
-        \TMCms\Modules\ModuleManager::requireModule('tinify');
-        if(class_exists('\TMCms\Modules\Tinify\Entity\TinifyEntity')) {
+        ModuleManager::requireModule('tinify');
+        if (class_exists('\TMCms\Modules\Tinify\Entity\TinifyEntity')) {
+            /** @var Entity $tini */
             $tini = \TMCms\Modules\Tinify\Entity\TinifyEntityRepository::getInstance()->setWherePath(QUERY)->getFirstObjectFromCollection();
-            if(!empty($tini)){
-                $tini->loadDataFromArray(['exception'=>get_class($e), 'attempt_date'=>date("Y-m-d H:i:s")])->save();
-            }else {
+            if (!empty($tini)) {
+                $tini->loadDataFromArray(['exception' => get_class($e), 'attempt_date' => date("Y-m-d H:i:s")])->save();
+            } else {
                 $tini = new \TMCms\Modules\Tinify\Entity\TinifyEntity();
                 $tini->loadDataFromArray(['path' => QUERY, 'exception' => get_class($e)])->save();
             }
         }
     }
 
-}else {
+} else {
     $path_for_exec = str_replace(['&', '=', ' ', '(', ')'], ['\&', '\=', '\ ', '\(', '\)'], QUERY);
     if ($ext == 'jpg') {
         $sizes = getimagesize(DIR_IMAGE_CACHE . QUERY);

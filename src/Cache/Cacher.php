@@ -43,10 +43,6 @@ class Cacher
      */
     public function clearAllCaches()
     {
-        // File cache contains resize images, very resource consumable operations
-        // Do not delete images if FileCache is not default and other caches exist
-        $clear_file_cache = true;
-
         if (MemcachedCache::itWorks()) {
             $this->getMemcachedCacher()->deleteAll();
             $clear_file_cache = false;
@@ -57,10 +53,8 @@ class Cacher
             $clear_file_cache = false;
         }
 
-        if ($clear_file_cache) {
-            if (FileCache::itWorks()) {
-                $this->getFileCacher()->deleteAll();
-            }
+        if (FileCache::itWorks()) {
+            $this->getFileCacher()->deleteAll();
         }
 
         if (FakeCache::itWorks()) {

@@ -316,7 +316,7 @@ class CmsForm extends Form
                         // Set special cases here
                         if ($widget instanceof SitemapPages) {
                             /** @var SitemapPages $widget */
-                            $widget->setLanquage($key);
+                            $widget->setLanguage($key);
                         }
                     }
                 }

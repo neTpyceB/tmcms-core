@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace TMCms\HTML\Cms\Element;
 
-use TMCms\HTML\Cms\HelperBox;
 use TMCms\HTML\Element\InputEmail;
 
 defined('INC') or exit;
@@ -21,10 +20,10 @@ class CmsInputEmail extends InputEmail
 
     /**
      * @param string $name
-     * @param string $value
+     * @param string|array $value
      * @param string $id
      */
-    public function __construct(string $name, string $value = '', string $id = '')
+    public function __construct(string $name, $value = '', string $id = '')
     {
         parent::__construct($name, $value, $id);
 
@@ -53,10 +52,6 @@ class CmsInputEmail extends InputEmail
      */
     public function __toString(): string
     {
-        $helper = $this->helper
-            ? new HelperBox($this->getId(), $this->getMaxlength(), $this->getBackup() && !$this->isDisabled(), $this->hint_format, $this->getValue())
-            : '';
-
-        return '<input ' . $this->getCommonElementValidationAttributes() . $this->getAttributesString() . '>' . $helper;
+        return '<input ' . $this->getCommonElementValidationAttributes() . $this->getAttributesString() . '>' . $this->getHelperbox();
     }
 }

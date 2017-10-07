@@ -174,7 +174,7 @@ var HTMLGen = {
             addEvent('focus', o, 'HTMLGen.helpers.show("' + id + '")');
             addEvent('blur', o, 'HTMLGen.helpers.hide("' + id + '")');
 
-            HTMLGen.objects['cntr_' + id] = document.getElementById('cntr_' + id);
+            HTMLGen.objects['helperbox_element_' + id] = document.getElementById('helperbox_element_' + id);
             addEvent('change', o, 'HTMLGen.count("' + id + '")');
             addEvent('keyup', o, 'HTMLGen.count("' + id + '")');
             setInterval('HTMLGen.count("' + id + '")', HTMLGen.settings.countInterval);
@@ -196,22 +196,22 @@ var HTMLGen = {
         HTMLGen.helpers.show(id);
     },
     count: function (id) {
-        if (!HTMLGen.objects['cntr_' + id] || !HTMLGen.objects[id]) {
+        if (!HTMLGen.objects['helperbox_element_' + id] || !HTMLGen.objects[id]) {
             return;
         }
-        HTMLGen.objects['cntr_' + id].innerHTML = HTMLGen.objects[id].value.length;
+        HTMLGen.objects['helperbox_element_' + id].innerHTML = HTMLGen.objects[id].value.length;
         if($(HTMLGen.objects[id]).data('max')){
             if($(HTMLGen.objects[id]).data('max') < HTMLGen.objects[id].value.length){
-                $(HTMLGen.objects['cntr_' + id]).parent().addClass('danger-hint');
+                $(HTMLGen.objects['helperbox_element_' + id]).parent().addClass('danger-hint');
             }else{
-                $(HTMLGen.objects['cntr_' + id]).parent().removeClass('danger-hint');
+                $(HTMLGen.objects['helperbox_element_' + id]).parent().removeClass('danger-hint');
             }
         }
         if($(HTMLGen.objects[id]).data('min')){
             if($(HTMLGen.objects[id]).data('min') > HTMLGen.objects[id].value.length){
-                $(HTMLGen.objects['cntr_' + id]).parent().addClass('warning-hint');
+                $(HTMLGen.objects['helperbox_element_' + id]).parent().addClass('warning-hint');
             }else{
-                $(HTMLGen.objects['cntr_' + id]).parent().removeClass('warning-hint');
+                $(HTMLGen.objects['helperbox_element_' + id]).parent().removeClass('warning-hint');
             }
         }
     },

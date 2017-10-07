@@ -3,11 +3,11 @@ declare(strict_types=1);
 
 namespace TMCms\HTML\Element;
 
-use TMCms\HTML\InputElement;
+use TMCms\HTML\Element;
 
 defined('INC') or exit;
 
-class InputDataList extends InputElement
+class InputDataList extends Element
 {
     protected $options = [];
     protected $options_position = 0;
@@ -41,7 +41,7 @@ class InputDataList extends InputElement
      *
      * @return $this
      */
-    public static function getInstance($name, $value = '', $id = '')
+    public static function getInstance(string $name, string $value = '', string $id = '')
     {
         return new self($name, $value, $id);
     }

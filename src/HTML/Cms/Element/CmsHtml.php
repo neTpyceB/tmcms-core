@@ -47,7 +47,7 @@ class CmsHtml extends Element
      *
      * @return $this
      */
-    public function setValue(string $value)
+    public function setValue($value)
     {
         $this->value = $value;
 
