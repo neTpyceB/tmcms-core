@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace TMCms\Admin;
 
@@ -16,17 +17,18 @@ class AdminLanguages
 {
     /**
      * Available languages
+     *
      * @return array
      */
-    public static function getPairs()
+    public static function getPairs(): array
     {
+        $languages_from_site = new LanguageEntityRepository();
+
+        // Default language for admin panel
         $default_languages = [
-            'en' => 'English'
+            $languages_from_site::ADMIN_LANGUAGE_DEFAULT_SHORT => $languages_from_site::ADMIN_LANGUAGE_DEFAULT_FULL,
         ];
 
-        $languages_from_site = new LanguageEntityRepository();
-        $default_languages = array_merge($default_languages, $languages_from_site->getPairs('full', 'short'));
-
-        return $default_languages;
+        return array_merge($default_languages, $languages_from_site->getPairs('full', 'short'));
     }
 }

@@ -424,7 +424,7 @@ function c($component, $class = false)
  * @param $key
  * @return string
  */
-function __($key)
+function __(string $key)
 {
     return AdminTranslations::getInstance()->getActualValueByKey($key);
 }

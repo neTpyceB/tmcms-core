@@ -133,7 +133,7 @@ class BreadCrumbs
             </div>
             <div class="portlet-body">
                 <div class="full-height-content-body">
-                    <?php foreach ($this->alerts as $text): ?>
+                    <?php foreach ($this->getAlerts() as $text): ?>
                         <p><?= $text ?></p>
                     <?php endforeach; ?>
                 </div>
@@ -219,5 +219,12 @@ class BreadCrumbs
         $this->pills[$text] = ['href' => $href, 'active' => $active];
 
         return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAlerts(): array {
+        return $this->alerts;
     }
 }

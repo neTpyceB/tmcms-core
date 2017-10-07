@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace TMCms\Admin;
 
@@ -40,7 +41,7 @@ class Menu
      * Enable or disable adding new menu items during file parse process
      * @var bool
      */
-    private $addingFlag = true;
+    private $add_of_items_allowed = true;
 
     /**
      * Help tooltips for current page, shown under menu
@@ -59,6 +60,8 @@ class Menu
 
     /**
      * Disables header and menu
+     *
+     * @return $this
      */
     public function disableMenu()
     {
@@ -70,7 +73,7 @@ class Menu
     /**
      * @return bool
      */
-    public function isMenuEnabled()
+    public function isMenuEnabled(): bool
     {
         return self::$enabled;
     }
@@ -78,13 +81,27 @@ class Menu
     /**
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         ob_start();
         ?>
         <script>
             function search_in_main_menu() {
-                <?php // TODO hide element in menu that are not found by indexOf ?>
+                var $all_elements = $('.page-sidebar-menu li ul.sub-menu li a');
+                var searched_value = $('#menu_search_input').val();
+
+                $all_elements.css({'color': '#b4bcc8'}).closest('li').closest('ul').hide().closest('li').removeClass('open');
+
+                if (searched_value !== '') {
+                    $all_elements.each(function (k, v) {
+                        var $el = $(v);
+                        var value_of_item = $el.text();
+
+                        if (value_of_item.indexOf(searched_value) !== -1) {
+                            $el.css({'color': 'yellow'}).closest('li').closest('ul').show().closest('li').addClass('open');
+                        }
+                    });
+                }
             }
         </script>
         <div class="page-sidebar-wrapper">
@@ -92,20 +109,26 @@ class Menu
                 <ul class="page-sidebar-menu" data-auto-scroll="true" data-slide-speed="200">
                     <li class="sidebar-search-wrapper hidden-xs">
                         <div class="sidebar-search sidebar-search-bordered sidebar-search-solid">
-                            <!--                            <div class="input-group">-->
-                            <!--                                <input type="text" id="menu_search_input" autofocus class="form-control" placeholder="Search..." onkeyup="search_in_main_menu();">-->
-                            <!--                                <span class="input-group-btn">-->
-                            <!--                                    <a href="javascript:;" class="btn submit"><i class="icon-magnifier"></i></a>-->
-                            <!--                                </span>-->
-                            <!--                            </div>-->
+                            <div class="input-group">
+                                <input id="menu_search_input" autofocus class="form-control" placeholder="Search..."
+                                       onkeyup="search_in_main_menu();">
+                                <span class="input-group-btn">
+                                    <a href="javascript:" class="btn submit"><i class="icon-magnifier"></i></a>
+                                </span>
+                            </div>
                         </div>
                     </li>
-                    <?php foreach ($this->_menu as $k => $v): ?>
-                        <?php if (!is_array($v)): ?>
+                    <?php
+                    // Draw menu items
+                    foreach ($this->_menu as $k => $v): ?>
+                        <?php
+                        // If not array with elements - than it's block heading
+                        if (!is_array($v)): ?>
                             <li class="heading">
                                 <h3 class="uppercase"><?= __($v) ?></h3>
                             </li>
                         <?php else:
+                            // If no title provided - it will be the same as menu key
                             if (!isset($v['title'])) {
                                 $v['title'] = $k;
                             }
@@ -123,7 +146,9 @@ class Menu
                                 </a>
                                 <?php if (isset($this->_menu[$k]['items']) && is_array($this->_menu[$k]['items'])): ?>
                                     <ul class="sub-menu">
-                                        <?php foreach ($this->_menu[$k]['items'] as $k_in => $v_in):
+                                        <?php
+                                        // Draw submenu items
+                                        foreach ($this->_menu[$k]['items'] as $k_in => $v_in):
                                             if (!isset($v_in['title'])) {
                                                 $v_in['title'] = $k_in;
                                             }
@@ -147,87 +172,23 @@ class Menu
                             </li>
                         <?php endif; ?>
                     <?php endforeach; ?>
-
-                    <?php // TODO multilevel menu items
-                    ?>
-                    <!--                    <li>-->
-                    <!--                        <a href="javascript:;">-->
-                    <!--                            <i class="icon-folder"></i>-->
-                    <!--                            <span class="title">Multi Level Menu</span>-->
-                    <!--                            <span class="arrow "></span>-->
-                    <!--                        </a>-->
-                    <!--                        <ul class="sub-menu">-->
-                    <!--                            <li>-->
-                    <!--                                <a href="javascript:;">-->
-                    <!--                                    <i class="icon-settings"></i> Item 1 <span class="arrow"></span>-->
-                    <!--                                </a>-->
-                    <!--                                <ul class="sub-menu">-->
-                    <!--                                    <li>-->
-                    <!--                                        <a href="javascript:;">-->
-                    <!--                                            <i class="icon-user"></i>-->
-                    <!--                                            Sample Link 1 <span class="arrow"></span>-->
-                    <!--                                        </a>-->
-                    <!--                                        <ul class="sub-menu">-->
-                    <!--                                            <li>-->
-                    <!--                                                <a href="#"><i class="icon-power"></i> Sample Link 1</a>-->
-                    <!--                                            </li>-->
-                    <!--                                            <li>-->
-                    <!--                                                <a href="#"><i class="icon-paper-plane"></i> Sample Link 1</a>-->
-                    <!--                                            </li>-->
-                    <!--                                            <li>-->
-                    <!--                                                <a href="#"><i class="icon-star"></i> Sample Link 1</a>-->
-                    <!--                                            </li>-->
-                    <!--                                        </ul>-->
-                    <!--                                    </li>-->
-                    <!--                                    <li>-->
-                    <!--                                        <a href="#"><i class="icon-camera"></i> Sample Link 1</a>-->
-                    <!--                                    </li>-->
-                    <!--                                    <li>-->
-                    <!--                                        <a href="#"><i class="icon-link"></i> Sample Link 2</a>-->
-                    <!--                                    </li>-->
-                    <!--                                    <li>-->
-                    <!--                                        <a href="#"><i class="icon-pointer"></i> Sample Link 3</a>-->
-                    <!--                                    </li>-->
-                    <!--                                </ul>-->
-                    <!--                            </li>-->
-                    <!--                            <li>-->
-                    <!--                                <a href="javascript:;">-->
-                    <!--                                    <i class="icon-globe"></i> Item 2 <span class="arrow"></span>-->
-                    <!--                                </a>-->
-                    <!--                                <ul class="sub-menu">-->
-                    <!--                                    <li>-->
-                    <!--                                        <a href="#"><i class="icon-tag"></i> Sample Link 1</a>-->
-                    <!--                                    </li>-->
-                    <!--                                    <li>-->
-                    <!--                                        <a href="#"><i class="icon-pencil"></i> Sample Link 1</a>-->
-                    <!--                                    </li>-->
-                    <!--                                    <li>-->
-                    <!--                                        <a href="#"><i class="icon-graph"></i> Sample Link 1</a>-->
-                    <!--                                    </li>-->
-                    <!--                                </ul>-->
-                    <!--                            </li>-->
-                    <!--                            <li>-->
-                    <!--                                <a href="#">-->
-                    <!--                                    <i class="icon-bar-chart"></i>-->
-                    <!--                                    Item 3 </a>-->
-                    <!--                            </li>-->
-                    <!--                        </ul>-->
-                    <!--                    </li>-->
-
                 </ul>
             </div>
         </div>
         <?php
+
         return ob_get_clean();
     }
 
     /**
      * Add menu item
-     * @param string $k to use in links
-     * @param array $data representation in menu
-     * @return $this whether added
+     *
+     * @param string $k    to use in links
+     * @param array  $data representation in menu
+     *
+     * @return $this
      */
-    public function addMenuItem($k, array $data)
+    public function addMenuItem(string $k, array $data)
     {
         // Can not be added if disabled
         if (!$this->isAddingItemsAllowed()) {
@@ -240,14 +201,19 @@ class Menu
         return $this;
     }
 
-    public function isAddingItemsAllowed()
+    /**
+     * @return bool
+     */
+    public function isAddingItemsAllowed(): bool
     {
-        return $this->addingFlag;
+        return $this->add_of_items_allowed;
     }
 
     /**
      * Add menu separator
+     *
      * @param  string $data representation in menu
+     *
      * @return $this whether added
      */
     public function addMenuSeparator($data)
@@ -265,12 +231,14 @@ class Menu
 
     /**
      * Add submenu item
-     * @param string $k to use in links
-     * @param string $v representation in submenu
+     *
+     * @param string $k      to use in links
+     * @param string $v      representation in submenu
      * @param string $prefix to know to which main menu item goes current submenu item
+     *
      * @return $this
      */
-    public function addSubMenuItem($k, $v = '', $prefix = P)
+    public function addSubMenuItem(string $k, string $v = '', string $prefix = P)
     {
         // Check if may be added if disables
         if (!$this->isAddingItemsAllowed()) {
@@ -300,7 +268,7 @@ class Menu
         // Make main menu as array to add submenu items
         if (!is_array($this->_menu[$prefix])) {
             $this->_menu[$prefix] = [
-                $prefix => $this->_menu[$prefix]
+                $prefix => $this->_menu[$prefix],
             ];
         }
 
@@ -312,22 +280,26 @@ class Menu
 
     /**
      * Set permissions - may or may not add new menu items
+     *
      * @param bool $flag
+     *
      * @return $this
      */
-    public function setMayAddItemsFlag($flag = true)
+    public function setMayAddItemsFlag(bool $flag = true)
     {
-        $this->addingFlag = (bool)$flag;
+        $this->add_of_items_allowed = $flag;
 
         return $this;
     }
 
     /**
      * Add one line of help text for menu item
+     *
      * @param string $text
+     *
      * @return $this
      */
-    public function addHelpText($text)
+    public function addHelpText(string $text)
     {
         $this->help_texts[] = $text;
 
@@ -336,21 +308,28 @@ class Menu
 
     /**
      * Set text for label near menu item
+     *
      * @param string $label text on label
-     * @param string $do menu item name
-     * @param string $p submenu item name
+     * @param string $do    menu item name
+     * @param string $p     submenu item name
+     *
+     * @return $this
      */
-    public function addLabelForMenuItem($label, $do = P_DO, $p = P)
+    public function addLabelForMenuItem(string $label, string $do = P_DO, string $p = P)
     {
         $this->menu_labels[$p][$do] = $label;
+
+        return $this;
     }
 
     /**
      * Get top page header
+     *
      * @return string
      */
-    public function getMenuHeaderView()
+    public function getMenuHeaderView(): string
     {
+        // Outside of authorized area
         if (!defined('USER_ID') || !USER_ID || !defined('LNG')) {
             return '';
         }
@@ -358,39 +337,40 @@ class Menu
         // Show non-default CMS headers
         $cfg = Configuration::getInstance()->get('cms');
         if (isset($cfg['custom_header']) && $cfg['custom_header']) {
-            $custom_header_callback_file = DIR_MODULES . 'cms/Admin/Menu/getMenuHeaderView.php';
-            if (file_exists($custom_header_callback_file)) {
-                return include $custom_header_callback_file;
-            }
+            // Need to create this file prior to use
+            return include DIR_MODULES . 'cms/Admin/Menu/getMenuHeaderView.php';
         }
-
-        ob_start();
 
         // Notifications from system
         $notification_repository = new UsersMessageEntityRepository;
-        $notification_repository->setWhereToUserId(USER_ID);
-        $notification_repository->setWhereFromUserId(0);
-        $notification_repository->addOrderByField('ts', true);
-        $notification_repository->setWhereSeen(0);
+        $notification_repository
+            ->setWhereToUserId(USER_ID)
+            ->setWhereFromUserId(0)
+            ->addOrderByField('ts', true)
+            ->setWhereSeen(0);
 
+        // All count for number
         $total_notifications = $notification_repository->getCountOfObjectsInCollection();
 
-        $notification_repository->setLimit(10);
-
-        $notifications = $notification_repository->getAsArrayOfObjects();
+        // Show a few latest
+        $notifications = $notification_repository
+            ->setLimit(10)
+            ->getAsArrayOfObjects();
 
         // Messages from users
         $messages_repository = new UsersMessageEntityRepository;
-        $messages_repository->setWhereToUserId(USER_ID);
-        $messages_repository->addWhereFieldIsNot('from_user_id', 0);
-        $messages_repository->addOrderByField('ts', true);
-        $messages_repository->setWhereSeen(0);
+        $messages_repository
+            ->setWhereToUserId(USER_ID)
+            ->addWhereFieldIsNot('from_user_id', 0)
+            ->addOrderByField('ts', true)
+            ->setWhereSeen(0);
 
+        // All count for number
         $total_messages = $messages_repository->getCountOfObjectsInCollection();
 
-        $messages_repository->setLimit(10);
-
-        $messages = $messages_repository->getAsArrayOfObjects();
+        $messages = $messages_repository
+            ->setLimit(10)
+            ->getAsArrayOfObjects();
 
         // Custom notifiers
         $custom_notifiers = [];
@@ -402,17 +382,21 @@ class Menu
         if (array_key_exists('logo', Configuration::getInstance()->get('cms'))) {
             $logo = Configuration::getInstance()->get('cms')['logo'];
         }
+
         $logo_link = DIR_CMS_URL;
         if (array_key_exists('logo_link', Configuration::getInstance()->get('cms'))) {
             $logo_link = Configuration::getInstance()->get('cms')['logo_link'];
         }
 
+        // User avatar image
         $user_avatar = Users::getInstance()->getUserData('avatar');
         if (!$user_avatar) {
             $user_avatar = '/vendor/devp-eu/tmcms-core/src/assets/cms/layout/img/avatar.png';
         }
 
         $languages = AdminLanguages::getPairs();
+
+        ob_start();
 
         ?>
         <div class="page-header-inner">
@@ -425,20 +409,24 @@ class Menu
                     <div class="menu-toggler sidebar-toggler"></div>
                 </div>
             <?php endif; ?>
-            <a href="javascript:;" class="menu-toggler responsive-toggler" data-toggle="collapse" data-target=".navbar-collapse"></a>
+            <a href="javascript:" class="menu-toggler responsive-toggler" data-toggle="collapse"
+               data-target=".navbar-collapse"></a>
 
             <div class="top-menu">
                 <ul class="nav navbar-nav pull-right">
                     <li class="dropdown dropdown-extended dropdown-home" id="header_home_bar">
-                        <a href="/" target="_blank" class="dropdown-toggle" data-hover="dropdown" data-close-others="true">
+                        <a href="/" target="_blank" class="dropdown-toggle" data-hover="dropdown"
+                           data-close-others="true">
                             <i class="icon-globe"></i>
                         </a>
                     </li>
                     <?php if (count($languages) > 1): ?>
                         <li class="dropdown dropdown-language">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown"
+                               data-close-others="true">
                                 <?php if (Settings::get('show_language_selector_flags')): ?>
-                                    <img alt="" src="/vendor/devp-eu/tmcms-core/src/assets/cms/img/flags/<?= LNG ?>.png">
+                                    <img alt=""
+                                         src="/vendor/devp-eu/tmcms-core/src/assets/cms/img/flags/<?= LNG ?>.png">
                                 <?php endif; ?>
                                 <span class="langname"><?= strtoupper(LNG) ?> </span>
                                 <i class="fa fa-angle-down"></i>
@@ -452,7 +440,8 @@ class Menu
                                     <li>
                                         <a href="?p=users&do=_change_lng&lng=<?= $k ?>">
                                             <?php if (Settings::get('show_language_selector_flags')): ?>
-                                                <img alt="" src="/vendor/devp-eu/tmcms-core/src/assets/cms/img/flags/<?= $k ?>.png">
+                                                <img alt=""
+                                                     src="/vendor/devp-eu/tmcms-core/src/assets/cms/img/flags/<?= $k ?>.png">
                                             <?php endif; ?>
                                             <?= $v ?>
                                         </a>
@@ -463,7 +452,8 @@ class Menu
                     <?php endif; ?>
                     <?php if ($notifications): ?>
                         <li class="dropdown dropdown-extended dropdown-notification" id="header_notification_bar">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown"
+                               data-close-others="true">
                                 <i class="icon-bell"></i>
                                 <span class="badge badge-default"><?= count($notifications); ?></span>
                             </a>
@@ -500,7 +490,8 @@ class Menu
                     <?php endif; ?>
                     <?php if ($messages): ?>
                         <li class="dropdown dropdown-extended dropdown-inbox" id="header_inbox_bar">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown"
+                               data-close-others="true">
                                 <i class="icon-envelope-open"></i>
                                 <span class="badge badge-default"><?= count($messages); ?></span>
                             </a>
@@ -544,7 +535,8 @@ class Menu
                         <?= implode('', $custom_notifiers) ?>
                     <?php endif; ?>
                     <li class="dropdown dropdown-user">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown"
+                           data-close-others="true">
                             <img alt="" class="img-circle" src="<?= $user_avatar ?>" style="height: 29px;">
                             <span class="username"><?= Users::getInstance()->getUserData('name') ?></span>
                             <i class="fa fa-angle-down"></i>
@@ -580,27 +572,25 @@ class Menu
                             </li>
                         </ul>
                     </li>
-                    <?php // TODO right panel
-                    ?>
-                    <!--                    <li class="dropdown dropdown-quick-sidebar-toggler">-->
-                    <!--                        <a href="javascript:;" class="dropdown-toggle">-->
-                    <!--                            <i class="icon-logout"></i>-->
-                    <!--                        </a>-->
-                    <!--                    </li>-->
                 </ul>
             </div>
         </div>
         <?php
+
         return ob_get_clean();
     }
 
-    private function getHelpTextsNotifier()
+    /**
+     * @return string
+     */
+    private function getHelpTextsNotifier(): string
     {
         if (!$this->help_texts) {
             return '';
         }
 
         ob_start();
+
         ?>
         <li class="dropdown dropdown-extended dropdown-notification">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
@@ -627,22 +617,24 @@ class Menu
             </ul>
         </li>
         <?php
+
         return ob_get_clean();
     }
 
     /**
      * @return string
      */
-    public function getPageTitle()
+    public function getPageTitle(): string
     {
         return $this->page_title;
     }
 
     /**
      * @param string $page_title
+     *
      * @return $this
      */
-    public function setPageTitle($page_title)
+    public function setPageTitle(string $page_title)
     {
         $this->page_title = $page_title;
 
@@ -652,16 +644,17 @@ class Menu
     /**
      * @return string
      */
-    public function getPageDescription()
+    public function getPageDescription(): string
     {
         return $this->page_description;
     }
 
     /**
      * @param string $page_description
+     *
      * @return $this
      */
-    public function setPageDescription($page_description)
+    public function setPageDescription(string $page_description)
     {
         $this->page_description = $page_description;
 

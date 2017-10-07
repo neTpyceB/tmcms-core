@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace TMCms\Admin\Entity;
 
 use TMCms\Orm\Entity;
@@ -13,6 +15,7 @@ use TMCms\Orm\Entity;
  * @method $this setFull(string $full_name);
  * @method $this setShort(string $short_name);
  */
-class LanguageEntity extends Entity {
+class LanguageEntity extends Entity
+{
     protected $db_table = 'cms_languages';
 }

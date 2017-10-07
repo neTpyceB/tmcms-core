@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace TMCms\Admin;
 
@@ -13,11 +14,14 @@ defined('INC') or exit;
 class FrontPanel
 {
     /**
+     * Add ajax call to load front panel after page is shown
+     *
      * @return string
      */
     public static function getView()
     {
         ob_start();
+
         ?>
         <script>
             $.ajax({
@@ -31,6 +35,7 @@ class FrontPanel
             });
         </script>
         <?php
+
         return ob_get_clean();
     }
 }

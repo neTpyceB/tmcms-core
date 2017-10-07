@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace TMCms\Admin;
 
@@ -17,43 +18,52 @@ use TMCms\Traits\singletonOnlyInstanceTrait;
 class Messages
 {
     const ALERT_SESSION_KEY = 'cms_alerts';
+    const TOASTR_MESSAGE_COLOR_BROWSER = 0;
+    const TOASTR_MESSAGE_COLOR_GREEN = 1;
+    const TOASTR_MESSAGE_COLOR_RED = 2;
+    const TOASTR_MESSAGE_COLOR_BLACK = 3;
 
     use singletonOnlyInstanceTrait;
 
     /**
      * Notification using browser API
      * Get array of UserMessage
+     *
      * @param int $from_user_id sender user id
-     * @param int $to_user_id recipient user id
+     * @param int $to_user_id   recipient user id
+     *
      * @return array
      */
-    public static function receiveMessages($from_user_id, $to_user_id = USER_ID)
+    public static function receiveMessages(int $from_user_id, int $to_user_id = USER_ID): array
     {
         // Direction A -> B
         $message_collection = new UsersMessageEntityRepository();
-        $message_collection->setWhereFromUserId($from_user_id);
-        $message_collection->setWhereToUserId($to_user_id);
-
-        $messages = $message_collection->getAsArrayOfObjects();
+        $messages = $message_collection
+            ->setWhereFromUserId($from_user_id)
+            ->setWhereToUserId($to_user_id)
+            ->getAsArrayOfObjects();
 
         // Direction B -> A
         $message_collection = new UsersMessageEntityRepository();
-        $message_collection->setWhereFromUserId($to_user_id);
-        $message_collection->setWhereToUserId($from_user_id);
+        $message_collection
+            ->setWhereFromUserId($to_user_id)
+            ->setWhereToUserId($from_user_id);
 
         // Combine messages
-        $messages = array_merge($messages, $message_collection->getAsArrayOfObjects());
+        $messages = array_merge($messages, $message_collection
+            ->getAsArrayOfObjects());
 
         // Sort by time
-        usort($messages, function ($a, $b) {
+        usort($messages, function($a, $b) {
             /** @var UsersMessageEntity $a */
             /** @var UsersMessageEntity $b */
             $a = $a->getTs();
             $b = $b->getTs();
 
-            if ($a == $b) {
+            if ($a === $b) {
                 return 0;
             }
+
             return ($a < $b) ? 1 : -1;
         });
 
@@ -61,66 +71,82 @@ class Messages
     }
 
     /**
-     * Notification using green toastr alerts
-     * @param string $text Text to be sent
-     * @param int $to_user_id recipient user id
-     * @param int $from_user_id sender user id
+     * @param string $text         Text to be sent
+     * @param int    $to_user_id   recipient user id
+     * @param int    $from_user_id sender user id
+     * @param int    $notify_toastr
+     *
      * @return UsersMessageEntity that was sent
      */
-    public static function sendGreenAlert($text, $to_user_id = USER_ID, $from_user_id = 0)
+    public static function sendMessage(string $text, int $to_user_id = USER_ID, int $from_user_id = 0, int $notify_toastr = self::TOASTR_MESSAGE_COLOR_GREEN)
     {
-        return self::sendMessage($text, $to_user_id, $from_user_id, 1);
+        $message = new UsersMessageEntity();
+
+        return $message
+            ->setFromUserId($from_user_id)
+            ->setToUserId($to_user_id)
+            ->setMessage($text)
+            ->setNotify($notify_toastr)
+            ->save();
     }
 
     /**
-     * @param string $text Text to be sent
-     * @param int $to_user_id recipient user id
-     * @param int $from_user_id sender user id
-     * @param int $notify_toastr
+     * Notification using green toastr alerts
+     *
+     * @param string $text         Text to be sent
+     * @param int    $to_user_id   recipient user id
+     * @param int    $from_user_id sender user id
+     *
      * @return UsersMessageEntity that was sent
      */
-    public static function sendMessage($text, $to_user_id = USER_ID, $from_user_id = 0, $notify_toastr = 0)
+    public static function sendGreenAlert(string $text, int $to_user_id = USER_ID, int $from_user_id = 0): UsersMessageEntity
     {
-        $message = new UsersMessageEntity();
-        $message->setFromUserId($from_user_id);
-        $message->setToUserId($to_user_id);
-        $message->setMessage($text);
-        /* setNotify =
-         * 0 - def. browser notify
-         * 1 - green
-         * 2 - red
-         * 3 - black
-         */
-        $message->setNotify((int)$notify_toastr);
-        $message->save();
-
-        return $message;
+        return self::sendMessage($text, $to_user_id, $from_user_id, self::TOASTR_MESSAGE_COLOR_GREEN);
     }
 
     /**
      * Notification using red toastr alerts
-     * @param string $text Text to be sent
-     * @param int $to_user_id recipient user id
-     * @param int $from_user_id sender user id
+     *
+     * @param string $text         Text to be sent
+     * @param int    $to_user_id   recipient user id
+     * @param int    $from_user_id sender user id
+     *
      * @return UsersMessageEntity that was sent
      */
-    public static function sendRedAlert($text, $to_user_id = USER_ID, $from_user_id = 0)
+    public static function sendRedAlert(string $text, int $to_user_id = USER_ID, int $from_user_id = 0): UsersMessageEntity
     {
-        return self::sendMessage($text, $to_user_id, $from_user_id, 2);
-    }
-    public static function sendBlackAlert($text, $to_user_id = USER_ID, $from_user_id = 0)
-    {
-        return self::sendMessage($text, $to_user_id, $from_user_id, 3);
+        return self::sendMessage($text, $to_user_id, $from_user_id, self::TOASTR_MESSAGE_COLOR_RED);
     }
 
-    public static function sendFlashAlert($message)
+    /**
+     * Notification using black toastr alerts
+     *
+     * @param string $text         Text to be sent
+     * @param int    $to_user_id   recipient user id
+     * @param int    $from_user_id sender user id
+     *
+     * @return UsersMessageEntity that was sent
+     */
+    public static function sendBlackAlert(string $text, int $to_user_id = USER_ID, int $from_user_id = 0): UsersMessageEntity
     {
+        return self::sendMessage($text, $to_user_id, $from_user_id, self::TOASTR_MESSAGE_COLOR_BLACK);
+    }
+
+    /**
+     * @param string $message
+     */
+    public static function sendFlashAlert(string $message)
+    {
+        // Create Session key
         if (!isset($_SESSION[self::ALERT_SESSION_KEY])) {
             $_SESSION[self::ALERT_SESSION_KEY] = '';
         }
 
         // Get existing messages
         $messages = @json_decode($_SESSION[self::ALERT_SESSION_KEY]);
+        if (!$messages) {
+            $messages = [];
+        }
 
         // Add new to the list
         $messages[] = $message;

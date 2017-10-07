@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace TMCms\Admin\Entity;
 
@@ -10,12 +11,11 @@ class MigrationEntityRepository extends EntityRepository
     protected $table_structure = [
         'fields' => [
             'filename' => [
-                'type' => 'varchar'
+                'type' => 'varchar',
             ],
-            'ts' => [
-                'type' => 'int',
-                'unsigned' => true,
+            'ts'       => [
+                'type'     => 'ts',
             ],
-        ]
+        ],
     ];
 }
