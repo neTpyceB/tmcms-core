@@ -55,8 +55,8 @@ class Image
             return false;
         }
 
-        $this->image_width = $imgData[0];
-        $this->image_height = $imgData[1];
+        $this->image_width = (int)$imgData[0];
+        $this->image_height = (int)$imgData[1];
 
         if ($check_avail_mem && !$this->haveEnoughMemoryToOpenAndProcess()) {
             throw new RuntimeException('Empty can not be opened.');
@@ -97,7 +97,7 @@ class Image
      */
     private function haveEnoughMemoryToOpenAndProcess()
     {
-        return !$this->checkIfMemoryLimitReached($this->getMemoryUsage($this->image_width, $this->image_height));
+        return !$this->checkIfMemoryLimitReached((int)$this->getMemoryUsage($this->image_width, $this->image_height));
     }
 
     /**
@@ -105,7 +105,7 @@ class Image
      * @param int $height
      * @param int $multiply_by
      *
-     * @return int|null
+     * @return float
      */
     private function getMemoryUsage(int $width = 0, int $height = 0, $multiply_by = 1)
     {
@@ -531,11 +531,11 @@ class Image
 
         $k = (($src_w / $src_h) > ($width / $height) ? $src_h / $height : $src_w / $width);
 
-        $resW = round($src_w / $k);
-        $resH = round($src_h / $k);
+        $resW = (int)round($src_w / $k);
+        $resH = (int)round($src_h / $k);
 
-        $src_x = floor(($resW - $width) / 2) * $k;
-        $src_y = floor(($resH - $height) / 2) * $k;
+        $src_x = (int)(floor(($resW - $width) / 2) * $k);
+        $src_y = (int)(floor(($resH - $height) / 2) * $k);
 
         $res = imagecreatetruecolor($width, $height);
 
@@ -854,7 +854,7 @@ class Image
         }
         $maxMemoryUsage = $maxMemoryUsage + $overhead;
 
-        if ($this->checkIfMemoryLimitReached($maxMemoryUsage)) {
+        if ($this->checkIfMemoryLimitReached((int)$maxMemoryUsage)) {
             return false;
         }
 
