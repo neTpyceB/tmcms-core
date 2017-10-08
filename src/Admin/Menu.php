@@ -473,7 +473,7 @@ class Menu
                                                     </span>
                                                     <?= $message->getMessage() ?>
                                                     <span class="time">
-                                                        <?= Converter::getTimeFromEventAgo($message->getTs()) ?>
+                                                        <?= Converter::getTimeFromEventAgo((int)$message->getTs()) ?>
                                                     </span>
                                                 </a>
                                             </li>
@@ -515,7 +515,7 @@ class Menu
                                                     <?php endif; ?>
                                                     <span class="subject">
                                                         <span class="from"><?= $user->getName() ?></span>
-                                                        <span class="time"><?= Converter::getTimeFromEventAgo($message->getTs()) ?></span>
+                                                        <span class="time"><?= Converter::getTimeFromEventAgo((int)$message->getTs()) ?></span>
                                                     </span>
                                                     <span class="message"><?= Converter::cutLongStrings($message->getMessage()) ?></span>
                                                 </a>
