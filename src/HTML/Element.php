@@ -652,7 +652,7 @@ abstract class Element
 
         // Id can be set
         if ($this->id) {
-            $res[] = 'id="' . htmlspecialchars($this->getId(), ENT_QUOTES) . '"';
+            $res[] = 'id="' . htmlspecialchars((string)$this->getId(), ENT_QUOTES) . '"';
         }
 
         foreach ($this->attributes as $k => $v) {
@@ -675,7 +675,7 @@ abstract class Element
 
                 case 'value':
 
-                    $v = htmlspecialchars($v, ENT_QUOTES);
+                    $v = htmlspecialchars((string)$v, ENT_QUOTES);
                     break;
 
             }
