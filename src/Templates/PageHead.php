@@ -456,10 +456,10 @@ class PageHead
                             try {
                                 w.yaCounter<?= $ym ?> = new Ya.Metrika({
                                     id:<?= $ym ?>,
-                                    webvisor: false,
-                                    clickmap: false,
-                                    trackLinks: false,
-                                    accurateTrackBounce: false
+                                    clickmap:true,
+                                    trackLinks:true,
+                                    accurateTrackBounce:true,
+                                    webvisor:true
                                 });
                             } catch (e) {
                             }
