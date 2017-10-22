@@ -17,8 +17,6 @@ use TMCms\Admin\Users\Entity\UsersMessageEntityRepository;
 use TMCms\Config\Configuration;
 use TMCms\Config\Settings;
 use TMCms\Log\App;
-use TMCms\Log\Entity\AppLogEntity;
-use TMCms\Log\Entity\AppLogEntityRepository;
 use TMCms\Routing\Languages;
 use TMCms\Traits\singletonOnlyInstanceTrait;
 
@@ -48,7 +46,13 @@ class Users
     private static $_structure_permissions = [];
     private $_online_status_cached = [];
 
-    public function isOnline($user_id) {
+    /**
+     * @param int $user_id
+     *
+     * @return bool
+     */
+    public function isOnline(int $user_id): bool
+    {
         if (isset($this->_online_status_cached[$user_id])) {
             return $this->_online_status_cached[$user_id];
         }
@@ -57,21 +61,25 @@ class Users
         $sessions = new UsersSessionEntityRepository();
         $sessions->setWhereUserId($user_id);
         $sessions->setLimit(1);
-        $sessions->addWhereFieldIsHigher('ts', (NOW - 600)); // 10 minutes
+        $sessions->addWhereFieldIsHigher('ts', (NOW - 120)); // 2 minutes
+
         return $this->_online_status_cached[$user_id] = $sessions->hasAnyObjectInCollection();
     }
 
     /**
      * After that user is logged-in
+     *
      * @param AdminUser $user
+     *
      * @return string session id
      */
-    public function setUserLoggedIn($user)
+    public function setUserLoggedIn(AdminUser $user): string
     {
         $_SESSION['admin_logged'] = true;
         $_SESSION['admin_id'] = $user->getId();
         $_SESSION['admin_login'] = $user->getLogin();
         $_SESSION['admin_sid'] = Users::getInstance()->startSession($user->getId());
+
         if (!defined('USER_ID')) {
             define('USER_ID', $user->getId());
         }
@@ -83,7 +91,9 @@ class Users
 
     /**
      * Starts session for admin user
+     *
      * @param int $user_id
+     *
      * @return string session id
      */
     public function startSession($user_id)
@@ -94,7 +104,7 @@ class Users
         $sid = $this->generateUserSid($user_id);
 
         $session = UsersSessionEntityRepository::findOneEntityByCriteria([
-            'sid' => $sid,
+            'sid'     => $sid,
             'user_id' => $user_id,
         ]);
         if (!$session) {
@@ -127,7 +137,9 @@ class Users
 
     /**
      * Generate used session id using visitor data
+     *
      * @param int $user_id
+     *
      * @return string session id
      */
     private function generateUserSid($user_id)
@@ -137,7 +149,9 @@ class Users
 
     /**
      * Removes current session, logs out admin user
+     *
      * @param int $user_id
+     *
      * @return bool
      */
     public function deleteSession($user_id)
@@ -157,7 +171,9 @@ class Users
 
     /**
      * Get admin user currently selected language
+     *
      * @param int $user_id
+     *
      * @return string
      */
     public function getUserLng($user_id = 0)
@@ -178,8 +194,10 @@ class Users
 
     /**
      * Get User's data by key
+     *
      * @param string $key key to get value
-     * @param int $id user id to get value from
+     * @param int    $id  user id to get value from
+     *
      * @return string
      */
     public function getUserData($key, $id = 0)
@@ -230,9 +248,11 @@ class Users
 
     /**
      * Check whether user have access to open selected page
+     *
      * @param string $p
      * @param string $do
-     * @param int $user_id
+     * @param int    $user_id
+     *
      * @return bool
      */
     public function checkAccess($p = P, $do = P_DO, $user_id = 0)
@@ -287,9 +307,11 @@ class Users
 
     /**
      * Check whether user is logged-in
-     * @param int $user_id
+     *
+     * @param int    $user_id
      * @param string $user_sid session
-     * @param bool $touch prolong session
+     * @param bool   $touch    prolong session
+     *
      * @return bool
      */
     private function checkSession($user_id, $user_sid, $touch = false)
@@ -318,13 +340,16 @@ class Users
         $sessions->setWhereUserId($user_id);
         $sessions->setWhereSid($user_sid);
         $sessions->addWhereFieldIsHigherOrEqual('ts', NOW - CFG_SESSION_KEEP_ALIVE_SECONDS);
+
         return $sessions->hasAnyObjectInCollection();
     }
 
     /**
      * Get Group's data by key
+     *
      * @param string $key
-     * @param int $id
+     * @param int    $id
+     *
      * @return string
      */
     public function getGroupData($key, $id = 0)
@@ -347,8 +372,10 @@ class Users
 
     /**
      * Permissions for site structure
-     * @param int $page_id
+     *
+     * @param int    $page_id
      * @param string $action
+     *
      * @return bool
      */
     public function checkSitePagePermissions($page_id, $action)
@@ -447,11 +474,11 @@ class Users
                 $group->is_super_admin = true;
                 $group->loadDataFromArray(
                     [
-                        'undeletable' => 1,
-                        'can_set_permissions' => 1,
+                        'undeletable'           => 1,
+                        'can_set_permissions'   => 1,
                         'structure_permissions' => 1,
-                        'full_access' => 1,
-                        'title' => 'Developers',
+                        'full_access'           => 1,
+                        'title'                 => 'Developers',
                     ]
                 );
                 $group->save();
@@ -461,12 +488,12 @@ class Users
                 $group->is_super_admin = true;
                 $group->loadDataFromArray(
                     [
-                        'undeletable' => 0,
-                        'can_set_permissions' => 1,
+                        'undeletable'           => 0,
+                        'can_set_permissions'   => 1,
                         'structure_permissions' => 1,
-                        'full_access' => 1,
-                        'title' => 'Managers',
-                        'default' => 1
+                        'full_access'           => 1,
+                        'title'                 => 'Managers',
+                        'default'               => 1,
                     ]
                 );
                 $group->save();
@@ -504,9 +531,9 @@ class Users
             $user->loadDataFromArray(
                 [
                     'group_id' => 1, // Developer
-                    'login' => 'neTpyceB', // Name of vendor repo owner
+                    'login'    => 'neTpyceB', // Name of vendor repo owner
                     'password' => $this->generateHash(Configuration::getInstance()->get('cms')['unique_key']), // Password is the same as unique key
-                    'active' => 1
+                    'active'   => 1,
                 ]
             );
             $user->save();
@@ -516,9 +543,9 @@ class Users
             $user->loadDataFromArray(
                 [
                     'group_id' => 2, // Manager
-                    'login' => 'manager',
+                    'login'    => 'manager',
                     'password' => $this->generateHash(''), // Empty password
-                    'active' => 1
+                    'active'   => 1,
                 ]
             );
             $user->save();
