@@ -484,11 +484,11 @@ class Image
         $yscale = $src_h / $height;
 
         if ($yscale > $xscale) {
-            $dst_w = round($src_w * (1 / $yscale));
-            $dst_h = round($src_h * (1 / $yscale));
+            $dst_w = (int)round($src_w * (1 / $yscale));
+            $dst_h = (int)round($src_h * (1 / $yscale));
         } else {
-            $dst_w = round($src_w * (1 / $xscale));
-            $dst_h = round($src_h * (1 / $xscale));
+            $dst_w = (int)round($src_w * (1 / $xscale));
+            $dst_h = (int)round($src_h * (1 / $xscale));
         }
 
         $res = imagecreatetruecolor($dst_w, $dst_h);
