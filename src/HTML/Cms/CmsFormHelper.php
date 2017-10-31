@@ -377,10 +377,10 @@ class CmsFormHelper {
                         $cms_field->setHintText($field['hint']);
                     }
                     if (isset($field['min'])) {
-                        $cms_field->min($field['min']);
+                        $cms_field->setMin($field['min']);
                     }
                     if (isset($field['max'])) {
-                        $cms_field->max($field['max']);
+                        $cms_field->setMax($field['max']);
                     }
                     if (isset($field['min-symbols'])) {
                         $cms_field->setAttribute('data-min', $field['min-symbols']);
@@ -389,7 +389,7 @@ class CmsFormHelper {
                         $cms_field->setAttribute('data-max', $field['max-symbols']);
                     }
                     if (isset($field['step'])) {
-                        $cms_field->step($field['step']);
+                        $cms_field->setStep($field['step']);
                     }
                     if (isset($field['reveal'])) {
                         $cms_field->reveal($field['reveal']);
