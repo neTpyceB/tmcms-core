@@ -385,7 +385,7 @@ class EntityRepository implements IteratorAggregate, Countable
                     $select_sql[] = '`' . $field_data['table'] . '`.`' . $field_data['field'] . '`' . ($field_data['as'] ? ' AS `' . $field_data['as'] . '`' : '');
                 } elseif ($field_data['type'] === 'string') {
                     $select_sql[] = $field_data['field'];
-                } elseif ($field_data['type'] === 'translation') {
+                } elseif ($field_data['type'] === TableStructure::FIELD_TYPE_TRANSLATION) {
                     $select_sql[] = '`' . $field_data['table'] . '`.`' . $field_data['field'] . '` AS `' . $field_data['as'] . '`';
                 }
             }
@@ -767,7 +767,7 @@ FROM `' . $this->getDbTableName() . '`
                     'table' => $this->getTranslationTableJoinAlias() . $this->translation_join_count . '',
                     'field' => $this->getLanguage(),
                     'as'    => $field,
-                    'type'  => 'translation'
+                    'type'  => TableStructure::FIELD_TYPE_TRANSLATION
                 ];
             } else {
                 // Simple field
@@ -1023,7 +1023,7 @@ FROM `' . $this->getDbTableName() . '`
                 'table' => $this->getTranslationTableJoinAlias() . $this->translation_join_count . '',
                 'field' => $this->getLanguage(),
                 'as'    => $alias,
-                'type'  => 'translation'
+                'type'  => TableStructure::FIELD_TYPE_TRANSLATION
             ];
         } else {
             $this->sql_select_fields[] = [

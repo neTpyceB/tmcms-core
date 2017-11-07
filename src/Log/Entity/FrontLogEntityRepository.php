@@ -3,6 +3,7 @@
 namespace TMCms\Log\Entity;
 
 use TMCms\Orm\EntityRepository;
+use TMCms\Orm\TableStructure;
 
 /**
  * Class FrontLogEntityRepository
@@ -15,7 +16,7 @@ class FrontLogEntityRepository extends EntityRepository
     protected $table_structure = [
         'fields' => [
             'ts' => [
-                'type' => 'ts',
+                'type' => TableStructure::FIELD_TYPE_UNSIGNED_INTEGER,
             ],
             'ip' => [
                 'type' => 'varchar',
