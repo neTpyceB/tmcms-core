@@ -14,6 +14,7 @@ class TableStructure {
 
     const FIELD_TYPE_BOOL = 'bool'; // active, checkbox
     const FIELD_TYPE_TRANSLATION = 'translation';
+    const FIELD_TYPE_VARCHAR_255 = 'varchar';
     const FIELD_TYPE_UNSIGNED_INTEGER = 'unsigned_integer'; // ts, order,
 
     const INDEX_TYPE_KEY = 'key';
@@ -120,7 +121,7 @@ class TableStructure {
         $res = '';
 
         switch ($field['type']) {
-            case 'varchar':
+            case self::FIELD_TYPE_VARCHAR_255:
                 // Simple text input
                 if (!isset($field['length'])) {
                     $field['length'] = '255';
