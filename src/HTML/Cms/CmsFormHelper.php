@@ -364,8 +364,8 @@ class CmsFormHelper {
                     if (isset($field['readonly']) && $field['readonly']) {
                         $cms_field->enableReadOnly();
                     }
-                    if (isset($field['html'])) {
-                        $cms_field->html($field['html']);
+                    if (isset($field['html']) && $field['html']) {
+                        $cms_field->allowHtml();
                     }
                     if (isset($field['rows'])) {
                         $cms_field->setRowCount($field['rows']);

@@ -206,7 +206,7 @@ class RenderComponentHelper {
             case 'wysiwyg':
             case 'tinymce':
                 $field->enableWysiwyg();
-                if(!empty($this->field_value['wysiwyg_options'])){
+                if (!empty($this->field_value['wysiwyg_options'])){
                     $field->getWidget()->wysiwyg_options = $this->field_value['wysiwyg_options'];
                 }
 

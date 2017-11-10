@@ -3,6 +3,7 @@
 namespace TMCms\HTML\Cms;
 
 use TMCms\DB\SQL;
+use TMCms\HTML\BreadCrumbs;
 use TMCms\HTML\Cms\Column\ColumnAccept;
 use TMCms\HTML\Cms\Column\ColumnActive;
 use TMCms\HTML\Cms\Column\ColumnCheckbox;
@@ -39,6 +40,10 @@ class CmsTableHelper {
             $params['columns'] = array_merge(self::combineParamsFromDB($params), $params['columns']);
         }
 
+        // Add action for "Add" item
+        if (isset($params['add'])) {
+            BreadCrumbs::getInstance()->addAction(\__('Add'), ['do' => \P_DO . '_add']);
+        }
         // Check view column
         if (isset($params['view']) && !isset($params['columns']['view'])) {
             $params['columns']['view'] = [

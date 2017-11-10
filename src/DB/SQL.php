@@ -8,6 +8,7 @@ use TMCms\Config\Configuration;
 use TMCms\Config\Settings;
 use TMCms\Log\Errors;
 use TMCms\Log\Stats;
+use TMCms\Orm\TableStructure;
 use TMCms\Strings\Converter;
 use TMCms\Traits\singletonInstanceTrait;
 use PDO;
@@ -661,7 +662,7 @@ class SQL
             $translation_columns = [];
 
             foreach (self::getColumnsComments($tbl) as $v) {
-                if ($v['COLUMN_COMMENT'] == 'translation') {
+                if ($v['COLUMN_COMMENT'] == TableStructure::FIELD_TYPE_TRANSLATION) {
                     $translation_columns[] = $v['COLUMN_NAME'];
                 }
             }

@@ -6,7 +6,18 @@ use function array_keys;
 use TMCms\DB\SQL;
 use TMCms\DB\Sync;
 
+/**
+ * Class TableStructure
+ * @package TMCms\Orm
+ */
 class TableStructure {
+
+    const FIELD_TYPE_BOOL = 'bool'; // active, checkbox
+    const FIELD_TYPE_TRANSLATION = 'translation';
+    const FIELD_TYPE_VARCHAR_255 = 'varchar';
+    const FIELD_TYPE_UNSIGNED_INTEGER = 'unsigned_integer'; // ts, order,
+
+    const INDEX_TYPE_KEY = 'key';
 
     private $table_name = '';
     private $table_structure = [];
@@ -110,7 +121,7 @@ class TableStructure {
         $res = '';
 
         switch ($field['type']) {
-            case 'varchar':
+            case self::FIELD_TYPE_VARCHAR_255:
                 // Simple text input
                 if (!isset($field['length'])) {
                     $field['length'] = '255';
@@ -148,6 +159,7 @@ class TableStructure {
                 $res = '`'. $field['name'] .'` int('. $field['length'] .') '. ($unsigned ? ' unsigned ' : '') . (isset($field['null']) && !$field['null'] ? ' NOT NULL' : ((isset($field['auto_increment']) ? '' : ' DEFAULT "'. (isset($field['default_value']) ? $field['default_value'] : '0') .'"') . ' NULL'));
                 break;
 
+            case self::FIELD_TYPE_UNSIGNED_INTEGER:
             case 'ts':
             case 'order':
                 // Digit
@@ -165,10 +177,10 @@ class TableStructure {
                 }
                 break;
 
-            case 'translation':
+            case self::FIELD_TYPE_TRANSLATION:
                 // Int index with comment
                 $res = '`'. $field['name'] .'` int(10) unsigned NULL DEFAULT "0"';
-                $field['comment'] = 'translation';
+                $field['comment'] = self::FIELD_TYPE_TRANSLATION;
                 break;
 
             case 'current_timestamp':
@@ -184,7 +196,7 @@ class TableStructure {
 
             case 'checkbox':
             case 'active':
-            case 'bool':
+            case self::FIELD_TYPE_BOOL:
                 // True or false, 0 | 1
                 $res = '`'. $field['name'] .'` tinyint(1) unsigned NULL DEFAULT "'. (isset($field['default_value']) ? $field['default_value'] : '0') .'"';
                 break;
@@ -256,6 +268,7 @@ class TableStructure {
         $sync->makeItWork();
         $sql = $sync->getUpdates($source, $destination);
 
+        // TODO make a button in admin panel to generate DB diff for prod update
         // Commented - do not auto run migrations, but only show desired changes
 //        if ($sql) {
 //            foreach ($sql as $item) {
