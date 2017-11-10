@@ -3,7 +3,9 @@ declare(strict_types=1);
 
 namespace TMCms\Admin;
 
+use TMCms\Config\Configuration;
 use TMCms\Config\Settings;
+use TMCms\Files\FileSystem;
 use TMCms\Files\Finder;
 use TMCms\Traits\singletonOnlyInstanceTrait;
 
@@ -28,7 +30,32 @@ class AdminTranslations
      */
     public function getActualValueByKey(string $key): string
     {
+        if($key==="") return "";
         $this->initData(Finder::getInstance()->getPathFolders(Finder::TYPE_TRANSLATIONS));
+
+        if(!isset(self::$init_data[$key]) && Configuration::getInstance()->get('translation_catcher') && defined('P')){
+            $dir = DIR_BASE.'trans_catcher/';
+            FileSystem::mkDir($dir);
+            $file_name = $dir . P . '.txt';
+            if(!file_exists($file_name)){
+                $log = [];
+            }else{
+                $log_data = explode(PHP_EOL, file_get_contents($file_name));
+                foreach($log_data as $r){
+                    if(!$r) continue;
+                    $l = explode('=', $r, 2);
+                    $log[$l[0]] = trim($l[1], '"');
+                }
+            }
+            if(!isset($log[$key])){
+                $log[$key] = '';
+            }
+            $content = '';
+            foreach($log as $k=>$v){
+                $content .= $k.'="'.$v.'"'.PHP_EOL;
+            }
+            file_put_contents ($file_name, $content);
+        }
 
         return self::$init_data[$key] ?? $key;
     }

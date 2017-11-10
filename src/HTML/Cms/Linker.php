@@ -75,13 +75,13 @@ class Linker
         if (is_array($value)) {
             $tmp = [];
             foreach ($value as $v) {
-                $tmp[] = urlencode($key) . '[]=' . urlencode($v);
+                $tmp[] = urlencode((string)$key) . '[]=' . urlencode((string)$v);
             }
 
             return implode('&', $tmp);
         }
 
-        return urlencode($key) . '=' . urlencode($value);
+        return urlencode((string)$key) . '=' . urlencode((string)$value);
     }
 
     /**
