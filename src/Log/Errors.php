@@ -274,7 +274,7 @@ class Errors
      * @param string $e_file
      * @param string $e_line
      */
-    public static function Handler(int $e_no = 0, string $e_str = '', string $e_file = '', string $e_line = '')
+    public static function Handler($e_no = 0, string $e_str = '', string $e_file = '', string $e_line = '')
     {
         if (error_reporting() === 0) {
             // Continue script execution, skipping standard PHP error handler using @ suppression
@@ -293,7 +293,15 @@ class Errors
             // Do nothing, just clean buffer
         }
 
-        self::writeLog($e_no, $e_str, $e_file, $e_line);
+        if(is_object($e_no)){
+            $e_str = $e_no->getMessage();
+            $e_file = $e_no->getFile();
+            $e_line = $e_no->getLine();
+            self::$trace_stack = $e_no->getTrace();
+            $e_no = $e_no->getCode();
+        }
+
+        self::writeLog($e_no, $e_str, $e_file, (string)$e_line);
 
         self::prepareTraceStack();
 
@@ -301,15 +309,15 @@ class Errors
         if (!Settings::isProductionState()) {
             if (MODE === 'background') {
                 // Show as terminal texts
-                self::ErrorHandlerPlain($e_no, $e_str, $e_file, $e_line);
+                self::ErrorHandlerPlain($e_no, $e_str, $e_file, (string)$e_line);
             } else {
                 // Show as table for browser
-                self::ErrorHandlerHTML($e_no, $e_str, $e_file, $e_line);
+                self::ErrorHandlerHTML($e_no, $e_str, $e_file, (string)$e_line);
             }
         } elseif (!Settings::get('do_not_send_php_errors')) { // Check that we may send emails
             ob_start();
 
-            self::ErrorHandlerPlain($e_no, $e_str, $e_file, $e_line);
+            self::ErrorHandlerPlain($e_no, $e_str, $e_file, (string)$e_line);
 
             $message = ob_get_clean();
 
