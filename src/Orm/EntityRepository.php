@@ -15,6 +15,8 @@ use Traversable;
 
 class EntityRepository implements IteratorAggregate, Countable
 {
+    const CLASS_RELATION_NAME = 'Repository';
+
     private static $_cache_key_prefix = 'orm_entity_repository_'; // Should be overwritten in extended class
     protected $db_table = ''; // Should be overwritten in extended class
     protected $translation_fields = []; // Should be overwritten in extended class
@@ -92,7 +94,7 @@ class EntityRepository implements IteratorAggregate, Countable
             return $this->db_table;
         }
 
-        $db_table_from_class = mb_strtolower(Converter::fromCamelCase(str_replace(['Entity', 'Repository'], '', Converter::classWithNamespaceToUnqualifiedShort($this)))) . 's';
+        $db_table_from_class = mb_strtolower(Converter::fromCamelCase(str_replace([Entity::CLASS_RELATION_NAME, self::CLASS_RELATION_NAME], '', $this->getUnqualifiedShortClassName()))) . 's';
 
         // Check DB in system tables
         $this->db_table = 'cms_' . $db_table_from_class;
@@ -1192,7 +1194,7 @@ FROM `' . $this->getDbTableName() . '`
             return $data;
         }
 
-        FileSystem::streamOutput(Converter::classWithNamespaceToUnqualifiedShort($object) . '.cms_obj', $data);
+        FileSystem::streamOutput($this->getUnqualifiedShortClassName() . '.cms_obj', $data);
 
         return $data;
     }
@@ -1497,5 +1499,13 @@ FROM `' . $this->getDbTableName() . '`
         if (!$this->debug) return;
 
         dump($data, $serialize, $clean);
+    }
+
+    /**
+     * @return string
+     */
+    public function getUnqualifiedShortClassName(): string
+    {
+        return Converter::classWithNamespaceToUnqualifiedShort($this);
     }
 }

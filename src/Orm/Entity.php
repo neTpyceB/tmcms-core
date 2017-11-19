@@ -17,6 +17,8 @@ use TMCms\Strings\Translations;
 
 class Entity
 {
+    const CLASS_RELATION_NAME = 'Entity';
+
     private static $_cache_key_prefix = 'orm_entity_'; // Should be overwritten in extended class
     private static $encryption_key; // Should be overwritten in extended class
     public $debug = false;
@@ -125,7 +127,7 @@ class Entity
     }
 
     /**
-     * @return string|NULL
+     * @return int|NULL
      */
     public function getId()
     {
@@ -148,7 +150,7 @@ class Entity
             return $this->db_table;
         }
 
-        $db_table_from_class = mb_strtolower(Converter::fromCamelCase(str_replace(['Entity', 'Repository'], '', Converter::classWithNamespaceToUnqualifiedShort($this)))) . 's';
+        $db_table_from_class = mb_strtolower(Converter::fromCamelCase(str_replace([self::CLASS_RELATION_NAME, EntityRepository::CLASS_RELATION_NAME], '', $this->getUnqualifiedShortClassName()))) . 's';
 
         // Check DB in system tables
         $this->db_table = 'cms_' . $db_table_from_class;
@@ -752,7 +754,7 @@ class Entity
      */
     public function findAndLoadPossibleDuplicateEntityByFields(array $check_fields)
     {
-        $class_name = get_class($this) . 'Repository';
+        $class_name = \get_class($this) . EntityRepository::CLASS_RELATION_NAME;
         /** @var EntityRepository $repo */
         $repo = new $class_name;
 
@@ -797,5 +799,13 @@ class Entity
         if (!$this->debug) return;
 
         dump($data);
+    }
+
+    /**
+     * @return string
+     */
+    public function getUnqualifiedShortClassName(): string
+    {
+        return Converter::classWithNamespaceToUnqualifiedShort($this);
     }
 }

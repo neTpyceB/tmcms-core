@@ -111,7 +111,7 @@ class Errors
 
                 if ($vars) {
 
-                    natsort($vars);
+//                    natsort($vars);
 
                     $html = ['<table style="margin-left:50px">'];
 

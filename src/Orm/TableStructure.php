@@ -13,6 +13,7 @@ use TMCms\DB\Sync;
 class TableStructure {
 
     const FIELD_TYPE_BOOL = 'bool'; // active, checkbox
+    const FIELD_TYPE_INDEX = 'index'; // Int non-null with additional key index
     const FIELD_TYPE_TRANSLATION = 'translation';
     const FIELD_TYPE_VARCHAR_255 = 'varchar';
     const FIELD_TYPE_UNSIGNED_INTEGER = 'unsigned_integer'; // ts, order,
@@ -166,7 +167,7 @@ class TableStructure {
                 $res = '`'. $field['name'] .'` int(10) unsigned NULL DEFAULT "0"';
                 break;
 
-            case 'index':
+            case self::FIELD_TYPE_INDEX:
                 $res = '`'. $field['name'] .'` int(10) unsigned DEFAULT "0"';
 
                 // Add index if not exists
