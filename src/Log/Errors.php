@@ -66,25 +66,25 @@ class Errors
         switch (gettype($data)) {
             case 'boolean':
 
-                echo 'Boolean: ' . ($data ? 'true' : 'false');
+                echo 'Boolean: ' . ($data ? 'true' : 'false') . '<br>' . PHP_EOL;
 
                 break;
 
             case 'string':
 
-                echo 'String: ' . $data;
+                echo 'String: ' . $data . '<br>'. PHP_EOL;
 
                 break;
 
             case 'double':
 
-                echo 'Double: ' . $data;
+                echo 'Double: ' . $data . '<br>'. PHP_EOL;
 
                 break;
 
             case 'integer':
 
-                echo 'Integer: ' . $data;
+                echo 'Integer: ' . $data . '<br>'. PHP_EOL;
 
                 break;
 
@@ -130,19 +130,19 @@ class Errors
 
             case 'resource':
 
-                echo 'Resource: ' . get_resource_type($data);
+                echo 'Resource: ' . get_resource_type($data) . '<br>'. PHP_EOL;
 
                 break;
 
             case 'NULL':
 
-                echo 'NULL';
+                echo 'NULL'. PHP_EOL . '<br>';
 
                 break;
 
             case 'array':
 
-                echo '<pre>' . print_r($data, true) . '</pre>';
+                echo '<pre>' . print_r($data, true) . '</pre>' . '<br>'. PHP_EOL;
 
                 break;
 
@@ -174,10 +174,10 @@ class Errors
         // For terminals
         if (IS_CLI || IS_AJAX_REQUEST) {
             foreach (self::$trace_stack as $step) {
-                echo 'Class: ' . (isset($step['class']) ? $step['class'] . $step['type'] : '') . $step['function'];
+                echo 'Class: ' . (isset($step['class']) ? $step['class'] . $step['type'] : '') . $step['function'] . '<br>';
                 echo "\n";
 
-                echo 'File: ' . ($step['file'] ?? '') . ':' . ($step['line'] ?? '');
+                echo 'File: ' . ($step['file'] ?? '') . ':' . ($step['line'] ?? '') . '<br>';
                 echo "\n\n";
             }
 
