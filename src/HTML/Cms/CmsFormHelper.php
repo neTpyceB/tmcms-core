@@ -339,7 +339,7 @@ class CmsFormHelper {
                     }
                     if (isset($field['uid_options'])){
                         $cms_field->setUid($field['uid_options']['source'],
-                            (int)$field['uid_options']['max_uid_length'] ?? 255,
+                            (int)($field['uid_options']['max_uid_length'] ?? 255),
                             $field['uid_options']['connect_onload'] ?? false,
                             $field['uid_options']['connect_onchange'] ?? (isset($params['data']['id']) && $params['data']['id'])
                         );

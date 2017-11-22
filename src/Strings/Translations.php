@@ -52,7 +52,7 @@ class Translations
             foreach ($s as $k => $v) {
                 if (!isset($languages[$k])) {
                     // No language
-                    return '';
+                    $v = NULL;
                 }
 
                 $data[$k] = $v;
@@ -94,13 +94,13 @@ class Translations
         foreach ($s as $k => $v) {
             if (!isset($languages[$k])) {
                 // No language with this key
-                return '';
+                $v = NULL;
             }
 
             $data[$k] = $v;
         }
 
-        return Translation::getInstance()
+        return (string)Translation::getInstance()
             ->loadDataFromArray($data)
             ->save()
             ->getId();
