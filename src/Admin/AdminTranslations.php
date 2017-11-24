@@ -33,7 +33,9 @@ class AdminTranslations
         if($key==="") return "";
         $this->initData(Finder::getInstance()->getPathFolders(Finder::TYPE_TRANSLATIONS));
 
-        if(!isset(self::$init_data[$key]) && Configuration::getInstance()->get('translation_catcher') && defined('P')){
+        $tc = Configuration::getInstance()->get('cms_translation_catcher');
+        if(!isset(self::$init_data[$key]) && $tc && defined('P')){
+            $key = str_replace(PHP_EOL, '', $key);
             $dir = DIR_BASE.'trans_catcher/';
             FileSystem::mkDir($dir);
             $file_name = $dir . P . '.txt';
@@ -43,8 +45,8 @@ class AdminTranslations
                 $log_data = explode(PHP_EOL, file_get_contents($file_name));
                 foreach($log_data as $r){
                     if(!$r) continue;
-                    $l = explode('=', $r, 2);
-                    $log[$l[0]] = trim($l[1], '"');
+                    $l = explode('=>', $r, 2);
+                    $log[trim($l[0],'"')] = trim($l[1], '",');
                 }
             }
             if(!isset($log[$key])){
@@ -52,7 +54,7 @@ class AdminTranslations
             }
             $content = '';
             foreach($log as $k=>$v){
-                $content .= $k.'="'.$v.'"'.PHP_EOL;
+                $content .= '"'.$k.'"=>"'.$v.'",'.PHP_EOL;
             }
             file_put_contents ($file_name, $content);
         }
