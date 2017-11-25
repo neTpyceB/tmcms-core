@@ -299,9 +299,13 @@ class Menu
      *
      * @return $this
      */
-    public function addHelpText(string $text)
+    public function addHelpText(string $text, string $link = null)
     {
-        $this->help_texts[] = $text;
+        if(!$link) {
+            $this->help_texts[] = $text;
+        }else{
+            $this->help_texts[] = [$text, $link];
+        }
 
         return $this;
     }
@@ -607,8 +611,8 @@ class Menu
                     <ul class="dropdown-menu-list scroller" style="height: 250px;">
                         <?php foreach ($this->help_texts as $k => $message): ?>
                             <li>
-                                <a href="#">
-                                    <?= $message ?>
+                                <a href="<?= is_array($message) ? $message[1] : '#' ?>">
+                                    <?= is_array($message) ? $message[0] : $message ?>
                                 </a>
                             </li>
                         <?php endforeach; ?>
