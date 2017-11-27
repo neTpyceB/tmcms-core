@@ -3,27 +3,23 @@ declare(strict_types=1);
 
 namespace TMCms\Orm;
 
-use function dump;
-use TMCms\Admin\Structure\Entity\TranslationRepository;
 use TMCms\Cache\Cacher;
 use TMCms\Config\Configuration;
 use TMCms\Config\Settings;
 use TMCms\DB\SQL;
-use TMCms\Routing\Languages;
 use TMCms\Routing\Structure;
 use TMCms\Strings\Converter;
 use TMCms\Strings\SimpleCrypto;
 use TMCms\Strings\Translations;
 
-class Entity
+/**
+ * Class Entity
+ * @package TMCms\Orm
+ */
+class Entity extends AbstractEntity
 {
-    const CLASS_RELATION_NAME = 'Entity';
-
     private static $_cache_key_prefix = 'orm_entity_'; // Should be overwritten in extended class
     private static $encryption_key; // Should be overwritten in extended class
-    public $debug = false;
-    protected $db_table = '';
-    protected $translation_fields = [];
     protected $encrypted_fields = [];
     protected $changed_fields_for_update = [];
     protected $update_on_duplicate = false;
@@ -34,6 +30,12 @@ class Entity
     private $encode_special_chars_for_html = false;
     private $field_callbacks = []; // Key used to encrypt and decrypt db data
 
+    /**
+     * Entity constructor.
+     *
+     * @param int $id
+     * @param bool $load_from_db
+     */
     public function __construct($id = 0, $load_from_db = true)
     {
         $this->data['id'] = NULL;
@@ -137,29 +139,6 @@ class Entity
     public function getSelectSql(): string
     {
         return 'SELECT * FROM `' . $this->getDbTableName() . '` WHERE `id` = "' . $this->getId() . '"';
-    }
-
-    /**
-     * Return name in class or try to get from class name
-     * @return string
-     */
-    public function getDbTableName(): string
-    {
-        // Name set in class
-        if ($this->db_table) {
-            return $this->db_table;
-        }
-
-        $db_table_from_class = mb_strtolower(Converter::fromCamelCase(str_replace([self::CLASS_RELATION_NAME, EntityRepository::CLASS_RELATION_NAME], '', $this->getUnqualifiedShortClassName()))) . 's';
-
-        // Check DB in system tables
-        $this->db_table = 'cms_' . $db_table_from_class;
-        if (!SQL::tableExists($this->db_table)) {
-            // Or in module tables
-            $this->db_table = 'm_' . $db_table_from_class;
-        }
-
-        return $this->db_table;
     }
 
     /**
@@ -754,7 +733,7 @@ class Entity
      */
     public function findAndLoadPossibleDuplicateEntityByFields(array $check_fields)
     {
-        $class_name = \get_class($this) . EntityRepository::CLASS_RELATION_NAME;
+        $class_name = \get_class($this) . self::CLASS_RELATION_NAME_REPOSITORY;
         /** @var EntityRepository $repo */
         $repo = new $class_name;
 
@@ -789,23 +768,5 @@ class Entity
     {
         // This is an example, please overwrite it in own Entity
         return Structure::getPathByLabel('XXX', $lng);
-    }
-
-    /**
-     * @param mixed $data
-     */
-    protected function debug($data)
-    {
-        if (!$this->debug) return;
-
-        dump($data);
-    }
-
-    /**
-     * @return string
-     */
-    public function getUnqualifiedShortClassName(): string
-    {
-        return Converter::classWithNamespaceToUnqualifiedShort($this);
     }
 }

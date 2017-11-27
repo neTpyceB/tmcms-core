@@ -13,15 +13,14 @@ use TMCms\Files\FileSystem;
 use TMCms\Strings\Converter;
 use Traversable;
 
-class EntityRepository implements IteratorAggregate, Countable
+/**
+ * Class EntityRepository
+ * @package TMCms\Orm
+ */
+class EntityRepository extends AbstractEntity implements IteratorAggregate, Countable
 {
-    const CLASS_RELATION_NAME = 'Repository';
-
     private static $_cache_key_prefix = 'orm_entity_repository_'; // Should be overwritten in extended class
-    protected $db_table = ''; // Should be overwritten in extended class
-    protected $translation_fields = []; // Should be overwritten in extended class
     protected $table_structure = [];
-    protected $debug = false;
     private $sql_where_fields = [];
     private $sql_select_fields = [];
     private $sql_offset = 0;
@@ -81,29 +80,6 @@ class EntityRepository implements IteratorAggregate, Countable
 //        $schema->ensureDbTableStructureIsFresh(); // This changes a lot of required items, do not use in future
 
         return true;
-    }
-
-    /**
-     * Return name in class or try to get from class name
-     * @return string
-     */
-    public function getDbTableName(): string
-    {
-        // Name set in class
-        if ($this->db_table) {
-            return $this->db_table;
-        }
-
-        $db_table_from_class = mb_strtolower(Converter::fromCamelCase(str_replace([Entity::CLASS_RELATION_NAME, self::CLASS_RELATION_NAME], '', $this->getUnqualifiedShortClassName()))) . 's';
-
-        // Check DB in system tables
-        $this->db_table = 'cms_' . $db_table_from_class;
-        if (!SQL::tableExists($this->db_table)) {
-            // Or in module tables
-            $this->db_table = 'm_' . $db_table_from_class;
-        }
-
-        return $this->db_table;
     }
 
     protected function getTableStructure(): array
@@ -873,9 +849,10 @@ FROM `' . $this->getDbTableName() . '`
     public function getCountOfObjectsInCollection(): int
     {
         $this->setGenerateOutputWithIterator(false);
+
         $this->collectObjects(true);
 
-        return count($this->collected_objects_data);
+        return \count($this->collected_objects_data);
     }
 
     /**
@@ -1076,16 +1053,16 @@ FROM `' . $this->getDbTableName() . '`
         return (int)$this->total_count_rows;
     }
 
+    /**
+     * @param bool $flag
+     *
+     * @return bool
+     */
     public function setRequireCountRowsWithoutLimits($flag): bool
     {
+        $this->setGenerateOutputWithIterator(false);
+
         return $this->require_to_count_total_rows = (bool)$flag;
-    }
-
-    public function enableDebug()
-    {
-        $this->debug = true;
-
-        return $this;
     }
 
     /**
@@ -1487,25 +1464,5 @@ FROM `' . $this->getDbTableName() . '`
     public function count(): int
     {
         return $this->getCountOfObjectsInCollection();
-    }
-
-    /**
-     * @param mixed $data
-     * @param int   $serialize
-     * @param int   $clean
-     */
-    protected function debug($data, $serialize = 0, $clean = 1)
-    {
-        if (!$this->debug) return;
-
-        dump($data, $serialize, $clean);
-    }
-
-    /**
-     * @return string
-     */
-    public function getUnqualifiedShortClassName(): string
-    {
-        return Converter::classWithNamespaceToUnqualifiedShort($this);
     }
 }
