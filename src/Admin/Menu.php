@@ -48,6 +48,7 @@ class Menu
      * @var array
      */
     private $help_texts = [];
+    private $critical_help_texts = false;
 
     private $page_title = '';
     private $page_description = '';
@@ -299,13 +300,15 @@ class Menu
      *
      * @return $this
      */
-    public function addHelpText(string $text, string $link = null)
+    public function addHelpText(string $text, string $link = null, $critical = false)
     {
         if(!$link) {
             $this->help_texts[] = $text;
         }else{
             $this->help_texts[] = [$text, $link];
         }
+        if($critical)
+            $this->critical_help_texts = true;
 
         return $this;
     }
@@ -599,7 +602,7 @@ class Menu
         <li class="dropdown dropdown-extended dropdown-notification">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
                 <i class="icon-question"></i>
-                <span class="badge badge-default"><?= count($this->help_texts); ?></span>
+                <span class="badge <?= $this->critical_help_texts ? "badge-danger" : "badge-default" ?>"><?= count($this->help_texts); ?></span>
             </a>
             <ul class="dropdown-menu">
                 <li>
