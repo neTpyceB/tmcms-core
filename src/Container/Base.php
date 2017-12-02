@@ -3,11 +3,10 @@ declare(strict_types=1);
 
 namespace TMCms\Container;
 
-use function is_array;
 use RuntimeException;
 use TMCms\Traits\singletonInstanceTrait;
 
-defined('INC') or exit;
+\defined('INC') or exit;
 
 /**
  * Class Base
@@ -17,7 +16,7 @@ abstract class Base
 {
     use singletonInstanceTrait;
 
-    private $initial_data = [];
+    private $initial_data;
 
     const FIELD_TYPE_BOOL = 1;
     const FIELD_TYPE_INT = 2;
@@ -36,24 +35,25 @@ abstract class Base
 
     /**
      * @param string $field_name
-     * @param int    $field_type
+     * @param int $field_type
      *
      * @return array|bool|int|string
+     * @throws \RuntimeException
      */
     final public function getCleanedField(string $field_name, int $field_type)
     {
         switch ($field_type) {
             case self::FIELD_TYPE_BOOL:
-                return self::getCleanedFieldAsBool($field_name);
+                return $this->getCleanedFieldAsBool($field_name);
 
             case self::FIELD_TYPE_INT:
-                return self::getCleanedFieldAsInt($field_name);
+                return $this->getCleanedFieldAsInt($field_name);
 
             case self::FIELD_TYPE_STRING:
-                return self::getCleanedFieldAsString($field_name);
+                return $this->getCleanedFieldAsString($field_name);
 
             case self::FIELD_TYPE_ARRAY:
-                return self::getCleanedFieldAsArray($field_name);
+                return $this->getCleanedFieldAsArray($field_name);
 
             default:
                 throw new RuntimeException('Unknown field type requested');
@@ -127,10 +127,21 @@ abstract class Base
         }
 
         // Usually string "false" from javascript interpreted as true, but it must be false
-        if (!is_array($this->initial_data[$field_name])) {
+        if (!\is_array($this->initial_data[$field_name])) {
             return [];
         }
 
         return (array)$this->initial_data[$field_name];
+    }
+
+    /**
+     * @param string $key
+     * @param mixed $value
+     * @return $this
+     */
+    public function setValue(string $key, $value) {
+        $this->initial_data[$key] = $value;
+
+        return $this;
     }
 }
