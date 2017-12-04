@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace TMCms\Orm;
 use TMCms\DB\SQL;
+use TMCms\DB\SqlDao;
 use TMCms\Strings\Converter;
 
 /**
@@ -17,6 +18,11 @@ abstract class AbstractEntity
     protected $db_table = '';
     protected $debug = false;
     protected $translation_fields = [];
+
+    /**
+     * @var SqlDao
+     */
+    protected $dao;
 
     /**
      * Return name in class or try to get from class name
@@ -34,7 +40,7 @@ abstract class AbstractEntity
 
         // Check DB in system tables
         $this->db_table = 'cms_' . $db_table_from_class;
-        if (!SQL::tableExists($this->db_table)) {
+        if (!SQL::getInstance()->tableExists($this->db_table)) {
             // Or in module tables
             $this->db_table = 'm_' . $db_table_from_class;
         }
@@ -70,5 +76,15 @@ abstract class AbstractEntity
         }
 
         dump($data);
+    }
+
+    /**
+     * @param SqlDao $dao
+     * @return $this
+     */
+    public function setSqlDaoObject($dao) {
+        $this->dao = $dao;
+
+        return $this;
     }
 }

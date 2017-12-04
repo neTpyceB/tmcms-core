@@ -31,6 +31,11 @@ class Entity extends AbstractEntity
     private $field_callbacks = []; // Key used to encrypt and decrypt db data
 
     /**
+     * @var SQL
+     */
+    protected $dao;
+
+    /**
      * Entity constructor.
      *
      * @param int $id
@@ -38,6 +43,7 @@ class Entity extends AbstractEntity
      */
     public function __construct($id = 0, $load_from_db = true)
     {
+        $this->dao = SQL::getInstance();
         $this->data['id'] = NULL;
 
         if ($id) {
@@ -397,7 +403,7 @@ class Entity extends AbstractEntity
     {
         $this->beforeDelete();
 
-        SQL::delete($this->getDbTableName(), $this->getId());
+        $this->dao->delete($this->getDbTableName(), $this->getId());
 
         $this->deleteObjectDataFromCache();
 
@@ -485,12 +491,12 @@ class Entity extends AbstractEntity
         $this->beforeUpdate();
 
         // Start transaction - we have inner-translation updates
-        SQL::startTransaction();
+        $this->dao->startTransaction();
 
         $data = [];
 
         // Get updated fields
-        $fields = SQL::getFields($this->getDbTableName());
+        $fields = $this->dao->getFields($this->getDbTableName());
 
         // Generate data to be updated
         foreach ($fields as $v) {
@@ -510,13 +516,13 @@ class Entity extends AbstractEntity
         }
 
         // Update entry in DB
-        SQL::update($this->getDbTableName(), $data, $this->getId(), 'id', $this->insert_low_priority);
+        $this->dao->update($this->getDbTableName(), $data, $this->getId(), 'id', $this->insert_low_priority);
 
         // Load all fresh data from DB
         $this->loadDataFromDB();
 
         // Close all update queries
-        SQL::confirmTransaction();
+        $this->dao->confirmTransaction();
 
         $this->afterUpdate();
 
@@ -549,7 +555,7 @@ class Entity extends AbstractEntity
         $data = [];
 
         // Get all fields in DB table
-        $fields = SQL::getFields($this->getDbTableName());
+        $fields = $this->dao->getFields($this->getDbTableName());
 
         // Clear ID if created from another data
         unset($this->data['id']);
@@ -583,7 +589,7 @@ class Entity extends AbstractEntity
 
 
         // Create entry in database
-        $this->data['id'] = SQL::add($this->getDbTableName(), $data, true, $this->update_on_duplicate, $this->insert_low_priority, $this->insert_delayed);
+        $this->data['id'] = $this->dao->add($this->getDbTableName(), $data, true, $this->update_on_duplicate, $this->insert_low_priority, $this->insert_delayed);
 
         $this->afterCreate();
 

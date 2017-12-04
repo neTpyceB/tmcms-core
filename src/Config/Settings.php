@@ -114,7 +114,7 @@ class Settings
             self::$_cached_settings = Cacher::getInstance()->getDefaultCacher()->get(self::CACHE_KEY);
         }
 
-        if (!self::$_cached_settings && SQL::tableExists('cms_settings')) {
+        if (!self::$_cached_settings && SQL::getInstance()->tableExists('cms_settings')) {
             // Get from DB
             $settings_collection = new SettingEntityRepository();
             self::$_cached_settings = $settings_collection->getPairs('value', 'name');

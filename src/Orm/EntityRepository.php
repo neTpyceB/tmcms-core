@@ -44,8 +44,15 @@ class EntityRepository extends AbstractEntity implements IteratorAggregate, Coun
     private $join_tables = [];
     private $last_used_sql;
 
+    /**
+     * @var SQL
+     */
+    protected $dao;
+
     public function __construct(array $ids = [])
     {
+        $this->dao = SQL::getInstance();
+
         if (!Settings::isProductionState()) {
             // Create or update table
             $this->ensureDbTableExists();
@@ -71,7 +78,7 @@ class EntityRepository extends AbstractEntity implements IteratorAggregate, Coun
         $schema->setTableName($this->getDbTableName());
         $schema->setTableStructure($this->getTableStructure());
 
-        if (!SQL::tableExists($table)) {
+        if (!$this->dao->tableExists($table)) {
             // Create table;
             $schema->createTableIfNotExists();
         }
@@ -304,9 +311,9 @@ class EntityRepository extends AbstractEntity implements IteratorAggregate, Coun
 
         // Use Iterator in DB query
         if ($this->use_iterator) {
-            $this->collected_objects_data = SQL::q_assoc_iterator($sql, false);
+            $this->collected_objects_data = $this->dao::q_assoc_iterator($sql, false);
         } else {
-            $this->collected_objects_data = SQL::q_assoc($sql, false);
+            $this->collected_objects_data = $this->dao::q_assoc($sql, false);
         }
 
         if ($this->require_to_count_total_rows) {
@@ -430,7 +437,7 @@ FROM `' . $this->getDbTableName() . '`
         $res = [];
         foreach ($this->getWhereFields() as $field_data) {
             if ($field_data['type'] === 'simple') {
-                $res[] = '`' . $field_data['table'] . '`.`' . $field_data['field'] . '` = "' . SQL::sql_prepare($field_data['value']) . '"';
+                $res[] = '`' . $field_data['table'] . '`.`' . $field_data['field'] . '` = "' . $this->dao::sql_prepare((string)$field_data['value']) . '"';
             } elseif ($field_data['type'] === 'string') {
                 $res[] = $field_data['value'];
             }
@@ -676,7 +683,7 @@ FROM `' . $this->getDbTableName() . '`
      */
     public function getDbTableFields(): array
     {
-        return SQL::getFields($this->getDbTableName());
+        return $this->dao::getFields($this->getDbTableName());
     }
 
     /**
@@ -967,7 +974,7 @@ FROM `' . $this->getDbTableName() . '`
         $this->order_fields[] = [
             'table' => $table,
             'type'  => 'string',
-            'field' => 'LOCATE ("'. SQL::sql_prepare($searchable_string) .'", `'. $table .'`.`'. $field .'`)'
+            'field' => 'LOCATE ("'. $this->dao::sql_prepare($searchable_string) .'", `'. $table .'`.`'. $field .'`)'
         ];
 
         return $this;

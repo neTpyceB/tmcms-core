@@ -30,9 +30,9 @@ class Stats
     }
 
     /**
-     * @param string $query
+     * @param array $query
      */
-    public static function addQuery($query)
+    public static function addQuery(array $query)
     {
         if (isset($query['backtrace'])) {
             foreach ($query['backtrace'] as & $v) {

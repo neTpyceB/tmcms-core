@@ -30,9 +30,12 @@ class TableStructure {
         return $this;
     }
 
-    public function createTableIfNotExists()
+    /**
+     * @return bool
+     */
+    public function createTableIfNotExists(): bool
     {
-        if (SQL::tableExists($this->table_name, false)) {
+        if (SQL::getInstance()->tableExists($this->table_name, false)) {
             return false;
         }
 
