@@ -85,7 +85,7 @@ if (!$allowed_sizes && $check_for_sizes) {
     }
     die;
 }
-$allowed_sizes = array_flip(explode(',', $allowed_sizes));
+$allowed_sizes = array_flip(explode(',', (string)$allowed_sizes));
 
 $check_size_allowed = function($size) use ($allowed_sizes, $check_for_sizes) {
     if (!$check_for_sizes) {
