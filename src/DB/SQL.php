@@ -403,7 +403,7 @@ class SQL extends SqlDao
      *
      * @return string
      */
-    public static function sql_prepare(string $str, $used_in_like = false): string
+    public static function sql_prepare($str, $used_in_like = false)
     {
         if (!self::getInstance()->pdo_db) {
             self::getInstance()->connect();
