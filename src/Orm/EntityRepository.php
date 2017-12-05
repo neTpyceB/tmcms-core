@@ -514,7 +514,8 @@ FROM `' . $this->getDbTableName() . '`
     {
         $sql = [];
         foreach ($this->join_tables as $table) {
-            $sql[] = $table['type'] . ' JOIN `' . $table['table'] . '`' . ($table['alias'] !== $table['table'] ? ' AS `' . $table['alias'] . '`' : '') . ' ON (`' . $table['alias'] . '`.`' . $table['left'] . '` = `' . $table['right_table'] . '`.`' . $table['right'] . '`)';
+            $table['table'] = preg_match('~^[\\s]*\\([\\s]*SELECT[\\s]*~',$table['table']) ? $table['table'] :  '`' . $table['table'] . '`';
+            $sql[] = $table['type'] . ' JOIN ' . $table['table'] . ($table['alias'] !== $table['table'] ? ' AS `' . $table['alias'] . '`' : '') . ' ON (`' . $table['alias'] . '`.`' . $table['left'] . '` = `' . $table['right_table'] . '`.`' . $table['right'] . '`)';
         }
 
         return implode(' ', $sql);
