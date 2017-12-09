@@ -293,7 +293,7 @@ define('Y', date('Y'));
  */
 function sql_prepare($str, $used_in_like = false)
 {
-    return SQL::sql_prepare((string)$str, $used_in_like);
+    return SQL::sql_prepare($str, $used_in_like);
 }
 
 /**

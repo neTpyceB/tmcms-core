@@ -414,7 +414,7 @@ class SQL extends SqlDao
                 $v = self::sql_prepare($v);
             }
         } else {
-            $str = substr(self::getInstance()->pdo_db->quote(trim($str)), 1, -1);
+            $str = substr(self::getInstance()->pdo_db->quote(trim((string)$str)), 1, -1);
 
             if ($used_in_like) {
                 $str = str_replace(['_', '%'], ['\_', '\%'], $str);
