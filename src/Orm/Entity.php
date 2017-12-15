@@ -395,8 +395,7 @@ class Entity extends AbstractEntity
      */
     public function getSlugUrl($lng = LNG): string
     {
-        // This is an example, please overwrite it in own Entity
-        return Structure::getPathByLabel('XXX', $lng);
+        throw new \RuntimeException('getSlugUrl is undefined for '.get_class($this));
     }
 
     public function deleteObject()
