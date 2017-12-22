@@ -66,14 +66,14 @@ class Structure
 
         // Already scanned
         if (isset(self::$_path_cache[$page_id])) {
-            return self::$_path_cache[$page_id];
+            return ($with_domain ? BASE_URL : '') . self::$_path_cache[$page_id];
         }
         // Check common cache
         $cache_key = 'structure_path_by_id_' . $page_id;
         if (Settings::isCacheEnabled()) {
             self::$_path_cache[$page_id] = Cacher::getInstance()->getDefaultCacher()->get($cache_key);
             if (self::$_path_cache[$page_id]) {
-                return self::$_path_cache[$page_id];
+                return ($with_domain ? BASE_URL : '') . self::$_path_cache[$page_id];
             }
         }
         $path = '';
