@@ -154,12 +154,20 @@ class Mailer
      *
      * @return Mailer
      */
-    public function addAttachment(string $filename, string $content_type = ''): Mailer
+    public function addAttachment($filename, string $content_type = ''): Mailer
     {
-        $this->attachments[] = [
-            'filename'     => $filename,
-            'content_type' => $content_type ?: MimeTypes::getMimeTypeByExt(strtolower(pathinfo($filename, PATHINFO_EXTENSION))),
-        ];
+        if(is_array($filename)) {
+            $this->attachments[] = [
+                'filename' => $filename['filename'],
+                'content' => $filename['content'],
+                'content_type' => $filename['content_type'] ?: ($content_type ?: 'application/octet-stream'),
+            ];
+        }else {
+            $this->attachments[] = [
+                'filename' => $filename,
+                'content_type' => $content_type ?: MimeTypes::getMimeTypeByExt(strtolower(pathinfo($filename, PATHINFO_EXTENSION))),
+            ];
+        }
 
         return $this;
     }
@@ -200,8 +208,9 @@ class Mailer
 
         foreach ($this->attachments as $attachment) {
             $filename = $attachment['filename'];
+            $content = isset($attachment['content']) ? $attachment['content'] : file_get_contents($filename);
 
-            $this->message_attachment .= '------------' . $unique_email_seed . "\nContent-Type: " . $attachment['content_type'] . ';name="' . basename($filename) . "\"\nContent-Transfer-Encoding:base64\nContent-Disposition:attachment;filename=\"" . basename($filename) . "\"\n\n" . chunk_split(base64_encode(file_get_contents($filename))) . "\n";
+            $this->message_attachment .= '------------' . $unique_email_seed . "\nContent-Type: " . $attachment['content_type'] . ';name="' . basename($filename) . "\"\nContent-Transfer-Encoding:base64\nContent-Disposition:attachment;filename=\"" . basename($filename) . "\"\n\n" . chunk_split(base64_encode($content)) . "\n";
         }
     }
 
