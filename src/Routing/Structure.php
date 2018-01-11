@@ -66,7 +66,7 @@ class Structure
 
         // Already scanned
         if (isset(self::$_path_cache[$page_id])) {
-            return ($with_domain ? BASE_URL : '') . self::$_path_cache[$page_id];
+            return ($with_domain && substr(self::$_path_cache[$page_id], 0, 1)=='/' ? BASE_URL : '') . self::$_path_cache[$page_id];
         }
         // Check common cache
         $cache_key = 'structure_path_by_id_' . $page_id;
