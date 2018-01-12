@@ -1081,9 +1081,9 @@ AND TABLE_NAME = "' . self::sql_prepare($table) . '"
     }
 
     /**
-     * @return PDO
+     * @return PDO | null
      */
-    public function getConnectionHandler(): PDO
+    public function getConnectionHandler()
     {
         return $this->pdo_db;
     }
