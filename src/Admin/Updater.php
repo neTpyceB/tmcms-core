@@ -105,7 +105,7 @@ class Updater
 
         // Check we have DB structure and any migration applied
         $migrated_files = [];
-        if (SQL::getTables()) {
+        if (SQL::getInstance()->getTables()) {
             $migrated_files = MigrationEntityRepository::getInstance()->getPairs('filename', 'filename');
         }
 
