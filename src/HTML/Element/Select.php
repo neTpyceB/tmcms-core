@@ -182,8 +182,8 @@ class Select extends Element
                 <optgroup label="<?= $key ?>"><?= $key ?>
                     <?php foreach ($option as $option_key => $option_inner):
                         if ($this->use_html_encode) {
-                            $option_key = \htmlspecialchars($option_key, \ENT_QUOTES);
-                            $option_inner = \htmlspecialchars($option_inner);
+                            $option_key = \htmlspecialchars((string)$option_key, \ENT_QUOTES);
+                            $option_inner = \htmlspecialchars((string)$option_inner);
                         }
                         ?>
                         <option value="<?= $option_key ?>"<?= ($this->isSelected($option_key) ? ' selected' : '')
@@ -195,8 +195,8 @@ class Select extends Element
             <?php else:
                 if ($this->use_html_encode) {
                 /** @var string $option */
-                    $key = \htmlspecialchars($key, \ENT_QUOTES);
-                    $option = \htmlspecialchars($option);
+                    $key = \htmlspecialchars((string)$key, \ENT_QUOTES);
+                    $option = \htmlspecialchars((string)$option);
                 }
                 ?>
                 <option value="<?=$key?>"<?= ($this->isSelected($key) ? ' selected="selected"' : '')
