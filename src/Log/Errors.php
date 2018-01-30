@@ -334,7 +334,7 @@ class Errors
      * @param string $errFile
      * @param string $errLine
      */
-    private static function writeLog(int $errNo, string $errStr, string $errFile, string $errLine)
+    private static function writeLog($errNo, string $errStr, string $errFile, string $errLine)
     {
         if (!SQL::getInstance()->getConnectionHandler()) {
             // No Db connected
@@ -360,7 +360,7 @@ class Errors
      *
      * @return string
      */
-    private static function getErrorTextByNumber(int $number): string
+    private static function getErrorTextByNumber($number): string
     {
         return self::$error_number_names[$number] ?? '';
     }
@@ -371,7 +371,7 @@ class Errors
      * @param string $e_file
      * @param string $e_line
      */
-    private static function ErrorHandlerPlain(int $e_no, string $e_str, string $e_file, string $e_line)
+    private static function ErrorHandlerPlain($e_no, string $e_str, string $e_file, string $e_line)
     {
         echo "\n", self::getErrorTextByNumber($e_no);
 
@@ -420,7 +420,7 @@ class Errors
      * @param string $e_file
      * @param string $e_line
      */
-    public static function ErrorHandlerHTML(int $e_no, string $e_str, string $e_file, string $e_line)
+    public static function ErrorHandlerHTML($e_no, string $e_str, string $e_file, string $e_line)
     {
         $e_str = strpos($e_str, ':::') === false ? ['', $e_str] : explode(':::', $e_str);
 
