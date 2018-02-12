@@ -295,6 +295,11 @@ class Backend
                 ->addJsUrl('cms/layout/scripts/quick-sidebar.js')
                 ->addJsUrl('cms/plugins/pace/pace.js')
                 ->addJsUrl('plugins/toastr/toastr.min.js')// Notifications
+                ->addJs('toastr.options = {
+                    "closeButton": true,
+                    "newestOnTop": true,
+                    "positionClass": "toast-bottom-right"
+                };')
                 ->addJsUrl('plugins/parsley.js')// Input validation
                 ->addJsUrl('cms/respond.min.js')
                 ->addJsUrl('cms/excanvas.min.js')
