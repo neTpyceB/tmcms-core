@@ -195,6 +195,12 @@ class CmsFormHelper {
                     if (isset($field['format'])) {
                         $cms_field->setDateFormat($field['format']);
                     }
+                } elseif ($field['type'] == 'minicolors' || $field['type'] == 'colorpicker') {
+                    // Options for JS datepicker plugin
+                    if (!isset($field['options'])) {
+                        $field['options'] = [];
+                    }
+                    $cms_field = CmsInputText::getInstance($key)->enableMiniColors($field['options']);
                 } elseif ($field['type'] == 'password') {
                     $cms_field = CmsInputPassword::getInstance($key);
                 } elseif ($field['type'] == 'row') {
