@@ -163,6 +163,10 @@ class CmsInputText extends InputText
             $this->addCssClass('datetimepicker');
         }
 
+        if ($this->isEnabledMiniColors()) {
+            $this->addCssClass('minicolors');
+        }
+
         $helper = $this->helper ? new HelperBox($this->getId(), $this->getMaxlength(), $this->getBackup() && !$this->isDisabled(), $this->getFormatHelpText(), $this->getValue()) : '';
 
         // If editable input for tables
