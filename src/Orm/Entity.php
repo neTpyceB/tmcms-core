@@ -774,4 +774,17 @@ class Entity extends AbstractEntity
         // This is an example, please overwrite it in own Entity
         return Structure::getPathByLabel('XXX', $lng);
     }
+
+    /**
+     * Action to call fron _item_order functions
+     */
+    public function processOrderAction() {
+        if (IS_AJAX_REQUEST) {
+            SQL::orderMoveByStep($this->getId(), $this->getDbTableName(), $_GET['direct'], $_GET['step']);
+            die(1);
+        }
+
+        SQL::order($this->getId(), $this->getDbTableName(), $_GET['direct']);
+        back();
+    }
 }
