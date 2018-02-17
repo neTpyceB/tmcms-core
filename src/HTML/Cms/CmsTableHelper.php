@@ -364,7 +364,7 @@ class CmsTableHelper {
 
             // Javascript onchange
             if (isset($column_param['onchange'])) {
-                $column->onchange($column_param['onchange']);
+                $column->getOnchange($column_param['onchange']);
             }
 
             // Data attributes

@@ -113,7 +113,7 @@ class RenderComponentHelper {
                     $this->field_value['checked'] = $this->data[$this->component_name];
                 }
                 if (isset($this->field_value['checked'])) {
-                    $field->setChecked($this->field_value['checked']);
+                    $field->setChecked((bool)$this->field_value['checked']);
                 }
                 break;
 
