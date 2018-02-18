@@ -395,6 +395,11 @@ abstract class Element
      */
     public function setValue($value)
     {
+        if (\is_array($value)) {
+            $this->setValueArray($value);
+            $value = implode(', ', $value);
+        }
+
         $this->setAttribute('value', $value);
 
         return $this;
@@ -413,7 +418,7 @@ abstract class Element
      *
      * @return $this
      */
-    public function setValueArray(array $value = [])
+    public function setValueArray(array $value)
     {
         $this->value_array = $value;
 

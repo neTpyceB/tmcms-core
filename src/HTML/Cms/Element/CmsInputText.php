@@ -7,57 +7,31 @@ use TMCms\HTML\Cms\HelperBox;
 use TMCms\HTML\Element\InputText;
 use TMCms\Strings\UID;
 
-defined('INC') or exit;
+\defined('INC') or exit;
 
 
+/**
+ * Class CmsInputText
+ * @package TMCms\HTML\Cms\Element
+ */
 class CmsInputText extends InputText
 {
     protected $hint_format = '';
     protected $helper = true;
-    protected $value_array = []; // Just ot be saved
+    protected $value_array = []; // Just to be saved
     protected $uid = false;
 
     /**
-     * @param        $name
+     * @param string $name
      * @param string $value
      * @param string $id
      */
-    public function __construct(string $name, string $value = '', $id = '')
+    public function __construct(string $name, string $value = '', string $id = '')
     {
         parent::__construct($name, $value, $id);
 
         $this->setValue($value);
-
         $this->addCssClass('form-control');
-    }
-
-    /**
-     * @param string $value
-     *
-     * @return $this
-     */
-    public function setValue($value)
-    {
-        if (is_array($value)) {
-            $this->setValueArray($value);
-            $value = implode(', ', $value);
-        }
-
-        $this->setAttribute('value', $value);
-
-        return $this;
-    }
-
-    /**
-     * @param array $value
-     *
-     * @return $this
-     */
-    public function setValueArray(array $value = [])
-    {
-        $this->value_array = $value;
-
-        return $this;
     }
 
     /**
@@ -67,7 +41,7 @@ class CmsInputText extends InputText
      *
      * @return $this
      */
-    public static function getInstance($name, $value = '', $id = '')
+    public static function getInstance(string $name, string$value = '', string $id = '')
     {
         return new self($name, $value, $id);
     }

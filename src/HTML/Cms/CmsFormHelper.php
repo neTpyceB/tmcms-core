@@ -335,7 +335,7 @@ class CmsFormHelper {
                         $cms_field->setSelected($field['selected']);
                     }
                     if (isset($field['multiple'])) {
-                        $cms_field->multiple(true);
+                        $cms_field->setIsMultiple(true);
                     }
                     if (isset($field['translation'])) {
                         $cms_field->enableTranslation();
