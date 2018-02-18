@@ -3,26 +3,28 @@ declare(strict_types=1);
 
 namespace TMCms\HTML\Cms\Filter;
 
-use TMCms\HTML\Cms\Element\CmsCheckboxList;
+use TMCms\HTML\Cms\Element\CmsMultipleSelect;
 use TMCms\HTML\Cms\Filter;
 use TMCms\HTML\Cms\IFilter;
 
-class CheckboxList extends CmsCheckboxList implements IFilter
-{
-    protected $ignore_in_sql_where = false;
-    private $act_as = 'aui';
 
+/**
+ * Class MultipleSelect
+ */
+class MultipleSelect extends CmsMultipleSelect implements IFilter {
+    protected $ignore_value;
+    protected $ignore_in_sql_where = false;
     /**
      * @var Filter
      */
     private $filter;
+    private $act_as = 'aui';
 
     /**
      * @param string $name
      * @param string $id
      */
-    public function __construct(string $name, string $id = '')
-    {
+    public function  __construct(string $name, string $id = '') {
         parent::__construct($name, $id);
 
         $this->filter = new Filter();
@@ -37,23 +39,6 @@ class CheckboxList extends CmsCheckboxList implements IFilter
     public static function getInstance(string $name, string $id = '')
     {
         return new self($name, $id);
-    }
-
-    /**
-     * @param string $name
-     * @param array  $arguments
-     *
-     * @return $this
-     */
-    public function __call(string $name, array $arguments)
-    {
-        if (method_exists($this->filter, $name)) {
-            call_user_func_array([$this->filter, $name], $arguments);
-        } else {
-            return parent::__call($name, $arguments);
-        }
-
-        return $this;
     }
 
     /**
@@ -79,6 +64,18 @@ class CheckboxList extends CmsCheckboxList implements IFilter
     }
 
     /**
+     * @param string $value
+     *
+     * @return $this
+     */
+    public function ignoreValue($value)
+    {
+        $this->ignore_value = $value;
+
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function getActAs(): string
@@ -87,17 +84,24 @@ class CheckboxList extends CmsCheckboxList implements IFilter
     }
 
     /**
+     * @param string $act_as
+     *
+     * @return $this
+     */
+    public function actAs($act_as) {
+        $this->act_as = $act_as;
+
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function getDisplayValue(): string
     {
         $res = [];
-
-        foreach ($this->checkboxes as $label => $checkbox) {
-            /* @var $checkbox Checkbox */
-            if ($checkbox->isChecked()) {
-                $res[] = $label;
-            }
+        foreach ($this->selected as $value) {
+            $res[] = $this->options[$value];
         }
 
         return implode(', ', $res);
@@ -106,9 +110,16 @@ class CheckboxList extends CmsCheckboxList implements IFilter
     /**
      * @return Filter
      */
-    public function getFilter(): Filter
-    {
+    public function getFilter(): Filter {
         return $this->filter;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFilterValue()
+    {
+        return $this->selected;
     }
 
     /**
@@ -116,36 +127,32 @@ class CheckboxList extends CmsCheckboxList implements IFilter
      */
     public function isEmpty(): bool
     {
-        return !$this->getFilterValue();
-    }
-
-    /**
-     * @return array
-     */
-    public function getFilterValue(): array
-    {
-        return $this->getChecked();
+        return !(bool)$this->selected;
     }
 
     /**
      * @return bool
      */
-    public function loadData(): bool
-    {
+    public function loadData(): bool {
         $provider = $this->filter->getProvider();
 
         $res = false;
-        if ($this->checkboxes) {
-            foreach ($this->checkboxes as $checkbox) {
-                /* @var $checkbox Checkbox */
-                if (isset($provider[(string)$this->getName()][(string)$checkbox->getName()])) {
-                    $checkbox->setChecked(true);
-                }
-            }
-
+        if (isset($provider[$this->getName()])) {
+            $this->setSelected($provider[$this->getName()]);
             $res = true;
         }
 
         return $res;
+    }
+
+    /**
+     * @param array $provider
+     * @return $this
+     */
+    public function setProvider($provider)
+    {
+        $this->filter->setProvider($provider);
+
+        return $this;
     }
 }

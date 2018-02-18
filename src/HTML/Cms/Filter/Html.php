@@ -120,7 +120,10 @@ class Html extends CmsHtml implements IFilter
         return false;
     }
 
-    public function loadData()
+    /**
+     * @return bool
+     */
+    public function loadData(): bool
     {
         return false;
     }

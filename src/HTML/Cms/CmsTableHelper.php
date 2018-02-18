@@ -359,7 +359,7 @@ class CmsTableHelper {
 
             // Javascript onclick
             if (isset($column_param['onclick'])) {
-                $column->onclick($column_param['onclick']);
+                $column->setOnclick($column_param['onclick']);
             }
 
             // Javascript onchange

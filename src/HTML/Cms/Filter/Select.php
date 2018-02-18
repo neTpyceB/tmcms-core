@@ -3,22 +3,19 @@ declare(strict_types=1);
 
 namespace TMCms\HTML\Cms\Filter;
 
-use TMCms\HTML\Cms\Element\CmsInputText;
+use TMCms\HTML\Cms\Element\CmsSelect;
 use TMCms\HTML\Cms\Filter;
 use TMCms\HTML\Cms\IFilter;
 
 /**
- * Class Text
+ * Class Select
  * @package TMCms\HTML\Cms\Filter
  */
-class Text extends CmsInputText implements IFilter
-{
-    protected $helper = false;
-    protected $column;
-    protected $ignore_in_sql_where = false;
+class Select extends CmsSelect implements IFilter {
     private $act_as = 's';
-    private $skip_left_match = false;
-    private $skip_right_match = false;
+    private $ignore_value = '';
+    private $ignore_in_sql_where = false;
+
     /**
      * @var Filter
      */
@@ -29,10 +26,8 @@ class Text extends CmsInputText implements IFilter
      * @param string $value
      * @param string $id
      */
-    public function __construct(string $name, string $value = '', string $id = '')
-    {
+    public function __construct(string $name, string $value = '', string $id = '') {
         parent::__construct($name, $value, $id);
-
         $this->filter = new Filter();
     }
 
@@ -43,30 +38,17 @@ class Text extends CmsInputText implements IFilter
      *
      * @return $this
      */
-    public static function getInstance(string $name, string $value = '', string $id = '')
-    {
+    public static function getInstance(string $name, string $value = '', string $id = '') {
         return new self($name, $value, $id);
     }
 
     /**
+     * @param string $value
+     *
      * @return $this
      */
-    public function enableActAsLike()
-    {
-        $this->actAs('like');
-
-        return $this;
-    }
-
-    /**
-     * @param string $type
-     *
-     * @return Text
-     */
-    public function actAs($type): Text
-    {
-        $this->act_as = strtolower($type);
-
+    public function ignoreValue($value) {
+        $this->ignore_value = $value;
         return $this;
     }
 
@@ -83,6 +65,7 @@ class Text extends CmsInputText implements IFilter
 
     /**
      * Skip filter in SQL where query
+     *
      * @return bool
      */
     public function isIgnoreFilterInWhereSqlEnabled(): bool
@@ -93,8 +76,7 @@ class Text extends CmsInputText implements IFilter
     /**
      * @return Filter
      */
-    public function getFilter(): Filter
-    {
+    public function getFilter(): Filter {
         return $this->filter;
     }
 
@@ -103,29 +85,17 @@ class Text extends CmsInputText implements IFilter
      */
     public function getActAs(): string
     {
-        return $this->act_as;
+        return strtolower($this->act_as);
     }
 
     /**
-     * @param bool $flag
+     * @param string $act_as
      *
-     * @return Text
+     * @return $this
      */
-    public function skipLeftMatch($flag = true): Text
+    public function setActAs($act_as)
     {
-        $this->skip_left_match = $flag;
-
-        return $this;
-    }
-
-    /**
-     * @param bool $flag
-     *
-     * @return Text
-     */
-    public function skipRightMatch($flag = true): Text
-    {
-        $this->skip_right_match = $flag;
+        $this->act_as = $act_as;
 
         return $this;
     }
@@ -135,13 +105,32 @@ class Text extends CmsInputText implements IFilter
      */
     public function getFilterValue(): string
     {
-        $val = $this->getValue();
+        return $this->getValue();
+    }
 
-        if ($this->act_as === 'like') {
-            $val = ($this->skip_left_match ? '' : '%') . $this->getValue() . ($this->skip_right_match ? '' : '%');
+    /**
+     * @return string
+     */
+    public function getValue(): string
+    {
+        $res = $this->getSelected();
+
+        if ($res === (string)$this->ignore_value) {
+            $res = '';
         }
 
-        return $val;
+        return $res;
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString() {
+        if ($this->ignore_value && $this->getValue() === '') {
+            $this->setSelected((string)$this->ignore_value);
+        }
+
+        return parent::__toString();
     }
 
     /**
@@ -149,26 +138,14 @@ class Text extends CmsInputText implements IFilter
      */
     public function getDisplayValue(): string
     {
-        $val = '';
-
-        if ($this->act_as === 'like' && !$this->skip_left_match) {
-            $val .= '*';
-        }
-
-        $val .= $this->getValue();
-        if ($this->act_as === 'like' && !$this->skip_right_match) {
-            $val .= '*';
-        }
-
-        return $val;
+        return $this->options[$this->getSelected()] ?? '';
     }
 
     /**
      * @return bool
      */
-    public function isEmpty(): bool
-    {
-        return !$this->getValue();
+    public function isEmpty() {
+        return $this->getValue() === '' || $this->getValue() === (string)$this->ignore_value;
     }
 
     /**
@@ -177,15 +154,8 @@ class Text extends CmsInputText implements IFilter
     public function loadData(): bool
     {
         $provider = $this->filter->getProvider();
-        $index_multi = $this->getName() . '_ids';
 
         $res = false;
-        if (isset($provider[$index_multi])) {
-            $this->setValue($provider[$index_multi]);
-
-            $res = true;
-        }
-
         if (isset($provider[$this->getName()])) {
             $this->setValue($provider[$this->getName()]);
 
@@ -196,8 +166,21 @@ class Text extends CmsInputText implements IFilter
     }
 
     /**
-     * @param array $provider
+     * @param string $data
      *
+     * @return string
+     */
+    public function setValue($data)
+    {
+        parent::setValue($data);
+
+        $this->setSelected((string)$data);
+
+        return $this;
+    }
+
+    /**
+     * @param array $provider
      * @return $this
      */
     public function setProvider($provider)
@@ -209,7 +192,6 @@ class Text extends CmsInputText implements IFilter
 
     /**
      * @param string $column
-     *
      * @return $this
      */
     public function setColumn($column)

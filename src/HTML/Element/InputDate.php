@@ -36,7 +36,7 @@ class InputDate extends Element
      *
      * @return $this
      */
-    public static function getInstance($name, $value = NULL, $id = NULL)
+    public static function getInstance(string $name, string $value = '', string $id = '')
     {
         return new self($name, $value, $id);
     }

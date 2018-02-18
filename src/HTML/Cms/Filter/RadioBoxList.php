@@ -3,15 +3,20 @@ declare(strict_types=1);
 
 namespace TMCms\HTML\Cms\Filter;
 
-use TMCms\HTML\Cms\Element\CmsCheckboxList;
+use TMCms\HTML\Cms\Element\CmsRadioBox;
 use TMCms\HTML\Cms\Filter;
 use TMCms\HTML\Cms\IFilter;
+use TMCms\HTML\Element\InputRadio;
 
-class CheckboxList extends CmsCheckboxList implements IFilter
+/**
+ * Class RadioBoxList
+ * @package TMCms\HTML\Cms\Filter
+ */
+class RadioBoxList extends CmsRadioBox implements IFilter
 {
+
     protected $ignore_in_sql_where = false;
     private $act_as = 'aui';
-
     /**
      * @var Filter
      */
@@ -23,7 +28,7 @@ class CheckboxList extends CmsCheckboxList implements IFilter
      */
     public function __construct(string $name, string $id = '')
     {
-        parent::__construct($name, $id);
+        parent::__construct($id ?: $name);
 
         $this->filter = new Filter();
     }
@@ -41,14 +46,14 @@ class CheckboxList extends CmsCheckboxList implements IFilter
 
     /**
      * @param string $name
-     * @param array  $arguments
+     * @param array $arguments
      *
      * @return $this
      */
     public function __call(string $name, array $arguments)
     {
-        if (method_exists($this->filter, $name)) {
-            call_user_func_array([$this->filter, $name], $arguments);
+        if (\method_exists($this->filter, $name)) {
+            \call_user_func_array([$this->filter, $name], $arguments);
         } else {
             return parent::__call($name, $arguments);
         }
@@ -93,10 +98,10 @@ class CheckboxList extends CmsCheckboxList implements IFilter
     {
         $res = [];
 
-        foreach ($this->checkboxes as $label => $checkbox) {
-            /* @var $checkbox Checkbox */
-            if ($checkbox->isChecked()) {
-                $res[] = $label;
+        foreach ($this->radio_buttons as $label => $radio) {
+            /* @var $radio InputRadio */
+            if ($radio->isSelected()) {
+                $res[] = $this->labels[$label];
             }
         }
 
@@ -116,15 +121,15 @@ class CheckboxList extends CmsCheckboxList implements IFilter
      */
     public function isEmpty(): bool
     {
-        return !$this->getFilterValue();
+        return !((bool)$this->getFilterValue());
     }
 
     /**
-     * @return array
+     * @return int
      */
-    public function getFilterValue(): array
+    public function getFilterValue(): int
     {
-        return $this->getChecked();
+        return $this->getSelected();
     }
 
     /**
@@ -132,17 +137,23 @@ class CheckboxList extends CmsCheckboxList implements IFilter
      */
     public function loadData(): bool
     {
+        $default_select = $this->getSelected();
+
+        $selected = false;
         $provider = $this->filter->getProvider();
-
         $res = false;
-        if ($this->checkboxes) {
-            foreach ($this->checkboxes as $checkbox) {
-                /* @var $checkbox Checkbox */
-                if (isset($provider[(string)$this->getName()][(string)$checkbox->getName()])) {
-                    $checkbox->setChecked(true);
-                }
+        foreach ($this->radio_buttons as $label => $radio) {
+            /* @var InputRadio $radio */
+            if (isset($provider[$this->getName()]) && ((string)$provider[$this->getName()] === (string)$radio->getValue())) {
+                $selected = true;
+                $radio->setSelected(true);
+            } else {
+                $radio->setSelected(false);
             }
+        }
 
+        if ($default_select !== null && !$selected) {
+            $this->setSelected($default_select);
             $res = true;
         }
 

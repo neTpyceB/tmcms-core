@@ -398,7 +398,7 @@ class CmsFormHelper {
                         $cms_field->setStep($field['step']);
                     }
                     if (isset($field['reveal'])) {
-                        $cms_field->reveal($field['reveal']);
+                        $cms_field->setReveal((bool)$field['reveal']);
                     }
                     if (isset($field['maxlength'])) {
                         $cms_field->maxlength($field['maxlength']);

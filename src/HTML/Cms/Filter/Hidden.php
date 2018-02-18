@@ -32,12 +32,12 @@ class Hidden extends CmsInputHidden implements IFilter
 
     /**
      * @param string       $name
-     * @param string|array $value
+     * @param string $value
      * @param string       $id
      *
      * @return Hidden
      */
-    public static function getInstance(string $name, $value = '', string $id = '')
+    public static function getInstance(string $name, string $value = '', string $id = '')
     {
         return new self($name, $value, $id);
     }
@@ -109,11 +109,13 @@ class Hidden extends CmsInputHidden implements IFilter
     {
         $provider = $this->filter->getProvider();
 
+        $res = false;
         if (isset($provider[$this->getName()])) {
             $this->setValue($provider[$this->getName()]);
+            $res = true;
         }
 
-        return false;
+        return $res;
     }
 
     /**

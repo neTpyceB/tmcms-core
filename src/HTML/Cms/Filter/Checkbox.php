@@ -142,12 +142,14 @@ class Checkbox extends CmsCheckbox implements IFilter
     public function loadData(): bool
     {
         $provider = $this->filter->getProvider();
-        if (isset($provider[(string)$this->getName()])) {
-            $this->setChecked(true);
 
-            return true;
+        $res = false;
+        if (isset($provider[$this->getName()])) {
+            $this->setValue($provider[$this->getName()]);
+
+            $res = true;
         }
 
-        return false;
+        return $res;
     }
 }

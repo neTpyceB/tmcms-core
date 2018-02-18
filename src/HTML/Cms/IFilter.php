@@ -20,7 +20,10 @@ interface IFilter
 
     public function getDisplayValue();
 
-    public function loadData();
+    /**
+     * @return bool
+     */
+    public function loadData() :bool;
 
     public function isEmpty();
 
