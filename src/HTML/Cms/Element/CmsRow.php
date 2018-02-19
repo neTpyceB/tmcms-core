@@ -44,6 +44,9 @@ class CmsRow extends Element {
      */
     public function getValue(): string
     {
+        if(is_object($this->value)) {
+            return $this->value->__toString();
+        }
         return $this->value;
     }
 
