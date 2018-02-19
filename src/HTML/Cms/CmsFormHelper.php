@@ -195,6 +195,12 @@ class CmsFormHelper {
                     if (isset($field['format'])) {
                         $cms_field->setDateFormat($field['format']);
                     }
+                } elseif ($field['type'] == 'minicolors' || $field['type'] == 'colorpicker') {
+                    // Options for JS datepicker plugin
+                    if (!isset($field['options'])) {
+                        $field['options'] = [];
+                    }
+                    $cms_field = CmsInputText::getInstance($key)->enableMiniColors($field['options']);
                 } elseif ($field['type'] == 'password') {
                     $cms_field = CmsInputPassword::getInstance($key);
                 } elseif ($field['type'] == 'row') {
@@ -276,11 +282,11 @@ class CmsFormHelper {
                                 break;
                         }
 
-                        $input_field->onchange(' '); // No auto-submit
+                        $input_field->getOnchange(' '); // No auto-submit
 
                         // Any script attached
                         if (isset($input_field_data['js_onchange'])) {
-                            $input_field->onchange($input_field_data['js_onchange']);
+                            $input_field->getOnchange($input_field_data['js_onchange']);
                         }
 
                         $input_table->addColumn($input_field);
@@ -329,7 +335,7 @@ class CmsFormHelper {
                         $cms_field->setSelected($field['selected']);
                     }
                     if (isset($field['multiple'])) {
-                        $cms_field->multiple(true);
+                        $cms_field->setIsMultiple(true);
                     }
                     if (isset($field['translation'])) {
                         $cms_field->enableTranslation();
@@ -392,7 +398,7 @@ class CmsFormHelper {
                         $cms_field->setStep($field['step']);
                     }
                     if (isset($field['reveal'])) {
-                        $cms_field->reveal($field['reveal']);
+                        $cms_field->setReveal((bool)$field['reveal']);
                     }
                     if (isset($field['maxlength'])) {
                         $cms_field->maxlength($field['maxlength']);

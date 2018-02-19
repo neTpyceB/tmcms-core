@@ -27,7 +27,7 @@ class CmsHtml extends Element
     /**
      * @param string $name
      *
-     * @return CmsHtml
+     * @return $this
      */
     public static function getInstance(string $name)
     {

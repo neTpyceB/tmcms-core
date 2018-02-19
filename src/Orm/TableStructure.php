@@ -13,6 +13,7 @@ use TMCms\DB\Sync;
 class TableStructure {
 
     const FIELD_TYPE_BOOL = 'bool'; // active, checkbox
+    const FIELD_TYPE_FLOAT_DECIMAL = 'float';
     const FIELD_TYPE_INDEX = 'index'; // Int non-null with additional key index
     const FIELD_TYPE_TRANSLATION = 'translation';
     const FIELD_TYPE_VARCHAR_255 = 'varchar';
@@ -205,8 +206,8 @@ class TableStructure {
                 $res = '`'. $field['name'] .'` tinyint(1) unsigned NULL DEFAULT "'. (isset($field['default_value']) ? $field['default_value'] : '0') .'"';
                 break;
 
-            case 'float':
-            case 'decimal':
+            case self::FIELD_TYPE_FLOAT_DECIMAL:
+            case 'decimal': // TODO REMOVE THIS 'decimal'
                 // Decimal
                 $unsigned = isset($field['unsigned']) && $field['unsigned'];
                 if (!isset($field['length'])) {

@@ -130,21 +130,22 @@ class CheckboxList extends CmsCheckboxList implements IFilter
     /**
      * @return bool
      */
-    public function loadData()
+    public function loadData(): bool
     {
         $provider = $this->filter->getProvider();
 
+        $res = false;
         if ($this->checkboxes) {
             foreach ($this->checkboxes as $checkbox) {
                 /* @var $checkbox Checkbox */
-                if (isset($provider[(string)$this->getName()]) && isset($provider[(string)$this->getName()][(string)$checkbox->getName()])) {
+                if (isset($provider[(string)$this->getName()][(string)$checkbox->getName()])) {
                     $checkbox->setChecked(true);
                 }
             }
 
-            return true;
+            $res = true;
         }
 
-        return false;
+        return $res;
     }
 }

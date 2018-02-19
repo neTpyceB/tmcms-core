@@ -11,12 +11,12 @@ class DataList extends CmsInputDataList implements IFilter {
     protected $ignore_in_sql_where = false;
     private $ignore_value;
     private $act_as = 's';
-	private $skip_left_match = false;
-	private $skip_right_match = false;
-	/**
-	 * @var Filter
-	 */
-	private $filter;
+    private $skip_left_match = false;
+    private $skip_right_match = false;
+    /**
+     * @var Filter
+     */
+    private $filter;
 
     /**
      * @param string $name
@@ -24,21 +24,21 @@ class DataList extends CmsInputDataList implements IFilter {
      * @param string $id
      */
     public function  __construct(string $name, string $value = '', string $id = '') {
-		parent::__construct($name, $value, $id);
+        parent::__construct($name, $value, $id);
 
-		$this->filter = new Filter();
-	}
+        $this->filter = new Filter();
+    }
 
-	/**
-	 * @param string $name
-	 * @param string $value
-	 * @param string $id
-	 * @return $this
-	 */
-	public static function getInstance(string $name, string $value = '', string $id = '') {
-		return new self($name, $value, $id);
+    /**
+     * @param string $name
+     * @param string $value
+     * @param string $id
+     * @return $this
+     */
+    public static function getInstance(string $name, string $value = '', string $id = '') {
+        return new self($name, $value, $id);
 
-	}
+    }
 
     /**
      * @return $this
@@ -86,59 +86,59 @@ class DataList extends CmsInputDataList implements IFilter {
         return $this;
     }
 
-	/**
-	 * @return Filter
-	 */
-	public function getFilter(): Filter {
-		return $this->filter;
-	}
+    /**
+     * @return Filter
+     */
+    public function getFilter(): Filter {
+        return $this->filter;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getActAs() {
-		return $this->act_as;
-	}
+    /**
+     * @return string
+     */
+    public function getActAs() {
+        return $this->act_as;
+    }
 
-	/**
-	 * @param bool $flag
+    /**
+     * @param bool $flag
      *
-	 * @return $this
-	 */
-	public function skipLeftMatch(bool $flag = true) {
-		$this->skip_left_match = $flag;
+     * @return $this
+     */
+    public function skipLeftMatch(bool $flag = true) {
+        $this->skip_left_match = $flag;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * @param bool $flag
+    /**
+     * @param bool $flag
      *
-	 * @return $this
-	 */
-	public function skipRightMatch(bool $flag = true) {
-		$this->skip_right_match = $flag;
+     * @return $this
+     */
+    public function skipRightMatch(bool $flag = true) {
+        $this->skip_right_match = $flag;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getFilterValue() {
+    /**
+     * @return string
+     */
+    public function getFilterValue() {
         if ($this->act_as === 'like') {
             return ($this->skip_left_match ? '' : '%') . $this->getValue() . ($this->skip_right_match ? '' : '%');
         }
 
         return $this->getValue();
-	}
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getDisplayValue() {
+    /**
+     * @return string
+     */
+    public function getDisplayValue() {
         return $this->getValue();
-	}
+    }
 
     /**
      * @return bool
@@ -161,19 +161,20 @@ class DataList extends CmsInputDataList implements IFilter {
      * @return bool
      */
     public function loadData(): bool {
-		$provider = $this->filter->getProvider();
+        $provider = $this->filter->getProvider();
 
+        $res = false;
         if (isset($provider[$this->getName() . '_ids'])) {
             $this->setValue($provider[$this->getName() . '_ids']);
-			return false;
-		}
+            $res = true;
+        }
 
         if (isset($provider[$this->getName()])) {
             $this->setValue($provider[$this->getName()]);
-			return false;
-		}
+            $res = true;
+        }
 
-		return true;
+        return $res;
     }
 
     /**

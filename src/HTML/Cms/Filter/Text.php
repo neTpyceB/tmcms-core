@@ -7,6 +7,10 @@ use TMCms\HTML\Cms\Element\CmsInputText;
 use TMCms\HTML\Cms\Filter;
 use TMCms\HTML\Cms\IFilter;
 
+/**
+ * Class Text
+ * @package TMCms\HTML\Cms\Filter
+ */
 class Text extends CmsInputText implements IFilter
 {
     protected $helper = false;
@@ -21,11 +25,11 @@ class Text extends CmsInputText implements IFilter
     private $filter;
 
     /**
-     * @param        $name
+     * @param string $name
      * @param string $value
      * @param string $id
      */
-    public function __construct($name, $value = '', $id = '')
+    public function __construct(string $name, string $value = '', string $id = '')
     {
         parent::__construct($name, $value, $id);
 
@@ -39,11 +43,14 @@ class Text extends CmsInputText implements IFilter
      *
      * @return $this
      */
-    public static function getInstance($name, $value = '', $id = NULL)
+    public static function getInstance(string $name, string $value = '', string $id = '')
     {
         return new self($name, $value, $id);
     }
 
+    /**
+     * @return $this
+     */
     public function enableActAsLike()
     {
         $this->actAs('like');
@@ -128,11 +135,13 @@ class Text extends CmsInputText implements IFilter
      */
     public function getFilterValue(): string
     {
+        $val = $this->getValue();
+
         if ($this->act_as === 'like') {
-            return ($this->skip_left_match ? '' : '%') . $this->getValue() . ($this->skip_right_match ? '' : '%');
+            $val = ($this->skip_left_match ? '' : '%') . $this->getValue() . ($this->skip_right_match ? '' : '%');
         }
 
-        return $this->getValue();
+        return $val;
     }
 
     /**
@@ -141,9 +150,11 @@ class Text extends CmsInputText implements IFilter
     public function getDisplayValue(): string
     {
         $val = '';
+
         if ($this->act_as === 'like' && !$this->skip_left_match) {
             $val .= '*';
         }
+
         $val .= $this->getValue();
         if ($this->act_as === 'like' && !$this->skip_right_match) {
             $val .= '*';
@@ -167,18 +178,21 @@ class Text extends CmsInputText implements IFilter
     {
         $provider = $this->filter->getProvider();
         $index_multi = $this->getName() . '_ids';
+
+        $res = false;
         if (isset($provider[$index_multi])) {
             $this->setValue($provider[$index_multi]);
 
-            return false;
+            $res = true;
         }
+
         if (isset($provider[$this->getName()])) {
             $this->setValue($provider[$this->getName()]);
 
-            return false;
+            $res = true;
         }
 
-        return true;
+        return $res;
     }
 
     /**

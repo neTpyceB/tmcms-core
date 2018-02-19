@@ -34,6 +34,7 @@ abstract class Element
     protected $wysiwyg_enabled = false;
     protected $calendar_datepicker_enabled = false;
     protected $date_time_picker_enabled = false;
+    protected $minicolors_enabled = false;
     protected $field_required = false;
     protected $backup = true;
     protected $provider = [];
@@ -394,6 +395,11 @@ abstract class Element
      */
     public function setValue($value)
     {
+        if (\is_array($value)) {
+            $this->setValueArray($value);
+            $value = implode(', ', $value);
+        }
+
         $this->setAttribute('value', $value);
 
         return $this;
@@ -412,7 +418,7 @@ abstract class Element
      *
      * @return $this
      */
-    public function setValueArray(array $value = [])
+    public function setValueArray(array $value)
     {
         $this->value_array = $value;
 
@@ -867,6 +873,44 @@ abstract class Element
     public function isEnabledDateTimePicker()
     {
         return $this->date_time_picker_enabled;
+    }
+
+
+    /**
+     * Enable MiniColors on input
+     *
+     * @param array $options
+     *
+     * @return $this
+     */
+    public function enableMiniColors($options = [])
+    {
+        if (!$this->isEnabledMiniColors()) {
+            PageTail::getInstance()
+                ->addCssUrl('plugins/minicolors/jquery.minicolors.css')
+                ->addJsUrl('plugins/minicolors/jquery.minicolors.min.js');
+        }
+
+        // Default format is "year-month-day hour-minute"
+        if (!isset($options['control'])) {
+            $options['control'] = 'wheel';
+        }
+        $options['theme'] = 'bootstrap';
+
+        PageTail::getInstance()
+            ->addJs('$("#'.$this->id.'").minicolors(' . json_encode($options) . ');');
+
+        $this->minicolors_enabled = true;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEnabledMiniColors()
+    {
+        return $this->minicolors_enabled;
     }
 
     /**

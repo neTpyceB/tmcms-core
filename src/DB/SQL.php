@@ -112,7 +112,7 @@ class SQL extends SqlDao
 
         // Set query start time if debug is enabled or if we analyze queries
         if (Settings::get('debug_panel') || Settings::get('analyze_db_queries')) {
-            $ts = microtime(1);
+            $ts = microtime(true);
         }
 
         /** @var PDOStatement $pdo_query */
@@ -126,7 +126,7 @@ class SQL extends SqlDao
 
         if (isset($ts)) {
             // Start time exists - so we save query to analyze
-            $tt = microtime(1) - $ts;
+            $tt = microtime(true) - $ts;
 
             if (Settings::get('debug_panel')) {
                 Stats::addQuery([

@@ -174,6 +174,12 @@ class BreadCrumbs
             if (!isset($link['do'])) {
                 $link['do'] = P_DO;
             }
+
+            // Removed "_default" from main action if called from Main and is the beginning of string
+            if (stripos($link['do'], '_default') === 0) {
+                $link['do'] = str_replace('_default_', '', $link['do']);
+            }
+
             $link = Linker::makeUrl($link);
         }
 

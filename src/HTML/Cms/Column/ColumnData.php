@@ -197,7 +197,7 @@ class ColumnData extends Column
                 break;
 
             case 'iplong':
-                $value = long2ip($value);
+                $value = long2ip((int)$value);
                 break;
 
             case 'ts2datetime':
