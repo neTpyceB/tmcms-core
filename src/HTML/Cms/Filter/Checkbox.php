@@ -111,7 +111,7 @@ class Checkbox extends CmsCheckbox implements IFilter
      *
      * @return $this
      */
-    public function setValue(string $data)
+    public function setValue($data)
     {
         parent::setValue($data);
 
