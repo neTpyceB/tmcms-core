@@ -24,7 +24,7 @@ class SQLLimitParser
 
     public function parse()
     {
-        if (strpos(strtolower($this->sql), 'offset') !== false) {
+        if (stripos($this->sql, 'offset') !== false) {
             list($this->limit, $this->offset) = preg_split('/offset/i', $this->sql);
             $this->offset = trim($this->offset);
             $this->limit = trim($this->limit);

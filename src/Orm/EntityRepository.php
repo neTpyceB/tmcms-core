@@ -924,7 +924,7 @@ FROM `' . $this->getDbTableName() . '`
         $direction = $direction_desc ? 'DESC' : ' ASC';
 
         // Swap fields with translation table
-        if (in_array($field, $this->translation_fields, true)) {
+        if (\in_array($field, $this->translation_fields, true)) {
             $this->translation_join_count++;
             $this->addJoinTable(['cms_translations', $this->getTranslationTableJoinAlias() . $this->translation_join_count], 'id', $field, 'LEFT', $table);
 
