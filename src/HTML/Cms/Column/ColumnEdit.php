@@ -35,7 +35,7 @@ class ColumnEdit extends Column
      *
      * @return string
      */
-    public function getView(int $row, array $row_data, Linker $linker)
+    public function getView(int $row, array $row_data, Linker $linker): string
     {
         if (!$this->getValue()) {
             $this->allowHtml();
@@ -48,6 +48,6 @@ class ColumnEdit extends Column
             $value = '&mdash;';
         }
 
-        return $this->getCellView($this->getHrefView($value, $this->getHref($row_data, $linker, ['do' => 'edit', 'id' => $row_data['id']])), $row_data);
+        return $this->getCellView($this->getHrefView($value, $this->getParsedHref($row_data, $linker, ['do' => 'edit', 'id' => $row_data['id']])), $row_data);
     }
 }

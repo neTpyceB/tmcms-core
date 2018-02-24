@@ -81,9 +81,9 @@ class ColumnInput extends Column {
         // Update some params based on type
         switch ($this->selected_input_type) {
             case 'checkbox': case 'radio': case 'delete':
-                $this->width('1%');
-                $this->nowrap(1);
-                $this->align('center');
+                $this->setWidth('1%');
+                $this->disableNewlines();
+                $this->enableCenterAlign();
             break;
         }
 
@@ -199,12 +199,12 @@ class ColumnInput extends Column {
             case 'select':
 
                 // Build link from array
-                if (\is_array($this->href())) {
-                    $this->href(http_build_query($this->href()));
+                if (\is_array($this->getHref())) {
+                    $this->setHref(http_build_query($this->getHref()));
                 }
 
                 // Replace {%%} params
-                $href = $this->parse_magic_data($row_data, $this->href());
+                $href = $this->replaceTemplateVars($row_data, $this->getHref());
 
                 $cell_view = CmsForm::getInstance()
                     ->disableFullView()

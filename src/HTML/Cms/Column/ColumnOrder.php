@@ -41,7 +41,7 @@ class ColumnOrder extends Column
     /**
      * @param string $table_id
      */
-    public static function getDndJS(string $table_id = '')
+    public static function getDragAndDropJS(string $table_id = '')
     {
         ?>
         <style>
@@ -222,12 +222,12 @@ class ColumnOrder extends Column
     public function getView(int $row, array $row_data, Linker $linker): string
     {
         // Auto set _href for update links
-        if (!$this->href()) {
+        if (!$this->getHref()) {
             $tmp = $_GET;
             $tmp['do'] = str_replace('_default', '', $tmp['do']);
             $tmp['do'] = ($tmp['do'] ? '_' : '') . $tmp['do'] . '_order';
             $tmp['id'] = '{%id%}';
-            $this->href(urldecode('?' . http_build_query($tmp)));
+            $this->setHref(urldecode('?' . http_build_query($tmp)));
         }
 
         // Output
@@ -237,11 +237,11 @@ class ColumnOrder extends Column
         }
 
         if ($this->href) {
-            $up_link = $this->getHref($row_data, $linker) . '&direct=up';
-            $down_link = $this->getHref($row_data, $linker) . '&direct=down';
+            $up_link = $this->getParsedHref($row_data, $linker) . '&direct=up';
+            $down_link = $this->getParsedHref($row_data, $linker) . '&direct=down';
         } else {
-            $up_link = $this->getHref($row_data, $linker, $linker_array + ['direct' => 'up']);
-            $down_link = $this->getHref($row_data, $linker, $linker_array + ['direct' => 'down']);
+            $up_link = $this->getParsedHref($row_data, $linker, $linker_array + ['direct' => 'up']);
+            $down_link = $this->getParsedHref($row_data, $linker, $linker_array + ['direct' => 'down']);
         }
 
         $current_row = $this->row_offset + $this->current_offset;

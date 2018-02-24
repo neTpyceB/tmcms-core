@@ -39,7 +39,7 @@ class ColumnView extends Column
     {
         if (!$this->getValue()) {
             $this->allowHtml();
-            $this->align('center');
+            $this->enableCenterAlign();
             $this->setValue('<i class="fa fa-eye"></i>');
         }
 
@@ -54,7 +54,7 @@ class ColumnView extends Column
             'id' => $row_data['id']
         ];
 
-        $href = $this->getHref($row_data, $linker, $linker_array);
+        $href = $this->getParsedHref($row_data, $linker, $linker_array);
         $cell_view = $this->getHrefView($value, $href);
 
         return $this->getCellView($cell_view, $row_data);

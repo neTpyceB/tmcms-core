@@ -74,9 +74,9 @@ class ColumnAutoNumber extends Column
      * @param array  $row_data
      * @param Linker $linker
      *
-     * @return string <type>
+     * @return string
      */
-    public function getView(int $row, array $row_data, Linker $linker)
+    public function getView(int $row, array $row_data, Linker $linker): string
     {
         if ($this->order_asc) {
             $cell_view = $this->start_from + $this->row_offset + $this->current_offset;
@@ -85,7 +85,7 @@ class ColumnAutoNumber extends Column
         }
 
         if ($this->href) {
-            $cell_view = $this->getHrefView($cell_view, $this->getHref($row_data, $linker));
+            $cell_view = $this->getHrefView($cell_view, $this->getParsedHref($row_data, $linker));
         }
 
         $this->current_offset++;

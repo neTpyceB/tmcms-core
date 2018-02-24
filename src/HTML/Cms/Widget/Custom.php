@@ -50,14 +50,6 @@ class Custom extends Widget
     /**
      * @return string
      */
-    public function getOnclick(): string
-    {
-       return $this->onclick;
-    }
-
-    /**
-     * @return string
-     */
     public function __toString()
     {
         ob_start();

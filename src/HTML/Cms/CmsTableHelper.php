@@ -259,7 +259,7 @@ class CmsTableHelper {
 
             // Help text with question mark
             if (isset($column_param['hint'])) {
-                $column->help($column_param['hint']);
+                $column->setHelpText($column_param['hint']);
             }
 
             // Disable cutting long texts by column
@@ -319,7 +319,7 @@ class CmsTableHelper {
                 $column->setHref($column_param['href']);
             }
             if (isset($column_param['href_new_window'])) {
-                $column->href_new_window($column_param['href_new_window']);
+                $column->setOpenHrefInNewWindow($column_param['href_new_window']);
             }
 
             // Paired array
@@ -334,7 +334,7 @@ class CmsTableHelper {
 
             // nl2br
             if (isset($column_param['nl2br'])) {
-                $column->enbleNl2Br();
+                $column->enableNl2Br();
             }
 
             // Add to filters
@@ -364,7 +364,7 @@ class CmsTableHelper {
 
             // Javascript onchange
             if (isset($column_param['onchange'])) {
-                $column->getOnchange($column_param['onchange']);
+                $column->setOnchange($column_param['onchange']);
             }
 
             // Data attributes

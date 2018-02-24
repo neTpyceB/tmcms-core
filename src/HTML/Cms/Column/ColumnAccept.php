@@ -32,12 +32,12 @@ class ColumnAccept extends Column
      *
      * @return string
      */
-    public function getView(int $row, array $row_data, Linker $linker)
+    public function getView(int $row, array $row_data, Linker $linker): string
     {
         $linker_array = ['do' => '_accept', 'id' => $row_data['id']];
         $value = $this->getCellData($row_data);
 
-        $cell_data = '<form action="' . $this->getHref($row_data, $linker, $linker_array) . '" method="post"><input onclick="this.form.submit();" type="checkbox"' . ($value ? ' checked="checked" disabled="disabled"' : '') . ' name="input" value="1"></form>';
+        $cell_data = '<form action="' . $this->getParsedHref($row_data, $linker, $linker_array) . '" method="post"><input onclick="this.form.submit();" type="checkbox"' . ($value ? ' checked="checked" disabled="disabled"' : '') . ' name="input" value="1"></form>';
 
         return $this->getCellView($cell_data, $row_data);
     }

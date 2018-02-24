@@ -224,7 +224,7 @@ class ColumnData extends Column
         }
 
         if ($this->href && $this->data_type !== 'mail') {
-            $cell_view = $this->getHrefView($value, $this->getHref($row_data, $linker));
+            $cell_view = $this->getHrefView($value, $this->getParsedHref($row_data, $linker));
         } else {
             $cell_view = $value;
         }

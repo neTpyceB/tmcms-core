@@ -38,20 +38,20 @@ class ColumnActive extends ColumnCheckbox
      *
      * @return string
      */
-    public function getView(int $row, array $row_data, Linker $linker)
+    public function getView(int $row, array $row_data, Linker $linker): string
     {
         // Auto set _href for update links
-        if (!$this->href()) {
+        if (!$this->getHref()) {
             $tmp = $_GET;
             $tmp['do'] = str_replace('_default', '', $tmp['do']);
             $tmp['do'] = ($tmp['do'] ? '_' : '') . $tmp['do'] . '_' . $this->key;
             $tmp['id'] = '{%id%}';
 
-            $this->href(urldecode('?' . http_build_query($tmp)));
+            $this->setHref(urldecode('?' . http_build_query($tmp)));
         }
 
         // Output
-        $href = $this->getHref($row_data, $linker, ['do' => 'active', 'id' => $row_data['id']]);
+        $href = $this->getParsedHref($row_data, $linker, ['do' => 'active', 'id' => $row_data['id']]);
         $value = $this->getCellData($row_data);
 
         $cell_data = '
@@ -63,7 +63,7 @@ class ColumnActive extends ColumnCheckbox
                 class="noBorder"
                 value="1"
             >
-		</form>';
+        </form>';
 
         return $this->getCellView($cell_data, $row_data);
     }

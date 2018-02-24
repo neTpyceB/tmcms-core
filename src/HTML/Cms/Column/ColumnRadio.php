@@ -35,7 +35,7 @@ class ColumnRadio extends Column {
     public function getView(int $row, array $row_data, Linker $linker): string
     {
         $value = $this->getCellData($row_data);
-        $cell_data = '<form action="'. $this->getHref($row_data, $linker) .'" method="post"><input onclick="'. ($this->onclick ?: 'this.form.submit();') .'" type="radio"'. ($value ? ' checked="checked"' : '') .' name="input" class="noBorder" value="'. htmlspecialchars($value, ENT_QUOTES) .'"></form>';
+        $cell_data = '<form action="'. $this->getParsedHref($row_data, $linker) .'" method="post"><input onclick="'. ($this->onclick ?: 'this.form.submit();') .'" type="radio"'. ($value ? ' checked="checked"' : '') .' name="input" class="noBorder" value="'. htmlspecialchars($value, ENT_QUOTES) .'"></form>';
 
         return $this->getCellView($cell_data, $row_data);
     }

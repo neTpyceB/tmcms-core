@@ -25,7 +25,7 @@ class ColumnImg extends Column {
         return new self($key);
     }
 
-    public function getView(int $row, array $row_data, Linker $linker)
+    public function getView(int $row, array $row_data, Linker $linker): string
     {
         $img_src = $this->getCellData($row_data);
 
@@ -52,8 +52,8 @@ class ColumnImg extends Column {
             $cell_data = '';
         }
 
-        if ($this->href()){
-            $cell_data = $this->getHrefView($cell_data, $this->getHref($row_data, $linker));
+        if ($this->getHref()){
+            $cell_data = $this->getHrefView($cell_data, $this->getParsedHref($row_data, $linker));
         }
 
         return $this->getCellView($cell_data, $row_data);

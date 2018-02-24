@@ -282,11 +282,11 @@ class CmsFormHelper {
                                 break;
                         }
 
-                        $input_field->getOnchange(' '); // No auto-submit
+                        $input_field->setOnchange(' '); // No auto-submit
 
                         // Any script attached
                         if (isset($input_field_data['js_onchange'])) {
-                            $input_field->getOnchange($input_field_data['js_onchange']);
+                            $input_field->setOnchange($input_field_data['js_onchange']);
                         }
 
                         $input_table->addColumn($input_field);
