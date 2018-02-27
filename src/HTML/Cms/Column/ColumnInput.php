@@ -296,14 +296,15 @@ class ColumnInput extends Column {
      * @param $tbl_id
      * @return null|void
      */
-    public function getJs($tbl_id) {
+    public function getJs(string $tbl_id): string {
         if (!empty(self::$js_loaded[$tbl_id])) {
             // Means JavaScript for current table was loaded already
-            return;
+            return '';
         }
 
         self::$js_loaded[$tbl_id] = true;
 
+        ob_start();
         ?>
             <script>
                 if (typeof table_form === 'undefined') {
@@ -523,6 +524,7 @@ class ColumnInput extends Column {
                 table_form<?= $tbl_id ?>.init();
             </script>
         <?php
+        return ob_get_clean();
     }
 
     /**

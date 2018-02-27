@@ -243,7 +243,7 @@ abstract class Column
      */
     public function setOnchange($js)
     {
-        $this->onchange = str_replace("'", "\'", $js);
+        $this->onchange = (array)str_replace("'", "\'", $js);
 
         return $this;
     }
@@ -768,7 +768,7 @@ abstract class Column
         }
 
         // Cut long strings
-        if ($this->cut_long_strings && $cell_data === strip_tags($cell_data)) {
+        if ($this->cut_long_strings && $cell_data === strip_tags((string)$cell_data)) {
             $cell_data = Converter::cutLongStrings((string)$cell_data, $this->cut_long_strings_limit);
         }
 
@@ -916,7 +916,7 @@ abstract class Column
             $attr['onclick'] = 'onclick="' . ($row_data ? $this->replaceTemplateVars($row_data, $this->getOnclick()) : $this->onclick) . '"';
         }
         if ($this->onchange) {
-            $attr['onchange'] = 'onchange="' . ($row_data ? $this->replaceTemplateVars($row_data, implode(';', $this->getOnchange())) : $this->onchange) . '"';
+            $attr['onchange'] = 'onchange="' . ($row_data ? $this->replaceTemplateVars($row_data, implode(';', $this->getOnchange())) : implode(';', $this->getOnchange())) . '"';
         }
         if ($this->key) {
             $attr['data-column_key'] = 'data-column_key="' . $this->key . '"';
