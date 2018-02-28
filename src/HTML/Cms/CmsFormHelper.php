@@ -28,7 +28,15 @@ use TMCms\HTML\Cms\Widget\SvgMap;
 use TMCms\Orm\Entity;
 use TMCms\Strings\Converter;
 
+/**
+ * Class CmsFormHelper
+ * @package TMCms\HTML\Cms
+ */
 class CmsFormHelper {
+    const FIELD_TYPE_FILE = 'file';
+    const FIELD_TYPE_HTML = 'html';
+    const FIELD_TYPE_ROW = 'row';
+
     /**
      * @param $table
      * @param array $params [data, action, button, fields[], unset[], order[]]
@@ -203,7 +211,7 @@ class CmsFormHelper {
                     $cms_field = CmsInputText::getInstance($key)->enableMiniColors($field['options']);
                 } elseif ($field['type'] == 'password') {
                     $cms_field = CmsInputPassword::getInstance($key);
-                } elseif ($field['type'] == 'row') {
+                } elseif ($field['type'] === self::FIELD_TYPE_ROW) {
                     if (isset($field['value'])) {
                         $cms_field = CmsRow::getInstance($key)->setValue($field['value']);
                     }
@@ -227,12 +235,12 @@ class CmsFormHelper {
                     $cms_field = CmsInputDataList::getInstance($key);
                 } elseif ($field['type'] == 'hidden') {
                     $cms_field = CmsInputHidden::getInstance($key);
-                } elseif ($field['type'] == 'file') {
+                } elseif ($field['type'] === self::FIELD_TYPE_FILE) {
                     $form->setEnctypeMultipartFormData();
                     $cms_field = CmsInputFile::getInstance($key);
                 } elseif ($field['type'] == 'color') {
                     $cms_field = CmsInputColor::getInstance($key);
-                } elseif ($field['type'] == 'html') {
+                } elseif ($field['type'] == self::FIELD_TYPE_HTML) {
                     $cms_field = CmsHtml::getInstance($key);
                 } elseif ($field['type'] == 'input_table') {
                     // Special case for own table with inputs
@@ -277,7 +285,7 @@ class CmsFormHelper {
                                 $input_field->setOptions($input_field_data['options']);
                                 break;
 
-                            case 'html':
+                            case self::FIELD_TYPE_HTML:
                                 $input_field->setTypeHtml();
                                 break;
                         }
