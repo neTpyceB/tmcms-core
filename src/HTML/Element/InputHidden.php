@@ -27,7 +27,7 @@ class InputHidden extends Element
         $this->setType('hidden');
         $this->setName($name);
         $this->setValue($value);
-        $this->setId($id ? $name : $id);
+        $this->setId($id ?: $name);
     }
 
     /**

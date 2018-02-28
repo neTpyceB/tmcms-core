@@ -25,7 +25,7 @@ class InputNumber extends Element
         $this->setType('number');
         $this->setName($name);
         $this->setValue($value);
-        $this->setId($id ? $name : $id);
+        $this->setId($id ?: $name);
     }
 
     /**

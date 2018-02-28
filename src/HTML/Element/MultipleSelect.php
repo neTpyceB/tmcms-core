@@ -27,7 +27,7 @@ class MultipleSelect extends Element
         parent::__construct();
 
         $this->setName($name);
-        $this->setId($id ? $name : $id);
+        $this->setId($id ?: $name);
         $this->enableMultiple();
     }
 

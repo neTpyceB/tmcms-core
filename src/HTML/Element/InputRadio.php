@@ -31,7 +31,7 @@ class InputRadio extends Element
         $this->setType('radio');
         $this->setName($name);
         $this->setValue($value);
-        $this->setId($id  ? $name : $id);
+        $this->setId($id ?: $name);
     }
 
     /**

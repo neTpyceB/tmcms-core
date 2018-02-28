@@ -25,7 +25,7 @@ class InputTel extends Element
         $this->setType('tel');
         $this->setName($name);
         $this->setValue($value);
-        $this->setId($id ? $name : $id);
+        $this->setId($id ?: $name);
     }
 
     /**

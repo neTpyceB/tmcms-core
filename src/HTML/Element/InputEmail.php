@@ -25,7 +25,7 @@ class InputEmail extends Element
         $this->setType('email');
         $this->setName($name);
         $this->setValue($value);
-        $this->setId($id ? $name : $id);
+        $this->setId($id ?: $name);
     }
 
     /**

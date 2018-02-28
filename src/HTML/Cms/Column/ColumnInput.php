@@ -293,16 +293,16 @@ class ColumnInput extends Column {
     }
 
     /**
-     * @param $tbl_id
+     * @param $table_id
      * @return null|void
      */
-    public function getJs(string $tbl_id): string {
-        if (!empty(self::$js_loaded[$tbl_id])) {
+    public function getJs(string $table_id): string {
+        if (!empty(self::$js_loaded[$table_id])) {
             // Means JavaScript for current table was loaded already
             return '';
         }
 
-        self::$js_loaded[$tbl_id] = true;
+        self::$js_loaded[$table_id] = true;
 
         ob_start();
         ?>
@@ -337,7 +337,7 @@ class ColumnInput extends Column {
                     };
                 }
 
-                var table_form<?= $tbl_id ?> = {
+                var table_form<?= $table_id ?> = {
                     row: null,
                     id_prefix: '<?= self::TABLE_ID_PREFIX ?>',
                     next_id: 0,
@@ -364,7 +364,7 @@ class ColumnInput extends Column {
 
                         this.removed_ids.push(id);
 
-                        table_form.tables['<?=$tbl_id?>'].push(id);
+                        table_form.tables['<?=$table_id?>'].push(id);
                     },
                     add_row: function() {
                         var node = this.row.clone();
@@ -374,13 +374,13 @@ class ColumnInput extends Column {
                         // Replace IDs, names and values in new row
                         jQuery(node).find('input, textarea, select').each(function() {
                             if (this.type !== 'button') { // Inputs
-                                jQuery(this).attr({'name':jQuery(this).attr('name').replace('<?=$tbl_id?>[update][-1][', '<?=$tbl_id?>[add]['+ new_id +'][')});
+                                jQuery(this).attr({'name':jQuery(this).attr('name').replace('<?=$table_id?>[update][-1][', '<?=$table_id?>[add]['+ new_id +'][')});
 
                                 if (this.type === 'radio') {
-                                    this.value = '<?=$tbl_id?>[add]['+ table_form<?=$tbl_id?>.id_prefix + new_id +']';
+                                    this.value = '<?=$table_id?>[add]['+ table_form<?=$table_id?>.id_prefix + new_id +']';
                                 }
 
-                                this.id = table_form<?=$tbl_id?>.id_prefix + new_id + this.id;
+                                this.id = table_form<?=$table_id?>.id_prefix + new_id + this.id;
 
                                 // Saving name for Widget
                                 row_name = this.name.split('][');
@@ -388,22 +388,22 @@ class ColumnInput extends Column {
                                 row_name = row_name.substring(0, row_name.length-1);
                             } else {
                                 // Widgets, set widget button return value
-                                attr = jQuery(this).attr('onclick').replace('<?=$tbl_id?>_update_1_'+ row_name +'_', table_form<?=$tbl_id?>.id_prefix+ new_id +'<?=$tbl_id?>_update_1_'+ row_name +'_');
+                                attr = jQuery(this).attr('onclick').replace('<?=$table_id?>_update_1_'+ row_name +'_', table_form<?=$table_id?>.id_prefix+ new_id +'<?=$table_id?>_update_1_'+ row_name +'_');
 
                                 jQuery(this).attr('onclick', attr);
 
                                 // Special for IE - recreating element to get onclick working
                                 if (jQuery.browser.msie) {
                                     this.setAttribute('onclick', new Function (attr));
-                                    new_o = table_form<?=$tbl_id?>.changeInputType(this, 'button');
+                                    new_o = table_form<?=$table_id?>.changeInputType(this, 'button');
                                     jQuery(this).replaceWith(new_o);
                                 }
                             }
                         });
 
-                        jQuery(node).attr('id', 'id_'+ table_form<?=$tbl_id?>.id_prefix + new_id);
+                        jQuery(node).attr('id', 'id_'+ table_form<?=$table_id?>.id_prefix + new_id);
 
-                        jQuery('#<?=$tbl_id?>').append(node);
+                        jQuery('#<?=$table_id?>').append(node);
                     },
                     submit: function(action) {
                         // Remove saved row
@@ -423,7 +423,7 @@ class ColumnInput extends Column {
                         var o, new_o, skip;
 
                         // Draw added and updated data
-                        jQuery('#<?= $tbl_id ?>').find('input[type!="button"], textarea, select').each(function() {
+                        jQuery('#<?= $table_id ?>').find('input[type!="button"], textarea, select').each(function() {
                             o = this;
                             if (o.tagName.toLowerCase() === 'textarea') {
                                 new_o = document.createElement('input');
@@ -450,7 +450,7 @@ class ColumnInput extends Column {
                                 o = new_o;
                             }
 
-                            o = table_form<?=$tbl_id?>.changeInputType(o, 'hidden');
+                            o = table_form<?=$table_id?>.changeInputType(o, 'hidden');
 
                             if (!skip) {
                                 form.appendChild(o);
@@ -466,24 +466,24 @@ class ColumnInput extends Column {
                                 continue;
                             }
                             new_o = document.createElement('input');
-                            new_o = table_form<?=$tbl_id?>.changeInputType(new_o, 'hidden');
+                            new_o = table_form<?=$table_id?>.changeInputType(new_o, 'hidden');
                             new_o.value = id;
-                            new_o.name = '<?=$tbl_id?>[remove]['+ id +']';
+                            new_o.name = '<?=$table_id?>[remove]['+ id +']';
                             form.appendChild(new_o);
                         }
 
                         // For IE - we have to put the form into HTML
-                        document.getElementById('<?=$tbl_id?>').appendChild(form);
+                        document.getElementById('<?=$table_id?>').appendChild(form);
                         if (action) {
                             form.submit();
                         }
                     },
                     init: function() {
                         // Save table id for late post
-                        table_form.tables['<?=$tbl_id?>'] = [];
+                        table_form.tables['<?=$table_id?>'] = [];
 
                         // Save last row to be copied
-                        var $o = jQuery('#<?=$tbl_id?> > tbody > tr:last');
+                        var $o = jQuery('#<?=$table_id?> > tbody > tr:last');
 
                         this.row = $o.clone();
 
@@ -521,7 +521,7 @@ class ColumnInput extends Column {
                 };
 
                 // Start script
-                table_form<?= $tbl_id ?>.init();
+                table_form<?= $table_id ?>.init();
             </script>
         <?php
         return ob_get_clean();

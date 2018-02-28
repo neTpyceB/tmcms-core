@@ -24,7 +24,7 @@ class InputUrl extends Element
         $this->setType('url');
         $this->setName($name);
         $this->setValue($value);
-        $this->setId($id ? $name : $id);
+        $this->setId($id ?: $name);
     }
 
     /**

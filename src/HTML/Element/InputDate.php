@@ -26,7 +26,7 @@ class InputDate extends Element
 
         $this->setValue($value);
 
-        $this->setId($id ? $name : $id);
+        $this->setId($id ?: $name);
     }
 
     /**

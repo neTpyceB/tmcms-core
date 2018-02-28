@@ -21,7 +21,7 @@ class InputRange extends Element
         $this->setType('range');
         $this->setName($name);
         $this->setValue($value);
-        $this->setId($id ? $name : $id);
+        $this->setId($id ?: $name);
     }
 
     /**
