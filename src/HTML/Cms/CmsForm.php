@@ -748,7 +748,7 @@ class CmsForm extends Form
             if (isset($data[$name])) {
                 $field_value = $data[$name];
 
-                $err = Validation::validateFiled($field_value, $element->getValidatorBackendChecks());
+                $err = Validation::validateFiled($data, $field_value, $element->getValidatorBackendChecks());
                 if(is_array($err)){
                     $errors[$name] = $err;
                 }
