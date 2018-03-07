@@ -52,10 +52,6 @@ class CmsFormHelper {
             $table = $params['db_table'];
         }
 
-        if (!$table || !\is_string($table)) {
-            dump('db_table or $table must be supplied');
-        }
-
         // Convert data to array
         if (isset($params['data']) && is_object($params['data'])) {
             /** @var Entity $obj */
