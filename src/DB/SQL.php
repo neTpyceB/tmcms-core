@@ -493,7 +493,7 @@ class SQL extends SqlDao
      * @param string $q
      * @return array
      */
-    public static function q_assoc_row($q): array
+    public static function q_assoc_row($q)
     {
         $qh = \is_string($q) ? self::getInstance()->sql_query($q) : $q;
 
