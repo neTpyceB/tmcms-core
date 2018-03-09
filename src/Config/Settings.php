@@ -67,7 +67,7 @@ class Settings
     /**
      * @return bool
      */
-    public static function isCmsUserLogEnabled()
+    public static function isCmsUserLogEnabled(): bool
     {
         return !self::get('disable_cms_access_log');
     }
@@ -75,20 +75,22 @@ class Settings
     /**
      * @return string
      */
-    public static function getCommonEmail()
+    public static function getCommonEmail(): string
     {
-        return self::get('common_email');
+        return (string)self::get('common_email');
     }
 
     /**
      * @return string
      */
-    public static function getDefaultDateFormat()
+    public static function getDefaultDateFormat(): string
     {
         $format = self::get('common_date_format');
+
         if (!$format) {
             $format = CFG_CMS_DATETIME_FORMAT;
         }
+
         return $format;
     }
 
