@@ -29,6 +29,7 @@ class Entity extends AbstractEntity
     private $insert_delayed = false; // Auto use of htmlspecialchars for output
     private $encode_special_chars_for_html = false;
     private $field_callbacks = []; // Key used to encrypt and decrypt db data
+    private $loaded_from_db = false;
 
     /**
      * @var SQL
@@ -97,8 +98,9 @@ class Entity extends AbstractEntity
         $need_to_cache = false;
         // Get data from DB
         if ($data === NULL || !$all_multi_lng_fields_in_cache) {
-            // Load data
+            // Load data from database
             $data = q_assoc_row($this->getSelectSql());
+            $this->loaded_from_db = true;
 
             // Later we have to cache data
             $need_to_cache = true;
