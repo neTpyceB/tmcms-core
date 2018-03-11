@@ -15,6 +15,8 @@ use TMCms\Strings\Translations;
 /**
  * Class Entity
  * @package TMCms\Orm
+ *
+ * @method int getPid()
  */
 class Entity extends AbstractEntity
 {
@@ -779,14 +781,23 @@ class Entity extends AbstractEntity
 
     /**
      * Action to call fron _item_order functions
+     * @param string $parent_column_name
      */
-    public function processOrderAction() {
+    public function processOrderAction($parent_column_name = '') {
+        if ($parent_column_name) {
+            // If have pid field, means we should move in the same parent
+            SQL::orderCat($this->getId(), $this->getDbTableName(), $this->getPid(), $parent_column_name, $_GET['direct']);
+        } else {
+            // Or usual move
+            SQL::order($this->getId(), $this->getDbTableName(), $_GET['direct']);
+        }
+
+        // Ajax request only with steps
         if (IS_AJAX_REQUEST) {
             SQL::orderMoveByStep($this->getId(), $this->getDbTableName(), $_GET['direct'], $_GET['step']);
             die(1);
         }
 
-        SQL::order($this->getId(), $this->getDbTableName(), $_GET['direct']);
         back();
     }
 }
