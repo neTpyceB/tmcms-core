@@ -257,7 +257,7 @@ class Frontend
         $this->mvc_instance = new MVC();
 
         // Change elements to its' real data
-        while ((list($k, $v) = each($elements))) {
+        foreach($elements as $k=> $v){
 
             if (in_array($v['class'], $disabled_components)) {
                 // Skip disabled
@@ -283,7 +283,7 @@ class Frontend
         // Replace data with its' component variables in template
         if ($replaces) {
             reset($replaces);
-            while ((list($k, $v) = each($replaces))) {
+            foreach($replaces as $k=>$v){
                 $this->html = str_replace($k, $v, $this->html);
             }
         }
