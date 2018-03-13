@@ -103,7 +103,10 @@ class Stats
         }
         Cacher::getInstance()->getDefaultCacher()->set('debug_panel' . $uid, $data, 3600);
 
-        ?>
+        // For frontend we may add jQuery, for cms not required
+        if (MODE === 'site'):
+            ?><script src="/vendor/devp-eu/tmcms-core/src/assets/jquery-2.1.0.min.js"></script><?php
+        endif; ?>
         <script>
             $.ajax({
                 url: '/-/<?= CFG_API_ROUTE ?>/debug_panel?uid=<?=$uid?>',

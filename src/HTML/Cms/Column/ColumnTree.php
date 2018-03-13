@@ -24,7 +24,6 @@ class ColumnTree extends Column
     private $js_object_name = '';
     private $ajax = false;
     private $ajax_path = '';
-    private $usingAjax = false;
     private $save_inner_state = true;
     private $_max_level = 0;
     private $_top_level_id = '0';
@@ -48,6 +47,16 @@ class ColumnTree extends Column
     public static function getInstance($key)
     {
         return new self($key);
+    }
+
+    /**
+     * @return $this
+     */
+    public function enableAjax()
+    {
+        $this->ajax = true;
+
+        return $this;
     }
 
     /**
@@ -144,7 +153,7 @@ class ColumnTree extends Column
      */
     public function getRowStyle(array $row_data): string
     {
-        if ($this->usingAjax || (isset($row_data[$this->pid_column]) && (string)$row_data[$this->pid_column] === $this->_top_level_id)) {
+        if ($this->ajax || (isset($row_data[$this->pid_column]) && (string)$row_data[$this->pid_column] === $this->_top_level_id)) {
             return '';
         }
 
@@ -202,6 +211,10 @@ class ColumnTree extends Column
     {
         ob_start();
         $this->getTreeJs();
+
+        if (!$this->ajax_path) {
+            $this->ajax_path = '?p='. P .'&do=' . P_DO;
+        }
 
         ?>
         <script>
@@ -620,7 +633,7 @@ class ColumnTree extends Column
             }
 
             $cell = '<div style="padding-left: '
-                . (($this->getRowLevel($id) + (isset($_GET['ajax_tree_node_lvl']) ? (int)$_GET['ajax_tree_node_lvl'] : '')) * $this->child_padding)
+                . (($this->getRowLevel($id) + (isset($_GET['ajax_tree_node_lvl']) ? (int)$_GET['ajax_tree_node_lvl'] : 0)) * $this->child_padding)
                 . 'px">'
                 . (!$row_data['ajax_tree_leaf']
                     ? '<a href="" class="nounderline" style="font-family: monospace;" id="toggle_'
