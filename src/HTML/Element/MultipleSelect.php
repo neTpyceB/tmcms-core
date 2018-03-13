@@ -147,6 +147,6 @@ class MultipleSelect extends Element
      */
     public function isSelected($key): bool
     {
-        return \in_array($key, $this->selected, true);
+        return \in_array($key, $this->selected);
     }
 }
