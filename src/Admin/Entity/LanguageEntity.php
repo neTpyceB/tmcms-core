@@ -17,5 +17,5 @@ use TMCms\Orm\Entity;
  */
 class LanguageEntity extends Entity
 {
-    protected $db_table = 'cms_languages';
+    protected $db_table = LanguageEntityRepository::TABLE_NAME;
 }
