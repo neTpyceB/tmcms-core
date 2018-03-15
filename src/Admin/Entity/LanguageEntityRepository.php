@@ -18,7 +18,7 @@ class LanguageEntityRepository extends EntityRepository
     const FIELD_FULL = 'full';
     const FIELD_SHORT = 'short';
 
-    const TABLE_NAME = 'languages';
+    const TABLE_NAME = 'cms_languages';
 
     protected $db_table = self::TABLE_NAME;
     protected $table_structure = [
