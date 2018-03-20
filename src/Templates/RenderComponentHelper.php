@@ -5,6 +5,7 @@ namespace TMCms\Templates;
 use TMCms\Files\FileSystem;
 use TMCms\HTML\Cms\Element\CmsCheckbox;
 use TMCms\HTML\Cms\Element\CmsCheckboxList;
+use TMCms\HTML\Cms\Element\CmsInputColor;
 use TMCms\HTML\Cms\Element\CmsInputDate;
 use TMCms\HTML\Cms\Element\CmsInputTags;
 use TMCms\HTML\Cms\Element\CmsInputText;
@@ -181,6 +182,10 @@ class RenderComponentHelper {
                 $field = CmsInputTags::getInstance($this->component_name);
                 break;
 
+            case 'color':
+                $field = CmsInputColor::getInstance($this->component_name);
+                break;
+
             case 'custom':
                 // Skip because we have separate page for it
                 break;
@@ -239,6 +244,10 @@ class RenderComponentHelper {
 
             case 'map':
                 $field->enableGoogleMap();
+                break;
+
+            case 'color':
+                $field->enableMiniColors();
                 break;
         }
 

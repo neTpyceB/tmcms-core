@@ -49,6 +49,11 @@ class EntityRepository extends AbstractEntity implements IteratorAggregate, Coun
      */
     protected $dao;
 
+    /**
+     * EntityRepository constructor.
+     *
+     * @param array $ids
+     */
     public function __construct(array $ids = [])
     {
         $this->dao = SQL::getInstance();
@@ -89,6 +94,9 @@ class EntityRepository extends AbstractEntity implements IteratorAggregate, Coun
         return true;
     }
 
+    /**
+     * @return array
+     */
     protected function getTableStructure(): array
     {
         return $this->table_structure;
@@ -98,7 +106,7 @@ class EntityRepository extends AbstractEntity implements IteratorAggregate, Coun
      * @param array $ids
      * @return $this
      */
-    public function setIds(array $ids)
+    public function setIds(array $ids): self
     {
         $this->addWhereFieldIn('id', $ids);
 
@@ -112,7 +120,7 @@ class EntityRepository extends AbstractEntity implements IteratorAggregate, Coun
      * @param string $table
      * @return $this
      */
-    public function addWhereFieldIn($field, array $values, $table = '')
+    public function addWhereFieldIn($field, array $values, $table = ''): self
     {
         if (!$table) {
             $table = $this->getDbTableName();
@@ -131,7 +139,12 @@ class EntityRepository extends AbstractEntity implements IteratorAggregate, Coun
         return $this;
     }
 
-    public function addWhereFieldAsString($sql)
+    /**
+     * @param $sql
+     *
+     * @return $this
+     */
+    public function addWhereFieldAsString($sql): self
     {
         $this->sql_where_fields[] = [
             'table' => false,
@@ -143,6 +156,11 @@ class EntityRepository extends AbstractEntity implements IteratorAggregate, Coun
         return $this;
     }
 
+    /**
+     * @param array $ids
+     *
+     * @return static
+     */
     public static function getInstance(array $ids = [])
     {
         return new static($ids);
@@ -178,16 +196,17 @@ class EntityRepository extends AbstractEntity implements IteratorAggregate, Coun
      * @param string $field
      * @param string $value
      * @param string $table
+     *
      * @return $this
      */
-    protected function addSimpleWhereField($field, $value = '', $table = '')
+    protected function addSimpleWhereField($field, $value = '', $table = ''): self
     {// No table provided
         if (!$table) {
             $table = $this->getDbTableName();
         }
 
         // Translation field
-        if (in_array($field, $this->getTranslationFields(), true)) {
+        if (\in_array($field, $this->getTranslationFields(), true)) {
             ++$this->translation_join_count;
             $this->addJoinTable(['cms_translations', $this->getTranslationTableJoinAlias() . $this->translation_join_count], 'id', $field, 'LEFT', $table);
 
@@ -212,15 +231,26 @@ class EntityRepository extends AbstractEntity implements IteratorAggregate, Coun
         return $this;
     }
 
+    /**
+     * @return array
+     */
     public function getTranslationFields(): array
     {
         return $this->translation_fields;
     }
 
-    public function addJoinTable($table, $on_left, $on_right, $type = '', $right_table = null)
+    /**
+     * @param $table
+     * @param $on_left
+     * @param $on_right
+     * @param string $type
+     * @param null $right_table
+     * @return $this
+     */
+    public function addJoinTable($table, $on_left, $on_right, $type = '', $right_table = null): self
     {
         $alias = $table;
-        if (is_array($table)) {
+        if (\is_array($table)) {
             list($table, $alias) = $table;
         }
 
@@ -236,6 +266,9 @@ class EntityRepository extends AbstractEntity implements IteratorAggregate, Coun
         return $this;
     }
 
+    /**
+     * @return string
+     */
     private function getTranslationTableJoinAlias(): string
     {
         if (!$this->translation_join_alias) {
@@ -255,12 +288,14 @@ class EntityRepository extends AbstractEntity implements IteratorAggregate, Coun
 
     /**
      * Filter collection by skipping value
+     *
      * @param $field
      * @param string $value
      * @param string $table
+     *
      * @return $this
      */
-    public function addWhereFieldIsNot($field, $value, $table = '')
+    public function addWhereFieldIsNot($field, $value, $table = ''): self
     {
         if (!$table) {
             $table = $this->getDbTableName();
@@ -284,9 +319,10 @@ class EntityRepository extends AbstractEntity implements IteratorAggregate, Coun
     /**
      * @param bool $skip_objects_creation - true if no need to create objects
      * @param bool $skip_changed_fields - skip update of changed fields
+     *
      * @return $this
      */
-    protected function collectObjects($skip_objects_creation = false, $skip_changed_fields = false)
+    protected function collectObjects($skip_objects_creation = false, $skip_changed_fields = false): self
     {
         $sql = $this->getSelectSql();
         if ($this->last_used_sql && $sql === $this->last_used_sql) {
@@ -299,7 +335,7 @@ class EntityRepository extends AbstractEntity implements IteratorAggregate, Coun
         if ($this->use_cache) {
             //Check cached values, set local properties
             $data = Cacher::getInstance()->getDefaultCacher()->get($this->getCacheKey($sql));
-            if ($data && is_array($data) && isset($data['collected_objects_data'], $data['collected_objects'])) {
+            if ($data && \is_array($data) && isset($data['collected_objects_data'], $data['collected_objects'])) {
                 // Set local data
                 $this->collected_objects_data = $data['collected_objects_data'];
                 $this->collected_objects = $data['collected_objects'];
@@ -331,7 +367,7 @@ class EntityRepository extends AbstractEntity implements IteratorAggregate, Coun
 
                 // Prevent auto-query db, skip tables with no id field
                 if (!isset($v['id'])) {
-                    dump('No `id` field present saving  "' . get_class($this) . '"');
+                    dump('No `id` field present saving  "' . \get_class($this) . '"');
                 }
                 $id = $v['id'];
                 unset($v['id']);
@@ -359,6 +395,11 @@ class EntityRepository extends AbstractEntity implements IteratorAggregate, Coun
         return $this;
     }
 
+    /**
+     * @param bool $for_max_object_count
+     *
+     * @return string
+     */
     public function getSelectSql($for_max_object_count = false): string
     {
         // Select
@@ -424,6 +465,9 @@ FROM `' . $this->getDbTableName() . '`
         return $sql;
     }
 
+    /**
+     * @return array
+     */
     public function getSelectFields(): array
     {
         return $this->sql_select_fields;
@@ -454,6 +498,9 @@ FROM `' . $this->getDbTableName() . '`
         return $this->sql_where_fields;
     }
 
+    /**
+     * @return string
+     */
     private function getHavingSql(): string
     {
         $res = [];
@@ -497,6 +544,9 @@ FROM `' . $this->getDbTableName() . '`
         return $this->order_fields;
     }
 
+    /**
+     * @return string
+     */
     protected function getGroupBySql(): string
     {
         $res = [];
@@ -510,6 +560,9 @@ FROM `' . $this->getDbTableName() . '`
         return '';
     }
 
+    /**
+     * @return string
+     */
     public function getJoinTablesSql(): string
     {
         $sql = [];
@@ -528,12 +581,15 @@ FROM `' . $this->getDbTableName() . '`
     private function getCacheKey($hash_string = ''): string
     {
         // Cache key = prefix + class name + unique session id (not obligate) + current created sql query
-        return self::$_cache_key_prefix . md5(str_replace('\\', '_', get_class($this)) . '_' . $hash_string);
+        return self::$_cache_key_prefix . md5(str_replace('\\', '_', \get_class($this)) . '_' . $hash_string);
     }
 
+    /**
+     * @return bool|string
+     */
     private function getObjectClass()
     {
-        return substr(get_class($this), 0, -10); // Remove string "Collection" from name
+        return substr(\get_class($this), 0, -10); // Remove string "Collection" from name
 
     }
 
@@ -547,10 +603,12 @@ FROM `' . $this->getDbTableName() . '`
 
     /**
      * Set collected objects in Repository - may be useful in mass-updates
+     *
      * @param array $objects
+     *
      * @return $this
      */
-    public function setCollectedObjects(array $objects)
+    public function setCollectedObjects(array $objects): self
     {
         $this->collected_objects = $objects;
 
@@ -598,9 +656,10 @@ FROM `' . $this->getDbTableName() . '`
 
     /**
      * @param int $limit
+     *
      * @return $this
      */
-    public function setLimit($limit)
+    public function setLimit($limit): self
     {
         $this->sql_limit = (int)$limit;
 
@@ -616,7 +675,7 @@ FROM `' . $this->getDbTableName() . '`
         $this->setLimit(1);
         $res = NULL;
 
-        foreach ($this->getAsArrayOfObjectData() as $obj_data) {
+        foreach($this->getAsArrayOfObjectData() as $obj_data) {
 
             $class = $this->getObjectClass();
             /** @var Entity $obj */
@@ -634,6 +693,7 @@ FROM `' . $this->getDbTableName() . '`
 
     /**
      * @param bool $non_iterator - do not use Iterator, may be useful for dumping output
+     *
      * @return iterable
      */
     public function getAsArrayOfObjectData($non_iterator = false)
@@ -649,9 +709,10 @@ FROM `' . $this->getDbTableName() . '`
 
     /**
      * @param bool $flag
+     *
      * @return $this
      */
-    public function setGenerateOutputWithIterator($flag)
+    public function setGenerateOutputWithIterator($flag): self
     {
         $this->use_iterator = $flag;
 
@@ -666,6 +727,9 @@ FROM `' . $this->getDbTableName() . '`
         return $this->collected_objects_data;
     }
 
+    /**
+     * @return $this
+     */
     public function deleteObjectCollection()
     {
         $this->collectObjects();
@@ -689,15 +753,19 @@ FROM `' . $this->getDbTableName() . '`
 
     /**
      * @param int $id
+     *
      * @return $this
      */
-    public function setWhereId($id)
+    public function setWhereId($id): self
     {
         $this->setIds([$id]);
 
         return $this;
     }
 
+    /**
+     * @return array
+     */
     public function getIds(): array
     {
         return array_values($this->getPairs('id'));
@@ -737,7 +805,13 @@ FROM `' . $this->getDbTableName() . '`
         return $pairs;
     }
 
-    public function addSimpleSelectFields(array $fields, $table = false)
+    /**
+     * @param array $fields
+     * @param bool $table
+     *
+     * @return $this
+     */
+    public function addSimpleSelectFields(array $fields, $table = false): self
     {
         if (!$table) {
             $table = $this->getDbTableName();
@@ -745,7 +819,7 @@ FROM `' . $this->getDbTableName() . '`
 
         foreach ($fields as $k => $field) {
             // Translation field
-            if (in_array($field, $this->getTranslationFields(), true)) {
+            if (\in_array($field, $this->getTranslationFields(), true)) {
                 ++$this->translation_join_count;
                 $this->addJoinTable(['cms_translations', $this->getTranslationTableJoinAlias() . $this->translation_join_count], 'id', $field, 'LEFT', $table);
 
@@ -769,6 +843,11 @@ FROM `' . $this->getDbTableName() . '`
         return $this;
     }
 
+    /**
+     * @param $field
+     *
+     * @return int
+     */
     public function getSumOfOneField($field): int
     {
         $sum = 0;
@@ -794,6 +873,10 @@ FROM `' . $this->getDbTableName() . '`
         return $this;
     }
 
+    /**
+     * @param $field
+     * @param $value
+     */
     public function addHaving($field, $value) {
         $this->having_fields[] = [
             'field' => $field,
@@ -801,7 +884,13 @@ FROM `' . $this->getDbTableName() . '`
         ];
     }
 
-    public function flipBoolValue($field) {
+    /**
+     * @param $field
+     *
+     * @return $this
+     */
+    public function flipBoolValue($field): self
+    {
         if (!$this->getCollectedObjects()) {
             $this->collectObjects(false, true);
         }
@@ -814,6 +903,9 @@ FROM `' . $this->getDbTableName() . '`
         return $this;
     }
 
+    /**
+     * @return $this
+     */
     public function save()
     {
         if (!$this->getCollectedObjects()) {
@@ -842,13 +934,14 @@ FROM `' . $this->getDbTableName() . '`
 
     /**
      * @param int $count
+     *
      * @return bool
      */
     public function hasExactCountOfObjects($count): bool
     {
         $this->collectObjects(true);
 
-        return (bool)((int)$this->getCountOfObjectsInCollection() === (int)$count);
+        return $this->getCountOfObjectsInCollection() === (int)$count;
     }
 
     /**
@@ -875,9 +968,9 @@ FROM `' . $this->getDbTableName() . '`
     }
 
     /**
-     * @return Entity
+     * @return Entity|NULL
      */
-    public function getLastObjectFromCollection(): Entity
+    public function getLastObjectFromCollection()
     {
         $objects = $this->getAsArrayOfObjects();
         if ($objects) {
@@ -889,9 +982,11 @@ FROM `' . $this->getDbTableName() . '`
 
     /**
      * @param int $offset
+     *
      * @return $this
      */
-    public function setOffset($offset) {
+    public function setOffset($offset): self
+    {
         $this->sql_offset = (int)$offset;
 
         return $this;
@@ -899,10 +994,13 @@ FROM `' . $this->getDbTableName() . '`
 
     /**
      * If you need to add translation field on the fly, e.g. when merging repositories
+     *
      * @param string $field_name
+     *
      * @return $this
      */
-    public function addTranslationFieldForAutoSelects($field_name) {
+    public function addTranslationFieldForAutoSelects($field_name): self
+    {
         $this->translation_fields[] = $field_name;
 
         return $this;
@@ -913,9 +1011,11 @@ FROM `' . $this->getDbTableName() . '`
      * @param bool   $direction_desc
      * @param string $table
      * @param bool $do_not_use_table_in_sql required in some conditions with temp fields
+     *
      * @return $this
      */
-    public function addOrderByField($field = 'order', $direction_desc = false, $table = '', $do_not_use_table_in_sql = false) {
+    public function addOrderByField($field = 'order', $direction_desc = false, $table = '', $do_not_use_table_in_sql = false): self
+    {
         // No table provided
         if (!$table) {
             $table = $this->getDbTableName();
@@ -948,7 +1048,13 @@ FROM `' . $this->getDbTableName() . '`
         return $this;
     }
 
-    public function addOrderByFieldAsString($sql) {
+    /**
+     * @param string $sql
+     *
+     * @return $this
+     */
+    public function addOrderByFieldAsString(string $sql): self
+    {
         $this->order_fields[] = [
             'table'                   => false,
             'field'                   => $sql,
@@ -964,9 +1070,11 @@ FROM `' . $this->getDbTableName() . '`
      * @param $searchable_string
      * @param $field
      * @param string $table
+     *
      * @return $this
      */
-    public function addOrderByLocate($searchable_string, $field , $table = '') {
+    public function addOrderByLocate($searchable_string, $field , $table = ''): self
+    {
         // No table provided
         if (!$table) {
             $table = $this->getDbTableName();
@@ -983,26 +1091,40 @@ FROM `' . $this->getDbTableName() . '`
 
     /**
      * @param bool
+     *
      * @return $this
      */
-    public function setOrderByRandom($flag) {
+    public function setOrderByRandom($flag): self
+    {
         $this->order_random = $flag;
 
         return $this;
     }
 
-    public function clearCollectionCache() {
+    /**
+     * @return $this
+     */
+    public function clearCollectionCache(): self
+    {
         $this->last_used_sql = '';
 
         return $this;
     }
 
-    public function addSimpleSelectFieldsAsAlias($field, $alias, $table = false) {
+    /**
+     * @param $field
+     * @param $alias
+     * @param bool $table
+     *
+     * @return $this
+     */
+    public function addSimpleSelectFieldsAsAlias($field, $alias, $table = false): self
+    {
         if (!$table) {
             $table = $this->getDbTableName();
         }
         // Translation field
-        if (in_array($field, $this->getTranslationFields(), true)) {
+        if (\in_array($field, $this->getTranslationFields(), true)) {
             ++$this->translation_join_count;
             $this->addJoinTable(['cms_translations', $this->getTranslationTableJoinAlias() . $this->translation_join_count], 'id', $field, 'LEFT', $table);
 
@@ -1024,7 +1146,13 @@ FROM `' . $this->getDbTableName() . '`
         return $this;
     }
 
-    public function addSimpleSelectFieldsAsString($sql) {
+    /**
+     * @param $sql
+     *
+     * @return $this
+     */
+    public function addSimpleSelectFieldsAsString($sql): self
+    {
         $this->sql_select_fields[] = [
             'table' => false,
             'field' => $sql,
@@ -1035,7 +1163,15 @@ FROM `' . $this->getDbTableName() . '`
         return $this;
     }
 
-    public function addSelectCountFromPairedObject(EntityRepository $repository, $field_name, $count_by_field) {
+    /**
+     * @param EntityRepository $repository
+     * @param $field_name
+     * @param $count_by_field
+     *
+     * @return $this
+     */
+    public function addSelectCountFromPairedObject(EntityRepository $repository, $field_name, $count_by_field): self
+    {
         $this->sql_select_fields[] = [
             'table' => false,
             'field' => '(SELECT COUNT(*) FROM `'. $repository->getDbTableName() .'` WHERE `'. $repository->getDbTableName() .'`.`'. $count_by_field .'` = `'. $this->getDbTableName() .'`.`id`) AS `'. $field_name .'`',
@@ -1076,6 +1212,7 @@ FROM `' . $this->getDbTableName() . '`
     /**
      * @param $name
      * @param $args
+     *
      * @return string
      */
     public function __call($name, $args) {
@@ -1117,7 +1254,7 @@ FROM `' . $this->getDbTableName() . '`
             }
 
         } else {
-            dump('Method "' . $name . '" unknown in class "' . get_class($this) . '"');
+            dump('Method "' . $name . '" unknown in class "' . \get_class($this) . '"');
         }
 
         return $this;
@@ -1125,9 +1262,11 @@ FROM `' . $this->getDbTableName() . '`
 
     /**
      * @param string $db_table
+     *
      * @return $this
      */
-    public function setDbTableName($db_table) {
+    public function setDbTableName($db_table): self
+    {
         $this->db_table = $db_table;
 
         return $this;
@@ -1135,9 +1274,10 @@ FROM `' . $this->getDbTableName() . '`
 
     /**
      * @param int $ttl
+     *
      * @return $this
      */
-    public function enableUsingCache($ttl = 600)
+    public function enableUsingCache($ttl = 600): self
     {
         // Disable iterator because we need to save full array data
         $this->setGenerateOutputWithIterator(false);
@@ -1149,6 +1289,7 @@ FROM `' . $this->getDbTableName() . '`
 
     /**
      * @param bool $download_as_file
+     *
      * @return string
      */
     public function exportAsSerializedData($download_as_file = false): string
@@ -1189,9 +1330,10 @@ FROM `' . $this->getDbTableName() . '`
      * @param string $join_on_key in current collection to join another collection on ID
      * @param string $join_index - main index foreign key
      * @param string $join_type INNER|LEFT
+     *
      * @return $this
      */
-    public function mergeWithCollection(EntityRepository $collection, $join_on_key, $join_index = 'id', $join_type = 'INNER')
+    public function mergeWithCollection(EntityRepository $collection, $join_on_key, $join_index = 'id', $join_type = 'INNER'): self
     {
         $this->addJoinTable($collection->getDbTableName(), $join_index, $join_on_key, $join_type);
         $this->mergeCollectionSqlSelectWithAnotherCollection($collection);
@@ -1199,7 +1341,12 @@ FROM `' . $this->getDbTableName() . '`
         return $this;
     }
 
-    private function mergeCollectionSqlSelectWithAnotherCollection(EntityRepository $collection)
+    /**
+     * @param EntityRepository $collection
+     *
+     * @return $this
+     */
+    private function mergeCollectionSqlSelectWithAnotherCollection(EntityRepository $collection): self
     {
         $select_fields = $collection->getSelectFields();
         foreach ($select_fields as $select_field) {
@@ -1239,11 +1386,17 @@ FROM `' . $this->getDbTableName() . '`
         return $this;
     }
 
+    /**
+     * @return array
+     */
     protected function getGroupByField(): array
     {
         return $this->group_by_fields;
     }
 
+    /**
+     * @return array
+     */
     private function getHavingFields(): array
     {
         return $this->having_fields;
@@ -1259,12 +1412,14 @@ FROM `' . $this->getDbTableName() . '`
 
     /**
      * Filter collection by value exclusive
+     *
      * @param $field
      * @param array $values
      * @param string $table
+     *
      * @return $this
      */
-    public function addWhereFieldNotIn($field, array $values, $table = '')
+    public function addWhereFieldNotIn($field, array $values, $table = ''): self
     {
         if (!$table) {
             $table = $this->getDbTableName();
@@ -1287,9 +1442,10 @@ FROM `' . $this->getDbTableName() . '`
      * @param $field
      * @param string $value
      * @param string $table
+     *
      * @return $this
      */
-    public function addWhereFieldIsLower($field, $value, $table = '')
+    public function addWhereFieldIsLower($field, $value, $table = ''): self
     {
         if (!$table) {
             $table = $this->getDbTableName();
@@ -1306,9 +1462,10 @@ FROM `' . $this->getDbTableName() . '`
      * @param $field
      * @param string $value
      * @param string $table
+     *
      * @return $this
      */
-    public function addWhereFieldIsLowerOrEqual($field, $value, $table = '')
+    public function addWhereFieldIsLowerOrEqual($field, $value, $table = ''): self
     {
         if (!$table) {
             $table = $this->getDbTableName();
@@ -1325,9 +1482,10 @@ FROM `' . $this->getDbTableName() . '`
      * @param $field
      * @param string $value
      * @param string $table
+     *
      * @return $this
      */
-    public function addWhereFieldIsHigher($field, $value, $table = '')
+    public function addWhereFieldIsHigher($field, $value, $table = ''): self
     {
         if (!$table) {
             $table = $this->getDbTableName();
@@ -1346,9 +1504,10 @@ FROM `' . $this->getDbTableName() . '`
      * @param $field
      * @param string $value
      * @param string $table
+     *
      * @return $this
      */
-    public function addWhereFieldIsHigherOrEqual($field, $value, $table = '')
+    public function addWhereFieldIsHigherOrEqual($field, $value, $table = ''): self
     {
         if (!$table) {
             $table = $this->getDbTableName();
@@ -1368,13 +1527,15 @@ FROM `' . $this->getDbTableName() . '`
     /**
      * Filter collection by value inclusive
      * @param $fields - value or array of values, WHERE sentence uses OR between values in one array
+     *
      * @param string $like_value
      * @param bool   $left_any
      * @param bool   $right_any
      * @param string $table
+     *
      * @return $this
      */
-    public function addWhereFieldIsLike($fields, $like_value, $left_any = true, $right_any = true, $table = '')
+    public function addWhereFieldIsLike($fields, $like_value, $left_any = true, $right_any = true, $table = ''): self
     {
         $fields = (array)$fields;
 
@@ -1382,14 +1543,15 @@ FROM `' . $this->getDbTableName() . '`
             $table = $this->getDbTableName();
         }
 
-        // If not translation field present
-        $result_table = $table;
-
         $sql = [];
 
         // All fields glued with OR
         foreach ($fields as $field) {
-            if (in_array($field, $this->translation_fields, true)) {
+            // If not translation field present
+            $result_table = $table;
+
+            // If translation
+            if (\in_array($field, $this->translation_fields, true)) {
                 ++$this->translation_join_count;
                 $this->addJoinTable(['cms_translations', $this->getTranslationTableJoinAlias() . $this->translation_join_count], 'id', $field, 'LEFT', $table);
 
@@ -1419,7 +1581,7 @@ FROM `' . $this->getDbTableName() . '`
      * @param string $table
      * @return $this
      */
-    public function addWhereFieldIsNotLike($field, $like_value, $left_any = true, $right_any = true, $table = '')
+    public function addWhereFieldIsNotLike($field, $like_value, $left_any = true, $right_any = true, $table = ''): self
     {
         if (!$table) {
             $table = $this->getDbTableName();
@@ -1430,7 +1592,10 @@ FROM `' . $this->getDbTableName() . '`
         return $this;
     }
 
-    public function alterTableResetAutoIncrement()
+    /**
+     * @return $this
+     */
+    public function alterTableResetAutoIncrement(): self
     {
         $schema = new TableStructure();
         $schema->setTableName($this->getDbTableName());
@@ -1455,8 +1620,10 @@ FROM `' . $this->getDbTableName() . '`
      * @param $lng
      * @return $this
      */
-    public function setLanguage($lng){
+    public function setLanguage($lng): self
+    {
         $this->lng = $lng;
+
         return $this;
     }
 

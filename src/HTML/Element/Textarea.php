@@ -5,10 +5,16 @@ namespace TMCms\HTML\Element;
 
 use TMCms\HTML\Element;
 
-defined('INC') or exit;
+\defined('INC') or exit;
 
+/**
+ * Class Textarea
+ * @package TMCms\HTML\Element
+ */
 class Textarea extends Element
 {
+    const FIELD_INPUT_NAME = 'textarea';
+
     /**
      * @param string $name
      * @param string $value

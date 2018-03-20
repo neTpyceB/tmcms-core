@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace TMCms\Admin\Entity;
 
 use TMCms\Orm\EntityRepository;
+use TMCms\Orm\TableStructure;
 
 /**
  * Class LanguageEntityRepository
@@ -14,19 +15,21 @@ use TMCms\Orm\EntityRepository;
  */
 class LanguageEntityRepository extends EntityRepository
 {
-    protected $db_table = 'cms_languages';
+    const FIELD_FULL = 'full';
+    const FIELD_SHORT = 'short';
+
+    const TABLE_NAME = 'cms_languages';
+
+    protected $db_table = self::TABLE_NAME;
     protected $table_structure = [
         'fields' => [
-            'short' => [
-                'type'   => 'char',
-                'length' => 2,
+            self::FIELD_SHORT => [
+                'type'   => TableStructure::FIELD_TYPE_CHAR,
+                'length' => 2
             ],
-            'full'  => [
-                'type'   => 'varchar',
-            ],
-        ],
+            self::FIELD_FULL  => [
+                'type'   => TableStructure::FIELD_TYPE_VARCHAR_255
+            ]
+        ]
     ];
-
-    const ADMIN_LANGUAGE_DEFAULT_SHORT = 'en';
-    const ADMIN_LANGUAGE_DEFAULT_FULL = 'English';
 }

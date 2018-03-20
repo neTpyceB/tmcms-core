@@ -13,6 +13,7 @@ use TMCms\DB\Sync;
 class TableStructure {
 
     const FIELD_TYPE_BOOL = 'bool'; // active, checkbox
+    const FIELD_TYPE_CHAR = 'char';
     const FIELD_TYPE_FLOAT_DECIMAL = 'float';
     const FIELD_TYPE_INDEX = 'index'; // Int non-null with additional key index
     const FIELD_TYPE_TRANSLATION = 'translation';
@@ -134,7 +135,7 @@ class TableStructure {
                 $res = '`'. $field['name'] .'` varchar('. $field['length'] .') NULL '.(isset($field['default_value']) ? ' DEFAULT "' . $field['default_value'] . '"' : '').'';
                 break;
 
-            case 'char':
+            case self::FIELD_TYPE_CHAR:
                 // Codes
                 if (!isset($field['length'])) {
                     dump('Length for "'. $field['name'] .'" required');
