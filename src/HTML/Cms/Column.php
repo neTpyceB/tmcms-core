@@ -26,7 +26,7 @@ abstract class Column
     protected $width = '';
     protected $align = 'left';
     protected $nowrap = false;
-    protected $special_characters_allowed = true;
+    protected $special_characters_allowed = false;
     protected $is_readonly = false;
 
     protected $href_parse = false;
