@@ -224,6 +224,8 @@ class Structure
 
         // Try to find page 404 in structure for this language
         if (Settings::get('error_404_find_in_structure') && Structure::pageExists(Structure::getIdByPath('/' . LNG . '/404/'))) {
+            header('HTTP/1.1 404 Not Found');
+            header('Status: 404 Not Found');
             return '/' . LNG . '/404/';
         }
 
