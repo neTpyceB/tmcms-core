@@ -5,7 +5,7 @@ namespace TMCms\Container;
 
 use TMCms\Traits\singletonInstanceTrait;
 
-defined('INC') or exit;
+\defined('INC') or exit;
 
 /**
  * Class Get

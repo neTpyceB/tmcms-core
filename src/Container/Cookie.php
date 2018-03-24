@@ -22,14 +22,15 @@ class Cookie extends Base
 
     /**
      * @param string $key
-     * @param mixed $value
+     * @param string $value
+     * @param int $ttl
      * @return $this
      */
-    public function setValue(string $key, $value)
+    public function setValue(string $key, $value, $ttl = 86400)
     {
         parent::setValue($key, $value);
 
-        setcookie($key, $value, 86400, '/'); // One day
+        setcookie($key, (string)$value, NOW + $ttl, '/'); // One day
 
         return $this;
     }
