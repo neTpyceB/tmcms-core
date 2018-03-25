@@ -122,7 +122,7 @@ class Frontend
         );
 
         // Script for sending JS errors if not disabled. System sends JS error to support email
-        if (CFG_MAIL_ERRORS && Settings::isProductionState() && !Settings::get('do_not_send_js_errors')) {
+        if (Settings::isProductionState() && !Settings::get('do_not_send_js_errors')) {
             PageHead::getInstance()
                 ->addJsUrl('send_error.min.js')
                 ->addJs('register_js_error.ini(\'' . DIR_CMS_URL . '\');');
@@ -388,6 +388,7 @@ class Frontend
         // Require js for Visual editor
         if (VisualEdit::getInstance()->isEnabled()) {
             PageHead::getInstance()->addJsUrl('visual_edit.min.js');
+            PageHead::getInstance()->addJsUrl('jquery-2.1.0.min.js');
             PageHead::getInstance()->addJs('cms_page_id = "' . PAGE_ID . '"');
         }
 

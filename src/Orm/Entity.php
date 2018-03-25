@@ -5,6 +5,7 @@ namespace TMCms\Orm;
 
 use TMCms\Cache\Cacher;
 use TMCms\Config\Configuration;
+use TMCms\Config\Constants;
 use TMCms\Config\Settings;
 use TMCms\DB\SQL;
 use TMCms\Routing\Structure;
@@ -233,8 +234,8 @@ class Entity extends AbstractEntity
             self::$encryption_key = crc32(
             // All sensitive data
                 $config->get('cms')['unique_key']
-                . CMS_NAME
-                . CMS_OWNER_COMPANY
+                . Constants::ADMIN_CMS_NAME
+                . Constants::ADMIN_CMS_OWNER_COMPANY
                 . CMS_SUPPORT_EMAIL
                 . CMS_SITE
             );

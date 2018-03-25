@@ -8,6 +8,7 @@ use InvalidArgumentException;
 use Iterator;
 use TMCms\Cache\Cacher;
 use TMCms\Config\Configuration;
+use TMCms\Config\Constants;
 use TMCms\Config\Settings;
 use TMCms\Log\Errors;
 use TMCms\Log\Stats;
@@ -73,13 +74,13 @@ class SQL extends SqlDao
      * Return array with paired data, e.g. [1 => 'a', 2 => 'b', 14 => 'n']
      *
      * @param string $q
-     * @param bool $protect
+     *
      * @return array
      */
-    public function q_pairs($q, $protect = true): array
+    public function q_pairs($q): array
     {
         $res = [];
-        $qh = $this->sql_query($q, $protect);
+        $qh = $this->sql_query($q);
 
         while ($q = $qh->fetch(PDO::FETCH_NUM)) {
             if (isset($q[1])) {
@@ -95,20 +96,17 @@ class SQL extends SqlDao
     /**
      * Common DB query
      * @param string $q
-     * @param bool $protect
      * @param bool $return_inserted_id
+     *
      * @return PDOStatement | int
      */
-    public function sql_query($q, $protect = false, $return_inserted_id = false)
+    public function sql_query($q, $return_inserted_id = false)
     {
         if (!$this->pdo_db) {
             $this->connect();
         }
 
         $q = trim($q);
-        if ($protect) {
-            $this->sqlQueryCheck($q);
-        }
 
         // Set query start time if debug is enabled or if we analyze queries
         if (Settings::get('debug_panel') || Settings::get('analyze_db_queries')) {
@@ -178,11 +176,11 @@ class SQL extends SqlDao
         }
 
         // Connect as usual
-        $delay = CFG_DB_CONNECT_DELAY;
+        $delay = Constants::DB_CONNECT_DELAY;
         $i = 0;
         $connected = false;
 
-        while ($i < CFG_DB_MAX_CONNECT_ATTEMPTS && !$connected) {
+        while ($i < Constants::DB_CONNECT_MAX_ATTEMPTS && !$connected) {
             try {
                 $this->pdo_db = new PDO('mysql:dbname=' . $db . ';charset=utf8mb4;host=' . $host, $user, $pass, [
                     PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES "utf8"',
@@ -211,18 +209,14 @@ class SQL extends SqlDao
 
             // If server down
             if ($fs === false) {
-                if (CFG_MAIL_ERRORS) {
-                    Errors::sendErrorToDevelopers(CFG_DOMAIN . ' DB Server is down or overloaded', 'It seems that DB Server is down or overloaded and does not respond to attempts to establish the connection.');
-                }
-                exit('Could not connect to database server.<br><br>Administrator is' . (CFG_MAIL_ERRORS ? '' : ' NOT') . ' notified.');
+                Errors::sendErrorToDevelopers(CFG_DOMAIN . ' DB Server is down or overloaded', 'It seems that DB Server is down or overloaded and does not respond to attempts to establish the connection.');
+                exit('Could not connect to database server.<br><br>Administrator is notified.');
             }
 
             // If server is ok, but connection refused
             fclose($fs);
-            if (CFG_MAIL_ERRORS) {
-                Errors::sendErrorToDevelopers(CFG_DOMAIN . ' DB Server is not accessible', 'It seems that login or password is supplied incorrectly in configuration file "config.php"');
-            }
-            exit('Could not login to database server.<br><br>Administrator is' . (CFG_MAIL_ERRORS ? '' : ' NOT') . ' notified.');
+            Errors::sendErrorToDevelopers(CFG_DOMAIN . ' DB Server is not accessible', 'It seems that login or password is supplied incorrectly in configuration file "config.php"');
+            exit('Could not login to database server.<br><br>Administrator is notified.');
         }
 
         return $this->pdo_db;
@@ -270,13 +264,14 @@ class SQL extends SqlDao
     /**
      * Check entry exists in DB
      *
-     * @param string $tbl
+     * @param string $table
      * @param string $where
+     *
      * @return bool
      */
-    public static function q_check($tbl, $where = ''): bool
+    public static function q_check(string $table, string $where = ''): bool
     {
-        return (bool)self::getInstance()->sql_query('SELECT NULL FROM `' . $tbl . '`' . ($where ? ' WHERE ' . $where : '') . ' LIMIT 1')->rowCount();
+        return (bool)self::getInstance()->sql_query('SELECT NULL FROM `' . $table . '`' . ($where ? ' WHERE ' . $where : '') . ' LIMIT 1')->rowCount();
     }
 
     /**
@@ -284,12 +279,12 @@ class SQL extends SqlDao
      *
      * @param $q
      * @param int $column
-     * @param bool|true $protect
+     *
      * @return array
      */
-    public static function q_column($q, $column = 0, $protect = true): array
+    public static function q_column($q, $column = 0): array
     {
-        $qh = self::getInstance()->sql_query($q, $protect);
+        $qh = self::getInstance()->sql_query($q);
 
         return $qh->fetchAll(PDO::FETCH_COLUMN, $column);
     }
@@ -714,12 +709,12 @@ AND TABLE_NAME = "' . self::sql_prepare($table) . '"
      * Return pointer to iterate array, same as in q_assoc
      * This function consumes much less memory that q_assoc, because uses yield iterator
      * @param string $q
-     * @param bool $protect
+     *
      * @return Iterator
      */
-    public static function q_assoc_iterator($q, $protect = true)
+    public static function q_assoc_iterator($q)
     {
-        $qh = self::getInstance()->sql_query($q, $protect);
+        $qh = self::getInstance()->sql_query($q);
 
         while ($record = $qh->fetch(PDO::FETCH_ASSOC)) {
             yield $record;
@@ -753,7 +748,7 @@ AND TABLE_NAME = "' . self::sql_prepare($table) . '"
         }
 
         if ($return_id) {
-            return (int)self::getInstance()->sql_query($sql, false, true);
+            return (int)self::getInstance()->sql_query($sql, true);
         }
 
         return self::getInstance()->sql_query($sql)->rowCount();
@@ -771,13 +766,13 @@ AND TABLE_NAME = "' . self::sql_prepare($table) . '"
     /**
      * Return assoc array of all entries, e.g. [['id' => 10, 'name' => 'John'], ['id' => 22, 'name' => 'Doe'], ...]
      * @param string $q
-     * @param bool $protect
+     *
      * @return array
      */
-    public static function q_assoc($q, $protect = true): array
+    public static function q_assoc($q): array
     {
         $res = [];
-        $qh = self::getInstance()->sql_query($q, $protect);
+        $qh = self::getInstance()->sql_query($q);
 
         /** @noinspection PhpAssignmentInConditionInspection */
         /** @noinspection PhpStatementHasEmptyBodyInspection */

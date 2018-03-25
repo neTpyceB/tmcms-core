@@ -347,9 +347,9 @@ class EntityRepository extends AbstractEntity implements IteratorAggregate, Coun
 
         // Use Iterator in DB query
         if ($this->use_iterator) {
-            $this->collected_objects_data = $this->dao::q_assoc_iterator($sql, false);
+            $this->collected_objects_data = $this->dao::q_assoc_iterator($sql);
         } else {
-            $this->collected_objects_data = $this->dao::q_assoc($sql, false);
+            $this->collected_objects_data = $this->dao::q_assoc($sql);
         }
 
         if ($this->require_to_count_total_rows) {

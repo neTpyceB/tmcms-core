@@ -4,6 +4,7 @@ namespace TMCms\Log;
 
 use TMCms\Cache\Cacher;
 use TMCms\Strings\UID;
+use TMCms\Templates\PageHead;
 
 defined('INC') or exit;
 
@@ -105,7 +106,7 @@ class Stats
 
         // For frontend we may add jQuery, for cms not required
         if (MODE === 'site'):
-            ?><script src="/vendor/devp-eu/tmcms-core/src/assets/jquery-2.1.0.min.js"></script><?php
+            PageHead::getInstance()->addJsUrl('jquery-2.1.0.min.js');
         endif; ?>
         <script>
             $.ajax({

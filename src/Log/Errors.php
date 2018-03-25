@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace TMCms\Log;
 
 use TMCms\Config\Configuration;
+use TMCms\Config\Constants;
 use TMCms\Config\Settings;
 use TMCms\DB\SQL;
 use TMCms\Files\FileSystem;
@@ -472,10 +473,6 @@ class Errors
     {
         $cfg_email = Configuration::getInstance()->get('site')['email'];
 
-        if (!CFG_MAIL_ERRORS) {
-            return;
-        }
-
         if (!$flag_file) {
             $flag_file = md5($msg);
         }
@@ -489,7 +486,7 @@ class Errors
 
             /** @noinspection PhpUsageOfSilenceOperatorInspection */
             /** @noinspection UsageOfSilenceOperatorInspection */
-            @mail(CMS_SUPPORT_EMAIL, $title, $msg . "\n\nAuto Error Report " . CMS_NAME . ".\n\nVisitor:\nIP: " . $_SERVER['REMOTE_ADDR'] . "\nBrowser agent: " . $_SERVER['HTTP_USER_AGENT'] . "\nURL: " . $_SERVER['REQUEST_URI'] . "\nReferer: " . $_SERVER['HTTP_REFERER'] . "\n" . date('d.m.Y H:i:s'), 'From: ' . $cfg_email, '-f ' . $cfg_email);
+            @mail(CMS_SUPPORT_EMAIL, $title, $msg . "\n\nAuto Error Report " . Constants::ADMIN_CMS_NAME . ".\n\nVisitor:\nIP: " . $_SERVER['REMOTE_ADDR'] . "\nBrowser agent: " . $_SERVER['HTTP_USER_AGENT'] . "\nURL: " . $_SERVER['REQUEST_URI'] . "\nReferer: " . $_SERVER['HTTP_REFERER'] . "\n" . date('d.m.Y H:i:s'), 'From: ' . $cfg_email, '-f ' . $cfg_email);
         }
     }
 }

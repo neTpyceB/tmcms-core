@@ -10,6 +10,7 @@ use TMCms\Admin\Updater;
 use TMCms\Admin\Users;
 use TMCms\Admin\Users\Entity\UserLog;
 use TMCms\Config\Configuration;
+use TMCms\Config\Constants;
 use TMCms\Config\Settings;
 use TMCms\Files\Finder;
 use TMCms\HTML\BreadCrumbs;
@@ -213,9 +214,9 @@ class Backend
         $page_head
             // Cms attributes
             ->addHtmlTagAttributes('lang="en" class="no-js"')
-            ->setBrowserTitle((P_DO !== '_default' ? Converter::charsToNormalTitle(P_DO) : 'Main') . ' / ' . Converter::charsToNormalTitle(P) . ' / ' . $config->get('site')['name'] . ' / ' . CMS_NAME . ' v. ' . CMS_VERSION)
+            ->setBrowserTitle((P_DO !== '_default' ? Converter::charsToNormalTitle(P_DO) : 'Main') . ' / ' . Converter::charsToNormalTitle(P) . ' / ' . $config->get('site')['name'] . ' / ' . Constants::ADMIN_CMS_NAME . ' v. ' . Constants::ADMIN_CMS_VERSION)
             ->setFavicon($favicon)
-            ->addMeta('name=' . CMS_NAME . ' - ' . $config->get('site')['name'] . '; action-uri=http://' . CFG_DOMAIN . '/cms/; icon-uri=http://' . DIR_CMS_IMAGES_URL . 'logo_square.png', 'msapplication-task')
+            ->addMeta('name=' . Constants::ADMIN_CMS_NAME . ' - ' . $config->get('site')['name'] . '; action-uri=http://' . CFG_DOMAIN . '/cms/; icon-uri=http://' . DIR_CMS_IMAGES_URL . 'logo_square.png', 'msapplication-task')
             ->addMeta('width=device-width, initial-scale=1', 'viewport')
             ->addMeta('IE=edge', '', 'X-UA-Compatible')
             ->addClassToBody('page-header-fixed')
@@ -268,7 +269,7 @@ class Backend
         }
 
         // Script for sending JS errors
-        if (CFG_MAIL_ERRORS && Settings::isProductionState() && !Settings::get('do_not_send_js_errors')) {
+        if (Settings::isProductionState() && !Settings::get('do_not_send_js_errors')) {
             $page_head
                 ->addJsUrl('send_error.min.js')
                 ->addJs('register_js_error.ini(\'' . DIR_CMS_URL . '\');');
@@ -1241,7 +1242,7 @@ class Backend
             <!--            </div>-->
             <div class="page-footer">
                 <div class="page-footer-inner">
-                    2007 - <?= Y ?> &copy; <?= CMS_NAME ?> | <a href="<?= CMS_SITE ?>" target="_blank"><?= CMS_SITE ?></a>
+                    2007 - <?= Y ?> &copy; <?= Constants::ADMIN_CMS_NAME ?> | <a href="<?= CMS_SITE ?>" target="_blank"><?= CMS_SITE ?></a>
                 </div>
                 <div class="page-footer-tools">
                     <span class="go-top">

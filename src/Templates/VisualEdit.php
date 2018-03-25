@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace TMCms\Templates;
 
@@ -6,7 +7,7 @@ use TMCms\Admin\Users;
 use TMCms\Config\Settings;
 use TMCms\Traits\singletonInstanceTrait;
 
-defined('INC') or exit;
+\defined('INC') or exit;
 
 /**
  * Class VisualEdit
@@ -21,7 +22,7 @@ class VisualEdit
     /**
      * @return bool
      */
-    public function isEnabled()
+    public function isEnabled(): bool
     {
         return self::$enabled;
     }
@@ -38,20 +39,16 @@ class VisualEdit
      * @param string $key
      * @param string $data
      * @param string $type
+     *
      * @return string
      */
-    public function wrapAroundComponents($controller, $key, $data, $type = 'component')
+    public function wrapAroundComponents(string $controller, string $key, string $data, string $type = 'component'): string
     {
-        // Only editable strings
-        if (!is_scalar($data)) {
-            return $data;
-        }
-
         ob_start();
 
         ?>
         <cms_tag id="<?= $controller . '_' . $key ?>"
-                 style="position: relative" class="cms_visual_editable"
+                 style="position: relative; outline: 1px solid red" class="cms_visual_editable"
                  onclick="cms_visual_edit.edit(this)"
                  data-page_id="<?= PAGE_ID ?>"
                  data-type="<?= $type ?>"
@@ -63,9 +60,10 @@ class VisualEdit
     /**
      * @param string $controller
      * @param string $key
+     *
      * @return string
      */
-    private function _make_component_field($controller, $key)
+    private function _make_component_field(string $controller, string $key): string
     {
         if (!$controller) {
             return $key;

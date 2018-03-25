@@ -4,6 +4,7 @@ namespace TMCms\Log;
 
 use TMCms\Admin\Users\Entity\AdminUserRepository;
 use TMCms\Config\Configuration;
+use TMCms\Config\Constants;
 use TMCms\Config\Settings;
 use TMCms\Files\FileSystem;
 use TMCms\Log\Entity\AdminUsageEntityRepository;
@@ -102,7 +103,7 @@ class App
 
             // Send stats
             @Mailer::getInstance()
-                ->setSubject('Application and Usage log from ' . Configuration::getInstance()->get('site')['name'] . ' (till ' . date(CFG_CMS_DATETIME_FORMAT, NOW) . ')')
+                ->setSubject('Application and Usage log from ' . Configuration::getInstance()->get('site')['name'] . ' (till ' . date(Constants::FORMAT_CMS_DATETIME_FORMAT, NOW) . ')')
                 ->setSender(Configuration::getInstance()->get('site')['email'])
                 ->setRecipient(CMS_SUPPORT_EMAIL)
                 ->setMessage('View attached file')

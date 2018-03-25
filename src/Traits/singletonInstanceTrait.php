@@ -11,6 +11,7 @@ use RuntimeException;
 /**
  * Trait singletonInstanceTrait means that class MAY be used as singleton to get created instance.
  * May be used in any required class
+ *
  * @package TMCms\Traits
  */
 trait singletonInstanceTrait
@@ -23,7 +24,7 @@ trait singletonInstanceTrait
     /**
      * @return $this
      */
-    public static function getInstance()
+    public static function getInstance(): self
     {
         if (!static::$instance) {
             static::$instance = new static;

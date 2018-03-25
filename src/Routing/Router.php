@@ -8,6 +8,7 @@ use TMCms\Admin\Structure\Entity\PageEntityRepository;
 use TMCms\Admin\Structure\Entity\PageAliasEntityRepository;
 use TMCms\Admin\Structure\Entity\PageTemplateEntityRepository;
 use TMCms\Cache\Cacher;
+use TMCms\Config\Constants;
 use TMCms\Config\Settings;
 use TMCms\Files\FileSystem;
 use TMCms\Files\Finder;
@@ -56,7 +57,7 @@ class Router
                 // Sort by similarity
                 foreach ($page_aliases->getAsArrayOfObjectData() as $page_alias) {
                     similar_text(REF_SEARCH_ENGINE_KEYWORD, $page_alias['name'], $match);
-                    if ($match >= REF_SE_KEYWORD_MIN_MATCH && !isset($similarities[$match])) {
+                    if ($match >= Constants::SEO_REFERRER_SEARCH_ENGINE_KEYWORD_MIN_MATCH_PERCENT && !isset($similarities[$match])) {
                         $similarities[$match] = $page_alias['name'];
                     }
                 }
@@ -169,8 +170,8 @@ class Router
             if (isset($path[4])) {
                 $ajax_rest_id = $path[4];
             }
-            define('API_ID', $ajax_rest_id);
-            define('PAGE_ID', NULL);
+            \define('API_ID', (int)$ajax_rest_id);
+            \define('PAGE_ID', NULL);
 
             require_once DIR_BASE . $api_file;
 
