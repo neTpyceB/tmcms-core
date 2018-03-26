@@ -88,7 +88,7 @@ class Settings
         $format = self::get('common_date_format');
 
         if (!$format) {
-            $format = CFG_CMS_DATETIME_FORMAT;
+            $format = Constants::FORMAT_CMS_DATETIME_FORMAT;
         }
 
         return $format;

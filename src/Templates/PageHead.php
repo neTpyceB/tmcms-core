@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace TMCms\Templates;
 
 use RuntimeException;
+use TMCms\Config\Constants;
 use TMCms\Config\Settings;
 use TMCms\Files\Finder;
 use TMCms\Files\MimeTypes;
@@ -353,7 +354,7 @@ class PageHead
         <?php endif; ?>
         <head>
             <?php if (!Settings::get('do_not_expose_generator')): ?>
-                <meta name="generator" content="<?= CMS_NAME ?>, <?= CMS_SITE ?>">
+                <meta name="generator" content="<?= Constants::ADMIN_CMS_NAME ?>, <?= CMS_SITE ?>">
             <?php endif; ?>
             <meta charset="utf-8">
             <title><?= htmlspecialchars($this->title, ENT_QUOTES) ?></title><?php

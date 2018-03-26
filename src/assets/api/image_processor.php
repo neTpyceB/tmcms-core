@@ -278,7 +278,7 @@ foreach ($actions as $action => $params) {
             }
             list($radius, $color) = explode('x', $params);
 
-            $image->roundedCorners($radius, $color, 0);
+            $image->roundedCorners((int)$radius, $color, 0);
 
             break;
 

@@ -110,6 +110,7 @@ class Finder {
      * @param string $real_file_path
      * @param string $type
      * @return string
+     * @throws \RuntimeException
      */
     public function searchForRealPath(string $real_file_path, $type = self::TYPE_ASSETS): string
     {
@@ -165,7 +166,7 @@ class Finder {
         }
 
         if (!$found_path) {
-            throw new RuntimeException('File "'. $real_file_path .'" with type "'. $type .'" not found');
+            throw new RuntimeException('File "'. $real_file_path .'" with type "'. $type .'" not found, looked in '. \implode(' , ', $search_array));
         }
 
         return $found_path;

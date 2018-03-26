@@ -4,6 +4,7 @@ namespace TMCms\Files;
 
 use RuntimeException;
 use TMCms\Admin\Filemanager\Entity\FilePropertyEntityRepository;
+use TMCms\Config\Constants;
 
 defined('INC') or exit;
 
@@ -33,9 +34,9 @@ class FileSystem
     {
         if (!isset($mode)) {
             if (is_file($path)) {
-                $mode = CFG_DEFAULT_FILE_PERMISSIONS;
+                $mode = Constants::FILESYSTEM_FILE_PERMISSIONS_DEFAULT;
             } elseif (is_dir($path)) {
-                $mode = CFG_DEFAULT_DIR_PERMISSIONS;
+                $mode = Constants::FILESYSTEM_DIR_PERMISSIONS_DEFAULT;
             } else {
                 return false;
             }
@@ -129,7 +130,7 @@ class FileSystem
         }
 
         $umask = umask();
-        $res = @mkdir($path, CFG_DEFAULT_DIR_PERMISSIONS, true);
+        $res = @mkdir($path, Constants::FILESYSTEM_DIR_PERMISSIONS_DEFAULT, true);
         if ($res === false) {
             throw new RuntimeException('Can not create directory "' . $path . '" - no permissions.');
         }

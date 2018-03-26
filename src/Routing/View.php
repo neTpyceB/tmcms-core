@@ -47,8 +47,8 @@ class View
         }
 
         // Visual edit
-        if ($res !== NULL && VisualEdit::getInstance()->isEnabled()) {
-            $res = VisualEdit::getInstance()->wrapAroundComponents($this->mvc_instance->getController(), $key, $res);
+        if ($res !== NULL && VisualEdit::getInstance()->isEnabled() && \is_scalar($res)) {
+            $res = VisualEdit::getInstance()->wrapAroundComponents($this->mvc_instance->getController(), $key, (string)$res);
         }
 
         return $res;

@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace TMCms\HTML\Cms\Column;
 
 use RuntimeException;
+use TMCms\Config\Constants;
 use TMCms\HTML\Cms\Column;
 use TMCms\HTML\Cms\Linker;
 use TMCms\Orm\Entity;
@@ -185,7 +186,7 @@ class ColumnData extends Column
                 break;
 
             case 'ts2date':
-                $value = $value ? date(CFG_CMS_DATE_FORMAT, (int)$value) : '';
+                $value = $value ? date(Constants::FORMAT_CMS_DATE_FORMAT, (int)$value) : '';
                 break;
 
             case 'datetime2date':
@@ -201,7 +202,7 @@ class ColumnData extends Column
                 break;
 
             case 'ts2datetime':
-                $value = $value ? date(CFG_CMS_DATETIME_FORMAT, (int)$value) : '';
+                $value = $value ? date(Constants::FORMAT_CMS_DATETIME_FORMAT, (int)$value) : '';
                 break;
 
             case 'array':

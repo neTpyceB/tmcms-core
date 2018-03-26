@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace TMCms\Container;
 
 use RuntimeException;
-use TMCms\Traits\singletonInstanceTrait;
 
 \defined('INC') or exit;
 
@@ -14,8 +13,6 @@ use TMCms\Traits\singletonInstanceTrait;
  */
 abstract class Base
 {
-    use singletonInstanceTrait;
-
     private $initial_data;
 
     const FIELD_TYPE_BOOL = 1;
