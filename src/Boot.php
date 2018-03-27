@@ -423,17 +423,14 @@ Settings::getInstance()->init();
 $length_of_include_path = DIR_ROOT_PATH_LENGTH - 1;
 $finder = Finder::getInstance();
 // Some API can be used even in front site, so we add it always
-$finder->addAssetsSearchPath(substr(__DIR__, $length_of_include_path) . '/assets/');
-if (MODE === 'cms') {
-    $finder
-        ->addAssetsSearchPath(DIR_CMS_SCRIPTS)
-        ->addApiSearchPath(substr(__DIR__, $length_of_include_path) . '/assets/api/')
-        ->addPluginsSearchPath(substr(__DIR__, $length_of_include_path) . '/assets/cms_plugins/')
-        ->addServicesSearchPath(substr(__DIR__, $length_of_include_path) . '/assets/services/')
-        ->addTranslationsSearchPath(substr(__DIR__, $length_of_include_path) . '/assets/translations/')
-    ;
-
-}
+$finder
+    ->addApiSearchPath(substr(__DIR__, $length_of_include_path) . '/assets/api/')
+    ->addAssetsSearchPath(substr(__DIR__, $length_of_include_path) . '/assets/')
+    ->addAssetsSearchPath(DIR_CMS_SCRIPTS)
+    ->addPluginsSearchPath(substr(__DIR__, $length_of_include_path) . '/assets/cms_plugins/')
+    ->addServicesSearchPath(substr(__DIR__, $length_of_include_path) . '/assets/services/')
+    ->addTranslationsSearchPath(substr(__DIR__, $length_of_include_path) . '/assets/translations/')
+;
 unset($length_of_include_path);
 
 // Cms middleware to get common data about pages
