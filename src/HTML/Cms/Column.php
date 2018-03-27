@@ -609,7 +609,7 @@ abstract class Column
      */
     public function disableNewlines()
     {
-        $this->nowrap = false;
+        $this->nowrap = true;
 
         return $this;
     }
