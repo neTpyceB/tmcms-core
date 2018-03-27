@@ -154,7 +154,7 @@ class Menu
                                                 $v_in['title'] = $k_in;
                                             }
                                             ?>
-                                            <li class="<?= (P == $k && P_DO == $k_in) ? 'active' : '' ?>">
+                                            <li class="<?= (P == $k && P_M == $k_in) ? 'active' : '' ?>">
                                                 <a href="?p=<?= $k . '&do=' . $k_in ?>">
                                                     <?php if (isset($v_in['icon'])): ?>
                                                         <i class="icon-<?= $v_in['icon'] ?>"></i>

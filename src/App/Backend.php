@@ -140,6 +140,19 @@ class Backend
         if (!defined('P_DO')) {
             define('P_DO', $_GET['do']);
         }
+        if (!defined('P_M')) {
+            $nav = Configuration::getInstance()->get('navigation');
+            if(!empty($nav)){
+                if(!empty($nav['use_m_param'])){
+                    define('P_M', !empty($_GET['m']) ? $_GET['m'] : '_default' );
+                }else{
+                    define('P_M', P_DO );
+                }
+            }else{
+                define('P_M', P_DO );
+            }
+
+        }
 
         // Parse URL
         $path = [];
