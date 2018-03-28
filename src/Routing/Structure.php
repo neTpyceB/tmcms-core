@@ -24,7 +24,6 @@ use TMCms\Routing\Entity\PageComponentsCachedEntityRepository;
 use TMCms\Routing\Entity\PageComponentsDisabledEntityRepository;
 use TMCms\Routing\Entity\PagesWordEntity;
 use TMCms\Routing\Entity\PagesWordEntityRepository;
-use TMCms\Templates\VisualEdit;
 
 defined('INC') or exit;
 
@@ -486,11 +485,6 @@ class Structure
         // Save in cache
         if (Settings::isCacheEnabled()) {
             Cacher::getInstance()->getDefaultCacher()->set($cache_key, $q);
-        }
-
-        // Border to show editable placeholder
-        if ($q !== false && VisualEdit::getInstance()->isEnabled()) {
-            $q = VisualEdit::getInstance()->wrapAroundComponents('', $temp, $q, 'word');
         }
 
         // Nothing found - show default text

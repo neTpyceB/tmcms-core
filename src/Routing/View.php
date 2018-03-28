@@ -3,7 +3,6 @@
 namespace TMCms\Routing;
 
 use TMCms\Config\Settings;
-use TMCms\Templates\VisualEdit;
 
 defined('INC') or exit;
 
@@ -44,11 +43,6 @@ class View
         // Show placeholder with key if nothing is filled, useful for content managers
         if (!$res && Settings::get('show_components_placeholders')) {
             $res = $key;
-        }
-
-        // Visual edit
-        if ($res !== NULL && VisualEdit::getInstance()->isEnabled() && \is_scalar($res)) {
-            $res = VisualEdit::getInstance()->wrapAroundComponents($this->mvc_instance->getController(), $key, (string)$res);
         }
 
         return $res;

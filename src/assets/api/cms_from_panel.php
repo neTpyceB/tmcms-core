@@ -16,12 +16,6 @@ if (API_ACTION == 'toggle_setting') {
 
             break;
 
-        case 'enable_visual_edit':
-            // Clear cache for data
-            Settings::getInstance()->set('enable_visual_edit', !Settings::get('enable_visual_edit'));
-
-            break;
-
         case 'debug_panel':
             // Clear cache for data
             Settings::getInstance()->set('debug_panel', !Settings::get('debug_panel'));

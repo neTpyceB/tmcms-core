@@ -19,7 +19,6 @@ use TMCms\Templates\Page;
 use TMCms\Templates\PageHead;
 use TMCms\Templates\PageTail;
 use TMCms\Templates\Plugin;
-use TMCms\Templates\VisualEdit;
 use TMCms\Traits\singletonInstanceTrait;
 
 defined('INC') or exit;
@@ -102,10 +101,6 @@ class Frontend
             // No parse required
             return;
         }
-
-        // Start Visual edit for drawing editable fields around system components - if enabled
-        VisualEdit::getInstance()
-            ->init();
 
         /* Start composing HTML page */
 
@@ -383,13 +378,6 @@ class Frontend
                 PageTail::getInstance()->addJsUrl('clickmap_register.min.js');
                 PageHead::getInstance()->addJs('cms_page_id = ' . PAGE_ID);
             }
-        }
-
-        // Require js for Visual editor
-        if (VisualEdit::getInstance()->isEnabled()) {
-            PageHead::getInstance()->addJsUrl('visual_edit.min.js');
-            PageHead::getInstance()->addJsUrl('jquery-2.1.0.min.js');
-            PageHead::getInstance()->addJs('cms_page_id = "' . PAGE_ID . '"');
         }
 
         // Render HTML

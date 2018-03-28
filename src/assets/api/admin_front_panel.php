@@ -33,9 +33,6 @@ ob_start();
                 <a href="/-/api/cms_from_panel/toggle_setting/clear_cache/">Clear cache</a>
             </td>
             <td style="text-align: right">
-                <a href="/-/api/cms_from_panel/toggle_setting/enable_visual_edit/">Visual edit</a>
-            </td>
-            <td style="text-align: right">
                 <a href="/-/api/cms_from_panel/toggle_setting/debug_panel/">Debug panel</a>
             </td>
             <td style="text-align: right">
