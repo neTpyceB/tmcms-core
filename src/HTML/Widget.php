@@ -15,6 +15,8 @@ abstract class Widget
     protected $owner;
     protected $popup_url;
 
+    public $wysiwyg_options = [];
+
     /**
      * @param Element $owner
      */

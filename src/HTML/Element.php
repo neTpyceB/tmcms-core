@@ -381,6 +381,16 @@ abstract class Element
     }
 
     /**
+     * @return $this
+     */
+    public function disableHelperbox()
+    {
+        $this->helperbox_enabled = false;
+
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function getValue(): string
