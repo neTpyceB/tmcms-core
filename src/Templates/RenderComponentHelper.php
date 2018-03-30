@@ -86,7 +86,7 @@ class RenderComponentHelper
     /**
      * @return Element
      */
-    public function getFieldView(): Element
+    public function getFieldView()
     {
         $field = NULL;
 
