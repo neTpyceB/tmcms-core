@@ -57,54 +57,53 @@ class Components
         $elements = [];
 
         foreach ($components_array as $component_class => $component_methods) {
-            if ($component_class == 'plugin') {
 
-                foreach ($component_methods as $component_method) {
+            // Ready components
+            require_once DIR_FRONT_CONTROLLERS . $component_class . '.php';
 
-                    $elements[$component_class . '_' . $component_method] = [
-                        'type'     => 'plugin',
-                        'file'     => $component_class,
-                        'class'    => $component_class . '_' . $component_method,
-                        'elements' => [
-                            'select_plugin' => [
-                                'type'    => 'select',
-                                'options' => ['' => '---'] + Plugin::getInstance()->getPluginFilePairs(),
-                            ],
-                        ],
-                    ];
-                }
-            } else {
-                require_once DIR_FRONT_CONTROLLERS . $component_class . '.php';
+            $controller_class = ucfirst($component_class) . 'Controller';
 
-                $controller_class = ucfirst($component_class) . 'Controller';
+            if (!class_exists($controller_class)) {
+                $controller_class = str_replace('_', '', $controller_class);
+            }
 
-                if (!class_exists($controller_class)) {
-                    $controller_class = str_replace('_', '', $controller_class);
+            $elements_data = $controller_class::getComponents();
+
+            $class_methods = get_class_methods($controller_class);
+
+            foreach ($class_methods as $component_method) {
+
+                // Skip those methods that are not called for template
+                if (!isset($components_array[$component_class]) || !in_array($component_method, $components_array[$component_class])) {
+                    continue;
                 }
 
-                $elements_data = $controller_class::getComponents();
+                $controller_method = 'getComponents_' . $component_method;
 
-                $class_methods = get_class_methods($controller_class);
-
-                foreach ($class_methods as $component_method) {
-                    // Skip those methods that are not called for template
-                    if (!isset($components_array[$component_class]) || !in_array($component_method, $components_array[$component_class])) {
-                        continue;
-                    }
-
-                    $controller_method = 'getComponents_' . $component_method;
-
-                    if (method_exists($controller_class, $controller_method)) {
-                        $elements_data = array_merge($elements_data, $controller_class::$controller_method());
-                    }
-
-                    $elements[$component_class] = [
-                        'type' => 'component',
-                        'file' => $component_class,
-                        'class' => $component_class,
-                        'elements' => $elements_data
-                    ];
+                if (method_exists($controller_class, $controller_method)) {
+                    $elements_data = array_merge($elements_data, $controller_class::$controller_method());
                 }
+
+//                if ($elements_data['type'] ?? '' === 'plugin') {
+//                    $elements[$component_class . '_' . $component_method] = [
+//                        'type' => 'plugin',
+//                        'file' => $component_class,
+//                        'class' => $component_class . '_' . $component_method,
+//                        'elements' => [
+//                            'select_plugin' => [
+//                                'type' => 'select',
+//                                'options' => ['' => '---'] + Plugin::getInstance()->getPluginFilePairs(),
+//                            ],
+//                        ],
+//                    ];
+//                }
+
+                $elements[$component_class] = [
+                    'type' => 'component',
+                    'file' => $component_class,
+                    'class' => $component_class,
+                    'elements' => $elements_data
+                ];
             }
         }
 

@@ -486,6 +486,16 @@ abstract class Element
     }
 
     /**
+     * @return $this
+     */
+    public function setTypeAsSelect()
+    {
+        $this->setType('select');
+
+        return $this;
+    }
+
+    /**
      * @param string $type
      *
      * @return $this

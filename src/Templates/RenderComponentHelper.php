@@ -329,6 +329,6 @@ class RenderComponentHelper
      */
     public function selectedOption(): string
     {
-        return $this->selected;
+        return (string)$this->selected;
     }
 }
