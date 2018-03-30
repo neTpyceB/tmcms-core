@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace TMCms\Templates;
 
@@ -27,9 +28,10 @@ class Plugin
 
     /**
      * Get all components (fields) used in object
+     *
      * @return array
      */
-    public static function getComponents()
+    public static function getComponents(): array
     {
         return [];
     }
@@ -39,13 +41,13 @@ class Plugin
      *
      * @return string
      */
-    public static function getSelectedPluginValue($name)
+    public static function getSelectedPluginValue(string $name): string
     {
         self::init();
 
         $name .= '_select_plugin';
 
-        $res = isset(self::$data[$name]) ? self::$data[$name] : '';
+        $res = self::$data[$name] ?? '';
 
         self::$selected_plugin = $name;
 
@@ -63,21 +65,22 @@ class Plugin
 
     /**
      * Gets unresolved data, alias of getValue($key)
-     * @param $key
+     *
+     * @param string $key
+     *
      * @return string
      */
-    public function __get($key)
+    public function __get(string $key)
     {
-        $res = $this->getValue($key);
-
-        return $res;
+        return $this->getValue($key);
     }
 
     /**
      * @param $plugin_field_name
+     *
      * @return string
      */
-    public function getValue($plugin_field_name)
+    public function getValue(string $plugin_field_name): string
     {
         self::init();
 
@@ -112,7 +115,8 @@ class Plugin
     /**
      * @return array
      */
-    public function getPluginFilePairs() {
+    public function getPluginFilePairs(): array
+    {
         if ($this->plugin_files) { // Already have found filed
             return $this->plugin_files;
         }
@@ -122,7 +126,7 @@ class Plugin
             FileSystem::mkDir($folder);
 
             // Skip folder links
-            $cms_plugin_files = array_diff(scandir($folder), ['.', '..']);
+            $cms_plugin_files = array_diff(scandir($folder, SCANDIR_SORT_NONE), ['.', '..']);
 
             // Make simple names for rendering in selects
             foreach ($cms_plugin_files as $k => $v) {
