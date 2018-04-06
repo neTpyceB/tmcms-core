@@ -105,13 +105,18 @@ class PageTail
     {
         ob_start();
         // CSS files
-        foreach ($this->css_urls as $k => $v): $k = Finder::getInstance()->searchForRealPath($k); ?>
+        foreach ($this->css_urls as $k => $v):
+            if(!preg_match('~^/-/api/~', $k))    
+                $k = Finder::getInstance()->searchForRealPath($k); ?>
             <link rel="stylesheet" type="text/css" href="<?= $k ?>" media="<?= $v ?>">
         <?php endforeach;
 
         // JS files and scripts
         for ($i = 1; $i <= $this->js_sequence; $i++) :
-            if (isset($this->js_urls[$i])): $this->js_urls[$i] = Finder::getInstance()->searchForRealPath($this->js_urls[$i]); ?>
+            if (isset($this->js_urls[$i])):
+                if(!preg_match('~^/-/api/~', $this->js_urls[$i])) {
+                    $this->js_urls[$i] = Finder::getInstance()->searchForRealPath($this->js_urls[$i]);
+                }?>
                 <script src="<?= $this->js_urls[$i] ?>"<?= isset($this->deferred_scripts[$i]) ? ' defer' : '' ?><?= isset($this->async_scripts[$i]) ? ' async' : '' ?>></script>
             <?php elseif (isset($this->js[$i])): ?>
                 <script><?= $this->js[$i] ?></script>
