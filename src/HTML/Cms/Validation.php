@@ -204,15 +204,15 @@ class Validation
     }
 
     /**
-     * @param array $fields
+     * @param array | string $fields
      *
      * @return array
      */
-    private static function normalizeRules(array $fields): array
+    private static function normalizeRules($fields): array
     {
         $result = [];
 
-        foreach ($fields as $k => $v) {
+        foreach ((array)$fields as $k => $v) {
             if (is_numeric($k)) {
                 $result[$v] = true;
             } else {
