@@ -1,8 +1,9 @@
 <?php
+declare(strict_types=1);
 
 namespace TMCms\Files;
 
-defined('INC') or exit;
+\defined('INC') or exit;
 
 /**
  * Class FileIcons
@@ -16,100 +17,100 @@ class FileIcons
     /**
      * @var string
      */
-    private $dir;
+    private $directory_with_icons;
     /**
      * @var string
      */
-    private $file4unknown = 'unknown.gif';
+    private $unknown_extension_icon = 'unknown.gif';
 
     /**
-     * Sets default icon directory if $dir is null
-     * @param string $dir - directory with icons
-     * @param string $file4unknown
+     * @param string $directory_with_icons - directory with icons
+     * @param string $unknown_extension_icon
      */
-    private function __construct($dir = '', $file4unknown = '')
+    private function __construct(string $directory_with_icons = '', string $unknown_extension_icon = '')
     {
-        if ($dir) {
-            $this->dir = $dir . (substr($dir, -1) !== '/' ? '/' : '');
+        if (!$directory_with_icons) {
+            $directory_with_icons = '/vendor/devp-eu/tmcms-core/src/assets/images/icons/';
         }
 
-        if ($file4unknown) {
-            $this->file4unknown = $file4unknown;
+        if ($directory_with_icons) {
+            $this->directory_with_icons = $directory_with_icons . (substr($directory_with_icons, -1) !== '/' ? '/' : '');
+        }
+
+        if ($unknown_extension_icon) {
+            $this->unknown_extension_icon = $unknown_extension_icon;
         }
     }
 
     /**
-     * @param string $ext
-     * @return array
+     * Get full path to icon
+     *
+     * @param string $extension
+     *
+     * @return string
      */
-    public static function getIconUrlByExt($ext)
+    public static function getIconUrlByExtension(string $extension): string
     {
-        return self::getInstance()->getIconByExt($ext, 1, 1);
+        return self::getInstance()->getIconByExtension($extension, true);
     }
 
     /**
      * Get icon for file by its extension
-     * @param string $ext - file's extension
-     * @param int $incl_path - include in result path to file or not: 0 - return only file name; 1 - return relative path; 2 - return absolute path;
-     * @param bool $return_unknown - should the false or path to unknown.gif be returned in case icon for the extension not found
-     * @return array
+     *
+     * @param string $extension - file's extension
+     * @param bool $include_full_path - include in result relative path to file or not
+     *
+     * @return string
      */
-    public function getIconByExt($ext, $incl_path = 0, $return_unknown = false)
+    public function getIconByExtension(string $extension, bool $include_full_path = false): string
     {
-        $data = $this->get();
-        $ext = strtolower($ext);
-        $res = isset($data[$ext]) ? $data[$ext] : NULL;
+        $data = $this->getData();
+        $extension = strtolower($extension);
+        $res = $data[$extension] ?? '';
 
         if (!$res) {
-            if (!$return_unknown) {
-                return false;
-            }
-            $res = $this->file4unknown;
+            $res = $this->unknown_extension_icon;
         }
 
-        switch ($incl_path) {
-            case 0:
-                return $res;
-            case 1:
-                return substr($this->dir, strlen(DIR_BASE) - 1) . $res;
-            case 2:
-                return $this->dir . $res;
+        if ($include_full_path) {
+            $res = $this->directory_with_icons . $res;
         }
-        return false;
+
+        return $res;
     }
 
     /**
      * Get all available icons list
-     * @param array $img_ext - possible extensions of files in scanned directory
+     *
+     * @param array $image_extensions - possible extensions of files in scanned directory
      * @param array $skip - files to skip
+     *
      * @return array
      */
-    public function get($img_ext = array('gif'), array $skip = array('unknown.gif', 'recycle.bin.empty.gif', 'recycle.bin.full.gif'))
+    public function getData(array $image_extensions = ['gif'], array $skip = ['unknown.gif', 'recycle.bin.empty.gif', 'recycle.bin.full.gif']): array
     {
-        if (is_string($img_ext)) {
-            $img_ext = [$img_ext];
-        } elseif (!is_array($img_ext)) {
-            dump('Supply a list of possible extensions for icons.');
-        }
-
-        if (isset(self::$data[$this->dir])) {
-            $data = self::$data[$this->dir];
+        // Cached
+        if (isset(self::$data[$this->directory_with_icons])) {
+            $data = self::$data[$this->directory_with_icons];
         } else {
+            // Scan folder
             $data = [];
-            $img_ext = array_flip($img_ext);
+            $image_extensions = array_flip($image_extensions);
 
-            foreach (array_diff(scandir($this->dir),['.', '..']) as $f) {
-                $exts = explode('.', $f);
+            foreach (array_diff(scandir(DIR_BASE . $this->directory_with_icons, SCANDIR_SORT_NONE),['.', '..']) as $file) {
+                $extension = explode('.', $file);
 
-                if (!isset($img_ext[array_pop($exts)])) {
+                if (!isset($image_extensions[array_pop($extension)])) {
                     continue;
                 }
 
-                foreach ($exts as $v) {
-                    $data[$v] = $f;
+                foreach ($extension as $v) {
+                    $data[$v] = $file;
                 }
             }
-            self::$data[$this->dir] = $data;
+
+            // Save in cache
+            self::$data[$this->directory_with_icons] = $data;
         }
 
         return $skip ? array_diff($data, $skip) : $data;
@@ -118,27 +119,29 @@ class FileIcons
     /**
      * @param string $dir
      * @param string $file4unknown
-     * @return FileIcons
+     *
+     * @return $this
      */
-    public static function getInstance($dir = '', $file4unknown = '')
+    public static function getInstance($dir = '', $file4unknown = ''): self
     {
         return new self($dir, $file4unknown);
     }
 
     /**
      * Get icon for unknown extension
+     *
      * @return string
      */
-    public function getIconForUnknown()
+    public function getIconForUnknownExtension(): string
     {
-        return $this->dir . $this->file4unknown;
+        return $this->directory_with_icons . $this->unknown_extension_icon;
     }
 
     /**
      * @return string
      */
-    public function getFolderUrl()
+    public function getFolderUrl(): string
     {
-        return substr($this->dir, strlen(DIR_BASE) - 1);
+        return $this->directory_with_icons;
     }
 }
