@@ -317,6 +317,7 @@ class Backend
                 ->addJsUrl('plugins/parsley.js')// Input validation
                 ->addJsUrl('cms/respond.min.js')
                 ->addJsUrl('cms/excanvas.min.js')
+                ->addJsUrl('plugins/clipboard/clipboard.min.js')
                 // Init all
                 ->addJs('$(function() {
                $(".chosen").select2();
