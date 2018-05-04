@@ -91,6 +91,10 @@ class CmsFormHelper {
             $form->disableFormTagOutput();
         }
 
+        if (isset($params['id'])) {
+            $form->setFormId($params['id']);
+        }
+
         if (isset($params['full'])) {
             $form->setFullViewEnabled($params['full']);
         }
