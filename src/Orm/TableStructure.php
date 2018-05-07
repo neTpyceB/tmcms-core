@@ -11,6 +11,15 @@ use TMCms\DB\Sync;
  * @package TMCms\Orm
  */
 class TableStructure {
+    const FIELD_TYPES_AVAILABLE = [
+        self::FIELD_TYPE_BOOL,
+        self::FIELD_TYPE_CHAR,
+        self::FIELD_TYPE_FLOAT_DECIMAL,
+        self::FIELD_TYPE_INDEX,
+        self::FIELD_TYPE_TRANSLATION,
+        self::FIELD_TYPE_VARCHAR_255,
+        self::FIELD_TYPE_UNSIGNED_INTEGER,
+    ];
 
     const FIELD_TYPE_BOOL = 'bool'; // active, checkbox
     const FIELD_TYPE_CHAR = 'char';
