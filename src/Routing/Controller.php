@@ -9,7 +9,7 @@ defined('INC') or exit;
 /**
  * Class CmsController
  */
-class Controller
+class Controller extends MVC
 {
     /**
      * @var array
