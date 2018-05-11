@@ -2,6 +2,7 @@
 
 namespace TMCms\Routing;
 
+use ReflectionClass;
 use TMCms\Templates\PageHead;
 use TMCms\Templates\PageTail;
 
@@ -140,6 +141,15 @@ class MVC
 
             $controller = new $this->controller($this);
             // Set up shared data
+            // Using autowiring for DI
+            $reflector = new ReflectionClass($controller);
+            // Get arguments
+            $controller_arguments = $reflector->getMethod('__construct')->getParameters();
+            foreach ($controller_arguments as $argumentIndex => $constructorArgument) {
+                // TODO autowire and create dependency container to get classes
+                $argument_class_hint = $constructorArgument->getType();
+            }
+
             $controller->setUp();
             self::$controllers[$this->controller] = $controller;
         }
