@@ -81,6 +81,10 @@ class CmsFormHelper {
         // Generate form
         $form = new CmsForm;
 
+        if (isset($params['method'])) {
+            $form->setMethod($params['method']);
+        }
+
         if (!isset($params['action'])) {
             $tmp = $_GET;
             $tmp['do'] = '_'. $tmp['do'];
