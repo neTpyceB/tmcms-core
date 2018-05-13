@@ -51,12 +51,13 @@ class Structure
 
     /**
      * Return path of page based on ID
-     * @param int  $page_id
+     * @param int $page_id
      * @param bool $with_domain
      * @param bool $disallow_cut_language_part in case you need to keep /xx/ language part even if it is enabled in Settings
+     * @param bool $use_cache
      * @return string
      */
-    public static function getPathById($page_id, $with_domain = true, $disallow_cut_language_part = false)
+    public static function getPathById($page_id, $with_domain = true, $disallow_cut_language_part = false, $use_cache = true)
     {
         // Page id must be integer
         if (!ctype_digit((string)$page_id)) {
@@ -64,12 +65,12 @@ class Structure
         }
 
         // Already scanned
-        if (isset(self::$_path_cache[$page_id])) {
+        if ($use_cache && isset(self::$_path_cache[$page_id])) {
             return ($with_domain && substr(self::$_path_cache[$page_id], 0, 1)=='/' ? BASE_URL : '') . self::$_path_cache[$page_id];
         }
         // Check common cache
         $cache_key = 'structure_path_by_id_' . $page_id;
-        if (Settings::isCacheEnabled()) {
+        if ($use_cache && Settings::isCacheEnabled()) {
             self::$_path_cache[$page_id] = Cacher::getInstance()->getDefaultCacher()->get($cache_key);
             if (self::$_path_cache[$page_id]) {
                 return ($with_domain ? BASE_URL : '') . self::$_path_cache[$page_id];
@@ -117,7 +118,7 @@ class Structure
         }
 
         // Save common cache
-        if (Settings::isCacheEnabled()) {
+        if ($use_cache && Settings::isCacheEnabled()) {
             Cacher::getInstance()->getDefaultCacher()->set($cache_key, $path);
         }
 
