@@ -139,7 +139,7 @@ class Updater
      * @param string $filename
      * @return $this
      */
-    private function runMigrationFile($filename)
+    public function runMigrationFile($filename)
     {
         SQL::startTransaction();
 

@@ -34,6 +34,11 @@ class TableStructure {
     private $table_name = '';
     private $table_structure = [];
 
+    public static function generateCreateFieldSQL()
+    {
+
+    }
+
     public function setTableStructure(array $structure)
     {
         $this->table_structure = $structure;
@@ -131,6 +136,12 @@ class TableStructure {
         return $this;
     }
 
+    /**
+     * @deprecated use MySqlTableColumnEntity or MySQL::generateCreateColumnSQL
+     *
+     * @param $field
+     * @return string
+     */
     private function getFieldCreate($field)
     {
         $res = '';
