@@ -38,6 +38,6 @@ class SharedMvcAliasMethods
      */
     public function getPathByLabel(string $label): string
     {
-        return Structure::getPathByLabel($label);
+        return (string)Structure::getPathByLabel($label);
     }
 }
