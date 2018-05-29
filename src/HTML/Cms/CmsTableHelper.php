@@ -475,6 +475,11 @@ class CmsTableHelper {
                         $filter->enableActAsLike();
                     }
 
+                    // HTML in column value
+                    if (isset($filter_data['html']) && $filter_data['html']) {
+                        $filter->allowHtml();
+                    }
+
                     if ($filter) {
                         $filter_form->addFilter($filter_data['title'], $filter);
                     }
