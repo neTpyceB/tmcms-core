@@ -768,7 +768,7 @@ class Entity extends AbstractEntity
     }
 
     /**
-     * Must be implemented in extended classes
+     * Must be implemented in extended classes. Links will be displayed in Widget Pages
      *
      * @param string $lng
      *

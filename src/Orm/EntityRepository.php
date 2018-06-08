@@ -1640,4 +1640,13 @@ FROM `' . $this->getDbTableName() . '`
     {
         return $this->getCountOfObjectsInCollection();
     }
+
+    /**
+     * Must be implemented in extended classes. This will modify output in Widget Pages
+     *
+     * @return $this
+     */
+    public function applyFiltersForSitemap() {
+        return $this;
+    }
 }
