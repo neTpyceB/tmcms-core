@@ -284,7 +284,7 @@ class Backend
         // Script for sending JS errors
         if (Settings::isProductionState() && !Settings::get('do_not_send_js_errors')) {
             $page_head
-                ->addJsUrl('send_error.min.js')
+                ->addJsUrl('scripts/send_error.min.js')
                 ->addJs('register_js_error.ini(\'' . DIR_CMS_URL . '\');');
         }
 
