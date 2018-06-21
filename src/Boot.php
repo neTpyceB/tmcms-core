@@ -168,7 +168,7 @@ if (empty($_SESSION['__session_name_validated'])) {
         }
         return $randomString;
     };
-    ini_set('session.name', $random_cookie_name());
+    // ini_set('session.name', $random_cookie_name());
     $_SESSION['__session_name_validated'] = 1;
 }
 
