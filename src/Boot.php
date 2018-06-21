@@ -157,11 +157,6 @@ mb_http_input('UTF-8');
 mb_language('uni');
 mb_regex_encoding('UTF-8');
 
-// Always begin session
-if (session_status() !== PHP_SESSION_ACTIVE && !headers_sent()) {
-    session_start();
-}
-
 // Every time we start Session - give it a unique name for security
 if (empty($_SESSION['__session_name_validated'])) {
     $random_cookie_name = function () {
@@ -175,6 +170,11 @@ if (empty($_SESSION['__session_name_validated'])) {
     };
     ini_set('session.name', $random_cookie_name());
     $_SESSION['__session_name_validated'] = 1;
+}
+
+// Always begin session
+if (session_status() !== PHP_SESSION_ACTIVE && !headers_sent()) {
+    session_start();
 }
 
 // Http auth for PHP-CGI mode
