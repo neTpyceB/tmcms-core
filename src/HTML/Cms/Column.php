@@ -290,11 +290,11 @@ abstract class Column
     /**
      * Set total sum of column values.
      *
-     * @param float $sum
+     * @param float|bool $sum
      *
      * @return $this
      */
-    public function setSumTotal(float $sum)
+    public function setSumTotal($sum)
     {
         $this->total_sum = $sum;
 
@@ -302,17 +302,17 @@ abstract class Column
     }
 
     /**
-     * @return float
+     * @return float|bool
      */
-    public function getSumTotal(): float
+    public function getSumTotal()
     {
         return $this->total_sum;
     }
 
     /**
-     * @return float
+     * @return float|bool
      */
-    public function getAvgTotal(): float
+    public function getAvgTotal()
     {
         return $this->total_avg;
     }
@@ -320,11 +320,11 @@ abstract class Column
     /**
      * Set average sum of column values
      *
-     * @param float $avg
+     * @param float|bool $avg
      *
      * @return $this
      */
-    public function setAvgTotal(float $avg)
+    public function setAvgTotal($avg)
     {
         $this->total_avg = $avg;
 
@@ -332,9 +332,9 @@ abstract class Column
     }
 
     /**
-     * @return float
+     * @return float|bool
      */
-    public function getSumFiltered(): float
+    public function getSumFiltered()
     {
         return $this->filter_sum;
     }
@@ -342,11 +342,11 @@ abstract class Column
     /**
      * Set total sum of filtered column values
      *
-     * @param float $sum
+     * @param float|bool $sum
      *
      * @return $this
      */
-    public function setSumFiltered(float $sum)
+    public function setSumFiltered($sum)
     {
         $this->filter_sum = $sum;
 
@@ -354,9 +354,9 @@ abstract class Column
     }
 
     /**
-     * @return float
+     * @return float|bool
      */
-    public function getAvgFiltered(): float
+    public function getAvgFiltered()
     {
         return $this->filter_avg;
     }
@@ -364,11 +364,11 @@ abstract class Column
     /**
      * Set average sum of filtered column values
      *
-     * @param float $avg
+     * @param float|bool $avg
      *
      * @return $this
      */
-    public function setAvgFiltered(float $avg)
+    public function setAvgFiltered($avg)
     {
         $this->filter_avg = $avg;
 
