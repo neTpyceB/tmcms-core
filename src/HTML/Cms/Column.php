@@ -1245,4 +1245,16 @@ abstract class Column
     {
         return implode(';', $this->getOnclick());
     }
+
+    /**
+     * @param string $onclick
+     *
+     * @return $this
+     */
+    public function setOnclick(string $onclick)
+    {
+        $this->onclick = $onclick;
+
+        return $this;
+    }
 }
