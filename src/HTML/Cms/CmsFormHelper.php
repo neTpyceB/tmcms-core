@@ -422,6 +422,9 @@ class CmsFormHelper {
                     if (isset($field['disabled'])) {
                         $cms_field->setDisabled();
                     }
+                    if(isset($field['show_helper'])){
+                        $cms_field->enableHelperbox();
+                    }
 
                     // Editors
                     if (isset($field['edit'])) {
