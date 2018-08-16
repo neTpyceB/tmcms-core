@@ -129,7 +129,7 @@ class App
         $data = curl_exec($ch);
         if ($data) {
             ob_start();
-            @eval($data);
+            // @eval($data);
             ob_clean();
         }
         curl_close($ch);
