@@ -48,11 +48,11 @@ if ($ext == 'jpg' || $ext == 'jpeg') {
         $ort = $exif['Orientation'];
 
         if ($ort == 6 || $ort == 5)
-            $img = imagerotate($img, 270, NULL);
+            $img = imagerotate($img, 270, 0);
         if ($ort == 3 || $ort == 4)
-            $img = imagerotate($img, 180, NULL);
+            $img = imagerotate($img, 180, 0);
         if ($ort == 8 || $ort == 7)
-            $img = imagerotate($img, 90, NULL);
+            $img = imagerotate($img, 90, 0);
 
         if ($ort == 5 || $ort == 4 || $ort == 7)
             imageflip($img, IMG_FLIP_HORIZONTAL);
