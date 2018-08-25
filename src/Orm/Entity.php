@@ -84,7 +84,7 @@ class Entity extends AbstractEntity
             $data = $this->getObjectDataFromCache();
 
             // We have to have more than only ID field
-            if (count($data) === 1) {
+            if (!empty($data) && count($data) === 1) {
                 $data = NULL;
             }
         }
@@ -142,11 +142,14 @@ class Entity extends AbstractEntity
     /**
      * @return int|NULL
      */
-    public function getId()
+    public function getId(): ?int
     {
-        return $this->data['id'] ?? NULL;
+        return $this->data['id'] ? (int)$this->data['id'] : NULL;
     }
 
+    /**
+     * @return string
+     */
     public function getSelectSql(): string
     {
         return 'SELECT * FROM `' . $this->getDbTableName() . '` WHERE `id` = "' . $this->getId() . '"';
@@ -468,7 +471,7 @@ class Entity extends AbstractEntity
      */
     protected function beforeSave()
     {
-
+        return $this;
     }
 
     protected function encryptValues()
@@ -492,10 +495,10 @@ class Entity extends AbstractEntity
 
     private function update()
     {
-        $this->beforeUpdate();
-
         // Start transaction - we have inner-translation updates
         $this->dao->startTransaction();
+
+        $this->beforeUpdate();
 
         $data = [];
 
@@ -525,10 +528,10 @@ class Entity extends AbstractEntity
         // Load all fresh data from DB
         $this->loadDataFromDB();
 
+        $this->afterUpdate();
+
         // Close all update queries
         $this->dao->confirmTransaction();
-
-        $this->afterUpdate();
 
         return $this;
     }
@@ -554,6 +557,9 @@ class Entity extends AbstractEntity
      */
     private function create()
     {
+        // Start transaction - we have inner-translation updates
+        $this->dao->startTransaction();
+
         $this->beforeCreate();
 
         $data = [];
@@ -596,6 +602,9 @@ class Entity extends AbstractEntity
         $this->data['id'] = $this->dao->add($this->getDbTableName(), $data, true, $this->update_on_duplicate, $this->insert_low_priority, $this->insert_delayed);
 
         $this->afterCreate();
+
+        // Close all update queries
+        $this->dao->confirmTransaction();
 
         return $this;
     }

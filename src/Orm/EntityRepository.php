@@ -331,25 +331,29 @@ class EntityRepository extends AbstractEntity implements IteratorAggregate, Coun
         }
         $this->last_used_sql = $sql;
 
+        // We do not need to re-save to cache
+        $used_data_from_cache = false;
+
         // Check cache for this exact collection
         if ($this->use_cache) {
             //Check cached values, set local properties
             $data = Cacher::getInstance()->getDefaultCacher()->get($this->getCacheKey($sql));
-            if ($data && \is_array($data) && isset($data['collected_objects_data'], $data['collected_objects'])) {
+            if ($data !== NULL && \is_array($data) && !empty($data['collected_objects_data'])) {
                 // Set local data
                 $this->collected_objects_data = $data['collected_objects_data'];
-                $this->collected_objects = $data['collected_objects'];
 
-                // No further actions
-                return $this;
+                $used_data_from_cache = true;
             }
         }
 
-        // Use Iterator in DB query
-        if ($this->use_iterator) {
-            $this->collected_objects_data = $this->dao::q_assoc_iterator($sql);
-        } else {
-            $this->collected_objects_data = $this->dao::q_assoc($sql);
+        // Query DAO only if not data alrede presented
+        if (!$this->collected_objects_data) {
+            // Use Iterator in DB query
+            if ($this->use_iterator) {
+                $this->collected_objects_data = $this->dao::q_assoc_iterator($sql);
+            } else {
+                $this->collected_objects_data = $this->dao::q_assoc($sql);
+            }
         }
 
         if ($this->require_to_count_total_rows) {
@@ -383,12 +387,12 @@ class EntityRepository extends AbstractEntity implements IteratorAggregate, Coun
             }
         }
 
-        if ($this->use_cache) {
+        if (!$used_data_from_cache && $this->use_cache) {
             // Save all collected data to Cache
             $data = [
                 'collected_objects_data' => $this->collected_objects_data,
-                'collected_objects'      => $this->collected_objects
             ];
+
             Cacher::getInstance()->getDefaultCacher()->set($this->getCacheKey($sql), $data, $this->cache_ttl);
         }
 
