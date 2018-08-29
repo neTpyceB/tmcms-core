@@ -734,7 +734,7 @@ FROM `' . $this->getDbTableName() . '`
     /**
      * @return $this
      */
-    public function deleteObjectCollection()
+    public function deleteObjectCollection(): self
     {
         $this->collectObjects();
 
