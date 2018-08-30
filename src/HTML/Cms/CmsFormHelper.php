@@ -37,6 +37,7 @@ class CmsFormHelper {
     public const FIELD_TYPE_FILE = 'file';
     public const FIELD_TYPE_HTML = 'html';
     public const FIELD_TYPE_NUMBER = 'number';
+    public const FIELD_TYPE_TEXT = 'text';
     public const FIELD_TYPE_ROW = 'row';
 
     /**
