@@ -785,7 +785,7 @@ FROM `' . $this->getDbTableName() . '`
         $ent = $this->getFirstObjectFromCollection();
         $key_method = 'get' . ucfirst($key_field);
         $value_method = 'get' . ucfirst($value_field);
-        if (($key_method !== 'getId' && method_exists($ent, $key_method)) || method_exists($ent, $value_method)){
+        if ($key_method !== 'getId' && method_exists($ent, $key_method) && method_exists($ent, $value_method)) {
             $this->collectObjects();
 
             $pairs = [];
