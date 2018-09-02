@@ -5,8 +5,13 @@ namespace TMCms\HTML\Cms;
 
 use TMCms\Config\Configuration;
 
-defined('INC') or exit;
+\defined('INC') or exit;
 
+/**
+ * Class CmsGallery
+ *
+ * @package TMCms\HTML\Cms
+ */
 class CmsGallery
 {
     private $image_width = 270;
@@ -25,7 +30,7 @@ class CmsGallery
     public function __construct(array $source_data)
     {
         $this->data = $source_data;
-        $this->data_count = count($this->data);
+        $this->data_count = \count($this->data);
     }
 
     /**
@@ -85,7 +90,7 @@ class CmsGallery
      *
      * @return string
      */
-    private function getImageView($data, $i)
+    private function getImageView($data, $i): string
     {
         $count = $this->data_count - 1;
         $hash = md5($data['image']);
