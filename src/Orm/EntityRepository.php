@@ -679,7 +679,7 @@ FROM `' . $this->getDbTableName() . '`
         $this->setLimit(1);
         $res = NULL;
 
-        foreach($this->getAsArrayOfObjectData() as $obj_data) {
+        foreach($this->getAsArrayOfObjectData(true) as $obj_data) {
 
             $class = $this->getObjectClass();
             /** @var Entity $obj */
@@ -702,9 +702,7 @@ FROM `' . $this->getDbTableName() . '`
      */
     public function getAsArrayOfObjectData($non_iterator = false)
     {
-        if ($non_iterator) {
-            $this->setGenerateOutputWithIterator(false);
-        }
+        $this->setGenerateOutputWithIterator(!$non_iterator);
 
         $this->collectObjects(true);
 
