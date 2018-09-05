@@ -95,7 +95,7 @@ class MaxMindGeoIP
         fclose($fh);
 
         // Clean SQL works much faster and we now what values are
-        q('INSERT INTO `cms_maxmind_geoip_c` VALUES ' . implode(',', $countries_sql), 0);
+        q('INSERT INTO `cms_maxmind_geoip_c` VALUES ' . implode(',', $countries_sql), false);
 
         $q = [];
         $ql = 0;

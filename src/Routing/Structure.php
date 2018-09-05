@@ -73,7 +73,8 @@ class Structure
         if ($use_cache && Settings::isCacheEnabled()) {
             self::$_path_cache[$page_id] = Cacher::getInstance()->getDefaultCacher()->get($cache_key);
             if (self::$_path_cache[$page_id]) {
-                return ($with_domain ? BASE_URL : '') . self::$_path_cache[$page_id];
+                // We remove BASE_URL in case url was cached with it. And add it in case requested to return full url
+                return ($with_domain ? BASE_URL : '') . \str_replace(BASE_URL, '', self::$_path_cache[$page_id]);
             }
         }
         $path = '';

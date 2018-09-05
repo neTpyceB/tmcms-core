@@ -26,5 +26,8 @@
     "files": [
       "src/Boot.php"
     ]
+  },
+  "require": {
+    "php": ">=7.1"
   }
 }
