@@ -424,7 +424,8 @@ class PageHead
                 <?php
             endif;
 
-            // Google Analytics
+            if(!class_exists('\TMCms\Modules\Gdpr\ModuleGdpr') || \TMCms\Modules\Gdpr\ModuleGdpr::isAllowedCookies()) {
+                // Google Analytics
             if ($ga = Settings::get('google_analytics_code')): ?>
                 <script>
                     (function (i, s, o, g, r, a, m) {
@@ -462,11 +463,11 @@ class PageHead
                             try {
                                 w.yaCounter<?= $ym ?> = new Ya.Metrika({
                                     id:<?= $ym ?>,
-                                    clickmap:true,
-                                    trackLinks:true,
-                                    accurateTrackBounce:true,
-                                    webvisor:true,
-                                    trackHash:true
+                                    clickmap: true,
+                                    trackLinks: true,
+                                    accurateTrackBounce: true,
+                                    webvisor: true,
+                                    trackHash: true
                                 });
                             } catch (e) {
                             }
@@ -489,7 +490,8 @@ class PageHead
                     })(document, window, "yandex_metrika_callbacks");
                 </script>
                 <noscript>
-                    <div><img src="//mc.yandex.ru/watch/<?= $ym ?>" style="position:absolute; left:-9999px;" alt=""/></div>
+                    <div><img src="//mc.yandex.ru/watch/<?= $ym ?>" style="position:absolute; left:-9999px;" alt=""/>
+                    </div>
                 </noscript>
                 <!-- /Yandex.Metrika counter -->
             <?php endif;
@@ -498,20 +500,35 @@ class PageHead
             if ($fp = Settings::get('facebook_pixel_key')): ?>
                 <!-- Facebook Pixel Code -->
                 <script>
-                    !function(f, b, e, v, n, t, s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-                        n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
-                        n.push=n;n.loaded=!0;n.version="2.0";n.queue=[];t=b.createElement(e);t.async=!0;
-                        t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
-                        document,"script","https://connect.facebook.net/en_US/fbevents.js");
+                    !function (f, b, e, v, n, t, s) {
+                        if (f.fbq) return;
+                        n = f.fbq = function () {
+                            n.callMethod ?
+                                n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+                        };
+                        if (!f._fbq) f._fbq = n;
+                        n.push = n;
+                        n.loaded = !0;
+                        n.version = "2.0";
+                        n.queue = [];
+                        t = b.createElement(e);
+                        t.async = !0;
+                        t.src = v;
+                        s = b.getElementsByTagName(e)[0];
+                        s.parentNode.insertBefore(t, s)
+                    }(window,
+                        document, "script", "https://connect.facebook.net/en_US/fbevents.js");
 
                     fbq("init", "<?= $fp ?>");
                     fbq("track", "PageView");
                     fbq("track", "ViewContent");
                 </script>
-                <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=<?= $fp ?>&ev=PageView&noscript=1" /></noscript>
+                <noscript><img height="1" width="1" style="display:none"
+                               src="https://www.facebook.com/tr?id=<?= $fp ?>&ev=PageView&noscript=1"/></noscript>
                 <!-- End Facebook Pixel Code -->
             <?php endif;
-            unset($fp);
+                unset($fp);
+            }
             ?>
         </head>
         <?php
