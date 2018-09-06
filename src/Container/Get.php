@@ -19,4 +19,19 @@ class Get extends Base
     {
         parent::__construct($_GET);
     }
+
+    /**
+     * @param string $field_name
+     *
+     * @return bool
+     */
+    public function getCleanedFieldAsBool(string $field_name): bool
+    {
+        // Special case, if we have key set but no value - we keep it as true, e.g. &status=active&order_desc = order_desc must be true
+        if (isset($this->initial_data[$field_name]) && '' === $this->initial_data[$field_name]) {
+            return $this->initial_data[$field_name] = true;
+        }
+
+        return parent::getCleanedFieldAsBool($field_name);
+    }
 }

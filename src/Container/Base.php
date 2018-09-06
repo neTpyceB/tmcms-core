@@ -13,7 +13,7 @@ use RuntimeException;
  */
 abstract class Base
 {
-    private $initial_data;
+    protected $initial_data;
 
     const FIELD_TYPE_BOOL = 1;
     const FIELD_TYPE_INT = 2;

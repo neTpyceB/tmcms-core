@@ -69,10 +69,14 @@ abstract class AbstractEntity
     /**
      * @param mixed $data
      */
-    protected function debug($data)
+    protected function debug($data = NULL)
     {
         if (!$this->debug) {
             return;
+        }
+
+        if ($data === NULL) {
+            $data = $this;
         }
 
         dump($data);
