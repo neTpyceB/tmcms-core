@@ -146,7 +146,7 @@ class Messages
         }
 
         // Get existing messages
-        $messages = self::getFlashAlerts();
+        $messages = self::getInstance()->getFlashAlerts();
 
         // Add new to the list
         $messages[] = $message;
@@ -160,7 +160,7 @@ class Messages
         $key = self::getInstance()->getFlashAlertsSessionKey();
 
         // Add to alerts
-        foreach (self::getFlashAlerts() as $message) {
+        foreach (self::getInstance()->getFlashAlerts() as $message) {
             BreadCrumbs::getInstance()->addAlerts($message);
         }
 
@@ -173,7 +173,7 @@ class Messages
     }
 
     public function getFlashAlerts() {
-        $key = self::getInstance()->getFlashAlertsSessionKey();
+        $key = $this->getFlashAlertsSessionKey();
 
         if (!isset($_SESSION[$key]) || !$_SESSION[$key]) {
             return [];
