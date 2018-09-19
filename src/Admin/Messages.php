@@ -18,6 +18,7 @@ use TMCms\Traits\singletonOnlyInstanceTrait;
 class Messages
 {
     const ALERT_SESSION_KEY = 'cms_alerts';
+    const ALERT_SESSION_KEY_FRONT = 'flash_alerts';
     const TOASTR_MESSAGE_COLOR_BROWSER = 0;
     const TOASTR_MESSAGE_COLOR_GREEN = 1;
     const TOASTR_MESSAGE_COLOR_RED = 2;
@@ -137,43 +138,53 @@ class Messages
      */
     public static function sendFlashAlert(string $message)
     {
+        $key = self::getInstance()->getFlashAlertsSessionKey();
+
         // Create Session key
-        if (!isset($_SESSION[self::ALERT_SESSION_KEY])) {
-            $_SESSION[self::ALERT_SESSION_KEY] = '';
+        if (!isset($_SESSION[$key])) {
+            $_SESSION[$key] = '';
         }
 
         // Get existing messages
-        $messages = @json_decode($_SESSION[self::ALERT_SESSION_KEY]);
-        if (!$messages) {
-            $messages = [];
-        }
+        $messages = self::getInstance()->getFlashAlerts();
 
         // Add new to the list
         $messages[] = $message;
 
         // Encode to make it string
-        $_SESSION[self::ALERT_SESSION_KEY] = json_encode($messages);
+        $_SESSION[$key] = json_encode($messages);
     }
 
     public static function flushSessionAlerts()
     {
-
-        if (!isset($_SESSION[self::ALERT_SESSION_KEY]) || !$_SESSION[self::ALERT_SESSION_KEY]) {
-            return;
-        }
-
-        // Get existing messages
-        $messages = @json_decode($_SESSION[self::ALERT_SESSION_KEY]);
-        if (!$messages || !is_array($messages)) {
-            return;
-        }
+        $key = self::getInstance()->getFlashAlertsSessionKey();
 
         // Add to alerts
-        foreach ($messages as $message) {
+        foreach (self::getInstance()->getFlashAlerts() as $message) {
             BreadCrumbs::getInstance()->addAlerts($message);
         }
 
         // Reset messages
-        $_SESSION[self::ALERT_SESSION_KEY] = '';
+        $_SESSION[$key] = '';
+    }
+
+    public function getFlashAlertsSessionKey(): string {
+        return MODE === 'cms' ? self::ALERT_SESSION_KEY : self::ALERT_SESSION_KEY_FRONT;
+    }
+
+    public function getFlashAlerts() {
+        $key = $this->getFlashAlertsSessionKey();
+
+        if (!isset($_SESSION[$key]) || !$_SESSION[$key]) {
+            return [];
+        }
+
+        // Get existing messages
+        $messages = @json_decode($_SESSION[$key]);
+        if (!$messages || !is_array($messages)) {
+            return [];
+        }
+
+        return $messages;
     }
 }
