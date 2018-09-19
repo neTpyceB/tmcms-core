@@ -8,6 +8,7 @@ use TMCms\Config\Constants;
 use TMCms\Config\Settings;
 use TMCms\Files\Finder;
 use TMCms\Files\MimeTypes;
+use TMCms\Gdpr\Gdpr;
 use TMCms\Traits\singletonOnlyInstanceTrait;
 
 defined('INC') or exit;
@@ -424,7 +425,7 @@ class PageHead
                 <?php
             endif;
 
-            if(!class_exists('\TMCms\Modules\Gdpr\ModuleGdpr') || \TMCms\Modules\Gdpr\ModuleGdpr::isAllowedCookies()) {
+            if(Gdpr::isAllowedCookies()) {
                 // Google Analytics
             if ($ga = Settings::get('google_analytics_code')): ?>
                 <script>
