@@ -118,7 +118,7 @@ class Languages
     public static function exists($short)
     {
         // Check if language is restricted by domain middleware
-        if (self::$__domain_restricted_languages && !isset(self::$__domain_restricted_languages[$short])) {
+        if (self::$__domain_restricted_languages && !in_array($short, self::$__domain_restricted_languages)) {
             return false;
         }
 
