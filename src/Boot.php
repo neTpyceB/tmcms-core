@@ -226,10 +226,20 @@ if (strlen(SELF) > 2000 || stripos(SELF, 'eval(') !== false || stripos(SELF, 'CO
 }
 
 // Constants from server variables
-define('HOST', mb_strtolower(trim($_SERVER['HTTP_HOST'])));
+if(!empty($_SERVER['HTTP_ORIGIN'])){
+    @list($protocol, $host) = explode('://', $_SERVER['HTTP_ORIGIN']);
+    define('HOST', mb_strtolower(trim($host)));
+    define('IS_SSL', $protocol == 'https');
+    define('CFG_PROTOCOL', $protocol);
+}else{
+    define('HOST', mb_strtolower(trim($_SERVER['HTTP_HOST'])));
+    define('IS_SSL', isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']);
+    define('CFG_PROTOCOL', 'http' . (IS_SSL ? 's' : ''));
+}
+
 define('REF', $_SERVER['HTTP_REFERER'] ?? NULL);
 define('QUERY', $_SERVER['REDIRECT_QUERY_STRING'] ?? $_SERVER['QUERY_STRING']);
-define('SELF_WO_QUERY', rtrim((string)(QUERY ? substr(SELF, 0, -strlen(QUERY) - 1) : SELF), '?'));
+define('SELF_WO_QUERY', rtrim((string)(QUERY && strpos(SELF, '?')!==false ? substr(SELF, 0, -strlen(QUERY) - 1) : SELF), '?'));
 define('IP', $_SERVER['REMOTE_ADDR']);
 define('IP_LONG', sprintf('%u', ip2long(IP)));
 define('USER_AGENT', $_SERVER['HTTP_USER_AGENT']);
@@ -242,8 +252,6 @@ define('REQUEST_METHOD', $_SERVER['REQUEST_METHOD'] ?? 'GET');
 define('IS_AJAX_REQUEST', (int)(isset($_REQUEST['ajax']) || (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest')));
 
 // Website base url with protocol
-define('IS_SSL', isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']);
-define('CFG_PROTOCOL', 'http' . (IS_SSL ? 's' : ''));
 define('BASE_URL', CFG_PROTOCOL . '://' . HOST);
 
 // This may be already defined in boot file specially for project
