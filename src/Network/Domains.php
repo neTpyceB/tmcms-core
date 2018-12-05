@@ -50,10 +50,14 @@ class Domains
             return '';
         }
 
-        $zone = '.' . $parts[0];
+        if(count($parts)==1){
+            $domain = $parts[0];
+        }else {
+            $zone = '.' . $parts[0];
 
-        // Save parsed url and found zone
-        $domain = substr($host, 0, -strlen($zone));
+            // Save parsed url and found zone
+            $domain = substr($host, 0, -strlen($zone));
+        }
 
         return self::$cached_url_domains[$url] = $domain;
     }

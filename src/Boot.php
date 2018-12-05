@@ -162,21 +162,6 @@ if (session_status() !== PHP_SESSION_ACTIVE && !headers_sent()) {
     session_start();
 }
 
-// Every time we start Session - give it a unique name for security
-if (empty($_SESSION['__session_name_validated'])) {
-    $random_cookie_name = function () {
-        $length = random_int(16, 32);
-        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        $randomString = '';
-        for ($i = 0; $i < $length; $i++) {
-            $randomString .= $characters[random_int(0, strlen($characters) - 1)];
-        }
-        return $randomString;
-    };
-    ini_set('session.name', $random_cookie_name());
-    $_SESSION['__session_name_validated'] = 1;
-}
-
 // Http auth for PHP-CGI mode
 if (isset($_SERVER['HTTP_AUTHORIZATION']) && !isset($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW'])) {
     $tmp = explode(':', base64_decode(substr($_SERVER['HTTP_AUTHORIZATION'], 6)));

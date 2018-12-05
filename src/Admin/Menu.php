@@ -114,7 +114,7 @@ class Menu
                                 <input id="menu_search_input" autofocus class="form-control" placeholder="Search..."
                                        onkeyup="search_in_main_menu();">
                                 <span class="input-group-btn">
-                                    <a href="javascript:" class="btn submit"><i class="icon-magnifier"></i></a>
+                                    <a href="javascript:" class="btn submit"><i class="cms-icon-magnifier"></i></a>
                                 </span>
                             </div>
                         </div>
@@ -137,7 +137,7 @@ class Menu
                             <li class="<?= P == $k ? 'active open' : '' ?>">
                                 <a href="#">
                                     <?php if (isset($v['icon'])): ?>
-                                        <i class="icon-<?= $v['icon'] ?>"></i>
+                                        <i class="cms-icon-<?= $v['icon'] ?>"></i>
                                     <?php endif; ?>
                                     <span class="title"><?= __($v['title']) ?></span>
                                     <?php if (P == $k): ?>
@@ -157,7 +157,7 @@ class Menu
                                             <li class="<?= (P == $k && P_M == $k_in) ? 'active' : '' ?>">
                                                 <a href="?p=<?= $k . '&do=' . $k_in ?>">
                                                     <?php if (isset($v_in['icon'])): ?>
-                                                        <i class="icon-<?= $v_in['icon'] ?>"></i>
+                                                        <i class="cms-icon-<?= $v_in['icon'] ?>"></i>
                                                     <?php endif; ?>
                                                     <?= __($v_in['title']) ?>
                                                     <?php if (isset($this->menu_labels[$k][$k_in])): ?>
@@ -424,7 +424,7 @@ class Menu
                     <li class="dropdown dropdown-extended dropdown-home" id="header_home_bar">
                         <a href="/" target="_blank" class="dropdown-toggle" data-hover="dropdown"
                            data-close-others="true">
-                            <i class="icon-globe"></i>
+                            <i class="cms-icon-globe"></i>
                         </a>
                     </li>
                     <?php if (count($languages) > 1): ?>
@@ -461,7 +461,7 @@ class Menu
                         <li class="dropdown dropdown-extended dropdown-notification" id="header_notification_bar">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown"
                                data-close-others="true">
-                                <i class="icon-bell"></i>
+                                <i class="cms-icon-bell"></i>
                                 <span class="badge badge-default"><?= count($notifications); ?></span>
                             </a>
                             <ul class="dropdown-menu">
@@ -499,7 +499,7 @@ class Menu
                         <li class="dropdown dropdown-extended dropdown-inbox" id="header_inbox_bar">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown"
                                data-close-others="true">
-                                <i class="icon-envelope-open"></i>
+                                <i class="cms-icon-envelope-open"></i>
                                 <span class="badge badge-default"><?= count($messages); ?></span>
                             </a>
                             <ul class="dropdown-menu">
@@ -551,30 +551,30 @@ class Menu
                         <ul class="dropdown-menu">
                             <li>
                                 <a href="?p=users&do=users_edit&id=<?= USER_ID ?>">
-                                    <i class="icon-user"></i> My Profile
+                                    <i class="cms-icon-user"></i> My Profile
                                 </a>
                             </li>
                             <li>
                                 <a href="?p=home&do=notifications">
-                                    <i class="icon-envelope-open"></i>My notifications
+                                    <i class="cms-icon-envelope-open"></i>My notifications
                                     <span class="badge badge-danger"> <?= count($notifications) ?></span>
                                 </a>
                             </li>
                             <li class="divider"></li>
                             <li>
                                 <a href="#" onclick="clipboard_forms.copy_page_forms(); return false;">
-                                    <i class="icon-cloud-download"></i>Copy form data
+                                    <i class="cms-icon-cloud-download"></i>Copy form data
                                 </a>
                             </li>
                             <li>
                                 <a href="#" onclick="clipboard_forms.paste_page_forms(); return false;">
-                                    <i class="icon-cloud-upload"></i>Paste form data
+                                    <i class="cms-icon-cloud-upload"></i>Paste form data
                                 </a>
                             </li>
                             <li class="divider"></li>
                             <li>
                                 <a href="?p=home&do=_exit" onclick="return confirm('<?= __('Are you sure?') ?>');">
-                                    <i class="icon-key"></i> Log Out
+                                    <i class="cms-icon-key"></i> Log Out
                                 </a>
                             </li>
                         </ul>
@@ -601,7 +601,7 @@ class Menu
         ?>
         <li class="dropdown dropdown-extended dropdown-notification">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
-                <i class="icon-question"></i>
+                <i class="cms-icon-question"></i>
                 <span class="badge <?= $this->critical_help_texts ? "badge-danger" : "badge-default" ?>"><?= count($this->help_texts); ?></span>
             </a>
             <ul class="dropdown-menu">

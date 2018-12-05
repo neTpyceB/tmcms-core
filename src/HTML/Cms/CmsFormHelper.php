@@ -30,12 +30,15 @@ use TMCms\Strings\Converter;
 
 /**
  * Class CmsFormHelper
+ *
  * @package TMCms\HTML\Cms
  */
 class CmsFormHelper {
-    const FIELD_TYPE_FILE = 'file';
-    const FIELD_TYPE_HTML = 'html';
-    const FIELD_TYPE_ROW = 'row';
+    public const FIELD_TYPE_FILE = 'file';
+    public const FIELD_TYPE_HTML = 'html';
+    public const FIELD_TYPE_NUMBER = 'number';
+    public const FIELD_TYPE_TEXT = 'text';
+    public const FIELD_TYPE_ROW = 'row';
 
     /**
      * @param $table
@@ -80,6 +83,10 @@ class CmsFormHelper {
 
         // Generate form
         $form = new CmsForm;
+
+        if (isset($params['method'])) {
+            $form->setMethod($params['method']);
+        }
 
         if (!isset($params['action'])) {
             $tmp = $_GET;
@@ -233,7 +240,7 @@ class CmsFormHelper {
                     $cms_field = CmsInputEmail::getInstance($key);
                 } elseif ($field['type'] == 'textarea' || $field['type'] == 'text') {
                     $cms_field = CmsTextarea::getInstance($key);
-                } elseif ($field['type'] == 'number' || $field['type'] == 'digit' || $field['type'] == 'int') {
+                } elseif ($field['type'] == self::FIELD_TYPE_NUMBER || $field['type'] == 'digit' || $field['type'] == 'int') {
                     $cms_field = CmsInputNumber::getInstance($key);
                 } elseif ($field['type'] == 'datalist') {
                     $cms_field = CmsInputDataList::getInstance($key);
@@ -418,6 +425,9 @@ class CmsFormHelper {
                     if (isset($field['disabled'])) {
                         $cms_field->setDisabled();
                     }
+                    if(isset($field['show_helper'])){
+                        $cms_field->enableHelperbox();
+                    }
 
                     // Editors
                     if (isset($field['edit'])) {
@@ -533,7 +543,7 @@ class CmsFormHelper {
                         if (isset($field['validate']['minlength']) || in_array('minlength', $field['validate'], true)) {
                             $cms_field->validateMinLength($field['validate']['minlength']);
                         }
-                        if (isset($field['validate']['maxlength']) || in_array('maxlength', $field['validate'], true)) {
+                            if (isset($field['validate']['maxlength']) || in_array('maxlength', $field['validate'], true)) {
                             $cms_field->validateMaxLength($field['validate']['maxlength']);
                         }
                     }

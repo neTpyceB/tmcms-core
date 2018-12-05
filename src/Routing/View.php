@@ -9,7 +9,7 @@ defined('INC') or exit;
 /**
  * Class View
  */
-class View
+class View extends MVC
 {
     /**
      * @var MVC $mvc_instance

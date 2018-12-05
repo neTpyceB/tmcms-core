@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace TMCms\Log;
 
@@ -14,7 +15,7 @@ class BatchLogger implements ILogger
     /**
      * @var array
      */
-    protected $stringBuffer = array();
+    protected $stringBuffer = [];
     /**
      * @var string
      */
@@ -30,7 +31,7 @@ class BatchLogger implements ILogger
      */
     public function write($str = '', $flag = ILogger::WRITE_LOG)
     {
-        $str = date("d-m-Y H:i:s") . " #{$this->indent}# : {$str}";
+        $str = date('d-m-Y H:i:s:u') . " | {$flag} | #{$this->indent}#: {$str}";
         $this->stringBuffer[] = $str;
     }
 
@@ -39,7 +40,7 @@ class BatchLogger implements ILogger
      */
     public function log($str = '')
     {
-        $this->write($str);
+        $this->write($str, self::WRITE_LOG);
     }
 
     /**
@@ -47,7 +48,7 @@ class BatchLogger implements ILogger
      */
     public function err($str = '')
     {
-        $this->log($str);
+        $this->write($str, self::WRITE_ERR);
     }
 
     /**
@@ -55,7 +56,7 @@ class BatchLogger implements ILogger
      */
     public function startLog()
     {
-        $this->stringBuffer = array();
+        $this->stringBuffer = [];
     }
 
     /**
@@ -63,11 +64,16 @@ class BatchLogger implements ILogger
      */
     public function endLog()
     {
-        if (!file_exists(DIR_FRONT_LOGS)) {
-            FileSystem::mkDir(DIR_FRONT_LOGS);
+        // Create log directory
+        if (!file_exists(DIR_FRONT_LOGS . $this->file)) {
+            FileSystem::mkDir(\pathinfo(DIR_FRONT_LOGS . $this->file, \PATHINFO_DIRNAME));
+        }
+        // Create log file
+        if (!file_exists(DIR_FRONT_LOGS . $this->file)) {
+            \touch(DIR_FRONT_LOGS . $this->file);
         }
 
-        if (count($this->stringBuffer)) {
+        if (\count($this->stringBuffer)) {
             error_log(rtrim(join(PHP_EOL, $this->stringBuffer), PHP_EOL) . PHP_EOL, 3, DIR_FRONT_LOGS . $this->file);
         }
     }
@@ -90,4 +96,4 @@ class BatchLogger implements ILogger
         $this->indent = $indent;
     }
 
-} 
+}

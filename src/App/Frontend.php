@@ -119,7 +119,7 @@ class Frontend
         // Script for sending JS errors if not disabled. System sends JS error to support email
         if (Settings::isProductionState() && !Settings::get('do_not_send_js_errors')) {
             PageHead::getInstance()
-                ->addJsUrl('send_error.min.js')
+                ->addJsUrl('scripts/send_error.min.js')
                 ->addJs('register_js_error.ini(\'' . DIR_CMS_URL . '\');');
         }
 

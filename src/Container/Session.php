@@ -19,4 +19,16 @@ class Session extends Base
     {
         parent::__construct($_SESSION);
     }
+
+    /**
+     * @param string $key
+     * @param string $value
+     * @return $this
+     */
+    public function setValue(string $key, $value)
+    {
+        $_SESSION[$key] = $value;
+
+        return parent::setValue($key, $value);
+    }
 }

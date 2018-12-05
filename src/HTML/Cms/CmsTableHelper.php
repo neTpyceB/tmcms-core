@@ -23,7 +23,15 @@ use TMCms\HTML\Cms\Filter\Text;
 use TMCms\Orm\EntityRepository;
 use TMCms\Strings\Converter;
 
+/**
+ * Class CmsTableHelper
+ *
+ * @package TMCms\HTML\Cms
+ */
 class CmsTableHelper {
+    public const TYPE_CHECKBOX = 'checkbox';
+    public const TYPE_ACTIVE = 'active';
+
     public static function outputTable(array $params) {
         // Check data is supplied
         if (!isset($params['data'])) {
@@ -230,10 +238,10 @@ class CmsTableHelper {
                 case 'view':
                     $column = ColumnView::getInstance($column_key);
                     break;
-                case 'checkbox':
+                case self::TYPE_CHECKBOX:
                     $column = ColumnCheckbox::getInstance($column_key);
                     break;
-                case 'active':
+                case self::TYPE_ACTIVE:
                     $column = ColumnActive::getInstance($column_key);
                     break;
                 case 'delete':
@@ -473,6 +481,11 @@ class CmsTableHelper {
                     // Like search
                     if (isset($filter_data['like'])) {
                         $filter->enableActAsLike();
+                    }
+
+                    // HTML in column value
+                    if (isset($filter_data['html']) && $filter_data['html']) {
+                        $filter->allowHtml();
                     }
 
                     if ($filter) {

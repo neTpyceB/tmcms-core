@@ -691,11 +691,12 @@ class SQL extends SqlDao
     /**
      * @param $table
      * @param string $column
-     * @return Iterator
+     *
+     * @return array
      */
-    public static function getColumnsComments($table, $column = ''): Iterator
+    public static function getColumnsComments($table, $column = ''): array
     {
-        return self::q_assoc_iterator('SELECT
+        return self::q_assoc('SELECT
 COLUMN_COMMENT, COLUMN_NAME
 FROM
     INFORMATION_SCHEMA.COLUMNS

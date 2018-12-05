@@ -1,16 +1,18 @@
 <?php
+declare(strict_types=1);
 
 namespace TMCms\Routing;
 
+use ReflectionClass;
 use TMCms\Templates\PageHead;
 use TMCms\Templates\PageTail;
 
-defined('INC') or exit;
+\defined('INC') or exit;
 
 /**
  * Class MVC
  */
-class MVC
+class MVC extends SharedMvcAliasMethods
 {
     /**
      * @var array
@@ -66,7 +68,7 @@ class MVC
     /**
      * @return PageHead
      */
-    public function getHead()
+    public function getHead(): PageHead
     {
         return $this->page_head;
     }
@@ -74,7 +76,7 @@ class MVC
     /**
      * @return PageTail
      */
-    public function getTail()
+    public function getTail(): PageTail
     {
         return $this->page_tail;
     }
@@ -82,7 +84,7 @@ class MVC
     /**
      * @return string
      */
-    public function getController()
+    public function getController(): string
     {
         return $this->controller;
     }
@@ -91,7 +93,7 @@ class MVC
      * @param string $controller
      * @return $this
      */
-    public function setController($controller)
+    public function setController($controller): self
     {
         $this->controller = $controller;
 
@@ -121,7 +123,7 @@ class MVC
      *
      * @return $this
      */
-    public function outputController()
+    public function outputController(): self
     {
         // Do nothing
         if (!$this->controller) {
@@ -140,6 +142,15 @@ class MVC
 
             $controller = new $this->controller($this);
             // Set up shared data
+            // Using autowiring for DI
+            $reflector = new ReflectionClass($controller);
+            // Get arguments
+            $controller_arguments = $reflector->getMethod('__construct')->getParameters();
+            foreach ($controller_arguments as $argumentIndex => $constructorArgument) {
+                // TODO autowire and create dependency container to get classes
+                $argument_class_hint = $constructorArgument->getType();
+            }
+
             $controller->setUp();
             self::$controllers[$this->controller] = $controller;
         }
@@ -283,7 +294,7 @@ class MVC
     /**
      * @return array
      */
-    public function getData()
+    public function getData(): array
     {
         return $this->data;
     }

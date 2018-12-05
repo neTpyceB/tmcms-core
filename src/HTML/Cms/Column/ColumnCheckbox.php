@@ -29,18 +29,6 @@ class ColumnCheckbox extends Column
     }
 
     /**
-     * @param string $onclick
-     *
-     * @return $this
-     */
-    public function setOnclick(string $onclick)
-    {
-        $this->onclick = $onclick;
-
-        return $this;
-    }
-
-    /**
      * @param int    $row
      * @param array  $row_data
      * @param Linker $linker
