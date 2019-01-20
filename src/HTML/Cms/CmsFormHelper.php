@@ -34,6 +34,7 @@ use TMCms\Strings\Converter;
  * @package TMCms\HTML\Cms
  */
 class CmsFormHelper {
+    public const FIELD_TYPE_CHECKBOX = 'checkbox';
     public const FIELD_TYPE_FILE = 'file';
     public const FIELD_TYPE_HTML = 'html';
     public const FIELD_TYPE_NUMBER = 'number';
@@ -228,7 +229,7 @@ class CmsFormHelper {
                     }
                 } elseif ($field['type'] == 'random') {
                     $cms_field = CmsInputTextRandom::getInstance($key);
-                } elseif ($field['type'] == 'checkbox') {
+                } elseif ($field['type'] == self::FIELD_TYPE_CHECKBOX) {
                     $cms_field = CmsCheckbox::getInstance($key);
                     // checked box
                     if (isset($field['value']) && $field['value']) {
