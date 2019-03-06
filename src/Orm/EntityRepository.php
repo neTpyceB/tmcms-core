@@ -848,9 +848,9 @@ FROM `' . $this->getDbTableName() . '`
     /**
      * @param $field
      *
-     * @return int
+     * @return float
      */
-    public function getSumOfOneField($field): int
+    public function getSumOfOneField($field): float
     {
         $sum = 0;
 
@@ -858,7 +858,7 @@ FROM `' . $this->getDbTableName() . '`
             $sum += $v[$field];
         }
 
-        return $sum;
+        return (float)$sum;
     }
 
     public function addGroupBy($field, $table = '') {

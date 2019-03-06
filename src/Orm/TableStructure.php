@@ -16,6 +16,7 @@ class TableStructure {
         self::FIELD_TYPE_CHAR => self::FIELD_TYPE_CHAR,
         self::FIELD_TYPE_FLOAT_DECIMAL => self::FIELD_TYPE_FLOAT_DECIMAL,
         self::FIELD_TYPE_INDEX => self::FIELD_TYPE_INDEX,
+        self::FIELD_TYPE_TEXT => self::FIELD_TYPE_TEXT,
         self::FIELD_TYPE_TRANSLATION => self::FIELD_TYPE_TRANSLATION,
         self::FIELD_TYPE_VARCHAR_255 => self::FIELD_TYPE_VARCHAR_255,
         self::FIELD_TYPE_UNSIGNED_INTEGER => self::FIELD_TYPE_UNSIGNED_INTEGER,
@@ -25,6 +26,7 @@ class TableStructure {
     const FIELD_TYPE_CHAR = 'char';
     const FIELD_TYPE_FLOAT_DECIMAL = 'float';
     const FIELD_TYPE_INDEX = 'index'; // Int non-null with additional key index
+    const FIELD_TYPE_TEXT = 'text';
     const FIELD_TYPE_TRANSLATION = 'translation';
     const FIELD_TYPE_VARCHAR_255 = 'varchar';
     const FIELD_TYPE_UNSIGNED_INTEGER = 'unsigned_integer'; // ts, order,
@@ -163,7 +165,7 @@ class TableStructure {
                 $res = '`'. $field['name'] .'` char('. $field['length'] .') NULL';
                 break;
 
-            case 'text':
+            case self::FIELD_TYPE_TEXT:
                 // Large textares
                 $res = '`'. $field['name'] .'` text NULL';
                 break;
