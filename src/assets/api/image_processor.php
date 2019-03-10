@@ -350,7 +350,7 @@ if (class_exists('\Tinify\Tinify') && !empty($tinypng) && !empty($tinypng['key']
             /** @var Entity $tini */
             $tini = \TMCms\Modules\Tinify\Entity\TinifyEntityRepository::getInstance()->setWherePath(QUERY)->getFirstObjectFromCollection();
             if (!empty($tini)) {
-                $tini->loadDataFromArray(['exception' => get_class($e), 'attempt_date' => date("Y-m-d H:i:s")])->save();
+                $tini->loadDataFromArray(['exception' => get_class($e).': '.$e->getMessage(), 'attempt_date' => date("Y-m-d H:i:s")])->save();
             } else {
                 $tini = new \TMCms\Modules\Tinify\Entity\TinifyEntity();
                 $tini->loadDataFromArray(['path' => QUERY, 'exception' => get_class($e)])->save();
