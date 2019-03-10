@@ -682,7 +682,7 @@ class CmsTable
             // Special for ColumnInput, using in Cmsform
             if ($this->show_add_row): ?>
                 <div style="text-align: left; width: <?= $this->width ?>; margin-top: 10px">
-                    <var class="btn btn-info icon-plus" onclick="table_form<?= $this->id ?>.add_row();"></var>
+                    <var class="btn btn-info icon-plus" onclick="table_form<?= $this->id ?>.add_row();">Add row</var>
                 </div>
             <?php endif;
         }

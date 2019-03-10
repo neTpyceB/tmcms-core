@@ -240,6 +240,7 @@ class CmsForm extends Form
      */
     private function parseBracketData($value): string
     {
+        $value = (string)$value;
         // Maybe we do not need to parse anything
         if (strpos($value, '{%') === false) {
             return $value;

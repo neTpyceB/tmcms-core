@@ -395,7 +395,7 @@ class Converter
             $big = $number[0];
             $small = $number[1];
 
-            while (strlen($big)) {
+            while (strlen((string)$big)) {
                 $bigs[] = substr($big, -3, 3);
                 $big = substr($big, 0, -3);
             }
@@ -476,7 +476,7 @@ class Converter
             $big = $number[0];
             $small = $number[1];
 
-            while (strlen($big)) {
+            while (strlen((string)$big)) {
                 $bigs[] = substr($big, -3, 3);
                 $big = substr($big, 0, -3);
             }

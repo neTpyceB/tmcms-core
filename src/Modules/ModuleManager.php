@@ -3,6 +3,7 @@
 namespace TMCms\Modules;
 
 use TMCms\Admin\Menu;
+use TMCms\Strings\Converter;
 
 defined('INC') or exit;
 
@@ -19,7 +20,7 @@ class ModuleManager
     public static function requireModule($module)
     {
         // Check for module itself
-        $file_path = DIR_MODULES . $module . '/' . 'Module' . ucfirst($module) . '.php';
+        $file_path = DIR_MODULES . $module . '/' . 'Module' . Converter::toCamelCase($module) . '.php';
         if (file_exists($file_path)) {
             require_once $file_path;
 

@@ -778,7 +778,7 @@ FROM `' . $this->getDbTableName() . '`
      * @param string $key_field
      * @return array
      */
-    public function getPairs($value_field, $key_field = 'id'): array
+    public function getPairs($value_field = 'id', $key_field = 'id'): array
     {
         $ent = $this->getFirstObjectFromCollection();
         $key_method = 'get' . ucfirst($key_field);
@@ -848,9 +848,9 @@ FROM `' . $this->getDbTableName() . '`
     /**
      * @param $field
      *
-     * @return int
+     * @return float
      */
-    public function getSumOfOneField($field): int
+    public function getSumOfOneField($field): float
     {
         $sum = 0;
 
@@ -858,7 +858,7 @@ FROM `' . $this->getDbTableName() . '`
             $sum += $v[$field];
         }
 
-        return $sum;
+        return (float)$sum;
     }
 
     public function addGroupBy($field, $table = '') {
