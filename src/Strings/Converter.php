@@ -364,8 +364,8 @@ class Converter
             if ($currency == 'eur') {
                 $language['parts'][0] = 'centi';
                 $language['part'][0] = 'cents';
-                $language['parts'][2] = 'euro';
-                $language['part'][2] = 'euro';
+                $language['parts'][2] = 'eiro';
+                $language['part'][2] = 'eiro';
             } elseif ($currency == 'ls') {
                 $language['parts'][0] = 'santīmi';
                 $language['part'][0] = 'santīms';
