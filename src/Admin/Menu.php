@@ -88,21 +88,67 @@ class Menu
         ?>
         <script>
             function search_in_main_menu() {
-                var $all_elements = $('.page-sidebar-menu li ul.sub-menu li a');
-                var searched_value = $('#menu_search_input').val();
+                var $all_sub_elements = $('.page-sidebar-menu li ul.sub-menu li a');
+                var $all_main_elements = $('.page-sidebar-menu li a span.title');
 
-                $all_elements.css({'color': '#b4bcc8'}).closest('li').closest('ul').hide().closest('li').removeClass('open');
+                var searched_value = $('#menu_search_input').val().toLowerCase();
 
+                var class_found = 'js-search-found-element';
+
+                // Hide all sublinks and open where found
+                $all_sub_elements.css({'color': '#b4bcc8'}).removeClass(class_found).hide().closest('li').closest('ul').hide().closest('li').removeClass('open');
+
+                $all_main_elements.css({'color': '#b4bcc8'}).removeClass(class_found);
+
+                // Look main links
                 if (searched_value !== '') {
-                    $all_elements.each(function (k, v) {
+                    $all_main_elements.each(function (k, v) {
                         var $el = $(v);
-                        var value_of_item = $el.text();
+                        var value_of_item = $el.text().toLowerCase();
 
                         if (value_of_item.indexOf(searched_value) !== -1) {
-                            $el.css({'color': 'yellow'}).closest('li').closest('ul').show().closest('li').addClass('open');
+                            $el.css({'color': 'yellow'}).addClass(class_found);
                         }
                     });
                 }
+
+                // Look inside, sublinks
+                if (searched_value !== '') {
+                    $all_sub_elements.each(function (k, v) {
+                        var $el = $(v);
+                        var value_of_item = $el.text().toLowerCase();
+
+                        if (value_of_item.indexOf(searched_value) !== -1) {
+                            $el.css({'color': 'yellow'}).addClass(class_found).closest('li').closest('ul').show().closest('li').addClass('open');
+                        }
+                    });
+                }
+
+                // Show all found sublinks
+                $all_sub_elements.filter('.' + class_found).show();
+
+                // Hide main links where no sublinks found and if not self found
+                $all_main_elements.each(function (k, v) {
+                    var $el = $(v);
+                    var $el_li = $el.closest('li');
+
+                    var should_hide = true;
+                    // If have own class
+                    if ($el.hasClass(class_found)) {
+                        should_hide = false;
+                    }
+
+                    // Look subelements
+                    if ($el_li.find('.sub-menu .'+ class_found).length > 0) {
+                        should_hide = false;
+                    }
+
+                    // Hide where not found
+                    $el_li.show();
+                    if (should_hide) {
+                        $el_li.hide();
+                    }
+                });
             }
         </script>
         <div class="page-sidebar-wrapper">
@@ -134,7 +180,7 @@ class Menu
                                 $v['title'] = $k;
                             }
                             ?>
-                            <li class="<?= P == $k ? 'active open' : '' ?>">
+                            <li class="main-menu<?= P == $k ? ' active open' : '' ?>">
                                 <a href="#">
                                     <?php if (isset($v['icon'])): ?>
                                         <i class="cms-icon-<?= $v['icon'] ?>"></i>
