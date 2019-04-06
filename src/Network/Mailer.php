@@ -193,7 +193,7 @@ class Mailer
         $so = count($this->recipient_emails);
 
         for ($i = 0; $i < $so; ++$i) {
-            mail($this->recipient_emails[$i]['email'], '=?utf-8?B?' . base64_encode($this->subject) . '?=', wordwrap($this->message_body, 70) . $this->message_attachment, implode("\n", $this->email_headers) . ($this->recipient_emails[$i]['name'] ? "\nTo: " . $this->mail_head_param_encode($this->recipient_emails[$i]['name']) . ' <' . $this->recipient_emails[$i]['email'] . ">\n" : ''), '-r ' . $this->sender_name);
+            mail($this->recipient_emails[$i]['email'], '=?utf-8?B?' . base64_encode($this->subject) . '?=', $this->message_body . $this->message_attachment, implode("\n", $this->email_headers) . ($this->recipient_emails[$i]['name'] ? "\nTo: " . $this->mail_head_param_encode($this->recipient_emails[$i]['name']) . ' <' . $this->recipient_emails[$i]['email'] . ">\n" : ''), '-r ' . $this->sender_name);
         }
     }
 
