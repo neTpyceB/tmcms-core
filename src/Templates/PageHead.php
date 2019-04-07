@@ -428,30 +428,14 @@ class PageHead
             if(Gdpr::isAllowedCookies()) {
                 // Google Analytics
             if ($ga = Settings::get('google_analytics_code')): ?>
+                <!-- Global site tag (gtag.js) - Google Analytics -->
+                <script async src="https://www.googletagmanager.com/gtag/js?id=UA-135498052-1"></script>
                 <script>
-                    (function (i, s, o, g, r, a, m) {
-                        i['GoogleAnalyticsObject'] = r;
-                        i[r] = i[r] || function () {
-                            (i[r].q = i[r].q || []).push(arguments)
-                        }, i[r].l = 1 * new Date();
-                        a = s.createElement(o),
-                            m = s.getElementsByTagName(o)[0];
-                        a.async = 1;
-                        a.src = g;
-                        m.parentNode.insertBefore(a, m)
-                    })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+                    window.dataLayer = window.dataLayer || [];
+                    function gtag(){dataLayer.push(arguments);}
+                    gtag('js', new Date());
 
-                    ga('create', 'UA-<?=$ga?>', 'auto');
-                    ga('require', 'displayfeatures');
-                    ga('send', 'pageview');
-
-                    /* Accurate bounce rate by time */
-                    if (!document.referrer ||
-                        document.referrer.split('/')[2].indexOf(location.hostname) != 0)
-                        setTimeout(function () {
-                            ga('send', 'event', 'New visitor', location.pathname);
-                        }, 15000);
-
+                    gtag('config', 'UA-<?= $ga ?>');
                 </script>
             <?php endif;
 
