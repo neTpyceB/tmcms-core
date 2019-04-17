@@ -29,8 +29,8 @@ class Entity extends AbstractEntity
     private $data = [];
     private $translation_data = [];
     private $insert_low_priority = false;
-    private $insert_delayed = false; // Auto use of htmlspecialchars for output
-    private $encode_special_chars_for_html = false;
+    private $insert_delayed = false;
+    private $encode_special_chars_for_html = false; // Auto use of htmlspecialchars for output
     private $field_callbacks = []; // Key used to encrypt and decrypt db data
     private $loaded_from_db = false;
 
@@ -691,11 +691,19 @@ class Entity extends AbstractEntity
 
     public function enableSavingWithLowPriority()
     {
+        if ($this->insert_delayed) {
+            throw new \RuntimeException('Can not use Low Priority when Delayed is enabled');
+        }
+
         $this->insert_low_priority = true;
     }
 
     public function enableSavingDelayedWithNoReturn()
     {
+        if ($this->insert_low_priority) {
+            throw new \RuntimeException('Can not use Delayed when Low Priority is enabled');
+        }
+
         $this->insert_delayed = true;
     }
 
@@ -747,6 +755,8 @@ class Entity extends AbstractEntity
 
     /**
      * If possible to find existing entry by all this fields than update but not save new
+     * Make sure to first load data before calling that method
+     *
      * @param array $check_fields that must be unique
      * @return $this
      */
