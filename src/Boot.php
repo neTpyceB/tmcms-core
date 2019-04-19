@@ -195,6 +195,9 @@ if (!isset($_SERVER['HTTP_USER_AGENT'])) {
 if (!isset($_SERVER['REQUEST_URI'])) {
     $_SERVER['REQUEST_URI'] = '/';
 }
+if (!isset($_SERVER['SERVER_PROTOCOL'])) {
+    $_SERVER['SERVER_PROTOCOL'] = 'HTTP/1.1';
+}
 if (!isset($_SERVER['REMOTE_ADDR']) || !preg_match('/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/', $_SERVER['REMOTE_ADDR'])) {
     $_SERVER['REMOTE_ADDR'] = '0.0.0.0';
 }
@@ -211,12 +214,12 @@ if (strlen(SELF) > 2000 || stripos(SELF, 'eval(') !== false || stripos(SELF, 'CO
 }
 
 // Constants from server variables
-if(!empty($_SERVER['HTTP_ORIGIN'])){
+if (!empty($_SERVER['HTTP_ORIGIN'])) {
     @list($protocol, $host) = explode('://', $_SERVER['HTTP_ORIGIN']);
     define('HOST', mb_strtolower(trim($host)));
     define('IS_SSL', $protocol == 'https');
     define('CFG_PROTOCOL', $protocol);
-}else{
+} else {
     define('HOST', mb_strtolower(trim($_SERVER['HTTP_HOST'])));
     define('IS_SSL', isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']);
     define('CFG_PROTOCOL', 'http' . (IS_SSL ? 's' : ''));
@@ -232,6 +235,7 @@ define('SERVER_IP', $_SERVER['SERVER_ADDR']);
 define('NOW', $_SERVER['REQUEST_TIME']);
 define('VISITOR_HASH', md5(IP . ':' . USER_AGENT));
 define('REQUEST_METHOD', $_SERVER['REQUEST_METHOD'] ?? 'GET');
+define('SERVER_PROTOCOL', $_SERVER['SERVER_PROTOCOL']);
 
 // Javascript AJAX or with supplied parameter
 define('IS_AJAX_REQUEST', (int)(isset($_REQUEST['ajax']) || (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest')));

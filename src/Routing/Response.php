@@ -33,7 +33,7 @@ class Response
     private function sendHeaders()
     {
         $status_string = Converter::headerHttpCodeToString($this->response_code);
-        header($_SERVER['SERVER_PROTOCOL'] . ' ' . $status_string, true, (int)$status_string);
+        header(SERVER_PROTOCOL . ' ' . $status_string, true, (int)$status_string);
     }
 
     /**
