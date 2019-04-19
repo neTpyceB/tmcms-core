@@ -38,10 +38,10 @@ class Backend
     private $no_menu;
     private $content = '';
 
-    public function __construct()
+    public function __construct(array $argv = [])
     {
         // Check background services
-        if (isset($_GET['cms_is_running_background']) && $_GET['cms_is_running_background'] == 1) {
+        if (isset($_GET['cms_is_running_background']) || (isset($argv[1]) && $argv[1] == 'cms_is_running_background')) {
             ServiceManager::checkNeeded();
             exit;
         }

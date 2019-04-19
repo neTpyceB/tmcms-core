@@ -9,7 +9,7 @@ sleep(2);
 
 $finish = time();
 
-$data = date('Y-m-d H:i:s', NOW) . ': Test service task. Run for: ' . ($finish - $start) . ' seconds.' . PHP_EOL . PHP_EOL;
+$data = date('Y-m-d H:i:s', NOW) . ': Test service task copy. Run for: ' . ($finish - $start) . ' seconds.' . PHP_EOL . PHP_EOL;
 
 FileSystem::mkDir(DIR_FRONT_LOGS);
 
