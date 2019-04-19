@@ -28,9 +28,9 @@ class ServiceManager
 
         /** @var ServiceEntity $service_entity */
         foreach ($services_collection->getAsArrayOfObjects() as $service_entity) {
-//            if (NOW - $service_entity->getLastTs() >= $service_entity->getPeriod()) {
+            if (NOW - $service_entity->getLastTs() >= $service_entity->getPeriod()) {
                 self::run($service_entity->getId());
-//            }
+            }
         }
     }
 
