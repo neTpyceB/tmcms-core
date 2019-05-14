@@ -37,7 +37,7 @@ class PageHead
         $rss = [],
         $favicon = [];
     private $html_tag_attributes = [
-        'lang:' . LNG
+        'lang:' . (LNG ? : '')
     ];
     private $body_tag_attributes = '';
     private $apple_touch_icon_url = '';

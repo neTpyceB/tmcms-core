@@ -82,10 +82,14 @@ class Backend
             $users_log->save();
         }
 
+        $lng = 'en';
+
         // Init page data
         if (Users::getInstance()->isLogged()) {
-            define('LNG', Users::getInstance()->getUserLng());
+            $lng = Users::getInstance()->getUserLng();
         }
+
+        define('LNG', $lng);
 
         $this->sendHeaders();
 
