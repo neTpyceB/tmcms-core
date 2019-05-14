@@ -36,7 +36,9 @@ class PageHead
         $js = [],
         $rss = [],
         $favicon = [];
-    private $html_tag_attributes = [];
+    private $html_tag_attributes = [
+        'lang:' . LNG
+    ];
     private $body_tag_attributes = '';
     private $apple_touch_icon_url = '';
     private $body_css_classes = [];
@@ -351,7 +353,7 @@ class PageHead
         if ($this->replace_for_standard_html_tag):
             echo $this->replace_for_standard_html_tag;
         else:
-            ?><html<?= ($this->html_tag_attributes ? ' ' . implode(' ', $this->html_tag_attributes) : '') ?>>
+            ?><html <?= implode(' ', $this->html_tag_attributes) ?>>
         <?php endif; ?>
         <head>
             <?php if (!Settings::get('do_not_expose_generator')): ?>
