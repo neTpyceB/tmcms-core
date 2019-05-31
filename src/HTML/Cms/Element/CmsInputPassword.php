@@ -23,6 +23,7 @@ class CmsInputPassword extends InputPassword {
         parent::__construct($name, $value, $id);
 
         $this->addCssClass('form-control');
+        $this->setRandomGenerator();
     }
 
     /**
@@ -53,6 +54,8 @@ class CmsInputPassword extends InputPassword {
      * @return string
      */
     public function __toString() {
-        return '<input'. $this->getCommonElementValidationAttributes() . ($this->isFieldRequired() ? ' required' : '') . $this->getCommonElementValidationAttributes() . ($this->reveal ? ' onfocus="this.type=\'text\'" onblur="this.type=\'password\'"': null) .' data-date-format="yyyy-mm-dd" type="password" '. $this->getAttributesString() .'>';
+        $helper = $this->getHelperbox();
+
+        return $this->js_function_for_random . '<table width="100%" cellpadding="0" cellspacing="0"><tr><td width="100%"><input'. $this->getCommonElementValidationAttributes() . ($this->isFieldRequired() ? ' required' : '') . $this->getCommonElementValidationAttributes() . ($this->reveal ? ' onfocus="this.type=\'text\'" onblur="this.type=\'password\'"': null) .' data-date-format="yyyy-mm-dd" type="password" '. $this->getAttributesString() .'></td><td valign="top"><input type="button" class="btn btn-info btn-outline" value="' . __('Random') . '" onclick="document.getElementById(\'' . $this->getId() . '\').value=random_for_input()"></td></td></tr></table>' . $helper;
     }
 }
