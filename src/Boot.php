@@ -23,6 +23,10 @@ defined('INC') or exit;
 if (!\defined('DIR_CMS')) {
     \define('DIR_CMS', DIR_BASE . 'cms');
 }
+
+// Configs
+\define('DIR_CONFIGS', DIR_BASE . 'configs/');
+
 \define('DIR_CMS_URL', '/' . substr(DIR_CMS, DIR_ROOT_PATH_LENGTH));
 
 // File cache
@@ -33,19 +37,16 @@ if (!\defined('DIR_CMS')) {
 \define('DIR_IMAGE_CACHE', DIR_BASE . 'cache_img/');
 \define('DIR_IMAGE_CACHE_URL', '/' . substr(DIR_IMAGE_CACHE, DIR_ROOT_PATH_LENGTH));
 
-// Configs
-\define('DIR_CONFIGS', DIR_BASE . 'configs/');
-
 // Vendor current folder
 \define('DIR_CMS_VENDOR', __DIR__ . '/..');
 
 // Backend images
 \define('DIR_CMS_IMAGES', substr(DIR_CMS_VENDOR, DIR_ROOT_PATH_LENGTH - 1) . '/assets/images/');
-\define('DIR_CMS_IMAGES_URL', DIR_CMS_IMAGES);
+\define('DIR_CMS_IMAGES_URL', '/' . substr(DIR_CMS_IMAGES, DIR_ROOT_PATH_LENGTH));
 
 // Backend scripts
 \define('DIR_CMS_SCRIPTS', substr(DIR_CMS_VENDOR, DIR_ROOT_PATH_LENGTH - 1) . '/assets/scripts/');
-\define('DIR_CMS_SCRIPTS_URL', DIR_CMS_SCRIPTS);
+\define('DIR_CMS_SCRIPTS_URL', '/' . substr(DIR_CMS_SCRIPTS, DIR_ROOT_PATH_LENGTH));
 
 // Translations
 \define('DIR_CMS_TRANSLATIONS', substr(DIR_CMS_VENDOR, DIR_ROOT_PATH_LENGTH - 1) . '/assets/translations/');
@@ -55,7 +56,7 @@ if (!\defined('DIR_CMS')) {
 
 // Ajax and API handlers
 \define('DIR_FRONT_API', DIR_FRONT . 'api/');
-\define('DIR_FRONT_API_URL', '/' . substr(DIR_FRONT_API, DIR_ROOT_PATH_LENGTH));
+\define('DIR_FRONT_API_URL', '/' . substr(DIR_FRONT_API, DIR_ROOT_PATH_LENGTH - 1));
 
 // Logs
 \define('DIR_FRONT_LOGS', DIR_FRONT . 'logs/');
@@ -527,6 +528,7 @@ $finder = Finder::getInstance();
 $finder
     ->addApiSearchPath(substr(__DIR__, $length_of_include_path) . '/assets/api/')
     ->addAssetsSearchPath(substr(__DIR__, $length_of_include_path) . '/assets/')
+    ->addAssetsSearchPath(substr(__DIR__, $length_of_include_path) . '/assets/scripts/')
     ->addAssetsSearchPath(DIR_CMS_SCRIPTS)
     ->addPluginsSearchPath(substr(__DIR__, $length_of_include_path) . '/assets/cms_plugins/')
     ->addServicesSearchPath(substr(__DIR__, $length_of_include_path) . '/assets/services/')
