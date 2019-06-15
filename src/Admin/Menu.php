@@ -95,34 +95,33 @@ class Menu
 
                 var class_found = 'js-search-found-element';
 
+                // If not value to search - show all
+                var show_all = !searched_value;
+
                 // Hide all sublinks and open where found
                 $all_sub_elements.css({'color': '#b4bcc8'}).removeClass(class_found).hide().closest('li').closest('ul').hide().closest('li').removeClass('open');
 
                 $all_main_elements.css({'color': '#b4bcc8'}).removeClass(class_found);
 
                 // Look main links
-                if (searched_value !== '') {
-                    $all_main_elements.each(function (k, v) {
-                        var $el = $(v);
-                        var value_of_item = $el.text().toLowerCase();
+                $all_main_elements.each(function (k, v) {
+                    var $el = $(v);
+                    var value_of_item = $el.text().toLowerCase();
 
-                        if (value_of_item.indexOf(searched_value) !== -1) {
-                            $el.css({'color': 'yellow'}).addClass(class_found);
-                        }
-                    });
-                }
+                    if (value_of_item.indexOf(searched_value) !== -1) {
+                        $el.css({'color': 'yellow'}).addClass(class_found);
+                    }
+                });
 
                 // Look inside, sublinks
-                if (searched_value !== '') {
-                    $all_sub_elements.each(function (k, v) {
-                        var $el = $(v);
-                        var value_of_item = $el.text().toLowerCase();
+                $all_sub_elements.each(function (k, v) {
+                    var $el = $(v);
+                    var value_of_item = $el.text().toLowerCase();
 
-                        if (value_of_item.indexOf(searched_value) !== -1) {
-                            $el.css({'color': 'yellow'}).addClass(class_found).closest('li').closest('ul').show().closest('li').addClass('open');
-                        }
-                    });
-                }
+                    if (value_of_item.indexOf(searched_value) !== -1) {
+                        $el.css({'color': 'yellow'}).addClass(class_found).closest('li').closest('ul').show().closest('li').addClass('open');
+                    }
+                });
 
                 // Show all found sublinks
                 $all_sub_elements.filter('.' + class_found).show();
@@ -149,6 +148,13 @@ class Menu
                         $el_li.hide();
                     }
                 });
+
+                if (show_all) {
+                    // Have to remove yellow color
+                    $all_sub_elements.css({'color': '#b4bcc8'});
+
+                    $all_main_elements.css({'color': '#b4bcc8'});
+                }
             }
         </script>
         <div class="page-sidebar-wrapper">
