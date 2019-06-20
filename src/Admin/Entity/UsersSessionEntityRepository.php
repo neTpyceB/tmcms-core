@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace TMCms\Admin\Entity;
 
 use TMCms\Orm\EntityRepository;
+use TMCms\Orm\TableStructure;
 
 /**
  * @method setWhereIpLong(string $ip_long)
@@ -18,17 +19,17 @@ class UsersSessionEntityRepository extends EntityRepository
     protected $table_structure = [
         'fields' => [
             'user_id' => [
-                'type' => 'index',
+                'type' => TableStructure::FIELD_TYPE_INDEX,
             ],
             'sid'     => [
-                'type'   => 'char',
+                'type'   => TableStructure::FIELD_TYPE_CHAR,
                 'length' => 32,
             ],
             'ip_long' => [
-                'type'     => 'ts',
+                'type'     => TableStructure::FIELD_TYPE_UNSIGNED_INTEGER,
             ],
             'ts'      => [
-                'type'     => 'ts',
+                'type'     => TableStructure::FIELD_TYPE_UNSIGNED_INTEGER,
             ],
         ],
     ];

@@ -103,6 +103,60 @@ class EntityRepository extends AbstractEntity implements IteratorAggregate, Coun
     }
 
     /**
+     * @return bool
+     */
+    public function validateFieldDataIsInCorrectFormat($field_name, $field_value): bool
+    {
+        $structure = $this->getTableStructure();
+
+        $field_definition = $structure['fields'][$field_name] ?? [];
+
+        $type = $field_definition['type'] ?? '';
+
+        $correct = true;
+
+        // No type defined - nothing to validate against
+        if (!$type) {
+            return $correct;
+        }
+
+        switch ($type) {
+            case TableStructure::FIELD_TYPE_INDEX:
+                // Check value is positive natural number
+                if (!\ctype_digit($field_value)) {
+                    $correct = false;
+                }
+                break;
+
+            case TableStructure::FIELD_TYPE_UNSIGNED_INTEGER:
+                // Check value is positive natural numberTableStructure::FIELD_TYPE_INDEX
+                if (!\ctype_digit($field_value)) {
+                    $correct = false;
+                }
+                break;
+
+            case TableStructure::FIELD_TYPE_VARCHAR_255:
+                // Check value is a string
+                if (!\is_string($field_value)) {
+                    $correct = false;
+                }
+
+                // Check max length
+                $length = $field_definition['length'] ?? 255;
+                if (\mb_strlen($field_value) > $length) {
+                    $correct = false;
+                }
+                break;
+
+            default:
+                // TODO uncomment when handlers for all field types will be added in this switch
+//                throw new \RuntimeException('Definition for field type "' . $type . '" not found for object '. \get_class($this));
+        }
+
+        return $correct;
+    }
+
+    /**
      * @param array $ids
      * @return $this
      */

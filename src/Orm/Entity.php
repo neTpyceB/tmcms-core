@@ -424,7 +424,7 @@ class Entity extends AbstractEntity
      */
     protected function beforeDelete()
     {
-
+        return $this;
     }
 
     /**
@@ -442,7 +442,7 @@ class Entity extends AbstractEntity
      */
     protected function afterDelete()
     {
-
+        return $this;
     }
 
     public function save()
@@ -450,6 +450,8 @@ class Entity extends AbstractEntity
         $this->deleteObjectDataFromCache();
 
         $this->beforeSave();
+
+        $this->validateEntityDataFields();
 
         if ($this->encrypted_fields) {
             $this->encryptValues();
@@ -541,7 +543,7 @@ class Entity extends AbstractEntity
      */
     protected function beforeUpdate()
     {
-
+        return $this;
     }
 
     /**
@@ -549,7 +551,7 @@ class Entity extends AbstractEntity
      */
     protected function afterUpdate()
     {
-
+        return $this;
     }
 
     /**
@@ -614,7 +616,7 @@ class Entity extends AbstractEntity
      */
     protected function beforeCreate()
     {
-
+        return $this;
     }
 
     /**
@@ -622,7 +624,7 @@ class Entity extends AbstractEntity
      */
     protected function afterCreate()
     {
-
+        return $this;
     }
 
     /**
@@ -630,7 +632,36 @@ class Entity extends AbstractEntity
      */
     protected function afterSave()
     {
+        return $this;
+    }
 
+    /**
+     * Auto-call before any save, validates all fields are in correct format and have correct data
+     * Inherit the function with any validation you need
+     * And do not forget to call parent::validateEntityDataFields() at the end
+     */
+    protected function validateEntityDataFields()
+    {
+        // Check only change fields and make sure they are in correct format for database fields
+        $changed_fields = $this->getChangedDataFields();
+        // Get repository
+        $repository_class = $this->getRepositoryClassName();
+        /** @var EntityRepository $repo_object */
+        $repo_object = new $repository_class;
+
+        foreach ($changed_fields as $changed_field) {
+            // Get field value
+            $field_value = $this->getField($changed_field);
+            // Validate the field is in correct format
+            $is_valid_value = $repo_object->validateFieldDataIsInCorrectFormat($changed_field, $field_value);
+
+            if (!$is_valid_value) {
+                // TODO uncomment when all setter will typecast values to corresponding database field type
+//                throw new \UnexpectedValueException('Value for field "' . $changed_field . '" with type "' . \gettype($field_value) . '" is not correct, check validation functions in Repository "' . $repository_class . '" with ID "' . $this->getId() . '" and value "' . \json_encode($field_value) . '"');
+            }
+        }
+
+        return $this;
     }
 
     public function isFieldChangedForUpdate($field): bool
@@ -762,7 +793,7 @@ class Entity extends AbstractEntity
      */
     public function findAndLoadPossibleDuplicateEntityByFields(array $check_fields)
     {
-        $class_name = \get_class($this) . self::CLASS_RELATION_NAME_REPOSITORY;
+        $class_name = $this->getRepositoryClassName();
         /** @var EntityRepository $repo */
         $repo = new $class_name;
 
@@ -819,5 +850,9 @@ class Entity extends AbstractEntity
         }
 
         back();
+    }
+
+    protected function getRepositoryClassName() {
+        return \get_class($this) . self::CLASS_RELATION_NAME_REPOSITORY;
     }
 }
